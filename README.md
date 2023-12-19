@@ -93,7 +93,11 @@ Run this lines one by one:
 
 ### Scripts to be run in this order:
 
-
+#### Module 1 (Optional): To download all fastqs of a BioProject
+1. Get files: `xonsh scripts/get-seqdata-of-bioproject.xsh -p PRJNA685103`  
+2. Combine fastqs of the same sample, rename with sample ID and compress:
+   `parallel xonsh scripts/fastq-combiner.xsh {} files/read_pair_table.csv fastqs/ fastq_combined/ :::: files/samples.txt`
+   
 #### Module 1: Annotate references according to main reference
 `Snakefile-references.smk` -- is a Snakefile to lift over annotations from `FungiDB-53_CneoformansH99_PMM.gff` into the four lineage genomes (`{lineage}_{GenBank Accession}.fasta`).  
     * It currently works with:  
