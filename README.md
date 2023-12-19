@@ -74,15 +74,14 @@ Run this lines one by one:
 ## Overview
 
 ### Starting files: 
-  * `files/sample_metadata.csv` with columns:
-  * `files/lineage_references.csv` with columns:
-  * `files/sample_reference.csv` with columns:
+  * `files/sample_metadata.csv` with columns: strain, sample (the one in the fastq file names), group (lineage or group to associate to a reference genome), more-optional-metadata-fields
+  * `files/lineage_references.csv` with columns: group, file (file name of reference genome assembly), strain, more-optional-metadata-fields (like genbank accession and bioproject)
   * `references/` directory with:
     * Fasta files to use as reference genomes.
     * Fasta file of main reference (the one with available annotation with the desired gene IDs)
     * GFF file of main reference
   * Lists of genes of loci of interest:
-    * `files/centromere.txt`
+    * `files/centromere.txt` (with IDs of genes in main reference GFF)
 
 ### Structure of repository:
   * The working directory has the scripts and Snakefiles to run.  
