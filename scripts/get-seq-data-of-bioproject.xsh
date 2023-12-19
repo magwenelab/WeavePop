@@ -16,7 +16,7 @@ import os
 @click.option('-f', '--outdirfiles', 'outdirfiles',default="files", show_default=True, type=str, help = "Name of directory to save files")
 @click.option('-s', '--outdirsras', 'outdirsras',default="srafiles", show_default=True , type=str, help = "Name of directory to save .sra files")
 @click.option('-fq', '--outdirfastqs', 'outdirfastqs',default="fastqs", show_default=True , type=str, help = "Name of directory to save .fastq files")
-@click.option('-l', '--boutdirlogs', 'outdirlogs',default="logs", show_default=True , type=str, help = "Name of directory to save log files")
+@click.option('-l', '--outdirlogs', 'outdirlogs',default="logs", show_default=True , type=str, help = "Name of directory to save log files")
 
 def getsra(bioproject, outdirfiles, outdirsras, outdirfastqs, outdirlogs):
     workdir= os.getcwd()
