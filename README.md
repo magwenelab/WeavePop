@@ -27,20 +27,20 @@
 Environment installation files are in `envs/`
 <details>
 <summary>Install crypto_div environment -- everything runs in this environment </summary>
- 
+~~~
 conda env create --file envs/crypto_div.yml
-
+~~~
 </details>
 
-
 <details>
-<summary>Install depth environment </summary>
- 
+<summary>Install depth environment -- when used in Snakemake the workflow uses a separate installation of the environment, but to use it independently install it with </summary>
+~~~ 
 conda env create --file envs/depth.yml
+~~~
 </details>
 
 <details>
-<summary> Install AGAT in its own environment -- when used in Snakemake the workflow uses a separate installation of the environment, but to use it independently install it with this instructions </summary>
+<summary> Install AGAT environment -- when used in Snakemake the workflow uses a separate installation of the environment, but to use it independently install it with this instructions </summary>
 
 Run this lines one by one:
 ~~~
