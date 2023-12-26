@@ -26,22 +26,12 @@
 
 Environment installation files are in `envs/`
 <details>
-<summary>Install base environment -- everything runs in this environment </summary>
+<summary>Install crypto_div environment -- everything runs in this environment </summary>
  
+conda env create --file envs/crypto_div.yml
 
 </details>
 
-<details>
-<summary>Install ncbitools environment </summary>
- 
-conda env create --file envs/ncbitools.yml
-</details>
-
-<details>
-<summary>Install snps_annotation environment </summary>
- 
-conda env create --file envs/snps_annotation.yml
-</details>
 
 <details>
 <summary>Install depth environment </summary>
