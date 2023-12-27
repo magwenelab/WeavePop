@@ -26,78 +26,80 @@
 
 Environment installation files are in `envs/`
 <details>
-<summary>Install crypto_div environment -- everything runs in this environment </summary>
+<summary>crypto_div -- everything runs in this environment. Install it with: </summary>  
+
 ~~~
 conda env create --file envs/crypto_div.yml
 ~~~
 </details>
 
 <details>
-<summary>Install depth environment -- when used in Snakemake the workflow uses a separate installation of the environment, but to use it independently install it with </summary>
+<summary>depth -- when used in Snakemake a separate installation of the environment is used. To use it independently install it with: </summary>
+
 ~~~ 
 conda env create --file envs/depth.yml
 ~~~
 </details>
 
 <details>
-<summary> Install AGAT environment -- when used in Snakemake the workflow uses a separate installation of the environment, but to use it independently install it with this instructions </summary>
+<summary> agat -- when used in Snakemake a separate installation of the environment is used. To use it independently install it with: </summary>
 
 Run this lines one by one:
 ~~~
- conda create -n agat
- conda activate agat
- conda install perl-bioperl perl-clone perl-graph perl-lwp-simple perl-carp perl-sort-naturally perl-file-share perl-file-sharedir-install perl-moose perl-yaml perl-lwp-protocol-https -c bioconda
- conda install r-base
- conda install perl-statistics-r -c bioconda
- cpan install bioperl List::MoreUtils Term::ProgressBar
- git clone https://github.com/NBISweden/AGAT.git
- perl Makefile.PL 
- make
- make test
- make install
- conda deactivate
- ~~~
+conda create -n agat
+conda activate agat
+conda install perl-bioperl perl-clone perl-graph perl-lwp-simple perl-carp perl-sort-naturally perl-file-share perl-file-sharedir-install perl-moose perl-yaml perl-lwp-protocol-https -c bioconda
+conda install r-base
+conda install perl-statistics-r -c bioconda
+cpan install bioperl List::MoreUtils Term::ProgressBar
+git clone https://github.com/NBISweden/AGAT.git
+perl Makefile.PL 
+make
+make test
+make install
+conda deactivate
+~~~
 
 </details>
 
 
-## Overview
+## Overview  
+
+### Structure of repository:  
+  * The working directory has the scripts and Snakefiles to run.  
+  * `files/` has some of the starting files and files created by the pipeline.
+  * `scripts/` has the scripts used by the Snakefiles, not by the user directly.  
+  * `references/` has the reference genomes.  
+  * `analyses/` has one directory per sample, all the resulting files of the analyses performed per sample are there with a generic name.  
+  * `results/` has the resulting files of the analyses that consider all the samples.  
 
 ### Starting files: 
   * `files/sample_metadata.csv` with columns: strain, sample (the one in the fastq file names), group (lineage or group to associate to a reference genome), more-optional-metadata-fields
   * `files/lineage_references.csv` with columns: group, file (file name of reference genome assembly), strain, more-optional-metadata-fields (like genbank accession and bioproject)
-   * Lists of genes of loci of interest:
+  * Lists of genes of loci of interest:  
     * `files/centromere.txt` (with IDs of genes in main reference GFF)
-  * `files/chromosome_names.csv` with columns: group, chromosome ID (the sequence ID in the Fasta and GFF of the references), chromosome name (typically a number). Without column names. Use `get-chromosome_names.sh` if your genomes are Complete Genomes from NCBI to get this file.
+  * `files/chromosome_names.csv` with columns: group, chromosome ID (the sequence ID in the Fasta and GFF of the references), chromosome name (typically a number). Without column names. If your genomes are Complete Genomes from NCBI use `get-chromosome_names.sh` to get this file.
   * `references/` directory with:
     * Fasta files to use as reference genomes.
-    * Fasta file of main reference (the one with available annotation with the desired gene IDs)
-    * GFF file of main reference
- 
+    * Fasta and GFF files of main reference (the one with available annotation with the desired gene IDs).
 
-### Structure of repository:
-  * The working directory has the scripts and Snakefiles to run.  
-  * `files/` has some of the starting files and files created by the pipeline.
-  * `scripts/` has the scripts used by the Snakefiles, not by the user directly.  
-  * `analyses/` has one directory per sample, all the resulting files of the analyses performed per sample are there with a generic name.  
-  * `results/` has the resulting files of the analyses that consider all the samples.  
 
 ### Scripts to be run in this order:
 
-#### Module 1 (Optional): To download all fastqs of a BioProject
+#### Module (Optional): To download all fastqs of a BioProject
 1. Get files: `xonsh scripts/get-seqdata-of-bioproject.xsh -p PRJNA685103`  
 2. Combine fastqs of the same sample, rename with sample ID and compress:
    `parallel xonsh scripts/fastq-combiner.xsh {} files/read_pair_table.csv fastqs/ fastq_combined/ :::: files/samples.txt`
    
 #### Module 1: Annotate references according to main reference
-`Snakefile-references.smk` -- is a Snakefile to lift over annotations from `FungiDB-53_CneoformansH99_PMM.gff` into the four lineage genomes (`{lineage}_{GenBank Accession}.fasta`).  
-    * It currently works with:  
+`Snakefile-references.smk` -- is a Snakefile to lift over annotations from the main reference into the reference genomes (`{lineage}.fasta`).  
+   * It currently works with:  
   ` snakemake --snakefile Snakefile-references.smk --cores 1 --use-conda --conda-frontend conda -p`:  
       ⚠️ `--cores 1` is because there is a problem if Liftoff runs in parallel because the different jobs try to create `FungiDB-65_CneoformansH99.gff_db` at the same time and that is not cool.    
       ⚠️ `--conda-frontend conda` because it cannot use mamba, which is the default.  
       ⏰ Pending: Merge into main workflow.
     * Output:  
-  
+
       *  `references/reference_genes.tsv`
       *  `references/{lineage}_liftoff.gff_polished`
       *  `references/{lineage}_liftoff.gff_polished.tsv`
@@ -114,7 +116,7 @@ Run this lines one by one:
 It runs the script `scripts/fastq-combiner.xsh` for each sample in `files/read_pair_table.csv`. This concatenates all `_1.fastq` of one sample into only one file named `{SRS-accession}_1.fq.gz` and compresses it and does the same for `_2.fastq`.  
 It runs **snippy**, **liftoff** and **agat** for each sample, it **extracts sequences** (cds and protein) of each sample and **concatenates** them by cds and by protein.
 
-    * Output:  
+  * Output:  
     
       * `fastq_combined/{SRS-accession}_1.fq.gz` and `fastq_combined/{SRS-accession}_2.fq.gz`.
       * `analyses/{sample}/snps.consensus.fa` and extra assembly files    
