@@ -33,6 +33,8 @@ def getsra(bioproject, outdirfiles, outdirsras, outdirfastqs, outdirlogs):
     print("Getting Sample Info")
     if not Path(sample_file).exists():
         esearch -db bioproject -query @(bioproject) | elink -target biosample | efetch -format docsum | xtract -pattern DocumentSummary -block Ids -element Id -group sra > @(sample_file)
+    else:
+        print("Skipping step, " + sample_file + " already exists")
 
     # Read the Sample file as a data frame and filter out samples without SRS accession
     df = pd.read_table(sample_file, header=None, names=["SAM", "Name", "SRS"])
@@ -65,9 +67,9 @@ def getsra(bioproject, outdirfiles, outdirsras, outdirfastqs, outdirlogs):
         print(f"Prefetching {run}")
         mkdir -p @(outdirsras + "/" + sample)
         cd @(outdirsras + "/" + sample)
-        prefetch @(run) &> @(log)
+        prefetch @(run) &>> @(log)
         cd ../..
-	
+
 	# Download again if run was not successfully downloaded
     print("Start Prefetching of failed samples")
     max_iterations = 5

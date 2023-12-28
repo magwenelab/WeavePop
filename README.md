@@ -72,41 +72,39 @@ conda deactivate
   * `references/` has the reference genomes.  
   * `analyses/` has one directory per sample, all the resulting files of the analyses performed per sample are there with a generic name.  
   * `results/` has the resulting files of the analyses that consider all the samples.  
+  * `logs/` has the log files of all runs.  
 
 ### Starting files: 
   * `files/sample_metadata.csv` with columns: strain, sample (the one in the fastq file names), group (lineage or group to associate to a reference genome), more-optional-metadata-fields
   * `files/lineage_references.csv` with columns: group, file (file name of reference genome assembly), strain, more-optional-metadata-fields (like genbank accession and bioproject)
   * Lists of genes of loci of interest:  
     * `files/centromere.txt` (with IDs of genes in main reference GFF)
-  * `files/chromosome_names.csv` with columns: group, chromosome ID (the sequence ID in the Fasta and GFF of the references), chromosome name (typically a number). Without column names. If your genomes are Complete Genomes from NCBI use `get-chromosome_names.sh` to get this file.
+  * `files/chromosome_names.csv` with columns: group, chromosome ID (the sequence ID in the Fasta and GFF of the references), chromosome name (typically a number). Without column names. If your genomes are Complete Genomes from NCBI use `bash get-chromosome_names.sh` to get this file.
   * `references/` directory with:
     * Fasta files to use as reference genomes.
-    * Fasta and GFF files of main reference (the one with available annotation with the desired gene IDs).
+    * Fasta and GFF files of main reference (the one with available annotation with the desired gene IDs). Main reference can be the same as one of the reference genomes.
 
 
 ### Scripts to be run in this order:
 
-#### Module (Optional): To download all fastqs of a BioProject
-1. Get files: `xonsh scripts/get-seqdata-of-bioproject.xsh -p PRJNA685103`  
+#### Module 1 (Optional): To download all fastqs of a BioProject
+1. Get files: `xonsh get-seqdata-of-bioproject.xsh -p PRJNA685103`   
 2. Combine fastqs of the same sample, rename with sample ID and compress:
-   `parallel xonsh scripts/fastq-combiner.xsh {} files/read_pair_table.csv fastqs/ fastq_combined/ :::: files/samples.txt`
+   `parallel xonsh fastq-combiner.xsh {} files/read_pair_table.csv fastqs/ fastq_combined/ :::: files/samples.txt`
    
 #### Module 1: Annotate references according to main reference
 `Snakefile-references.smk` -- is a Snakefile to lift over annotations from the main reference into the reference genomes (`{lineage}.fasta`).  
    * It currently works with:  
   ` snakemake --snakefile Snakefile-references.smk --cores 1 --use-conda --conda-frontend conda -p`:  
-      ⚠️ `--cores 1` is because there is a problem if Liftoff runs in parallel because the different jobs try to create `FungiDB-65_CneoformansH99.gff_db` at the same time and that is not cool.    
+      ⚠️ `--cores 1` is because there is a problem if Liftoff runs in parallel because the different jobs try to create `mainReference.gff_db` at the same time and that is not cool.    
       ⚠️ `--conda-frontend conda` because it cannot use mamba, which is the default.  
-      ⏰ Pending: Merge into main workflow.
-    * Output:  
+  * Output:  
 
-      *  `references/reference_genes.tsv`
       *  `references/{lineage}_liftoff.gff_polished`
       *  `references/{lineage}_liftoff.gff_polished.tsv`
       *  `references/{lineage}_predicted_proteins.fa`
       *  `references/{lineage}_predicted_cds.fa`
-      *  `results/protein_list.txt`
-      *  `references/references_unmapped_features.csv`
+      *  `files/protein_list.txt`
       *  `references/references_unmapped_count.csv`
       *  `references/references_unmapped.png`
       * And more intermediate and extra files

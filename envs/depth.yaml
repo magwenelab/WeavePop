@@ -1,0 +1,12 @@
+name: qualitytools
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - mosdepth=0.3.5
+  - samtools=1.18
+  - gnuplot
+  - matplotlib
+  - tectonic
+  - texlive-core

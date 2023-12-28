@@ -1,0 +1,6 @@
+strain,sample,group,geo_loc_name_country,isolation_source,Organism,Platform,ploidy,BioSample
+CBS411.78m,SRS7880657,Podospora,Venezuela,Cow dung,Podospora pseudopauciseta,ILLUMINA,haploid,SAMN17076438
+CBS415.72m,SRS7880656,Podospora,Pakistan,soil,Podospora pseudocomata,ILLUMINA,haploid,SAMN17076439
+CBS112042p,SRS7880655,Podospora,Australia,Wallaroo dung,Podospora bellae-mahoneyi,ILLUMINA,haploid,SAMN17076440
+CBS307.81m,SRS7880654,Cercophora,Japan,Cow dung,Cercophora samala,ILLUMINA,haploid,SAMN17076441
+CBS124.78p,SRS7880658,Podospora,India,Goat dung,Podospora pseudoanserina,ILLUMINA,haploid,SAMN17076437
