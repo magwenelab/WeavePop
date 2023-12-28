@@ -1,3 +1,4 @@
+.snakemake/
 logs/
 fastqs/
 fastq_combined/
