@@ -1,5 +1,5 @@
 
-# Reference-based mappin, variant calling and assembly / Annotation liftover / Mapping quality and coverage
+# Reference-based mapping, variant calling and assembly / Annotation liftover / Mapping quality and coverage
 
 ## Broad description
 
@@ -131,11 +131,20 @@ It runs **snippy**, **liftoff** and **agat** for each sample, it **extracts sequ
    * Output:  
   
      * `results/mapped_reads.svg` and `results/mapping_stats.txt` plot and table with fraction of mapping reads per sample.  
+     * `results/unmapped.svg` plot with features not annotated by Liftoff.  
      * `analyses/{sample}/snps.bam.stats` and `analyses/{sample}/bamstats/` directory with `plot-bamstats` resulting plots.  
-     * `analyses/{sample}/coverage.svg` depth of coverage along chromosome plot (qith all and only good quality mappings and location of interesting loci).  
+     * `analyses/{sample}/coverage.svg` depth of coverage along chromosome plot (with location of interesting loci).  
      * `analyses/{sample}/coverage_stats.svg` mean and median coverage pero chromosome and global.  
      * `analyses/{sample}/cov_distribution_.svg` ditribution of coverage values plot.  
      * `analyses/{sample}/mapq.svg` mapping quality along chromosome plot.  
      * `analyses/{sample}/mapq_distribution.svg` distribution of maping quality values plot.    
      * `analyses/{sample}/annotation.gff` GFF file with complete annotation plus average MAPQ and coverage of windows in which the features are located.    
+     * `results/norm_coverage_good.csv`  
+     * `results/cov_global_good.svg`  
+     * `results/cov_median_good.svg`  
+     * `results/cov_mean_good.svg`  
+     * `results/norm_coverage_raw.csv`  
+     * `results/cov_global_raw.svg`  
+     * `results/cov_median_raw.svg`  
+     * `results/cov_mean_raw.svg`  
  
