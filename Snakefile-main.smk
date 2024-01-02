@@ -12,7 +12,6 @@ REF_GFF = REFDIR + str(config["reference_gff"])
 protlist=(pd.read_csv("files/protein_list.txt", sep=",", header = None, names = ['protein']))
 proteins=list(protlist["protein"])
 
-
 rule all:
     input:
         expand("analysis/{sample}/snps.consensus.fa",sample=samples),
@@ -23,6 +22,13 @@ rule all:
         "results/proteins.done",
         "results/cds.done",
         "results/unmapped.svg"
+
+rule samples_list:
+    output: 
+        "files/samples.txt"
+    run:
+        sample = samplefile["sample"]
+        sample.to_csv("files/samples.txt", index = False, header = False)
 
 rule snippy:
     input:
@@ -35,8 +41,6 @@ rule snippy:
     output:
         "analysis/{sample}/snps.consensus.fa",
         "analysis/{sample}/snps.bam"
-    conda:
-        "envs/snippy.yaml"
     threads: config["threads_snippy"]
     log:
         "logs/snippy/{sample}.log" 
@@ -51,7 +55,7 @@ rule snippy:
 rule liftoff:
     input:
         target = "analysis/{sample}/snps.consensus.fa",
-        features = REFDIR + "features.txt"
+        features = "files/features.txt"
     params:
         refgff = lambda wildcards:(REFDIR + ref_table.loc[wildcards.sample, 'group'] + "_liftoff.gff_polished"),
         refgenome = lambda wildcards:(REFDIR + ref_table.loc[wildcards.sample, 'refgenome'])
@@ -64,7 +68,7 @@ rule liftoff:
         "logs/liftoff/{sample}.log" 
     shell:
         "liftoff "
-        "-g {params.refgff} "
+        "-g {params.refgff} " 
         "-polish "
         "-f {input.features} "
         "-dir analysis/{wildcards.sample}/intermediate_files "

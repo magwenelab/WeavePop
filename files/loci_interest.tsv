@@ -1,0 +1,217 @@
+seq_id	source_tag	primary_tag	start	end	score	strand	frame	copy_num_ID	coverage	description	ebi_biotype	extra_copy_number	gene_ebi_biotype	gene_id	ID	low_identity	matches_ref_protein	missing_start_codon	missing_stop_codon	Name	Note	Parent	partial_mapping	protein_source_id	sequence_ID	valid_ORF	valid_ORFs	inframe_stop_codon	partial_ORF	Loci
+CP047906.1	Liftoff	protein_coding_gene	190464	193623	.	1	.	CNAG_06814_0	1.0	Alpha cell-type homeodomain transcription factor	protein_coding	0			CNAG_06814					SXI1alpha					1.0		1.0			MAT
+CP047906.1	Liftoff	protein_coding_gene	194324	197005	.	-1	.	CNAG_06813_0	1.0	O-glucosyltransferase, putative	protein_coding	0			CNAG_06813					CAP1alpha					1.0		1.0			MAT
+CP047906.1	Liftoff	protein_coding_gene	198088	205543	.	-1	.	CNAG_06812_0	1.0	phospholipase D, variant	protein_coding	0			CNAG_06812					SPO14alpha					1.0		2.0			MAT
+CP047906.1	Liftoff	protein_coding_gene	205673	206765	.	1	.	CNAG_06811_0	1.0	large subunit ribosomal protein L22e	protein_coding	0			CNAG_06811					RPL22alpha					1.0		1.0			MAT
+CP047906.1	Liftoff	protein_coding_gene	207366	208803	.	1	.	CNAG_06810_0	1.0	hypothetical protein	protein_coding	0			CNAG_06810										1.0		1.0			MAT
+CP047906.1	Liftoff	protein_coding_gene	208808	212211	.	-1	.	CNAG_06809_0	1.0	IKS protein kinase	protein_coding	0			CNAG_06809					IKS1					1.0		1.0			MAT
+CP047906.1	Liftoff	protein_coding_gene	213000	214604	.	-1	.	CNAG_06808_0	1.0	pheromone a factor receptor	protein_coding	0			CNAG_06808					STE3alpha					1.0		1.0			MAT
+CP047906.1	Liftoff	protein_coding_gene	215321	216344	.	-1	.	CNAG_06807_0	1.0	hypothetical protein	protein_coding	0			CNAG_06807										1.0		1.0			MAT
+CP047906.1	Liftoff	protein_coding_gene	216832	218673	.	1	.	CNAG_06806_0	1.0	electron transfer flavoprotein alpha subunit	protein_coding	0			CNAG_06806					ETF1alpha					1.0		1.0			MAT
+CP047906.1	Liftoff	protein_coding_gene	219294	219834	.	1	.	CNAG_06805_0	1.0	hypothetical protein	protein_coding	0			CNAG_06805										1.0		1.0			MAT
+CP047906.1	Liftoff	protein_coding_gene	220614	224358	.	-1	.	CNAG_06804_0	1.0	BTP/PZ domain-containing protein	protein_coding	0			CNAG_06804					BSP3					1.0		2.0			MAT
+CP047906.1	Liftoff	protein_coding_gene	227052	227465	.	-1	.	CNAG_07406_0	1.0	pheromone alpha	protein_coding	0			CNAG_07406										1.0		1.0			MAT
+CP047906.1	Liftoff	protein_coding_gene	237615	238216	.	1	.	CNAG_07407_0	0.983	fungal mating-type pheromone	protein_coding	0			CNAG_07407					MFalpha3					0.983		1.0			MAT
+CP047906.1	Liftoff	protein_coding_gene	238747	245211	.	1	.	CNAG_06971_0	1.0	myosin class v heavy chain	protein_coding	0			CNAG_06971					MYO2alpha					1.0		1.0			MAT
+CP047906.1	Liftoff	protein_coding_gene	245112	248068	.	-1	.	CNAG_07408_0	1.0	STE/STE20/PAKA protein kinase, variant	protein_coding	0			CNAG_07408					STE20alpha					1.0		2.0			MAT
+CP047906.1	Liftoff	protein_coding_gene	248393	253196	.	1	.	CNAG_06980_0	1.0	STE/STE11 protein kinase	protein_coding	0			CNAG_06980					STE11alpha					1.0		1.0			MAT
+CP047906.1	Liftoff	protein_coding_gene	253160	257626	.	-1	.	CNAG_07409_0	1.0	DNA-directed RNA polymerase, mitochondrial	protein_coding	0			CNAG_07409					RPO41alpha					1.0		1.0			MAT
+CP047906.1	Liftoff	protein_coding_gene	257798	261110	.	1	.	CNAG_07005_0	1.0	Armadillo/beta-catenin repeat protein	protein_coding	0			CNAG_07005					BSP2					1.0		1.0			MAT
+CP047906.1	Liftoff	protein_coding_gene	258970	262824	.	-1	.	CNAG_07004_0	1.0	dihydrolipoyl dehydrogenase	protein_coding	0			CNAG_07004					LPD1alpha					1.0		1.0			MAT
+CP047906.1	Liftoff	protein_coding_gene	262912	266337	.	-1	.	CNAG_07410_0	1.0	CID1-family polyA polymerase	protein_coding	0			CNAG_07410					CID1alpha					1.0		2.0			MAT
+CP047906.1	Liftoff	protein_coding_gene	266832	270494	.	-1	.	CNAG_07015_0	1.0	hypothetical protein	protein_coding	0			CNAG_07015										1.0		2.0			MAT
+CP047906.1	Liftoff	protein_coding_gene	271412	278133	.	1	.	CNAG_07411_0	1.0	histone demethylase JARID1	protein_coding	0			CNAG_07411					RUM1alpha					1.0		1.0			MAT
+CP047906.1	Liftoff	protein_coding_gene	278464	281458	.	1	.	CNAG_01457_0	1.0	hypothetical protein	protein_coding	0			CNAG_01457					BSP1					1.0		1.0			MAT
+CP047906.1	Liftoff	protein_coding_gene	282756	284108	.	1	.	CNAG_01456_0	1.0	hypothetical protein, variant	protein_coding	0			CNAG_01456										1.0		2.0			MAT
+CP047906.1	Liftoff	protein_coding_gene	285415	286838	.	1	.	CNAG_01455_0	1.0	large subunit ribosomal protein L39	protein_coding	0			CNAG_01455					RPL39alpha					1.0		1.0			MAT
+CP047906.1	Liftoff	protein_coding_gene	286841	290627	.	-1	.	CNAG_01454_0	1.0	transcription factor STE12	protein_coding	0			CNAG_01454					STE12alpha					1.0		1.0			MAT
+CP091249.1	Liftoff	protein_coding_gene	181296	183190	.	1	.	CNAG_06814_0	0.58	Alpha cell-type homeodomain transcription factor	protein_coding	0			CNAG_06814					SXI1alpha					0.571		1.0			MAT
+CP091249.1	Liftoff	protein_coding_gene	183817	186465	.	-1	.	CNAG_06813_0	0.985	O-glucosyltransferase, putative	protein_coding	0			CNAG_06813					CAP1alpha					0.978		1.0			MAT
+CP091249.1	Liftoff	protein_coding_gene	191336	191876	.	-1	.	CNAG_06805_0	1.0	hypothetical protein	protein_coding	0			CNAG_06805										0.966		0.0			MAT
+CP091249.1	Liftoff	protein_coding_gene	192499	194340	.	-1	.	CNAG_06806_0	1.0	electron transfer flavoprotein alpha subunit	protein_coding	0			CNAG_06806					ETF1alpha					0.992		1.0			MAT
+CP091249.1	Liftoff	protein_coding_gene	194828	195850	.	1	.	CNAG_06807_0	0.998	hypothetical protein	protein_coding	0			CNAG_06807										0.981		0.0			MAT
+CP091249.1	Liftoff	protein_coding_gene	196567	198166	.	1	.	CNAG_06808_0	0.995	pheromone a factor receptor	protein_coding	0			CNAG_06808					STE3alpha					0.983		1.0			MAT
+CP091249.1	Liftoff	protein_coding_gene	198951	202355	.	1	.	CNAG_06809_0	0.999	IKS protein kinase	protein_coding	0			CNAG_06809					IKS1					0.986		1.0			MAT
+CP091249.1	Liftoff	protein_coding_gene	202357	203783	.	-1	.	CNAG_06810_0	0.987	hypothetical protein	protein_coding	0			CNAG_06810										0.965		1.0			MAT
+CP091249.1	Liftoff	protein_coding_gene	204401	205485	.	-1	.	CNAG_06811_0	0.989	large subunit ribosomal protein L22e	protein_coding	0			CNAG_06811					RPL22alpha					0.976		1.0			MAT
+CP091249.1	Liftoff	protein_coding_gene	205612	213064	.	1	.	CNAG_06812_0	0.998	phospholipase D, variant	protein_coding	0			CNAG_06812					SPO14alpha					0.991		2.0			MAT
+CP091249.1	Liftoff	protein_coding_gene	218705	222425	.	-1	.	CNAG_06804_0	0.993	BTP/PZ domain-containing protein	protein_coding	0			CNAG_06804					BSP3					0.98		2.0			MAT
+CP091249.1	Liftoff	protein_coding_gene	224704	225117	.	1	.	CNAG_07406_0	1.0	pheromone alpha	protein_coding	0			CNAG_07406										0.98		0.0			MAT
+CP091249.1	Liftoff	protein_coding_gene	234545	235147	.	1	.	CNAG_07407_0	0.983	fungal mating-type pheromone	protein_coding	0			CNAG_07407					MFalpha3					0.969		1.0			MAT
+CP091249.1	Liftoff	protein_coding_gene	235673	242135	.	1	.	CNAG_06971_0	0.999	myosin class v heavy chain	protein_coding	0			CNAG_06971					MYO2alpha					0.993		1.0			MAT
+CP091249.1	Liftoff	protein_coding_gene	242036	244984	.	-1	.	CNAG_07408_0	1.0	STE/STE20/PAKA protein kinase, variant	protein_coding	0			CNAG_07408					STE20alpha					0.993		2.0			MAT
+CP091249.1	Liftoff	protein_coding_gene	245273	250069	.	1	.	CNAG_06980_0	0.998	STE/STE11 protein kinase	protein_coding	0			CNAG_06980					STE11alpha					0.989		1.0			MAT
+CP091249.1	Liftoff	protein_coding_gene	250033	254500	.	-1	.	CNAG_07409_0	1.0	DNA-directed RNA polymerase, mitochondrial	protein_coding	0			CNAG_07409					RPO41alpha					0.996		1.0			MAT
+CP091249.1	Liftoff	protein_coding_gene	254672	257984	.	1	.	CNAG_07005_0	1.0	Armadillo/beta-catenin repeat protein	protein_coding	0			CNAG_07005					BSP2					0.99		1.0			MAT
+CP091249.1	Liftoff	protein_coding_gene	255844	259699	.	-1	.	CNAG_07004_0	1.0	dihydrolipoyl dehydrogenase	protein_coding	0			CNAG_07004					LPD1alpha					0.99		1.0			MAT
+CP091249.1	Liftoff	protein_coding_gene	259787	263206	.	-1	.	CNAG_07410_0	0.998	CID1-family polyA polymerase	protein_coding	0			CNAG_07410					CID1alpha					0.991		2.0			MAT
+CP091249.1	Liftoff	protein_coding_gene	263717	267381	.	-1	.	CNAG_07015_0	1.0	hypothetical protein	protein_coding	0			CNAG_07015										0.988		2.0			MAT
+CP091249.1	Liftoff	protein_coding_gene	278837	285526	.	1	.	CNAG_07411_0	0.994	histone demethylase JARID1	protein_coding	0			CNAG_07411					RUM1alpha					0.983		1.0			MAT
+CP091249.1	Liftoff	protein_coding_gene	285776	288770	.	1	.	CNAG_01457_0	1.0	hypothetical protein	protein_coding	0			CNAG_01457					BSP1					0.986		0.0			MAT
+CP091249.1	Liftoff	protein_coding_gene	292290	293541	.	1	.	CNAG_01456_0	0.905	hypothetical protein, variant	protein_coding	0			CNAG_01456										0.863		0.0			MAT
+CP091249.1	Liftoff	protein_coding_gene	294849	296272	.	1	.	CNAG_01455_0	0.998	large subunit ribosomal protein L39	protein_coding	0			CNAG_01455					RPL39alpha					0.986		1.0			MAT
+CP091249.1	Liftoff	protein_coding_gene	296275	300073	.	-1	.	CNAG_01454_0	1.0	transcription factor STE12	protein_coding	0			CNAG_01454					STE12alpha					0.985		1.0			MAT
+CM021023.1	Liftoff	protein_coding_gene	159823	161717	.	1	.	CNAG_06814_0	0.58	Alpha cell-type homeodomain transcription factor	protein_coding	0			CNAG_06814					SXI1alpha					0.575		1.0			MAT
+CM021023.1	Liftoff	protein_coding_gene	162346	165027	.	-1	.	CNAG_06813_0	1.0	O-glucosyltransferase, putative	protein_coding	0			CNAG_06813					CAP1alpha					0.995		1.0			MAT
+CM021023.1	Liftoff	protein_coding_gene	166102	173568	.	-1	.	CNAG_06812_0	1.0	phospholipase D, variant	protein_coding	0			CNAG_06812					SPO14alpha					0.992		2.0			MAT
+CM021023.1	Liftoff	protein_coding_gene	173701	174792	.	1	.	CNAG_06811_0	0.994	large subunit ribosomal protein L22e	protein_coding	0			CNAG_06811					RPL22alpha					0.982		1.0			MAT
+CM021023.1	Liftoff	protein_coding_gene	175392	176832	.	1	.	CNAG_06810_0	1.0	hypothetical protein	protein_coding	0			CNAG_06810										0.981		0.0			MAT
+CM021023.1	Liftoff	protein_coding_gene	176837	180239	.	-1	.	CNAG_06809_0	0.999	IKS protein kinase	protein_coding	0			CNAG_06809					IKS1					0.99		1.0			MAT
+CM021023.1	Liftoff	protein_coding_gene	181025	182631	.	-1	.	CNAG_06808_0	1.0	pheromone a factor receptor	protein_coding	0			CNAG_06808					STE3alpha					0.987		1.0			MAT
+CM021023.1	Liftoff	protein_coding_gene	183348	184371	.	-1	.	CNAG_06807_0	1.0	hypothetical protein	protein_coding	0			CNAG_06807										0.985		1.0			MAT
+CM021023.1	Liftoff	protein_coding_gene	184859	186704	.	1	.	CNAG_06806_0	1.0	electron transfer flavoprotein alpha subunit	protein_coding	0			CNAG_06806					ETF1alpha					0.993		1.0			MAT
+CM021023.1	Liftoff	protein_coding_gene	187325	187868	.	1	.	CNAG_06805_0	1.0	hypothetical protein	protein_coding	0			CNAG_06805										0.983		1.0			MAT
+CM021023.1	Liftoff	protein_coding_gene	188648	192389	.	-1	.	CNAG_06804_0	0.999	BTP/PZ domain-containing protein	protein_coding	0			CNAG_06804					BSP3					0.99		2.0			MAT
+CM021023.1	Liftoff	protein_coding_gene	203756	204166	.	-1	.	CNAG_07406_0	0.991	pheromone alpha	protein_coding	0			CNAG_07406										0.983		1.0			MAT
+CM021023.1	Liftoff	protein_coding_gene	204353	204955	.	1	.	CNAG_07407_0	0.983	fungal mating-type pheromone	protein_coding	0			CNAG_07407					MFalpha3					0.973		1.0			MAT
+CM021023.1	Liftoff	protein_coding_gene	205481	211942	.	1	.	CNAG_06971_0	0.999	myosin class v heavy chain	protein_coding	0			CNAG_06971					MYO2alpha					0.994		1.0			MAT
+CM021023.1	Liftoff	protein_coding_gene	211843	214785	.	-1	.	CNAG_07408_0	1.0	STE/STE20/PAKA protein kinase, variant	protein_coding	0			CNAG_07408					STE20alpha					0.997		2.0			MAT
+CM021023.1	Liftoff	protein_coding_gene	215198	220000	.	1	.	CNAG_06980_0	0.999	STE/STE11 protein kinase	protein_coding	0			CNAG_06980					STE11alpha					0.99		1.0			MAT
+CM021023.1	Liftoff	protein_coding_gene	219964	224430	.	-1	.	CNAG_07409_0	1.0	DNA-directed RNA polymerase, mitochondrial	protein_coding	0			CNAG_07409					RPO41alpha					0.997		1.0			MAT
+CM021023.1	Liftoff	protein_coding_gene	224602	227913	.	1	.	CNAG_07005_0	1.0	Armadillo/beta-catenin repeat protein	protein_coding	0			CNAG_07005					BSP2					0.992		1.0			MAT
+CM021023.1	Liftoff	protein_coding_gene	225774	229623	.	-1	.	CNAG_07004_0	0.999	dihydrolipoyl dehydrogenase	protein_coding	0			CNAG_07004					LPD1alpha					0.992		1.0			MAT
+CM021023.1	Liftoff	protein_coding_gene	229711	233138	.	-1	.	CNAG_07410_0	1.0	CID1-family polyA polymerase	protein_coding	0			CNAG_07410					CID1alpha					0.992		2.0			MAT
+CM021023.1	Liftoff	protein_coding_gene	233621	237283	.	-1	.	CNAG_07015_0	1.0	hypothetical protein	protein_coding	0			CNAG_07015										0.995		2.0			MAT
+CM021023.1	Liftoff	protein_coding_gene	238187	244911	.	1	.	CNAG_07411_0	1.0	histone demethylase JARID1	protein_coding	0			CNAG_07411					RUM1alpha					0.99		1.0			MAT
+CM021023.1	Liftoff	protein_coding_gene	245247	248241	.	1	.	CNAG_01457_0	1.0	hypothetical protein	protein_coding	0			CNAG_01457					BSP1					0.989		1.0			MAT
+CM021023.1	Liftoff	protein_coding_gene	249555	250916	.	1	.	CNAG_01456_0	0.999	hypothetical protein, variant	protein_coding	0			CNAG_01456										0.976		2.0			MAT
+CM021023.1	Liftoff	protein_coding_gene	252223	253646	.	1	.	CNAG_01455_0	1.0	large subunit ribosomal protein L39	protein_coding	0			CNAG_01455					RPL39alpha					0.993		1.0			MAT
+CM021023.1	Liftoff	protein_coding_gene	253649	257435	.	-1	.	CNAG_01454_0	0.999	transcription factor STE12	protein_coding	0			CNAG_01454					STE12alpha					0.989		1.0			MAT
+CP097928.1	Liftoff	protein_coding_gene	252333	256745	.	-1	.	CNAG_07409_0	0.986	DNA-directed RNA polymerase, mitochondrial	protein_coding	0			CNAG_07409					RPO41alpha					0.978		1.0			MAT
+CP097928.1	Liftoff	protein_coding_gene	256917	260018	.	1	.	CNAG_07005_0	0.929	Armadillo/beta-catenin repeat protein	protein_coding	0			CNAG_07005					BSP2					0.914		1.0			MAT
+CP097928.1	Liftoff	protein_coding_gene	258089	260022	.	-1	.	CNAG_07004_0	0.55	dihydrolipoyl dehydrogenase	protein_coding	0			CNAG_07004					LPD1alpha					0.537		0.0			MAT
+CP097928.1	Liftoff	protein_coding_gene	266822	274078	.	-1	.	CNAG_06812_0	0.955	phospholipase D, variant	protein_coding	0			CNAG_06812					SPO14alpha					0.797		0.0			MAT
+CP097928.1	Liftoff	protein_coding_gene	274513	277138	.	-1	.	CNAG_06813_0	0.972	O-glucosyltransferase, putative	protein_coding	0			CNAG_06813					CAP1alpha					0.869		1.0			MAT
+CP097928.1	Liftoff	protein_coding_gene	299228	302645	.	-1	.	CNAG_07410_0	0.995	CID1-family polyA polymerase	protein_coding	0			CNAG_07410					CID1alpha					0.953		2.0			MAT
+CP097928.1	Liftoff	protein_coding_gene	303055	306672	.	-1	.	CNAG_07015_0	0.982	hypothetical protein	protein_coding	0			CNAG_07015										0.901		2.0			MAT
+CP097928.1	Liftoff	protein_coding_gene	318585	319403	.	1	.	CNAG_06811_0	0.684	large subunit ribosomal protein L22e	protein_coding	0			CNAG_06811					RPL22alpha					0.597		1.0			MAT
+CP097928.1	Liftoff	protein_coding_gene	330200	333113	.	-1	.	CNAG_01457_0	0.973	hypothetical protein	protein_coding	0			CNAG_01457					BSP1					0.822		1.0			MAT
+CP097928.1	Liftoff	protein_coding_gene	334775	341030	.	-1	.	CNAG_07411_0	0.919	histone demethylase JARID1	protein_coding	0			CNAG_07411					RUM1alpha					0.779		1.0			MAT
+CP097930.1	Liftoff	protein_coding_gene	1343291	1344550	.	-1	.	CNAG_06814_0	0.417	Alpha cell-type homeodomain transcription factor	protein_coding	0			CNAG_06814	True				SXI1alpha			True		0.412					MAT
+CP097927.1	Liftoff	protein_coding_gene	746262	746449	.	-1	.	CNAG_06805_0	0.83	hypothetical protein	protein_coding	0			CNAG_06805										0.752		0.0			MAT
+CP097934.1	Liftoff	protein_coding_gene	1162257	1162416	.	-1	.	CNAG_06810_0	0.137	hypothetical protein	protein_coding	0			CNAG_06810	True							True		0.132		0.0			MAT
+CP097934.1	Liftoff	protein_coding_gene	1438634	1439668	.	-1	.	CNAG_06807_0	0.99	hypothetical protein	protein_coding	0			CNAG_06807										0.829		0.0			MAT
+CP047903.1	Liftoff	protein_coding_gene	844745	847967	.	1	.	CNAG_03796_0	1.0	NAK protein kinase	protein_coding	0			CNAG_03796					ENV7					1.0		1.0			centromeres
+CP047903.1	Liftoff	protein_coding_gene	908365	910616	.	-1	.	CNAG_03805_0	1.0	calcium/proton exchanger	protein_coding	0			CNAG_03805										1.0		1.0			centromeres
+CP047909.1	Liftoff	protein_coding_gene	893583	896638	.	1	.	CNAG_03258_0	1.0	AGC protein kinase, variant 2	protein_coding	0			CNAG_03258					TPK202a					0.992		3.0			centromeres
+CP047909.1	Liftoff	protein_coding_gene	946049	947606	.	-1	.	CNAG_03251_0	1.0	ADP-ribosylation factor	protein_coding	0			CNAG_03251					ARF2					1.0		1.0			centromeres
+CP047908.1	Liftoff	protein_coding_gene	826939	829115	.	1	.	CNAG_05671_0	1.0	oxidation resistance protein 1	protein_coding	0			CNAG_05671										1.0		1.0			centromeres
+CP047908.1	Liftoff	protein_coding_gene	883061	885223	.	-1	.	CNAG_06699_0	1.0	glyceraldehyde-3-phosphate dehydrogenase	protein_coding	0			CNAG_06699					GPD1					1.0		1.0			centromeres
+CP047905.1	Liftoff	protein_coding_gene	727161	729459	.	1	.	CNAG_05202_0	1.0	SET domain-containing protein 6	protein_coding	0			CNAG_05202										1.0		1.0			centromeres
+CP047905.1	Liftoff	protein_coding_gene	773022	774957	.	-1	.	CNAG_05215_0	1.0	hypothetical protein	protein_coding	0			CNAG_05215										1.0		1.0			centromeres
+CP047914.1	Liftoff	protein_coding_gene	576037	579567	.	1	.	CNAG_06475_0	1.0	hypothetical protein	protein_coding	0			CNAG_06475										1.0		1.0			centromeres
+CP047914.1	Liftoff	protein_coding_gene	632179	634498	.	-1	.	CNAG_06482_0	1.0	Amidase	protein_coding	0			CNAG_06482										1.0		1.0			centromeres
+CP047912.1	Liftoff	protein_coding_gene	872429	874912	.	1	.	CNAG_01780_0	1.0	cytoplasmic protein	protein_coding	0			CNAG_01780										1.0		1.0			centromeres
+CP047912.1	Liftoff	protein_coding_gene	939102	940942	.	-1	.	CNAG_01788_0	1.0	tRNA(His) guanylyltransferase	protein_coding	0			CNAG_01788										1.0		1.0			centromeres
+CP047907.1	Liftoff	protein_coding_gene	779781	782845	.	1	.	CNAG_02254_0	1.0	quinate permease	protein_coding	0			CNAG_02254					LPI12					1.0		1.0			centromeres
+CP047907.1	Liftoff	protein_coding_gene	823960	827372	.	-1	.	CNAG_02240_0	1.0	cytoplasmic protein	protein_coding	0			CNAG_02240										1.0		1.0			centromeres
+CP047910.1	Liftoff	protein_coding_gene	804729	806453	.	1	.	CNAG_04417_0	1.0	alpha-ketoglutarate-dependent 2,4- dichlorophenoxyacetate dioxygenase	protein_coding	0			CNAG_04417										1.0		1.0			centromeres
+CP047910.1	Liftoff	protein_coding_gene	844078	856003	.	-1	.	CNAG_07769_0	1.0	E3 ubiquitin-protein ligase HUWE1	protein_coding	0			CNAG_07769					TOM1					1.0		1.0			centromeres
+CP047911.1	Liftoff	protein_coding_gene	829570	832011	.	1	.	CNAG_04855_0	1.0	hypothetical protein	protein_coding	0			CNAG_04855										1.0		1.0			centromeres
+CP047911.1	Liftoff	protein_coding_gene	876443	878949	.	1	.	CNAG_04857_0	1.0	hypothetical protein	protein_coding	0			CNAG_04857										1.0		1.0			centromeres
+CP047902.1	Liftoff	protein_coding_gene	1282865	1288447	.	-1	.	CNAG_00383_0	1.0	Aminophospholipid translocase, putative	protein_coding	0			CNAG_00383					APT3					1.0		1.0			centromeres
+CP047915.1	Liftoff	protein_coding_gene	487568	490222	.	1	.	CNAG_05496_0	1.0	2-isopropylmalate synthase	protein_coding	0			CNAG_05496										1.0		1.0			centromeres
+CP047915.1	Liftoff	protein_coding_gene	542718	546778	.	-1	.	CNAG_05486_0	1.0	hypothetical protein	protein_coding	0			CNAG_05486										1.0		1.0			centromeres
+CP047913.1	Liftoff	protein_coding_gene	602915	604241	.	1	.	CNAG_06048_0	1.0	hypothetical protein	protein_coding	0			CNAG_06048										1.0		1.0			centromeres
+CP047913.1	Liftoff	protein_coding_gene	635675	638655	.	-1	.	CNAG_06036_0	0.995	hypothetical protein	protein_coding	0			CNAG_06036										0.994		1.0			centromeres
+CP047906.1	Liftoff	protein_coding_gene	1570612	1575332	.	1	.	CNAG_00960_0	1.0	ATP-dependent RNA helicase DHX8/PRP22	protein_coding	0			CNAG_00960										1.0		1.0			centromeres
+CP047906.1	Liftoff	protein_coding_gene	1616364	1616882	.	-1	.	CNAG_00941_0	1.0	hypothetical protein	protein_coding	0			CNAG_00941										1.0		1.0			centromeres
+CP047904.1	Liftoff	protein_coding_gene	1370030	1376787	.	1	.	CNAG_07972_0	1.0	hypothetical protein	protein_coding	0			CNAG_07972										1.0		1.0			centromeres
+CP047904.1	Liftoff	protein_coding_gene	1417999	1419257	.	-1	.	CNAG_06879_0	1.0	hypothetical protein	protein_coding	0			CNAG_06879										1.0		1.0			centromeres
+CP091256.1	Liftoff	protein_coding_gene	836515	838956	.	1	.	CNAG_04855_0	0.998	hypothetical protein	protein_coding	0			CNAG_04855										0.986		1.0			centromeres
+CP091256.1	Liftoff	protein_coding_gene	858610	861111	.	1	.	CNAG_04857_0	0.994	hypothetical protein	protein_coding	0			CNAG_04857										0.977		1.0			centromeres
+CP091247.1	Liftoff	protein_coding_gene	984767	990349	.	1	.	CNAG_00383_0	1.0	Aminophospholipid translocase, putative	protein_coding	0			CNAG_00383					APT3					0.994		1.0			centromeres
+CP091253.1	Liftoff	protein_coding_gene	455592	457150	.	1	.	CNAG_03251_0	0.999	ADP-ribosylation factor	protein_coding	0			CNAG_03251					ARF2					0.989		1.0			centromeres
+CP091253.1	Liftoff	protein_coding_gene	486658	489725	.	-1	.	CNAG_03258_0	1.0	AGC protein kinase, variant 2	protein_coding	0			CNAG_03258					TPK202a					0.984		3.0			centromeres
+CP091254.1	Liftoff	protein_coding_gene	328709	340634	.	1	.	CNAG_07769_0	1.0	E3 ubiquitin-protein ligase HUWE1	protein_coding	0			CNAG_07769					TOM1					0.993		1.0			centromeres
+CP091254.1	Liftoff	protein_coding_gene	368870	370531	.	-1	.	CNAG_04417_0	0.965	alpha-ketoglutarate-dependent 2,4- dichlorophenoxyacetate dioxygenase	protein_coding	0			CNAG_04417										0.952		1.0			centromeres
+CP091251.1	Liftoff	protein_coding_gene	886633	888810	.	1	.	CNAG_05671_0	1.0	oxidation resistance protein 1	protein_coding	0			CNAG_05671										0.986		1.0			centromeres
+CP091251.1	Liftoff	protein_coding_gene	924822	926983	.	-1	.	CNAG_06699_0	1.0	glyceraldehyde-3-phosphate dehydrogenase	protein_coding	0			CNAG_06699					GPD1					0.988		1.0			centromeres
+CP091257.1	Liftoff	protein_coding_gene	712441	714739	.	1	.	CNAG_05202_0	1.0	SET domain-containing protein 6	protein_coding	0			CNAG_05202										0.983		1.0			centromeres
+CP091257.1	Liftoff	protein_coding_gene	749471	751409	.	-1	.	CNAG_05215_0	1.0	hypothetical protein	protein_coding	0			CNAG_05215										0.989		1.0			centromeres
+CP091255.1	Liftoff	protein_coding_gene	158603	159716	.	1	.	CNAG_06879_0	0.849	hypothetical protein	protein_coding	0			CNAG_06879										0.84		1.0			centromeres
+CP091255.1	Liftoff	protein_coding_gene	192640	196559	.	-1	.	CNAG_07972_0	0.528	hypothetical protein	protein_coding	0			CNAG_07972										0.514		1.0			centromeres
+CP091249.1	Liftoff	protein_coding_gene	1575502	1580218	.	1	.	CNAG_00960_0	0.999	ATP-dependent RNA helicase DHX8/PRP22	protein_coding	0			CNAG_00960										0.994		1.0			centromeres
+CP091249.1	Liftoff	protein_coding_gene	1641089	1641597	.	-1	.	CNAG_00941_0	0.977	hypothetical protein	protein_coding	0			CNAG_00941										0.959		0.0			centromeres
+CP091260.1	Liftoff	protein_coding_gene	558066	561611	.	1	.	CNAG_06475_0	1.0	hypothetical protein	protein_coding	0			CNAG_06475										0.984		1.0			centromeres
+CP091260.1	Liftoff	protein_coding_gene	600195	602513	.	-1	.	CNAG_06482_0	1.0	Amidase	protein_coding	0			CNAG_06482										0.987		1.0			centromeres
+CP091252.1	Liftoff	protein_coding_gene	759631	762692	.	1	.	CNAG_02254_0	1.0	quinate permease	protein_coding	0			CNAG_02254					LPI12					0.994		1.0			centromeres
+CP091252.1	Liftoff	protein_coding_gene	808224	811639	.	-1	.	CNAG_02240_0	0.999	cytoplasmic protein	protein_coding	0			CNAG_02240										0.991		1.0			centromeres
+CP091258.1	Liftoff	protein_coding_gene	454493	458554	.	1	.	CNAG_05486_0	1.0	hypothetical protein	protein_coding	0			CNAG_05486										0.993		1.0			centromeres
+CP091258.1	Liftoff	protein_coding_gene	488333	490989	.	-1	.	CNAG_05496_0	1.0	2-isopropylmalate synthase	protein_coding	0			CNAG_05496										0.989		1.0			centromeres
+CP091259.1	Liftoff	protein_coding_gene	128702	131682	.	1	.	CNAG_06036_0	0.995	hypothetical protein	protein_coding	0			CNAG_06036										0.983		1.0			centromeres
+CP091259.1	Liftoff	protein_coding_gene	168677	169995	.	-1	.	CNAG_06048_0	0.996	hypothetical protein	protein_coding	0			CNAG_06048										0.986		1.0			centromeres
+CP091248.1	Liftoff	protein_coding_gene	1137417	1139253	.	1	.	CNAG_01788_0	0.999	tRNA(His) guanylyltransferase	protein_coding	0			CNAG_01788										0.983		1.0			centromeres
+CP091248.1	Liftoff	protein_coding_gene	1172852	1175339	.	-1	.	CNAG_01780_0	1.0	cytoplasmic protein	protein_coding	0			CNAG_01780										0.991		1.0			centromeres
+CP091250.1	Liftoff	protein_coding_gene	742285	744525	.	1	.	CNAG_03805_0	0.992	calcium/proton exchanger	protein_coding	0			CNAG_03805										0.986		1.0			centromeres
+CP091250.1	Liftoff	protein_coding_gene	767513	770735	.	-1	.	CNAG_03796_0	1.0	NAK protein kinase	protein_coding	0			CNAG_03796					ENV7					0.985		1.0			centromeres
+CM021022.1	Liftoff	protein_coding_gene	702407	704706	.	1	.	CNAG_05202_0	1.0	SET domain-containing protein 6	protein_coding	0			CNAG_05202										0.994		1.0			centromeres
+CM021022.1	Liftoff	protein_coding_gene	740736	742672	.	-1	.	CNAG_05215_0	1.0	hypothetical protein	protein_coding	0			CNAG_05215										0.989		1.0			centromeres
+CM021024.1	Liftoff	protein_coding_gene	776408	779471	.	1	.	CNAG_02254_0	1.0	quinate permease	protein_coding	0			CNAG_02254					LPI12					0.997		1.0			centromeres
+CM021024.1	Liftoff	protein_coding_gene	823034	826445	.	-1	.	CNAG_02240_0	1.0	cytoplasmic protein	protein_coding	0			CNAG_02240										0.997		1.0			centromeres
+CM021032.1	Liftoff	protein_coding_gene	863266	865749	.	1	.	CNAG_01780_0	1.0	cytoplasmic protein	protein_coding	0			CNAG_01780										0.994		1.0			centromeres
+CM021032.1	Liftoff	protein_coding_gene	911869	913699	.	-1	.	CNAG_01788_0	0.993	tRNA(His) guanylyltransferase	protein_coding	0			CNAG_01788										0.99		1.0			centromeres
+CM021033.1	Liftoff	protein_coding_gene	871109	877477	.	1	.	CNAG_07972_0	0.844	hypothetical protein	protein_coding	0			CNAG_07972										0.743		0.0			centromeres
+CM021033.1	Liftoff	protein_coding_gene	906562	907820	.	-1	.	CNAG_06879_0	1.0	hypothetical protein	protein_coding	0			CNAG_06879										0.989		1.0			centromeres
+CM021026.1	Liftoff	protein_coding_gene	422033	423591	.	1	.	CNAG_03251_0	0.999	ADP-ribosylation factor	protein_coding	0			CNAG_03251					ARF2					0.986		1.0			centromeres
+CM021026.1	Liftoff	protein_coding_gene	454850	457814	.	-1	.	CNAG_03258_0	0.971	AGC protein kinase, variant 2	protein_coding	0			CNAG_03258					TPK202a					0.966		3.0			centromeres
+CM021023.1	Liftoff	protein_coding_gene	1537992	1542709	.	1	.	CNAG_00960_0	0.999	ATP-dependent RNA helicase DHX8/PRP22	protein_coding	0			CNAG_00960										0.996		1.0			centromeres
+CM021023.1	Liftoff	protein_coding_gene	1580364	1580882	.	-1	.	CNAG_00941_0	1.0	hypothetical protein	protein_coding	0			CNAG_00941										0.995		1.0			centromeres
+CM021025.1	Liftoff	protein_coding_gene	508179	510341	.	1	.	CNAG_06699_0	0.999	glyceraldehyde-3-phosphate dehydrogenase	protein_coding	0			CNAG_06699					GPD1					0.996		1.0			centromeres
+CM021025.1	Liftoff	protein_coding_gene	553141	555317	.	-1	.	CNAG_05671_0	1.0	oxidation resistance protein 1	protein_coding	0			CNAG_05671										0.995		1.0			centromeres
+CM021027.1	Liftoff	protein_coding_gene	810797	812478	.	1	.	CNAG_04417_0	0.965	alpha-ketoglutarate-dependent 2,4- dichlorophenoxyacetate dioxygenase	protein_coding	0			CNAG_04417										0.954		1.0			centromeres
+CM021027.1	Liftoff	protein_coding_gene	857387	869313	.	-1	.	CNAG_07769_0	1.0	E3 ubiquitin-protein ligase HUWE1	protein_coding	0			CNAG_07769					TOM1					0.993		1.0			centromeres
+CM021021.1	Liftoff	protein_coding_gene	999221	1004803	.	1	.	CNAG_00383_0	1.0	Aminophospholipid translocase, putative	protein_coding	0			CNAG_00383					APT3					0.997		1.0			centromeres
+CM021031.1	Liftoff	protein_coding_gene	444040	448107	.	1	.	CNAG_05486_0	0.999	hypothetical protein	protein_coding	0			CNAG_05486										0.988		1.0			centromeres
+CM021031.1	Liftoff	protein_coding_gene	496648	499296	.	-1	.	CNAG_05496_0	0.996	2-isopropylmalate synthase	protein_coding	0			CNAG_05496										0.984		1.0			centromeres
+CM021030.1	Liftoff	protein_coding_gene	574761	578291	.	1	.	CNAG_06475_0	1.0	hypothetical protein	protein_coding	0			CNAG_06475										0.993		1.0			centromeres
+CM021030.1	Liftoff	protein_coding_gene	637345	639663	.	-1	.	CNAG_06482_0	1.0	Amidase	protein_coding	0			CNAG_06482										0.992		1.0			centromeres
+CM021028.1	Liftoff	protein_coding_gene	190109	192612	.	-1	.	CNAG_04857_0	0.997	hypothetical protein	protein_coding	0			CNAG_04857										0.984		1.0			centromeres
+CM021028.1	Liftoff	protein_coding_gene	233487	235928	.	-1	.	CNAG_04855_0	1.0	hypothetical protein	protein_coding	0			CNAG_04855										0.991		1.0			centromeres
+JAACIT010000003.1	Liftoff	protein_coding_gene	598967	602177	.	1	.	CNAG_03796_0	0.995	NAK protein kinase	protein_coding	0			CNAG_03796					ENV7					0.986		1.0			centromeres
+JAACIT010000003.1	Liftoff	protein_coding_gene	637369	639255	.	-1	.	CNAG_03805_0	0.82	calcium/proton exchanger	protein_coding	0			CNAG_03805										0.812		0.0			centromeres
+CM021029.1	Liftoff	protein_coding_gene	129259	132239	.	1	.	CNAG_06036_0	0.995	hypothetical protein	protein_coding	0			CNAG_06036										0.985		1.0			centromeres
+CM021029.1	Liftoff	protein_coding_gene	166282	167608	.	-1	.	CNAG_06048_0	1.0	hypothetical protein	protein_coding	0			CNAG_06048										0.994		1.0			centromeres
+CP097932.1	Liftoff	protein_coding_gene	861000	862681	.	1	.	CNAG_04417_0	0.965	alpha-ketoglutarate-dependent 2,4- dichlorophenoxyacetate dioxygenase	protein_coding	0			CNAG_04417										0.955		1.0			centromeres
+CP097932.1	Liftoff	protein_coding_gene	925270	937197	.	-1	.	CNAG_07769_0	1.0	E3 ubiquitin-protein ligase HUWE1	protein_coding	0			CNAG_07769					TOM1					0.992		1.0			centromeres
+CP097931.1	Liftoff	protein_coding_gene	928551	931407	.	1	.	CNAG_03258_0	0.927	AGC protein kinase, variant 2	protein_coding	0			CNAG_03258					TPK202a					0.919		3.0			centromeres
+CP097931.1	Liftoff	protein_coding_gene	974727	976286	.	-1	.	CNAG_03251_0	1.0	ADP-ribosylation factor	protein_coding	0			CNAG_03251					ARF2					0.984		1.0			centromeres
+CP097928.1	Liftoff	protein_coding_gene	1613222	1617941	.	1	.	CNAG_00960_0	0.999	ATP-dependent RNA helicase DHX8/PRP22	protein_coding	0			CNAG_00960										0.997		1.0			centromeres
+CP097928.1	Liftoff	protein_coding_gene	1642932	1643450	.	-1	.	CNAG_00941_0	1.0	hypothetical protein	protein_coding	0			CNAG_00941										0.997		1.0			centromeres
+CP097930.1	Liftoff	protein_coding_gene	883510	885687	.	1	.	CNAG_05671_0	1.0	oxidation resistance protein 1	protein_coding	0			CNAG_05671										0.992		1.0			centromeres
+CP097930.1	Liftoff	protein_coding_gene	913876	916039	.	-1	.	CNAG_06699_0	0.999	glyceraldehyde-3-phosphate dehydrogenase	protein_coding	0			CNAG_06699					GPD1					0.992		1.0			centromeres
+CP097935.1	Liftoff	protein_coding_gene	636502	637828	.	1	.	CNAG_06048_0	1.0	hypothetical protein	protein_coding	0			CNAG_06048										0.994		1.0			centromeres
+CP097935.1	Liftoff	protein_coding_gene	669373	672353	.	-1	.	CNAG_06036_0	0.995	hypothetical protein	protein_coding	0			CNAG_06036										0.99		1.0			centromeres
+CP097936.1	Liftoff	protein_coding_gene	618901	622407	.	1	.	CNAG_06475_0	0.992	hypothetical protein	protein_coding	0			CNAG_06475										0.988		1.0			centromeres
+CP097936.1	Liftoff	protein_coding_gene	666749	669068	.	-1	.	CNAG_06482_0	1.0	Amidase	protein_coding	0			CNAG_06482										0.993		1.0			centromeres
+CP097926.1	Liftoff	protein_coding_gene	868975	875447	.	1	.	CNAG_07972_0	0.94	hypothetical protein	protein_coding	0			CNAG_07972										0.82		1.0			centromeres
+CP097926.1	Liftoff	protein_coding_gene	890560	891818	.	-1	.	CNAG_06879_0	1.0	hypothetical protein	protein_coding	0			CNAG_06879										0.99		1.0			centromeres
+CP097925.1	Liftoff	protein_coding_gene	977873	981093	.	1	.	CNAG_03796_0	0.999	NAK protein kinase	protein_coding	0			CNAG_03796					ENV7					0.987		1.0			centromeres
+CP097925.1	Liftoff	protein_coding_gene	1022805	1025056	.	-1	.	CNAG_03805_0	1.0	calcium/proton exchanger	protein_coding	0			CNAG_03805										0.994		1.0			centromeres
+CP097927.1	Liftoff	protein_coding_gene	728979	731277	.	1	.	CNAG_05202_0	1.0	SET domain-containing protein 6	protein_coding	0			CNAG_05202										0.991		1.0			centromeres
+CP097927.1	Liftoff	protein_coding_gene	767298	769232	.	-1	.	CNAG_05215_0	1.0	hypothetical protein	protein_coding	0			CNAG_05215										0.991		1.0			centromeres
+CP097933.1	Liftoff	protein_coding_gene	831694	834109	.	1	.	CNAG_04855_0	0.988	hypothetical protein	protein_coding	0			CNAG_04855										0.979		1.0			centromeres
+CP097933.1	Liftoff	protein_coding_gene	864268	866777	.	1	.	CNAG_04857_0	0.998	hypothetical protein	protein_coding	0			CNAG_04857										0.989		1.0			centromeres
+CP097929.1	Liftoff	protein_coding_gene	815340	818404	.	1	.	CNAG_02254_0	1.0	quinate permease	protein_coding	0			CNAG_02254					LPI12					0.996		1.0			centromeres
+CP097929.1	Liftoff	protein_coding_gene	857775	861174	.	-1	.	CNAG_02240_0	0.994	cytoplasmic protein	protein_coding	0			CNAG_02240										0.99		1.0			centromeres
+CP097937.1	Liftoff	protein_coding_gene	496848	499497	.	1	.	CNAG_05496_0	0.996	2-isopropylmalate synthase	protein_coding	0			CNAG_05496										0.986		1.0			centromeres
+CP097937.1	Liftoff	protein_coding_gene	556352	560434	.	-1	.	CNAG_05486_0	1.0	hypothetical protein	protein_coding	0			CNAG_05486										0.988		1.0			centromeres
+CP097924.1	Liftoff	protein_coding_gene	1333925	1339469	.	-1	.	CNAG_00383_0	0.991	Aminophospholipid translocase, putative	protein_coding	0			CNAG_00383					APT3					0.989		1.0			centromeres
+CP097934.1	Liftoff	protein_coding_gene	1132718	1134559	.	1	.	CNAG_01788_0	0.998	tRNA(His) guanylyltransferase	protein_coding	0			CNAG_01788										0.99		1.0			centromeres
+CP097934.1	Liftoff	protein_coding_gene	1166470	1168956	.	-1	.	CNAG_01780_0	0.998	cytoplasmic protein	protein_coding	0			CNAG_01780										0.992		0.0			centromeres
+CP047903.1	Liftoff	ncRNA_gene	269137	272106	.	-1	.	CNAG_10500_0	1.0	unspecified product	rRNA	0			CNAG_10500										1.0					rRNA
+CP047903.1	Liftoff	ncRNA_gene	272324	272473	.	-1	.	CNAG_10501_0	1.0	unspecified product	rRNA	0			CNAG_10501										1.0					rRNA
+CP047903.1	Liftoff	ncRNA_gene	272600	274400	.	-1	.	CNAG_10502_0	1.0	unspecified product	rRNA	0			CNAG_10502										1.0					rRNA
+CP047903.1	Liftoff	ncRNA_gene	275488	275598	.	-1	.	CNAG_10503_0	1.0	unspecified product	rRNA	0			CNAG_10503										1.0					rRNA
+CP091250.1	Liftoff	ncRNA_gene	1367637	1370606	.	1	.	CNAG_10500_0	1.0	unspecified product	rRNA	0			CNAG_10500										1.0					rRNA
+CP091250.1	Liftoff	ncRNA_gene	1372422	1372532	.	1	.	CNAG_10503_0	1.0	unspecified product	rRNA	0			CNAG_10503										1.0					rRNA
+CP091250.1	Liftoff	ncRNA_gene	1373635	1375435	.	1	.	CNAG_10502_0	1.0	unspecified product	rRNA	0			CNAG_10502										1.0					rRNA
+CP091250.1	Liftoff	ncRNA_gene	1375562	1375711	.	1	.	CNAG_10501_0	1.0	unspecified product	rRNA	0			CNAG_10501										1.0					rRNA
+JAACIT010000016.1	Liftoff	ncRNA_gene	140142	143112	.	-1	.	CNAG_10500_0	1.0	unspecified product	rRNA	0			CNAG_10500										0.999					rRNA
+JAACIT010000016.1	Liftoff	ncRNA_gene	151590	151739	.	-1	.	CNAG_10501_0	1.0	unspecified product	rRNA	0			CNAG_10501										1.0					rRNA
+JAACIT010000016.1	Liftoff	ncRNA_gene	160131	161931	.	-1	.	CNAG_10502_0	1.0	unspecified product	rRNA	0			CNAG_10502										1.0					rRNA
+JAACIT010000016.1	Liftoff	ncRNA_gene	163032	163142	.	-1	.	CNAG_10503_0	1.0	unspecified product	rRNA	0			CNAG_10503										1.0					rRNA
+CP097925.1	Liftoff	ncRNA_gene	381260	381370	.	-1	.	CNAG_10503_0	1.0	unspecified product	rRNA	0			CNAG_10503										1.0					rRNA
+CP097925.1	Liftoff	ncRNA_gene	411316	413110	.	-1	.	CNAG_10502_0	0.996	unspecified product	rRNA	0			CNAG_10502										0.996					rRNA
+CP097925.1	Liftoff	ncRNA_gene	416075	419041	.	-1	.	CNAG_10500_0	0.998	unspecified product	rRNA	0			CNAG_10500										0.998					rRNA
+CP097925.1	Liftoff	ncRNA_gene	419257	419406	.	-1	.	CNAG_10501_0	1.0	unspecified product	rRNA	0			CNAG_10501										1.0					rRNA

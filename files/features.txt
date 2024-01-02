@@ -1,0 +1,4 @@
+gene
+ncRNA_gene
+protein_coding_gene
+pseudogene

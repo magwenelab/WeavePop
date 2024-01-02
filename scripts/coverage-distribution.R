@@ -31,12 +31,12 @@ plot <- ggplot(cov, aes(x=Coverage, y=Count))+
   facet_wrap(~Chromosome,ncol = 2)+
   scale_y_log10(name = "Number of Sites", labels = comma)+
   scale_x_continuous(name = "Coverage (X) ", labels = comma, n.breaks = 10)+
-  theme_light()+
+  theme_bw()+
   theme(legend.position="none")+
   labs(title = paste(lineage, sample,  sep = " "))
 
-#ggsave("../../cov_distribution.svg", plot = plot, dpi = 50, units = "cm", height = 22, width = 22)
+#ggsave("../../cov_distribution.svg", plot = plot, units = "cm", height = 22, width = 22)
 
 print("Saving plot")
-ggsave(snakemake@output[[1]], plot = plot, dpi = 50, units = "cm", height = 22, width = 22)
+ggsave(snakemake@output[[1]], plot = plot, units = "cm", height = 22, width = 22)
 print("Done!")

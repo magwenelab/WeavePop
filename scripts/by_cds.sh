@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-mkdir cds
+mkdir results/cds
 cat ${snakemake_input[0]} | while read protein
 do
    parallel "seqkit faidx analysis/{}/predicted_cds.fa $protein | seqkit replace -p '($)' -r ' sample={}'"  :::: ${snakemake_input[1]} > results/cds/$protein.fa

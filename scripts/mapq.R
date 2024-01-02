@@ -33,9 +33,9 @@ plot <- ggplot()+
   geom_point(data = loci, aes(x= start, y = 1, color = Loci), size = 1, shape = 15)+
   facet_wrap(~Chromosome,ncol = 2, scales = "free_x")+
   scale_x_continuous(name = "Position (bp) ", labels = comma)+
-  theme_light()+
+  theme_bw()+
   theme(legend.position="right")+
   labs(title = paste(lineage, sample,  sep = " "), y = "Mapping quality (phred score)")
 
-ggsave(snakemake@output[[1]], plot = plot, dpi = 50, units = "cm", height = 22, width = 22)
+ggsave(snakemake@output[[1]], plot = plot, units = "cm", height = 22, width = 22)
 

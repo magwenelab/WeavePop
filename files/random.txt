@@ -1,3 +1,0 @@
-gene-PODANS_1_1000
-gene-PODANS_1_990
-gene-PODANS_1_980

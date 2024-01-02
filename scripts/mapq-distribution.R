@@ -31,14 +31,14 @@ plot <- ggplot(mapq, aes(x=MAPQ, y=Count))+
   facet_wrap(~Chromosome,ncol = 2)+
   scale_y_log10(name = "Number of Reads", labels = comma, breaks = 100 * 10^seq(0,4, by = 2))+
   scale_x_continuous(name = "Mapping Quality", n.breaks = 8)+
-  theme_light()+
+  theme_bw()+
   theme(legend.position="none")+
   labs(title = paste(lineage, sample,  sep = " "))
 
-#ggsave("../../mapq_distribution.svg", plot = plot, dpi = 50, units = "cm", height = 22, width = 22)
+#ggsave("../../mapq_distribution.svg", plot = plot, units = "cm", height = 22, width = 22)
 
 print("Saving plot")
-ggsave(snakemake@output[[1]], plot = plot, dpi = 50, units = "cm", height = 22, width = 22)
+ggsave(snakemake@output[[1]], plot = plot, units = "cm", height = 22, width = 22)
 print("Done!")
 
 # Binned version
@@ -54,7 +54,7 @@ print("Done!")
 #  facet_wrap(~Chromosome,ncol = 2)+
 #  scale_y_log10(name = "Number of Reads", labels = comma, breaks = 100 * 10^seq(0,4, by = 2))+
 #  scale_x_continuous(name = "Mapping Quality", n.breaks = 8)+
-#  theme_light()+
+#  theme_bw()+
 #  theme(legend.position="none")
 
-##ggsave("mapq_distribution_binned.svg", plot = plot, dpi = 200, units = "cm", height = 22, width = 22)
+##ggsave("mapq_distribution_binned.svg", plot = plot, units = "cm", height = 22, width = 22)

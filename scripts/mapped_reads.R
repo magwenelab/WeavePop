@@ -36,10 +36,10 @@ plot <- ggplot(stats_long, aes(color = measurement, x=name, y= value))+
     facet_grid(~lineage, scale = "free_x" , space='free_x')+
     scale_color_discrete(labels=c('Mapped', 'Properly paired'),guide = guide_legend(title = NULL))+
     labs(shape = NULL)+
-    theme_light()+
+    theme_bw()+
     xlab("Sample") +
     ylab("Percentage of reads") +
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = 5))
 
-#ggsave("./results/mapped_reads.svg", plot = plot, dpi = 50, units = "cm", height = 15, width = 60)
-ggsave(snakemake@output[[1]], plot = plot, dpi = 50, units = "cm", height = 15, width = 60)
+#ggsave("./results/mapped_reads.svg", plot = plot, units = "cm", height = 15, width = 60)
+ggsave(snakemake@output[[1]], plot = plot, units = "cm", height = 15, width = 60)

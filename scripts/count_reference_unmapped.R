@@ -6,10 +6,10 @@ suppressPackageStartupMessages(library(tidyverse))
 library(pheatmap)
 library(RColorBrewer)
 
-#genes<-read_delim("references/South.gff.tsv", col_names = TRUE, na = "N/A", show_col_types = FALSE )
+#genes<-read_delim("references/Podospora.gff.tsv", col_names = TRUE, na = "N/A", show_col_types = FALSE )
 genes<-read_delim(snakemake@input[[1]], col_names = TRUE, na = "N/A", show_col_types = FALSE )
 genes<- genes %>% 
-  filter(str_detect(primary_tag, "gene" ))%>%
+  # filter(str_detect(primary_tag, "gene" ))%>%
   as.data.frame()
 rownames(genes)<- genes$ID
 #lins <- read.csv("files/lineage_references.csv", header = TRUE)
@@ -55,6 +55,6 @@ plot <- pheatmap(unmapped_matrix,
                  fontsize_row= 2,
                  treeheight_row = 0,
                  treeheight_col = 0)
-ggsave(snakemake@output[[2]], plot, dpi = 50, units = "cm", height = 23, width = 16)
+ggsave(snakemake@output[[2]], plot, units = "cm", height = 23, width = 16)
 
 # Missing to add gene name labels

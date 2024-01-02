@@ -1,3 +1,4 @@
+.vscode/
 .snakemake/
 logs/
 fastqs/
@@ -5,4 +6,4 @@ fastq_combined/
 references/
 srafiles/
 analysis/
-
+results/

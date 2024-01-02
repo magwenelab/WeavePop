@@ -20,21 +20,12 @@ rule all:
         config["locitsv"],
         config["sample_reference_file"]
 
-rule features:
-    input:
-        REF_GFF
-    output:
-        REFDIR + "features.txt"
-    log:
-        "logs/references/features.log"
-    shell:
-        "grep -v '#' {input} | cut -f 3 | sort | uniq > {output} 2> {log}"
 rule ref2ref_liftoff:
     input:
         target_refs = REFDIR + "{lineage}.fasta",
         fasta = REFDIR + str(config["reference_fasta"]),
         gff = REF_GFF,
-        features = REFDIR + "features.txt"
+        features = "files/features.txt"
     output:
         lin_gff = REFDIR + "{lineage}_liftoff.gff_polished",
         unmapped = REFDIR + "{lineage}_unmapped_features.txt"

@@ -1,5 +1,5 @@
 
-# Variant-calling / reference-based assembly / annotation liftover / quality and coverage analysis pipeline
+# Reference-based mappin, variant calling and assembly / Annotation liftover / Mapping quality and coverage
 
 ## Broad description
 
@@ -34,7 +34,7 @@ conda env create --file envs/crypto_div.yml
 </details>
 
 <details>
-<summary>depth -- when used in Snakemake a separate installation of the environment is used. To use it independently install it with: </summary>
+<summary>depth -- when used in Snakemake, Snakmake makes its installation from the `yaml` file. To use it independently install it with: </summary>
 
 ~~~ 
 conda env create --file envs/depth.yml
@@ -42,7 +42,7 @@ conda env create --file envs/depth.yml
 </details>
 
 <details>
-<summary> agat -- when used in Snakemake a separate installation of the environment is used. To use it independently install it with: </summary>
+<summary> agat -- when used in Snakemake, Snakmake makes its installation from the `yaml` file. To use it independently install it with: </summary>
 
 Run this lines one by one:
 ~~~
@@ -75,10 +75,10 @@ conda deactivate
   * `logs/` has the log files of all runs.  
 
 ### Starting files: 
-  * `files/sample_metadata.csv` with columns: strain, sample (the one in the fastq file names), group (lineage or group to associate to a reference genome), more-optional-metadata-fields
+  * `files/sample_metadata.csv` with columns: strain, sample (the names in the fastq file names), group (lineage or group to associate to a reference genome), more-optional-metadata-fields
   * `files/lineage_references.csv` with columns: group, file (file name of reference genome assembly), strain, more-optional-metadata-fields (like genbank accession and bioproject)
   * Lists of genes of loci of interest:  
-    * `files/centromere.txt` (with IDs of genes in main reference GFF)
+    * `files/locusA.txt` (with IDs of genes in main reference GFF)
   * `files/chromosome_names.csv` with columns: group, chromosome ID (the sequence ID in the Fasta and GFF of the references), chromosome name (typically a number). Without column names. If your genomes are Complete Genomes from NCBI use `bash get-chromosome_names.sh` to get this file.
   * `references/` directory with:
     * Fasta files to use as reference genomes.
@@ -87,7 +87,7 @@ conda deactivate
 
 ### Scripts to be run in this order:
 
-#### Module 1 (Optional): To download all fastqs of a BioProject
+#### Module 0 (Optional): To download all fastqs of a BioProject
 1. Get files: `xonsh get-seqdata-of-bioproject.xsh -p PRJNA685103`   
 2. Combine fastqs of the same sample, rename with sample ID and compress:
    `parallel xonsh fastq-combiner.xsh {} files/read_pair_table.csv fastqs/ fastq_combined/ :::: files/samples.txt`

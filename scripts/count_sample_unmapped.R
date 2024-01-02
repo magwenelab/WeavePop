@@ -16,7 +16,7 @@ rownames(genes)<- genes$ID
 samples <- read.csv(snakemake@input[[2]], header = TRUE)
 rownames(samples) <- samples$sample
 for (samp in samples$sample){
-  file <- paste("genomes-annotations/", samp, "/unmapped_features.txt", sep = "")
+  file <- paste("analysis/", samp, "/unmapped_features.txt", sep = "")
   df<- read.csv(file, header = FALSE, col.names = c("ID"), colClasses = "character")
   genes <- genes %>%
     mutate(!!samp := ifelse(ID %in% df$ID, 0, 1))

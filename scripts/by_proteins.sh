@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-mkdir proteins
+mkdir results/proteins
 cat ${snakemake_input[0]} | while read protein
 do
    parallel "seqkit faidx analysis/{}/predicted_proteins.fa $protein | seqkit replace -p '($)' -r ' sample={}'"  :::: ${snakemake_input[1]} > results/proteins/$protein.fa

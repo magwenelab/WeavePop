@@ -1,3 +1,5 @@
-group,file,strain,genbank
-Podospora,Podospora.fasta,Smat+,GCA_000226545.1
-Cercophora,Cercophora.fasta,CBS307.81,GCA_030512305.1
+group,strain,genbank,file
+VNI,H99,GCA_011801205.1,VNI.fasta
+VNII,VNII,GCA_022832995.1,VNII.fasta
+VNBI,Ftc146-1,GCA_010065285.1,VNBI.fasta
+VNBII,Bt81,GCA_023650555.1,VNBII.fasta

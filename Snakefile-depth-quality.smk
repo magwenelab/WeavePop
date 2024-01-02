@@ -17,14 +17,14 @@ rule all:
         expand("analysis/{sample}/mapq_window.bed", sample=samples),
         expand("analysis/{sample}/mapq.svg", sample=samples),
         expand("analysis/{sample}/annotation.gff", sample=samples),
-        "results/proportional_coverage_good.csv",
-        "results/cov_good_all.svg",
-        "results/cov_prop_median_good.svg",
-        "results/cov_prop_mean_good.svg",
-        "results/proportional_coverage_raw.csv",
-        "results/cov_raw_all.svg",
-        "results/cov_prop_median_raw.svg",
-        "results/cov_prop_mean_raw.svg"
+        "results/norm_coverage_good.csv",
+        "results/cov_global_good.svg",
+        "results/cov_median_good.svg",
+        "results/cov_mean_good.svg",
+        "results/norm_coverage_raw.csv",
+        "results/cov_global_raw.svg",
+        "results/cov_median_raw.svg",
+        "results/cov_mean_raw.svg"
 
 rule mosdepth:
     input:
@@ -68,7 +68,7 @@ rule coverage_plot:
         "analysis/{sample}/coverage.regions.bed.gz",
         "analysis/{sample}/coverage_good.regions.bed.gz",
         "files/chromosome_names.csv",
-        "results/loci_interest.tsv"
+        "files/loci_interest.tsv"
     output:
         "analysis/{sample}/coverage.svg",
         "analysis/{sample}/coverage_stats.svg",
@@ -111,14 +111,14 @@ rule coverage_stats_plots:
         "results/coverage_global_raw.csv",
         "results/coverage_raw.csv"        
     output:
-        "results/proportional_coverage_good.csv",
-        "results/cov_good_all.svg",
-        "results/cov_prop_median_good.svg",
-        "results/cov_prop_mean_good.svg",
-        "results/proportional_coverage_raw.csv",
-        "results/cov_raw_all.svg",
-        "results/cov_prop_median_raw.svg",
-        "results/cov_prop_mean_raw.svg"
+        "results/norm_coverage_good.csv",
+        "results/cov_global_good.svg",
+        "results/cov_median_good.svg",
+        "results/cov_mean_good.svg",
+        "results/norm_coverage_raw.csv",
+        "results/cov_global_raw.svg",
+        "results/cov_median_raw.svg",
+        "results/cov_mean_raw.svg"
     log:
         "logs/coverage/stats_plot.log"    
     script:
@@ -225,7 +225,7 @@ rule mapq_plot:
     input:
         "analysis/{sample}/mapq_window.bed",
         "files/chromosome_names.csv",
-        "results/loci_interest.tsv"
+        "files/loci_interest.tsv"
     output:
         "analysis/{sample}/mapq.svg"
     log:
