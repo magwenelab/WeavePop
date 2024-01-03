@@ -32,8 +32,8 @@ rule samples_list:
 
 rule snippy:
     input:
-        "fastq_combined/{sample}_1.fq.gz",
-        "fastq_combined/{sample}_2.fq.gz"
+        "fastq_combined/{sample}" + config["fastq_suffix1"],
+        "fastq_combined/{sample}" + config["fastq_suffix2"]
     params:
         ref = lambda wildcards: (REFDIR + ref_table.loc[wildcards.sample, 'refgenome']),
         file1 = lambda wildcards: ref_table.loc[wildcards.sample, 'file1'],
