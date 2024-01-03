@@ -149,3 +149,13 @@ It runs **snippy**, **liftoff** and **agat** for each sample, it **extracts sequ
      * `results/cov_median_raw.svg`  
      * `results/cov_mean_raw.svg`  
  
+# To run all
+
+```
+echo "Running References" &&
+snakemake --snakefile Snakefile-references.smk --cores 1 --use-conda --conda-frontend conda -p &> all.log &&
+echo "Running Main" &&
+snakemake --snakefile Snakefile-main.smk --cores 12 --use-conda --conda-frontend conda -p  &>> all.log &&
+echo "Running Depth" &&
+snakemake --snakefile Snakefile-depth-quality.smk --cores 8 --use-conda --conda-frontend conda -p &>> all.log
+```
