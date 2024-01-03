@@ -101,8 +101,9 @@ rule agat:
         "-g {input.gff} " 
         "-f {input.fa} "
         "-o {output.prots} "
-        "-p  &> {log.prots}" 
-
+        "-p  &> {log.prots} " 
+        " && "
+        "rm lifted.agat.log"
 rule index_proteins:
     input:
         "analysis/{sample}/predicted_proteins.fa"

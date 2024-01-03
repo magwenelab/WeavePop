@@ -116,10 +116,14 @@ rule cat_lists:
         "logs/references/cat_list.log"
     shell:
         "cat {input} | sort | uniq > {output} 2> {log}"
+
+AGATLOG = REF_GFF.replace(".gff", "").replace("references/", "")+ ".agat.log"
+
 rule ref_gff2tsv:
     input:
         REF_GFF
     output:
+        temp(AGATLOG),
         complete = REF_GFF + ".tsv"
     conda:
         "envs/agat.yaml"
