@@ -51,8 +51,8 @@ split <- select(unmapped, Chromosome)
 row_ha <- rowAnnotation(Feature_type = unmapped$Feature_type, col = list(Feature_type = featureCols))
 col_ha <- HeatmapAnnotation(Lineage = samples$group , col = list(Lineage = linCols))
 
-# svg("unmapped.svg",width=16,height=25)
-svg(snakemake@output[[2]],width=16,height=25)
+# svg("unmapped.svg",width=25,height=3)
+svg(snakemake@output[[2]],width=25,height=3)
 Heatmap(mat, 
         name = "Mapped features",
         col = colors,
@@ -64,7 +64,8 @@ Heatmap(mat,
         row_title_rot = 0,
         right_annotation = row_ha,
         top_annotation = col_ha,
-        row_names_gp = gpar(fontsize = 5))
+        row_names_gp = gpar(fontsize = 5),
+        column_names_gp = gpar(fontsize = 5))
 dev.off()
 
 
