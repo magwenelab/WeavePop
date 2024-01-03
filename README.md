@@ -10,7 +10,8 @@
 * Python
 * Python modules -- Pandas, Scipy
 * Xonsh -- https://xon.sh/
-* R with tidyverse meta-package
+* R 
+* R libraries -- tidyverse meta-package, BiocManager, ComplexHeatmap, 
 * Snakemake -- https://snakemake.github.io/
   * Graphviz -- https://graphviz.org/ (optional, to see Snakemake DAG in a graph) 
 * NCBI Entrez Utilities (E-utilities) command line tools -- https://www.ncbi.nlm.nih.gov/books/NBK25501/

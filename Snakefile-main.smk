@@ -160,7 +160,7 @@ rule unmapped_count_plot:
         config["sample_file"],
         expand("analysis/{sample}/unmapped_features.txt", sample=samples)        
     output:
-        "results/unmapped_count.txt",
+        "results/unmapped_count.tsv",
         "results/unmapped.svg"
     log:
         "logs/liftoff/unmapped_count_plot.log"

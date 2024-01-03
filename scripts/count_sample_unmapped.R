@@ -3,17 +3,19 @@ sink(log, type = "output")
 sink(log, type = "message")
 
 suppressPackageStartupMessages(library(tidyverse))
-library(pheatmap)
+library(ComplexHeatmap)
+library(RColorBrewer)
 
-#genes<-read_delim("references/FungiDB-65_CneoformansH99.gff.tsv", col_names = TRUE, na = "N/A", show_col_types = FALSE )
+# genes<-read_delim("references/FungiDB-65_CneoformansH99.gff.tsv", col_names = TRUE, na = "N/A", show_col_types = FALSE )
 genes<-read_delim(snakemake@input[[1]], col_names = TRUE, na = "N/A", show_col_types = FALSE )
 genes<- genes %>% 
-  filter(str_detect(primary_tag, "gene" ))%>%
+  # filter(str_detect(primary_tag, "gene" ))%>%
   as.data.frame()
 rownames(genes)<- genes$ID
 
-#samples <- read.csv("files/sample_metadata.csv", header = TRUE)
+# samples <- read.csv("files/sample_metadata.csv", header = TRUE)
 samples <- read.csv(snakemake@input[[2]], header = TRUE)
+
 rownames(samples) <- samples$sample
 for (samp in samples$sample){
   file <- paste("analysis/", samp, "/unmapped_features.txt", sep = "")
@@ -23,40 +25,46 @@ for (samp in samples$sample){
 }
 
 unmapped <- genes %>% 
-  select(samples$sample)%>%
+  select(Chromosome = seq_id, Feature_type = primary_tag, samples$sample)%>%
   filter(rowSums(. == 0) > 0)
 
-unmapped_count <- colSums(unmapped == 0)
-#write.table(unmapped_count, file = "results/unmapped_count.txt", col.names = FALSE, row.names = TRUE)
-write.table(unmapped_count, file = snakemake@output[[1]], col.names = FALSE, row.names = TRUE)
+unmapped_count <- unmapped %>%
+  select(samples$sample)
+unmapped_count <- colSums(unmapped_count == 0)
+unmapped_count <-as.data.frame(unmapped_count)
+unmapped_count$sample <- rownames(unmapped_count)
 
-unmapped_matrix<-as.matrix(unmapped)
-cols_to_remove <- which(colSums(unmapped_matrix == 1) == nrow(unmapped_matrix))
-unmapped_matrix <- unmapped_matrix[, -cols_to_remove]
+# write.table(unmapped_count, file = "unmapped_count.tsv", col.names = FALSE, row.names = FALSE, quote = FALSE)
+write.table(unmapped_count, file = snakemake@output[[1]],  col.names = FALSE, row.names = FALSE, quote = FALSE)
 
-samples <- samples %>% 
-  filter(sample %in% colnames(unmapped_matrix))%>%
-  select(Lineage = group)
+mat <- unmapped %>%
+  select(samples$sample)%>%
+  mutate_all(as.integer)%>%
+  as.matrix()
+  
+colors <-  c( "0" = "gray", "1" = "black")
+featureCols =colorRampPalette(brewer.pal(8, "Dark2"))(length(unique(unmapped$Feature_type)))
+names(featureCols) = unique(unmapped$Feature_type)
+linCols =colorRampPalette(brewer.pal(12, "Paired"))(length(unique(samples$group)))
+names(linCols) = unique(samples$group)
+split <- select(unmapped, Chromosome)
+row_ha <- rowAnnotation(Feature_type = unmapped$Feature_type, col = list(Feature_type = featureCols))
+col_ha <- HeatmapAnnotation(Lineage = samples$group , col = list(Lineage = linCols))
 
-genes <- genes %>% 
-  filter(ID %in% rownames(unmapped))%>%
-  select(Feature_type = primary_tag, Chromosome = seq_id)
+# svg("unmapped.svg",width=16,height=25)
+svg(snakemake@output[[2]],width=16,height=25)
+Heatmap(mat, 
+        name = "Mapped features",
+        col = colors,
+        show_row_names = TRUE,
+        cluster_rows = TRUE,
+        row_split = split, 
+        show_row_dend = FALSE,
+        show_column_dend = FALSE,
+        row_title_rot = 0,
+        right_annotation = row_ha,
+        top_annotation = col_ha,
+        row_names_gp = gpar(fontsize = 5))
+dev.off()
 
-lg.brks<-c(0,1) 
-lb.brks<-c("Unmapped","Mapped") 
-plot <- pheatmap(unmapped_matrix,
-                 color =  c("gray70", "gray20"),
-                 annotation_row = genes,
-                 annotation_col = samples,
-                 legend_breaks = lg.brks, 
-                 legend_labels = lb.brks,
-                 cluster_cols = TRUE,
-                 cluster_rows = FALSE,
-                 cellwidth = 10,
-                 cellheight = 2,
-                 fontsize_row= 2,
-                 treeheight_row = 0,
-                 treeheight_col = 0)
 
-ggsave(snakemake@output[[2]], plot, units = "cm", height = 20, width = 50)
-#ggsave("results/unmapped.svg", plot, units = "cm", height = 20, width = 50)
