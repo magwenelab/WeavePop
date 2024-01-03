@@ -138,7 +138,7 @@ rule unmapped_count_plot:
         config["lineage_reference_file"],
         expand(REFDIR + "{lineage}_unmapped_features.txt", lineage=LINS)        
     output:
-        REFDIR + "references_unmapped_count.txt",
+        REFDIR + "references_unmapped_count.tsv",
         REFDIR + "references_unmapped.svg"
     log:
         "logs/references/unmapped_count_plot.log"
