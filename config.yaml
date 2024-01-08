@@ -1,10 +1,8 @@
 sample_file: "files/sample_metadata.csv" # CSV table with columns sample, group, strain, and extra metadata)
-read_table: "files/read_pair_table.csv" # CSV table with columns sample,run,file1,file2,size (no quotes)
 sample_reference_file: "files/sample_reference.csv" # CSV table with columns lineage,sample,file1,file2,refgenome (no quotes)
 lineage_reference_file: "files/lineage_references.csv" # CSV table with columns group,strain,genbank,file (no quotes)
 reference_directory: "references/" # Directory name for the references (must end with the "/" and use double quotes)
-reference_fasta: "FungiDB-65_CneoformansH99_Genome.fasta" # (double quotes)
-reference_gff: "FungiDB-65_CneoformansH99.gff" # (double quotes)
+fastq_directory: "fastqs/" # Directory name for the fastq files (must end with the "/" and use double quotes)
 fastq_suffix1: "_1.fq.gz" # Everything after the sample name of the forward reads file
 fastq_suffix2: "_2.fq.gz" # Everything after the sample name of the reverse reads file
 threads_snippy: 4
@@ -12,5 +10,7 @@ threads_liftoff: 4
 threads_mosdepth: 4
 mosdepth_window: 500
 mosdepth_min_mapq: 20
-loci: "-g files/MAT.txt -g files/centromeres.txt -g files/rRNA.txt"
-locitsv: "files/loci_interest.tsv"
+loci: "-g files/MAT.txt" # Names of files with gene IDs to add to plots. Filename should be my-locus-name.txt and have the option -g before each filename. Leave a blank string "" if no loci should be plotted.
+locitsv: "files/loci_to_plot.tsv" # Name of table of genes to plot with their coordinates. 
+reference_gff: "Cneoformans.gff"
+reference_fasta: "Cneoformans.fasta"

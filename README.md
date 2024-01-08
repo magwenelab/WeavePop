@@ -93,7 +93,7 @@ conda deactivate
 2. Combine fastqs of the same sample, rename with sample ID and compress:
    `parallel xonsh fastq-combiner.xsh {} files/read_pair_table.csv fastqs/ fastq_combined/ :::: files/samples.txt`
    
-#### Module 1: Annotate references according to main reference
+#### Module 1 (Optional): Annotate references according to main reference
 `Snakefile-references.smk` -- is a Snakefile to lift over annotations from the main reference into the reference genomes (`{lineage}.fasta`).  
    * It currently works with:  
   ` snakemake --snakefile Snakefile-references.smk --cores 1 --use-conda --conda-frontend conda -p`:  
@@ -101,23 +101,20 @@ conda deactivate
       ⚠️ `--conda-frontend conda` because it cannot use mamba, which is the default.  
   * Output:  
 
-      *  `references/{lineage}_liftoff.gff_polished`
-      *  `references/{lineage}_liftoff.gff_polished.tsv`
-      *  `references/{lineage}_predicted_proteins.fa`
-      *  `references/{lineage}_predicted_cds.fa`
-      *  `files/protein_list.txt`
-      *  `references/references_unmapped_count.csv`
-      *  `references/references_unmapped.png`
+      *  `references/{lineage}.gff`
+      *  `references/{lineage}.gff.tsv`
+      *  `references/references_unmapped.svg`
       * And more intermediate and extra files
 
 #### Module 2: Main analyses
-`Snakefile-main.smk`-- is the Snakefile to run the pipeline, it uses the `config.yaml` file.  
-It runs the script `scripts/fastq-combiner.xsh` for each sample in `files/read_pair_table.csv`. This concatenates all `_1.fastq` of one sample into only one file named `{SRS-accession}_1.fq.gz` and compresses it and does the same for `_2.fastq`.  
+`Snakefile-main.smk`-- is the Snakefile to run the pipeline, it uses the `config.yaml` file.   
 It runs **snippy**, **liftoff** and **agat** for each sample, it **extracts sequences** (cds and protein) of each sample and **concatenates** them by cds and by protein.
 
   * Output:  
     
-      * `fastq_combined/{SRS-accession}_1.fq.gz` and `fastq_combined/{SRS-accession}_2.fq.gz`.
+      * `{lineage}.gff.tsv`
+      * `{lineage}_predicted_cds.fa`
+      * `{lineage}_predicted_proteins.fa`
       * `analyses/{sample}/snps.consensus.fa` and extra assembly files    
       * `analyses/{sample}/snps.bam` and extra alignment files  
       * `analyses/{sample}/snps.vcf` and extra variant calling files  
