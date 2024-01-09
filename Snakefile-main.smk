@@ -74,7 +74,7 @@ rule loci:
         else:
             shell("xonsh scripts/loci.xsh {params.loci} -o {output} {input} &> {log}")
 
-rule ref2ref_agat:
+rule ref_agat:
     input: 
         lin_gff = REFDIR + "{lineage}.gff",
         lin_fasta = REFDIR + "{lineage}.fasta"
