@@ -74,7 +74,7 @@ rule loci:
         else:
             shell("xonsh scripts/loci.xsh {params.loci} -o {output} {input} &> {log}")
 
-rule ref2ref_agat:
+rule ref_agat:
     input: 
         lin_gff = REFDIR + "{lineage}.gff",
         lin_fasta = REFDIR + "{lineage}.fasta"
@@ -125,14 +125,10 @@ rule cat_lists:
 
 rule snippy:
     input:
-        config["fastq_directory"] + "{sample}" + config["fastq_suffix1"],
-        config["fastq_directory"] + "{sample}" + config["fastq_suffix2"],
-        config["sample_reference_file"]
-    params:
+        config["sample_reference_file"],
         ref = lambda wildcards: (REFDIR + pd.read_csv(config["sample_reference_file"], sep = ",", index_col=['sample']).loc[wildcards.sample,'refgenome']),
-        file1 = lambda wildcards: (pd.read_csv(config["sample_reference_file"], sep = ",", index_col=['sample']).loc[wildcards.sample,'file1']),
-        file2 = lambda wildcards: (pd.read_csv(config["sample_reference_file"], sep = ",", index_col=['sample']).loc[wildcards.sample,'file2']),
-        fqdir = config["fastq_directory"] 
+        file1 = lambda wildcards: (config["fastq_directory"] + pd.read_csv(config["sample_reference_file"], sep = ",", index_col=['sample']).loc[wildcards.sample,'file1']),
+        file2 = lambda wildcards: (config["fastq_directory"] + pd.read_csv(config["sample_reference_file"], sep = ",", index_col=['sample']).loc[wildcards.sample,'file2']),
     output:
         "analysis/{sample}/snps.consensus.fa",
         "analysis/{sample}/snps.bam"
@@ -143,17 +139,16 @@ rule snippy:
     shell:
         "snippy --outdir analysis/{wildcards.sample} "
         "--cpus {threads} "
-        "--ref {params.ref} "
-        "--R1 {params.fqdir}{params.file1} "
-        "--R2 {params.fqdir}{params.file2} "
+        "--ref {input.ref} "
+        "--R1 {input.file1} "
+        "--R2 {input.file2} "
         "--force &> {log}"
 
 rule liftoff:
     input:
         config["sample_reference_file"],
         target = "analysis/{sample}/snps.consensus.fa",
-        features = "files/features.txt"
-    params:
+        features = "files/features.txt",
         refgff = lambda wildcards:(REFDIR + pd.read_csv(config["sample_reference_file"], sep = ",", index_col=['sample']).loc[wildcards.sample, 'group'] + ".gff"),
         refgenome = lambda wildcards:(REFDIR + pd.read_csv(config["sample_reference_file"], sep = ",", index_col=['sample']).loc[wildcards.sample, 'refgenome'])
     output:
@@ -165,7 +160,7 @@ rule liftoff:
         "logs/liftoff/{sample}.log" 
     shell:
         "liftoff "
-        "-g {params.refgff} " 
+        "-g {input.refgff} " 
         "-polish "
         "-f {input.features} "
         "-dir analysis/{wildcards.sample}/intermediate_files "
@@ -173,7 +168,7 @@ rule liftoff:
         "-o analysis/{wildcards.sample}/lifted.gff "
         "-p {threads} "
         "{input.target} "
-        "{params.refgenome} &> {log}"
+        "{input.refgenome} &> {log}"
 
 rule agat:
     input:
@@ -228,7 +223,7 @@ rule index_cds:
 
 rule by_proteins:
     input:
-        "files/protein_list.txt",
+        "files/protein_list.txt", 
         "files/samples.txt",
         expand("analysis/{sample}/predicted_proteins.fa",sample=SAMPLES),
         expand("analysis/{sample}/predicted_proteins.fa.fai",sample=SAMPLES)
