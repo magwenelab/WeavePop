@@ -85,7 +85,7 @@ conda deactivate
     * Fasta files to use as reference genomes.
     * Optional: Fasta and GFF files of main reference (one with available annotation with the desired gene IDs). Main reference can be the same as one of the reference genomes or a different genome.
     * If main reference is not provided GFF files of reference genomes are needed.
-      * If your genomes have a mitochondrial chromosome you can run `bash get-removed-chrom.sh path-to-fasta path-to-gff seq_id` to remove it.
+      * If your genomes have a mitochondrial chromosome you can run `bash get-removed-chrom.sh path-to-fasta path-to-gff seq_id` to remove it, in an environment with Seqkit available.
 
 
 ### Scripts to be run in this order:
