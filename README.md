@@ -83,7 +83,9 @@ conda deactivate
   * `files/chromosome_names.csv` with columns: group, chromosome ID (the sequence ID in the Fasta and GFF of the references), chromosome name (typically a number). Without column names. If your genomes are Complete Genomes from NCBI use `bash get-chromosome_names.sh` to get this file.
   * `references/` directory with:
     * Fasta files to use as reference genomes.
-    * Fasta and GFF files of main reference (the one with available annotation with the desired gene IDs). Main reference can be the same as one of the reference genomes.
+    * Optional: Fasta and GFF files of main reference (one with available annotation with the desired gene IDs). Main reference can be the same as one of the reference genomes or a different genome.
+    * If main reference is not provided GFF files of reference genomes are needed.
+      * If your genomes have a mitochondrial chromosome you can run `bash get-removed-chrom.sh path-to-fasta path-to-gff seq_id` to remove it.
 
 
 ### Scripts to be run in this order:
@@ -91,7 +93,7 @@ conda deactivate
 #### Module 0 (Optional): To download all fastqs of a BioProject
 1. Get files: `xonsh get-seqdata-of-bioproject.xsh -p PRJNA685103`   
 2. Combine fastqs of the same sample, rename with sample ID and compress:
-   `parallel xonsh fastq-combiner.xsh {} files/read_pair_table.csv fastqs/ fastq_combined/ :::: files/samples.txt`
+   `parallel xonsh get-fastqs-combined.xsh {} files/read_pair_table.csv fastqs/ fastq_combined/ :::: files/samples.txt`
    
 #### Module 1 (Optional): Annotate references according to main reference
 `Snakefile-references.smk` -- is a Snakefile to lift over annotations from the main reference into the reference genomes (`{lineage}.fasta`).  
