@@ -6,7 +6,6 @@ suppressPackageStartupMessages(library(tidyverse))
 library(RColorBrewer)
 suppressPackageStartupMessages(library(scales))
 library(svglite)
-library(ggnewscale)
 
 print("Reading files")
 

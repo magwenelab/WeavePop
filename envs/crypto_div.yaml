@@ -2,7 +2,6 @@ name: crypto_div
 channels:
   - bioconda
   - conda-forge
-  - defaults
 dependencies:
   - _libgcc_mutex=0.1=conda_forge
   - _openmp_mutex=4.5=2_gnu
@@ -36,6 +35,10 @@ dependencies:
   - beautifulsoup4=4.12.2=pyha770c72_0
   - bedtools=2.31.0=hf5e1c6e_3
   - binutils_impl_linux-64=2.40=hf600244_0
+  - bioconductor-biocgenerics=0.48.1=r43hdfd78af_2
+  - bioconductor-complexheatmap=2.18.0=r43hdfd78af_0
+  - bioconductor-iranges=2.36.0=r43ha9d7317_1
+  - bioconductor-s4vectors=0.40.2=r43ha9d7317_1
   - biopython=1.81=py310h1fa729e_0
   - blast=2.14.0=h7d5a4b4_1
   - blast-legacy=2.2.26=h9ee0642_3
@@ -380,6 +383,7 @@ dependencies:
   - python-json-logger=2.0.7=pyhd8ed1ab_0
   - python-tzdata=2023.3=pyhd8ed1ab_0
   - python_abi=3.10=4_cp310
+  - pytools=2023.1.1=pyhd8ed1ab_0
   - pytz=2023.3.post1=pyhd8ed1ab_0
   - pyu2f=0.1.5=pyhd8ed1ab_0
   - pyvcf3=1.0.3=pyhdfd78af_0
@@ -400,10 +404,12 @@ dependencies:
   - r-callr=3.7.3=r43hc72bb7e_1
   - r-caret=6.0_94=r43h57805ef_1
   - r-cellranger=1.1.0=r43hc72bb7e_1006
+  - r-circlize=0.4.15=r43hc72bb7e_2
   - r-class=7.3_22=r43h57805ef_1
   - r-cli=3.6.1=r43ha503ecb_1
   - r-clipr=0.8.0=r43hc72bb7e_2
   - r-clock=0.7.0=r43ha503ecb_1
+  - r-clue=0.3_65=r43h57805ef_0
   - r-cluster=2.1.4=r43h61816a4_1
   - r-codetools=0.2_19=r43hc72bb7e_1
   - r-colorspace=2.1_0=r43h57805ef_1
@@ -418,6 +424,7 @@ dependencies:
   - r-dbplyr=2.3.4=r43hc72bb7e_0
   - r-diagram=1.6.5=r43ha770c72_2
   - r-digest=0.6.33=r43ha503ecb_0
+  - r-doparallel=1.0.17=r43hc72bb7e_2
   - r-dplyr=1.1.3=r43ha503ecb_0
   - r-dtplyr=1.3.1=r43hc72bb7e_1
   - r-e1071=1.7_13=r43ha503ecb_1
@@ -437,9 +444,11 @@ dependencies:
   - r-future.apply=1.11.0=r43hc72bb7e_1
   - r-gargle=1.5.2=r43h785f33e_0
   - r-generics=0.1.3=r43hc72bb7e_2
+  - r-getoptlong=1.0.5=r43hc72bb7e_2
   - r-ggplot2=3.4.3=r43hc72bb7e_0
   - r-gistr=0.9.0=r43hc72bb7e_2
   - r-glmnet=4.1_8=r43hcf54a89_0
+  - r-globaloptions=0.1.2=r43ha770c72_2
   - r-globals=0.16.2=r43hc72bb7e_1
   - r-glue=1.6.2=r43h57805ef_2
   - r-googledrive=2.1.1=r43hc72bb7e_1
@@ -479,6 +488,7 @@ dependencies:
   - r-maps=3.4.1=r43h57805ef_2
   - r-mass=7.3_60=r43h57805ef_1
   - r-matrix=1.6_1.1=r43h316c678_0
+  - r-matrixstats=1.2.0=r43h57805ef_0
   - r-memoise=2.0.1=r43hc72bb7e_2
   - r-mgcv=1.9_0=r43h316c678_0
   - r-mime=0.12=r43h57805ef_2
@@ -494,6 +504,7 @@ dependencies:
   - r-pillar=1.9.0=r43hc72bb7e_1
   - r-pkgconfig=2.0.3=r43hc72bb7e_3
   - r-plyr=1.8.9=r43ha503ecb_0
+  - r-png=0.1_8=r43h81d01c5_1
   - r-prettyunits=1.2.0=r43hc72bb7e_0
   - r-proc=1.18.4=r43ha503ecb_0
   - r-processx=3.8.2=r43h57805ef_0
@@ -523,6 +534,7 @@ dependencies:
   - r-repr=1.1.6=r43h785f33e_1
   - r-reprex=2.0.2=r43hc72bb7e_2
   - r-reshape2=1.4.4=r43ha503ecb_3
+  - r-rjson=0.2.21=r43ha503ecb_3
   - r-rlang=1.1.1=r43ha503ecb_1
   - r-rmarkdown=2.25=r43hc72bb7e_0
   - r-rpart=4.1.19=r43h57805ef_1
@@ -539,6 +551,7 @@ dependencies:
   - r-stringi=1.7.12=r43h9facbd6_3
   - r-stringr=1.5.0=r43h785f33e_1
   - r-survival=3.5_7=r43h57805ef_0
+  - r-svglite=2.1.3=r43h329214f_0
   - r-sys=3.4.2=r43h57805ef_1
   - r-systemfonts=1.0.4=r43haf97adc_2
   - r-textshaping=0.3.6=r43hd87b9d6_7
@@ -581,6 +594,7 @@ dependencies:
   - scipy=1.11.4=py310hb13e2d6_0
   - sed=4.8=he412f7d_0
   - send2trash=1.8.2=pyh41d4057_0
+  - seqkit=2.6.1=h9ee0642_0
   - seqtk=1.4=he4a0461_1
   - setproctitle=1.3.3=py310h2372a71_0
   - setuptools=68.2.2=pyhd8ed1ab_0
@@ -597,6 +611,7 @@ dependencies:
   - snp-sites=2.5.1=he4a0461_4
   - snpeff=5.0=hdfd78af_1
   - soupsieve=2.5=pyhd8ed1ab_1
+  - sra-tools=2.9.6=hf484d3e_0
   - stack_data=0.6.2=pyhd8ed1ab_0
   - stone=3.3.1=pyhd8ed1ab_0
   - stopit=1.1.2=py_0
