@@ -127,26 +127,24 @@ It runs **snippy**, **liftoff** and **agat** for each sample, it **extracts sequ
       * `results/proteins/{protein}.fa`
 
 #### Module 3: Quality and depth analyses
-`Snakefile-depth-quality.smk`: Generates **quality and coverage** plots.  
+`Snakefile-depth-quality.smk`: Generates **quality and coverage** plots, and adds the MAPQ and Coverage to GFF file.  
    * Output:  
   
-     * `results/mapped_reads.svg` and `results/mapping_stats.txt` plot and table with fraction of mapping reads per sample.  
-     * `results/unmapped.svg` plot with features not annotated by Liftoff.  
+     * `results/mapped_reads.svg` and `results/mapping_stats.txt` plot and table with fraction of mappied reads per sample.  
      * `analyses/{sample}/snps.bam.stats` and `analyses/{sample}/bamstats/` directory with `plot-bamstats` resulting plots.  
-     * `analyses/{sample}/coverage.svg` depth of coverage along chromosome plot (with location of interesting loci).  
-     * `analyses/{sample}/coverage_stats.svg` mean and median coverage pero chromosome and global.  
+     * `analyses/{sample}/coverage.svg` coverage along chromosome plot (with location of interesting loci).  
      * `analyses/{sample}/cov_distribution_.svg` ditribution of coverage values plot.  
-     * `analyses/{sample}/mapq.svg` mapping quality along chromosome plot.  
+     * `analyses/{sample}/mapq.svg` mapping quality along chromosome plot (with location of interesting loci).  
      * `analyses/{sample}/mapq_distribution.svg` distribution of maping quality values plot.    
      * `analyses/{sample}/annotation.gff` GFF file with complete annotation plus average MAPQ and coverage of windows in which the features are located.    
-     * `results/norm_coverage_good.csv`  
-     * `results/cov_global_good.svg`  
-     * `results/cov_median_good.svg`  
-     * `results/cov_mean_good.svg`  
-     * `results/norm_coverage_raw.csv`  
-     * `results/cov_global_raw.svg`  
-     * `results/cov_median_raw.svg`  
-     * `results/cov_mean_raw.svg`  
+     * `results/cov_norm_good.csv` table with all coverage stats of good quality mappings, per chromosome of all samples (genome-wide and per chromosome mean and median and normalized) 
+     * `results/cov_global_good.svg` plot of mean and median genome-wide coverage of good quality mappings of all samples.
+     * `results/cov_median_good.svg` plot of median coverage per chromosome (of good quality mappings) normalized by genome-wide median coverage.
+     * `results/cov_mean_good.svg` plot of mean coverage per chromosome (of good quality mappings) normalized by genome-wide mean coverage.
+     * `results/cov_norm_raw.csv` table with all coverage stats of all mappings, per chromosome of all samples (genome-wide and per chromosome mean and median and normalized) 
+     * `results/cov_global_raw.svg` plot of mean and median genome-wide coverage of all mappings of all samples.
+     * `results/cov_median_raw.svg` plot of median coverage per chromosome (of all mappings) normalized by genome-wide median coverage.
+     * `results/cov_mean_raw.svg` plot of mean coverage per chromosome (of all mappings) normalized by genome-wide mean coverage.
  
 # To run all
 
