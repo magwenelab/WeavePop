@@ -3,14 +3,15 @@ sample_reference_file: "files/sample_reference.csv" # CSV table with columns lin
 lineage_reference_file: "files/lineage_references.csv" # CSV table with columns group,strain,genbank,file (no quotes)
 reference_directory: "references/" # Directory name for the references (must end with the "/" and use double quotes)
 fastq_directory: "fastqs/" # Directory name for the fastq files (must end with the "/" and use double quotes)
-fastq_suffix1: "_1.fq.gz" # Everything after the sample name of the forward reads file
-fastq_suffix2: "_2.fq.gz" # Everything after the sample name of the reverse reads file
+fastq_suffix1: "_R1.fastq.gz" # Everything after the sample name of the forward reads file
+fastq_suffix2: "_R2.fastq.gz" # Everything after the sample name of the reverse reads file
 threads_snippy: 4
 threads_liftoff: 4
 threads_mosdepth: 4
 mosdepth_window: 500
 mosdepth_min_mapq: 20
-loci: "-g files/MAT.txt" # Names of files with gene IDs to add to plots. Filename should be my-locus-name.txt and have the option -g before each filename. Leave a blank string "" if no loci should be plotted.
+loci: "-g files/centromeres.txt" # Names of files with gene IDs to add to plots. Filename should be my-locus-name.txt and have the option -g before each filename. Leave a blank string "" if no loci should be plotted.
 locitsv: "files/loci_to_plot.tsv" # Name of table of genes to plot with their coordinates. 
+metad_color: "treatment" #Name of character column in sample_metadata.csv to use as color in coverage plot
 reference_gff: "Cneoformans.gff"
 reference_fasta: "Cneoformans.fasta"

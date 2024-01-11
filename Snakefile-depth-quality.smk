@@ -8,6 +8,7 @@ samples=list(set(samplefile["sample"]))
 rule all:
     input:
         expand("analysis/{sample}/coverage.svg",sample=samples),
+        "results/cov_norm_good.csv",
 #         expand("analysis/{sample}/mapq_distribution.svg",sample=samples),
 #         expand("analysis/{sample}/cov_distribution.svg",sample=samples),
 #         expand("analysis/{sample}/bamstats", sample=samples),
@@ -15,14 +16,7 @@ rule all:
 #         expand("analysis/{sample}/mapq_window.bed", sample=samples),
 #         expand("analysis/{sample}/mapq.svg", sample=samples),
 #         expand("analysis/{sample}/annotation.gff", sample=samples),
-#         "results/norm_coverage_good.csv",
-#         "results/cov_global_good.svg",
-#         "results/cov_median_good.svg",
-#         "results/cov_mean_good.svg",
-#         "results/norm_coverage_raw.csv",
-#         "results/cov_global_raw.svg",
-#         "results/cov_median_raw.svg",
-#         "results/cov_mean_raw.svg"
+
 
 rule mosdepth:
     input:
@@ -96,16 +90,18 @@ rule coverage_stats_plots:
     input:
         config["sample_file"],
         "results/coverage_good.csv",
-        "results/coverage_raw.csv"        
+        "results/coverage_raw.csv"
+    params:
+        config["metad_color"]        
     output:
         "results/cov_norm_good.csv",
         "results/cov_global_good.svg",
         "results/cov_median_good.svg",
         "results/cov_mean_good.svg",
-        # "results/norm_coverage_raw.csv",
-        # "results/cov_global_raw.svg",
-        # "results/cov_median_raw.svg",
-        # "results/cov_mean_raw.svg"
+        "results/cov_norm_raw.csv",
+        "results/cov_global_raw.svg",
+        "results/cov_median_raw.svg",
+        "results/cov_mean_raw.svg",
     log:
         "logs/coverage/stats_plot.log"    
     script:
