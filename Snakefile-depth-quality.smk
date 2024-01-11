@@ -8,15 +8,14 @@ samples=list(set(samplefile["sample"]))
 rule all:
     input:
         expand("analysis/{sample}/coverage.svg",sample=samples),
-        "results/cov_norm_good.csv",
-#         expand("analysis/{sample}/mapq_distribution.svg",sample=samples),
-#         expand("analysis/{sample}/cov_distribution.svg",sample=samples),
-#         expand("analysis/{sample}/bamstats", sample=samples),
-#         "results/mapped_reads.svg",
-#         expand("analysis/{sample}/mapq_window.bed", sample=samples),
-#         expand("analysis/{sample}/mapq.svg", sample=samples),
-#         expand("analysis/{sample}/annotation.gff", sample=samples),
-
+        "results/cov_median_good.svg",
+        expand("analysis/{sample}/mapq_distribution.svg",sample=samples),
+        expand("analysis/{sample}/cov_distribution.svg",sample=samples),
+        expand("analysis/{sample}/bamstats", sample=samples),
+        "results/mapped_reads.svg",
+        expand("analysis/{sample}/mapq_window.bed", sample=samples),
+        expand("analysis/{sample}/mapq.svg", sample=samples),
+        expand("analysis/{sample}/annotation.gff", sample=samples),
 
 rule mosdepth:
     input:
@@ -106,126 +105,127 @@ rule coverage_stats_plots:
         "logs/coverage/stats_plot.log"    
     script:
         "scripts/cov_stats_all.R"
-# rule samtools_stats:
-#     input:
-#         bam = "analysis/{sample}/snps.bam",
-#         ref = "analysis/{sample}/ref.fa"
-#     output:
-#         mapq = "analysis/{sample}/mapq.csv",
-#         cov = "analysis/{sample}/cov.csv"
-#     log:
-#         "logs/stats/{sample}.log"
-#     shell:
-#         "xonsh scripts/samtools-stats.xsh {wildcards.sample} {input.bam} {input.ref} {output.mapq} {output.cov} &> {log}"
 
-# rule mapq_distribution:
-#     input:
-#         "analysis/{sample}/mapq.csv",
-#         "files/chromosome_names.csv"
-#     output:
-#         "analysis/{sample}/mapq_distribution.svg"
-#     log:
-#         "logs/mapq-dist/{sample}.log"
-#     script:
-#         "scripts/mapq-distribution.R"
+rule samtools_stats:
+    input:
+        bam = "analysis/{sample}/snps.bam",
+        ref = "analysis/{sample}/ref.fa"
+    output:
+        mapq = "analysis/{sample}/mapq.csv",
+        cov = "analysis/{sample}/cov.csv"
+    log:
+        "logs/stats/{sample}.log"
+    shell:
+        "xonsh scripts/samtools-stats.xsh {wildcards.sample} {input.bam} {input.ref} {output.mapq} {output.cov} &> {log}"
 
-# rule cov_distribution:
-#     input:
-#         "analysis/{sample}/cov.csv",
-#         "files/chromosome_names.csv"
-#     output:
-#         "analysis/{sample}/cov_distribution.svg"
-#     log:
-#         "logs/cov-dist/{sample}.log"
-#     script:
-#         "scripts/coverage-distribution.R"        
-# rule bamstats:
-#     input:
-#         "analysis/{sample}/snps.bam"
-#     output:
-#         "analysis/{sample}/snps.bam.stats"
-#     conda:
-#         "envs/depth.yaml"
-#     log:
-#         "logs/bamstats/{sample}.log"
-#     shell:
-#         "samtools stats {input} 1> {output} 2> {log}"
+rule mapq_distribution:
+    input:
+        "analysis/{sample}/mapq.csv",
+        "files/chromosome_names.csv"
+    output:
+        "analysis/{sample}/mapq_distribution.svg"
+    log:
+        "logs/mapq-dist/{sample}.log"
+    script:
+        "scripts/mapq-distribution.R"
 
-# rule plot_bamstats:
-#     input:
-#         "analysis/{sample}/snps.bam.stats"
-#     output:
-#         directory("analysis/{sample}/bamstats")
-#     conda:
-#         "envs/depth.yaml"
-#     log:
-#         "logs/plot-bamstats/{sample}.log"
-#     shell:
-#         "plot-bamstats -p {output}/ {input} &> {log}"
+rule cov_distribution:
+    input:
+        "analysis/{sample}/cov.csv",
+        "files/chromosome_names.csv"
+    output:
+        "analysis/{sample}/cov_distribution.svg"
+    log:
+        "logs/cov-dist/{sample}.log"
+    script:
+        "scripts/coverage-distribution.R"
 
-# rule unmapped_edit:
-#     input:
-#         "analysis/{sample}/snps.bam.stats" 
-#     output: 
-#         temp("analysis/{sample}/mapping_stats.txt")
-#     shell:
-#         "grep reads {input} | cut -d'#' -f1 | cut -f 2- | grep . > {output} "
-#         " && "
-#         'sed -i "s/$/:\\{wildcards.sample}/" {output}'
+rule bamstats:
+    input:
+        "analysis/{sample}/snps.bam"
+    output:
+        "analysis/{sample}/snps.bam.stats"
+    conda:
+        "envs/depth.yaml"
+    log:
+        "logs/bamstats/{sample}.log"
+    shell:
+        "samtools stats {input} 1> {output} 2> {log}"
 
-# rule unmapped:
-#     input:
-#         expand("analysis/{sample}/mapping_stats.txt", sample=samples)   
-#     output: 
-#         "results/mapping_stats.txt"
-#     shell:
-#        'cat {input} > {output}'  
+rule plot_bamstats:
+    input:
+        "analysis/{sample}/snps.bam.stats"
+    output:
+        directory("analysis/{sample}/bamstats")
+    conda:
+        "envs/depth.yaml"
+    log:
+        "logs/plot-bamstats/{sample}.log"
+    shell:
+        "plot-bamstats -p {output}/ {input} &> {log}"
 
-# rule unmapped_plot:
-#     input:
-#         "results/mapping_stats.txt",
-#         config["sample_file"]
-#     output:
-#         "results/mapped_reads.svg"
-#     log:
-#         "logs/stats/mapped.log"
-#     script:
-#         "scripts/mapped_reads.R"
+rule mapped_edit:
+    input:
+        "analysis/{sample}/snps.bam.stats" 
+    output: 
+        temp("analysis/{sample}/mapping_stats.txt")
+    shell:
+        "grep reads {input} | cut -d'#' -f1 | cut -f 2- | grep . > {output} "
+        " && "
+        'sed -i "s/$/:\\{wildcards.sample}/" {output}'
 
-# rule mapq:
-#    input:
-#        "analysis/{sample}/snps.bam",
-#        "analysis/{sample}/coverage.regions.bed.gz"
-#    output:
-#         "analysis/{sample}/mapq.bed",
-#         "analysis/{sample}/mapq_window.bed" 
-#    log:
-#        "logs/mapq/{sample}.log"
-#    script:
-#         "scripts/pileup_mapq.sh"
+rule mapped_cat:
+    input:
+        expand("analysis/{sample}/mapping_stats.txt", sample=samples)   
+    output: 
+        "results/mapping_stats.txt"
+    shell:
+       'cat {input} > {output}'  
 
-# rule mapq_plot:
-#     input:
-#         "analysis/{sample}/mapq_window.bed",
-#         "files/chromosome_names.csv",
-#         config["locitsv"]
-#     output:
-#         "analysis/{sample}/mapq.svg"
-#     log:
-#         "logs/mapq_plot/{sample}.log"
-#     script:
-#         "scripts/mapq.R"
+rule mapped_plot:
+    input:
+        "results/mapping_stats.txt",
+        config["sample_file"]
+    output:
+        "results/mapped_reads.svg"
+    log:
+        "logs/stats/mapped.log"
+    script:
+        "scripts/mapped_reads.R"
 
-# rule mapqcov2gff:
-#     input:
-#         mapqbed = "analysis/{sample}/mapq_window.bed",
-#         covbed = "analysis/{sample}/coverage.regions.bed.gz",
-#         gff = "analysis/{sample}/lifted.gff_polished"
-#     output:
-#         covmapq = "analysis/{sample}/mapq_cov_window.bed",
-#         newgff = "analysis/{sample}/annotation.gff"
-#     log: 
-#         "logs/gff/{sample}.log"
-#     shell:
-#         "xonsh scripts/mapqcov2gff.xsh {input.mapqbed} {input.covbed} {input.gff} {output.covmapq} {output.newgff} &> {log}"
+rule mapq:
+   input:
+       "analysis/{sample}/snps.bam",
+       "analysis/{sample}/coverage.regions.bed.gz"
+   output:
+        "analysis/{sample}/mapq.bed",
+        "analysis/{sample}/mapq_window.bed" 
+   log:
+       "logs/mapq/{sample}.log"
+   script:
+        "scripts/pileup_mapq.sh"
 
+rule mapq_plot:
+    input:
+        "analysis/{sample}/mapq_window.bed",
+        "files/chromosome_names.csv",
+        config["locitsv"]
+    output:
+        "analysis/{sample}/mapq.svg"
+    log:
+        "logs/mapq_plot/{sample}.log"
+    script:
+        "scripts/mapq.R"
+
+rule mapqcov2gff:
+    input:
+        mapqbed = "analysis/{sample}/mapq_window.bed",
+        covbed = "analysis/{sample}/coverage.regions.bed.gz",
+        gff = "analysis/{sample}/lifted.gff_polished"
+    output:
+        covmapq = "analysis/{sample}/mapq_cov_window.bed",
+        newgff = "analysis/{sample}/annotation.gff"
+    log: 
+        "logs/gff/{sample}.log"
+    shell:
+        "xonsh scripts/mapqcov2gff.xsh {input.mapqbed} {input.covbed} {input.gff} {output.covmapq} {output.newgff} &> {log}"

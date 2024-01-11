@@ -8,7 +8,7 @@ suppressPackageStartupMessages(library(scales))
 library(svglite)
 library(ggnewscale)
 
-print("Reading BED file")
+print("Reading files")
 
 sample <- snakemake@input[[1]]
 Split <- str_split(sample, "/")
@@ -20,22 +20,28 @@ raw <- left_join(raw, chrom_names, by = "Accession")
 
 loci <- read.delim(snakemake@input[[3]], header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
 loci <- loci %>% rename(Accession = seq_id)
-loci <- left_join(loci, chrom_names, by = "Accession")
-
 lineage <- levels(as.factor(raw$Lineage))
-loci <- loci %>% filter(Lineage %in% lineage)
+
+if (nrow(loci) != 0){
+  loci <- left_join(loci, chrom_names, by = "Accession")
+  loci <- loci %>% filter(Lineage %in% lineage)
+}
 
 raw_color <- "bisque3"
 
-print("Plotting chromosome depth")
+print("Plotting chromosome MAPQ")
 plot <- ggplot()+
   geom_point(data = raw, aes(x= Start, y = MAPQ), size = 0.5 , color = raw_color)+
-  geom_point(data = loci, aes(x= start, y = 1, color = Loci), size = 1, shape = 15)+
   facet_wrap(~Chromosome,ncol = 2, scales = "free_x")+
   scale_x_continuous(name = "Position (bp) ", labels = comma)+
   theme_bw()+
   theme(legend.position="right")+
   labs(title = paste(lineage, sample,  sep = " "), y = "Mapping quality (phred score)")
+
+if (nrow(loci) != 0){
+  plot <- plot +
+  geom_point(data = loci, aes(x= start, y = 1, color = Loci), size = 1, shape = 15)
+}
 
 ggsave(snakemake@output[[1]], plot = plot, units = "cm", height = 22, width = 22)
 
