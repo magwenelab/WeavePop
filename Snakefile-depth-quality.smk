@@ -92,24 +92,24 @@ rule cat_stats:
         "cat {input.g} | grep -v Sample > {output.allg} "
         "2> {log}"
 
-# rule coverage_stats_plots:
-#     input:
-#         config["sample_file"],
-#         "results/coverage_good.csv",
-#         "results/coverage_raw.csv"        
-#     output:
-#         "results/norm_coverage_good.csv",
-#         "results/cov_global_good.svg",
-#         "results/cov_median_good.svg",
-#         "results/cov_mean_good.svg",
-#         "results/norm_coverage_raw.csv",
-#         "results/cov_global_raw.svg",
-#         "results/cov_median_raw.svg",
-#         "results/cov_mean_raw.svg"
-#     log:
-#         "logs/coverage/stats_plot.log"    
-#     script:
-#         "scripts/cov_stats_all.R"
+rule coverage_stats_plots:
+    input:
+        config["sample_file"],
+        "results/coverage_good.csv",
+        "results/coverage_raw.csv"        
+    output:
+        "results/cov_norm_good.csv",
+        "results/cov_global_good.svg",
+        "results/cov_median_good.svg",
+        "results/cov_mean_good.svg",
+        # "results/norm_coverage_raw.csv",
+        # "results/cov_global_raw.svg",
+        # "results/cov_median_raw.svg",
+        # "results/cov_mean_raw.svg"
+    log:
+        "logs/coverage/stats_plot.log"    
+    script:
+        "scripts/cov_stats_all.R"
 # rule samtools_stats:
 #     input:
 #         bam = "analysis/{sample}/snps.bam",
