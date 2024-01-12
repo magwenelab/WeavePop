@@ -6,12 +6,12 @@
 
 ## Requirements
 
-* Miniconda3
+* Microforge3 (Mamba/Conda) -- https://mamba.readthedocs.io/en/latest/installation/mamba-installation.html
 * Python
 * Python modules -- Pandas, Scipy
 * Xonsh -- https://xon.sh/
 * R 
-* R libraries -- tidyverse meta-package, BiocManager, ComplexHeatmap, 
+* R libraries -- tidyverse meta-package, BiocManager, ComplexHeatmap, Svglite
 * Snakemake -- https://snakemake.github.io/
   * Graphviz -- https://graphviz.org/ (optional, to see Snakemake DAG in a graph) 
 * NCBI Entrez Utilities (E-utilities) command line tools -- https://www.ncbi.nlm.nih.gov/books/NBK25501/
@@ -27,10 +27,10 @@
 
 Environment installation files are in `envs/`
 <details>
-<summary>crypto_div -- everything runs in this environment. Install it with: </summary>  
+<summary>crypto_div -- Snakemake runs in this environment. Install it with: </summary>  
 
 ~~~
-conda env create --file envs/crypto_div.yml
+mamba env create --file envs/crypto_div.yml
 ~~~
 </details>
 
@@ -38,7 +38,7 @@ conda env create --file envs/crypto_div.yml
 <summary>depth -- when used in Snakemake, Snakmake makes its installation from the `yaml` file. To use it independently install it with: </summary>
 
 ~~~ 
-conda env create --file envs/depth.yml
+mamba env create --file envs/depth.yml
 ~~~
 </details>
 
@@ -63,6 +63,13 @@ conda deactivate
 
 </details>
 
+<details>
+<summary>sra-tools -- To run the optional Module 0. Install it with: </summary>  
+
+~~~
+mamba env create --file envs/sra-tools.yml
+~~~
+</details>
 
 ## Overview  
 
@@ -91,6 +98,7 @@ conda deactivate
 ### Scripts to be run in this order:
 
 #### Module 0 (Optional): To download all fastqs of a BioProject
+Using the `sra-tools` environment:
 1. Get files: `xonsh get-seqdata-of-bioproject.xsh -p PRJNA685103`   
 2. Combine fastqs of the same sample, rename with sample ID and compress:
    `parallel xonsh get-fastqs-combined.xsh {} files/read_pair_table.csv fastqs/ fastq_combined/ :::: files/samples.txt`
@@ -99,8 +107,7 @@ conda deactivate
 `Snakefile-references.smk` -- is a Snakefile to lift over annotations from the main reference into the reference genomes (`{lineage}.fasta`).  
    * It currently works with:  
   ` snakemake --snakefile Snakefile-references.smk --cores 1 --use-conda --conda-frontend conda -p`:  
-      ⚠️ `--cores 1` is because there is a problem if Liftoff runs in parallel because the different jobs try to create `mainReference.gff_db` at the same time and that is not cool.    
-      ⚠️ `--conda-frontend conda` because it cannot use mamba, which is the default.  
+      ⚠️ `--cores 1` is because there is a problem if Liftoff runs in parallel because the different jobs try to create `mainReference.gff_db` at the same time and that is not cool.     
   * Output:  
 
       *  `references/{lineage}.gff`

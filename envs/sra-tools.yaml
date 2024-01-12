@@ -1,0 +1,13 @@
+name: sra-tools
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - sra-tools=3.0.10
+  - entrez-direct=16.2
+  - seqkit=2.6.1
+  - xonsh
+  - pathlib
+  - pandas
+  - click
