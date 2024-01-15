@@ -83,16 +83,16 @@ mamba env create --file envs/sra-tools.yml
   * `logs/` has the log files of all runs.  
 
 ### Starting files: 
-  * `files/sample_metadata.csv` with columns: strain, sample (the names in the fastq file names), group (lineage or group to associate to a reference genome), more-optional-metadata-fields
-  * `files/lineage_references.csv` with columns: group, file (file name of reference genome assembly), strain, more-optional-metadata-fields (like genbank accession and bioproject)
+  * `files/sample_metadata.csv` with columns (using these names): strain, sample (the names in the fastq file names), group (lineage or group to associate to a reference genome), more-optional-metadata-fields
+  * `files/lineage_references.csv` with columns (using these names): group, file (file name of reference genome assembly), strain, more-optional-metadata-fields (like genbank accession and bioproject)
   * Lists of genes of loci of interest:  
     * `files/locusA.txt` (with IDs of genes in main reference GFF)
-  * `files/chromosome_names.csv` with columns: group, chromosome ID (the sequence ID in the Fasta and GFF of the references), chromosome name (typically a number). Without column names. If your genomes are Complete Genomes from NCBI use `bash get-chromosome_names.sh` to get this file.
+  * `files/chromosome_names.csv` with columns (without column names): group, chromosome ID (the sequence ID in the Fasta and GFF of the references), chromosome name (typically a number). If your genomes are Complete Genomes from NCBI use `bash get-chromosome_names.sh` to get this file.
   * `references/` directory with:
     * Fasta files to use as reference genomes.
     * Optional: Fasta and GFF files of main reference (one with available annotation with the desired gene IDs). Main reference can be the same as one of the reference genomes or a different genome.
     * If main reference is not provided GFF files of reference genomes are needed.
-      * If your genomes have a mitochondrial chromosome you can run `bash get-removed-chrom.sh path-to-fasta path-to-gff seq_id` to remove it, in an environment with Seqkit available.
+      * If your genomes have a mitochondrial chromosome you can run `bash get-removed-chrom.sh path-to-fasta path-to-gff seq_id` to remove it, in an environment with Seqkit available (crypto_div).
 
 
 ### Scripts to be run in this order:
@@ -106,7 +106,7 @@ Using the `sra-tools` environment:
 #### Module 1 (Optional): Annotate references according to main reference
 `Snakefile-references.smk` -- is a Snakefile to lift over annotations from the main reference into the reference genomes (`{lineage}.fasta`).  
    * It currently works with:  
-  ` snakemake --snakefile Snakefile-references.smk --cores 1 --use-conda --conda-frontend conda -p`:  
+  ` snakemake --snakefile Snakefile-references.smk --cores 1 --use-conda -p`:  
       ⚠️ `--cores 1` is because there is a problem if Liftoff runs in parallel because the different jobs try to create `mainReference.gff_db` at the same time and that is not cool.     
   * Output:  
 
@@ -116,7 +116,7 @@ Using the `sra-tools` environment:
       * And more intermediate and extra files
 
 #### Module 2: Main analyses
-`Snakefile-main.smk`-- is the Snakefile to run the pipeline, it uses the `config.yaml` file.   
+`Snakefile-main.smk`-- is the Snakefile to run the analysis per sample, it uses the `config.yaml` file.   
 It runs **snippy**, **liftoff** and **agat** for each sample, it **extracts sequences** (cds and protein) of each sample and **concatenates** them by cds and by protein.
 
   * Output:  
@@ -134,7 +134,7 @@ It runs **snippy**, **liftoff** and **agat** for each sample, it **extracts sequ
       * `results/proteins/{protein}.fa`
 
 #### Module 3: Quality and depth analyses
-`Snakefile-depth-quality.smk`: Generates **quality and coverage** plots, and adds the MAPQ and Coverage to GFF file.  
+`Snakefile-depth-quality.smk`: Generates **quality and coverage** plots, and adds the MAPQ and Coverage of each locus's window to the GFF file.  
    * Output:  
   
      * `results/mapped_reads.svg` and `results/mapping_stats.txt` plot and table with fraction of mappied reads per sample.  
