@@ -88,6 +88,7 @@ mamba env create --file envs/sra-tools.yml
   * Lists of genes of loci of interest:  
     * `files/locusA.txt` (with IDs of genes in main reference GFF)
   * `files/chromosome_names.csv` with columns (without column names): group, chromosome ID (the sequence ID in the Fasta and GFF of the references), chromosome name (typically a number). If your genomes are Complete Genomes from NCBI use `bash get-chromosome_names.sh` to get this file.
+  * `files/features.txt` list of feature names to lift over. This file is provided in this repository.
   * `references/` directory with:
     * Fasta files to use as reference genomes.
     * Optional: Fasta and GFF files of main reference (one with available annotation with the desired gene IDs). Main reference can be the same as one of the reference genomes or a different genome.
