@@ -13,5 +13,5 @@ mosdepth_min_mapq: 20
 loci: "-g files/centromeres.txt" # Names of files with gene IDs to add to plots. Filename should be my-locus-name.txt and have the option -g before each filename. Leave a blank string "" if no loci should be plotted.
 locitsv: "files/loci_to_plot.tsv" # Name of table of genes to plot with their coordinates. This table will be generated.
 metad_color: "treatment" # Name of character column in sample_metadata.csv to use as color in coverage plot
-reference_gff: "Cneoformans.gff" # Ignore if Module 1 will not be used.
-reference_fasta: "Cneoformans.fasta" # Ignore if Module 1 will not be used.
+reference_gff: "Cneoformans.gff" # Main reference gff. Ignore if Module 1 will not be used.
+reference_fasta: "Cneoformans.fasta" # Main reference fasta. Ignore if Module 1 will not be used.

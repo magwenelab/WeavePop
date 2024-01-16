@@ -91,7 +91,7 @@ mamba env create --file envs/sra-tools.yml
   * `files/features.txt` list of feature names to lift over. This file is provided in this repository.
   * `references/` directory with:
     * Fasta files to use as reference genomes.
-    * Optional: Fasta and GFF files of main reference (one with available annotation with the desired gene IDs). Main reference can be the same as one of the reference genomes or a different genome.
+    * Optional: Fasta and GFF files of main reference (one with available annotation with the desired gene IDs). If your main reference is one of your reference genomes, duplicate the genome files and give another name to the ones that will be used as main.
     * If main reference is not provided GFF files of reference genomes are needed.
       * If your genomes have a mitochondrial chromosome you can run `bash get-removed-chrom.sh path-to-fasta path-to-gff seq_id` to remove it, in an environment with Seqkit available (crypto_div).
 
