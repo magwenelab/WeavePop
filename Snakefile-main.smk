@@ -57,7 +57,7 @@ rule gff2tsv:
     shell:
         "agat_convert_sp_gff2tsv.pl -gff {input} -o {output} "
         "&> {log} && "
-        "rm {wildcards.lineage}.agat.log"
+        "rm {wildcards.lineage}.agat.log || true"
 
 rule loci:
     input:
@@ -99,7 +99,7 @@ rule ref_agat:
         "-o {output.prots} "
         "-p &> {log.prots} "
         " && "
-        "rm {wildcards.lineage}.agat.log"  
+        "rm {wildcards.lineage}.agat.log || true"  
 
 rule protein_list:
     input:
