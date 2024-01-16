@@ -103,7 +103,9 @@ Using the `sra-tools` environment:
 1. Get files: `xonsh get-seqdata-of-bioproject.xsh -p PRJNA685103`   
 2. Combine fastqs of the same sample, rename with sample ID and compress:
    `parallel xonsh get-fastqs-combined.xsh {} files/read_pair_table.csv fastqs/ fastq_combined/ :::: files/samples.txt`
-   
+It is possible that this module does not download all the samples that you expect (sometimes a BioProject has a BioSample associated but there is no SRA file for it). Make sure the metadata you are providing only 
+has the samples that will be processed in Module 2.
+
 #### Module 1 (Optional): Annotate references according to main reference
 `Snakefile-references.smk` -- is a Snakefile to lift over annotations from the main reference into the reference genomes (`{lineage}.fasta`).  
    * It currently works with:  
