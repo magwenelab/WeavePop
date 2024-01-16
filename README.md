@@ -83,7 +83,7 @@ mamba env create --file envs/sra-tools.yml
   * `logs/` has the log files of all runs.  
 
 ### Starting files: 
-  * `files/sample_metadata.csv` with columns (using these names): strain, sample (the names in the fastq file names), group (lineage or group to associate to a reference genome), more-optional-metadata-fields
+  * `files/sample_metadata.csv` with columns (using these names): strain, sample (the names in the fastq file names), group (lineage or group to associate to a reference genome), more-optional-metadata-fields.
   * `files/lineage_references.csv` with columns (using these names): group, file (file name of reference genome assembly), strain, more-optional-metadata-fields (like genbank accession and bioproject)
   * Lists of genes of loci of interest:  
     * `files/locusA.txt` (with IDs of genes in main reference GFF)
@@ -92,7 +92,7 @@ mamba env create --file envs/sra-tools.yml
   * `references/` directory with:
     * Fasta files to use as reference genomes.
     * Optional: Fasta and GFF files of main reference (one with available annotation with the desired gene IDs). If your main reference is one of your reference genomes, duplicate the genome files and give another name to the ones that will be used as main.
-    * If main reference is not provided GFF files of reference genomes are needed.
+    * If main reference is not provided, GFF files of reference genomes are needed.
       * If your genomes have a mitochondrial chromosome you can run `bash get-removed-chrom.sh path-to-fasta path-to-gff seq_id` to remove it, in an environment with Seqkit available (crypto_div).
 
 
