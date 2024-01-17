@@ -5,23 +5,21 @@
 
 
 ## Requirements
+| Module | Description | Requirements |
+| :---------------- | :------: | ----: |
+| Module 0||[Sra-Tools](https://github.com/ncbi/sra-tools) , [Entrez-Direct](https://www.ncbi.nlm.nih.gov/books/NBK25501/) |
+| Module 1||[Litoff](https://github.com/agshumate/Liftoff), [AGAT](https://github.com/NBISweden/AGAT)|
+| Module 2||[Snippy](https://github.com/tseemann/snippy), [Litoff](https://github.com/agshumate/Liftoff), [AGAT](https://github.com/NBISweden/AGAT)|
+| Module 3||[Mosdepth](https://github.com/brentp/mosdepth), [Samtools](https://www.htslib.org/)|
+| Module 3||R libraries -- tidyverse meta-package, BiocManager, ComplexHeatmap, Svglite|
 
-* Microforge3 (Mamba/Conda) -- https://mamba.readthedocs.io/en/latest/installation/mamba-installation.html
+* Mamba/Conda [Microforge3](https://mamba.readthedocs.io/en/latest/installation/mamba-installation.html)
 * Python
 * Python modules -- Pandas, Scipy
-* Xonsh -- https://xon.sh/
-* R 
-* R libraries -- tidyverse meta-package, BiocManager, ComplexHeatmap, Svglite
-* Snakemake -- https://snakemake.github.io/
-  * Graphviz -- https://graphviz.org/ (optional, to see Snakemake DAG in a graph) 
-* NCBI Entrez Utilities (E-utilities) command line tools -- https://www.ncbi.nlm.nih.gov/books/NBK25501/
-* NCBI SRA Tools -- https://github.com/ncbi/sra-tools
-* Seqkit -- https://bioinf.shenwei.me/seqkit/
-* Snippy -- https://github.com/tseemann/snippy
-* Liftoff -- https://github.com/agshumate/Liftoff
-* AGAT -- https://github.com/NBISweden/AGAT
-* Mosdepth -- https://github.com/brentp/mosdepth
-* Samtools -- https://www.htslib.org/
+* [Xonsh](https://xon.sh/)
+* [Snakemake](https://snakemake.github.io/)
+  * [Graphviz](https://graphviz.org/) (optional, to see Snakemake DAG in a graph) 
+* [Seqkit](https://bioinf.shenwei.me/seqkit/)
   
 ### Installations  
 
