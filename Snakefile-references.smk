@@ -7,6 +7,7 @@ LINS=list(set(samplefile["group"]))
 
 REFDIR = str(config["reference_directory"])
 REF_GFF = REFDIR + str(config["reference_gff"])
+REF_NAME = str(config["reference_gff"]).replace('.gff', '')
 
 rule all:
     input:
@@ -21,10 +22,14 @@ rule ref_gff2tsv:
         REF_GFF + ".tsv"
     conda:
         "envs/agat.yaml"
+    params: 
+        REF_NAME    
     log: 
         "logs/references/ref_gff2tsv_agat.log"
     shell:
         "agat_convert_sp_gff2tsv.pl -gff {input} -o {output} &> {log}"
+        " && "
+        "rm {params}.agat.log || true" 
 
 rule ref2ref_liftoff:
     input:
