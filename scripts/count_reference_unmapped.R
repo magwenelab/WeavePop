@@ -14,6 +14,7 @@ genes<- genes %>%
 rownames(genes)<- genes$ID
 # lins <- read.csv("files/lineage_references.csv", header = TRUE)
 lins <- read.csv(snakemake@input[[2]], header = TRUE)
+lins$group <- as.factor(lins$group)
 
 # for (lin in lins$group){
 #   file <- paste("references/", lin, "_unmapped_features.txt", sep = "")
@@ -21,7 +22,7 @@ lins <- read.csv(snakemake@input[[2]], header = TRUE)
 #   genes <- genes %>%
 #     mutate(!!lin := ifelse(ID %in% df$ID, 0, 1))
 # }
-for (lin in lins$group){
+for (lin in levels(lins$group)){
  file <- paste(snakemake@config[["reference_directory"]], lin, "_unmapped_features.txt", sep = "")
  df<- read.csv(file, header = FALSE, col.names = c("ID"), colClasses = "character")
  genes <- genes %>%

@@ -2,9 +2,8 @@ configfile: "config.yaml"
 
 import pandas as pd
 
-lin_ref_table = (pd.read_csv(config["lineage_reference_file"], sep=","))
-LINS=list(lin_ref_table["group"])
-lin_ref_table.set_index('group', inplace=True)
+samplefile=(pd.read_csv(config["sample_file"], sep=","))
+LINS=list(set(samplefile["group"]))
 
 REFDIR = str(config["reference_directory"])
 REF_GFF = REFDIR + str(config["reference_gff"])
@@ -60,7 +59,7 @@ rule ref2ref_liftoff:
 rule unmapped_count_plot:
     input:
         REF_GFF + ".tsv",
-        config["lineage_reference_file"],
+        config["sample_file"],
         expand(REFDIR + "{lineage}_unmapped_features.txt", lineage=LINS)        
     output:
         REFDIR + "references_unmapped_count.tsv",

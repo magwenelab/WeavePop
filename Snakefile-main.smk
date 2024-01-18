@@ -4,9 +4,8 @@ import pandas as pd
 
 samplefile=(pd.read_csv(config["sample_file"], sep=","))
 SAMPLES=list(set(samplefile["sample"]))
+LINS=list(set(samplefile["group"]))
 REFDIR = str(config["reference_directory"])
-lin_ref_table = (pd.read_csv(config["lineage_reference_file"], sep=","))
-LINS=list(lin_ref_table["group"])
 
 rule all:
     input:
@@ -33,8 +32,7 @@ rule samples_list:
 
 rule reference_table:
     input:
-        s = config["sample_file"],
-        r = config["lineage_reference_file"]  
+        config["sample_file"],
     output:
         config["sample_reference_file"]
     params:
@@ -43,7 +41,7 @@ rule reference_table:
     log:
         "logs/reftable.log"
     shell:
-        "xonsh scripts/reference_table.xsh -s {input.s} -r {input.r} -o {output} -f1 {params.f1} -f2 {params.f2} &> {log}"
+        "xonsh scripts/reference_table.xsh -s {input} -o {output} -f1 {params.f1} -f2 {params.f2} &> {log}"
 
 rule gff2tsv:
     input:
