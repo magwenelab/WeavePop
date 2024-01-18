@@ -1,9 +1,12 @@
-
+name: diversity
 channels:
   - conda-forge
   - bioconda
   - defaults
 dependencies:
-  - agat
+  - snakemake
+  - xonsh
+  - pandas
+  - click
   - seqkit
-
+  - graphviz

@@ -138,6 +138,8 @@ rule snippy:
         "analysis/{sample}/snps.bam"
     threads: 
         config["threads_snippy"]
+    conda:
+        "envs/snippy.yaml"
     log:
         "logs/snippy/{sample}.log"
     shell:
@@ -161,6 +163,8 @@ rule liftoff:
         "analysis/{sample}/lifted.gff_polished",
         "analysis/{sample}/unmapped_features.txt"
     threads: config["threads_liftoff"]
+    conda:
+        "envs/liftoff.yaml"
     log:
         "logs/liftoff/{sample}.log" 
     shell:

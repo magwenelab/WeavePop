@@ -1,17 +1,24 @@
-sample_file: "files/sample_metadata.csv" # CSV table with columns sample, group, strain, and extra metadata.
+# Required for all modules
+sample_file: "files/sample_metadata.csv" # CSV table with columns: sample, group, strain, and extra metadata.
+lineage_reference_file: "files/lineage_references.csv" # CSV table with columns: group,strain,file
+fastq_suffix1: "_R1.fastq.gz" # Everything after the sample name of the forward reads file.
+fastq_suffix2: "_R2.fastq.gz" # Everything after the sample name of the reverse reads file.
+reference_directory: "references/" # Directory name with your references (must end with the "/" )
+fastq_directory: "fastqs/" # Directory name with your fastq files (must end with the "/")
+
+# Required for Module 1
+reference_gff: "Cneoformans.gff" # Main reference gff. Ignore if Module 1 will not be used.
+reference_fasta: "Cneoformans.fasta" # Main reference fasta. Ignore if Module 1 will not be used.
+
+# No need to change, unless you want to
 sample_reference_file: "files/sample_reference.csv" # Name of CSV table with columns lineage,sample,file1,file2,refgenome. This file will be generated.
-lineage_reference_file: "files/lineage_references.csv" # CSV table with columns group,strain,file
-reference_directory: "references/" # Directory name for the references (must end with the "/" )
-fastq_directory: "fastqs/" # Directory name for the fastq files (must end with the "/")
-fastq_suffix1: "_R1.fastq.gz" # Everything after the sample name of the forward reads file
-fastq_suffix2: "_R2.fastq.gz" # Everything after the sample name of the reverse reads file
 threads_snippy: 4
 threads_liftoff: 4
 threads_mosdepth: 4
 mosdepth_window: 500
 mosdepth_min_mapq: 20
+
+# Required for Module 3
 loci: "-g files/centromeres.txt" # Names of files with gene IDs to add to plots. Filename should be my-locus-name.txt and have the option -g before each filename. Leave a blank string "" if no loci should be plotted.
 locitsv: "files/loci_to_plot.tsv" # Name of table of genes to plot with their coordinates. This table will be generated.
 metad_color: "treatment" # Name of character column in sample_metadata.csv to use as color in coverage plot
-reference_gff: "Cneoformans.gff" # Main reference gff. Ignore if Module 1 will not be used.
-reference_fasta: "Cneoformans.fasta" # Main reference fasta. Ignore if Module 1 will not be used.

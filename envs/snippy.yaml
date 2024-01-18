@@ -1,0 +1,5 @@
+name: snippy
+channels:
+  - bioconda
+dependencies:
+  - snippy
