@@ -5,69 +5,24 @@
 
 
 ## Requirements
-| Module | Description | Requirements |
-| :---------------- | :------: | ----: |
-| Module 0||[Sra-Tools](https://github.com/ncbi/sra-tools) , [Entrez-Direct](https://www.ncbi.nlm.nih.gov/books/NBK25501/) |
-| Module 1||[Litoff](https://github.com/agshumate/Liftoff), [AGAT](https://github.com/NBISweden/AGAT)|
-| Module 2||[Snippy](https://github.com/tseemann/snippy), [Litoff](https://github.com/agshumate/Liftoff), [AGAT](https://github.com/NBISweden/AGAT)|
-| Module 3||[Mosdepth](https://github.com/brentp/mosdepth), [Samtools](https://www.htslib.org/)|
-| Module 3||R libraries -- tidyverse meta-package, BiocManager, ComplexHeatmap, Svglite|
 
+The environment from which everything must me run has the following packages and you can install it with: `mamba env create --file envs/diversity.yml`
 * Mamba/Conda [Microforge3](https://mamba.readthedocs.io/en/latest/installation/mamba-installation.html)
 * Python
-* Python modules -- Pandas, Scipy
+* Python modules -- Pandas, Click
 * [Xonsh](https://xon.sh/)
 * [Snakemake](https://snakemake.github.io/)
   * [Graphviz](https://graphviz.org/) (optional, to see Snakemake DAG in a graph) 
 * [Seqkit](https://bioinf.shenwei.me/seqkit/)
-  
-### Installations  
 
-Environment installation files are in `envs/`
-<details>
-<summary>crypto_div -- Snakemake runs in this environment. Install it with: </summary>  
-
-~~~
-mamba env create --file envs/crypto_div.yml
-~~~
-</details>
-
-<details>
-<summary>depth -- when used in Snakemake, Snakmake makes its installation from the `yaml` file. To use it independently install it with: </summary>
-
-~~~ 
-mamba env create --file envs/depth.yml
-~~~
-</details>
-
-<details>
-<summary> agat -- when used in Snakemake, Snakmake makes its installation from the `yaml` file. To use it independently install it with: </summary>
-
-Run this lines one by one:
-~~~
-conda create -n agat
-conda activate agat
-conda install perl-bioperl perl-clone perl-graph perl-lwp-simple perl-carp perl-sort-naturally perl-file-share perl-file-sharedir-install perl-moose perl-yaml perl-lwp-protocol-https -c bioconda
-conda install r-base
-conda install perl-statistics-r -c bioconda
-cpan install bioperl List::MoreUtils Term::ProgressBar
-git clone https://github.com/NBISweden/AGAT.git
-perl Makefile.PL 
-make
-make test
-make install
-conda deactivate
-~~~
-
-</details>
-
-<details>
-<summary>sra-tools -- To run the optional Module 0. Install it with: </summary>  
-
-~~~
-mamba env create --file envs/sra-tools.yml
-~~~
-</details>
+The following programs are installed by Snakemake in conda environments, if you want to install them use, the specified environment `yaml` files running the command `mamba env create --file envs/myname.yaml`.
+| Module | Software | Environment file |
+| :---------------- | ----: |----: |
+| Module 0|[Sra-Tools](https://github.com/ncbi/sra-tools) , [Entrez-Direct](https://www.ncbi.nlm.nih.gov/books/NBK25501/) |`envs/sra-tools.yaml`|
+| Module 1|[Litoff](https://github.com/agshumate/Liftoff), [AGAT](https://github.com/NBISweden/AGAT)|`envs/liftoff.yaml`,`envs/agat.yaml`|
+| Module 2|[Snippy](https://github.com/tseemann/snippy), [Litoff](https://github.com/agshumate/Liftoff), [AGAT](https://github.com/NBISweden/AGAT)|`envs/snippy.yaml`, `envs/liftoff.yaml`, `envs/agat.yaml`|
+| Module 3|[Mosdepth](https://github.com/brentp/mosdepth), [Samtools](https://www.htslib.org/)|`envs/depth.yaml`|
+| Module 3|R and R libraries -- tidyverse ComplexHeatmap, svglite, scales, RColorBrewer|`envs/r.yaml`|
 
 ## Overview  
 
@@ -94,7 +49,8 @@ mamba env create --file envs/sra-tools.yml
       * If your genomes have a mitochondrial chromosome you can run `bash get-removed-chrom.sh path-to-fasta path-to-gff seq_id` to remove it, in an environment with Seqkit available (crypto_div).
 
 
-### Scripts to be run in this order:
+### Modules to be run in this order:
+You can start from Module 0, Module 1 or Module 2.
 
 #### Module 0 (Optional): To download all fastqs of a BioProject
 Using the `sra-tools` environment:
