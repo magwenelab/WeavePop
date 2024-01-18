@@ -64,7 +64,9 @@ rule coverage_plot:
         "analysis/{sample}/coverage.svg",
         "analysis/{sample}/coverage_stats.svg",
         "analysis/{sample}/coverage_stats_good.csv",
-        "analysis/{sample}/coverage_stats_raw.csv",
+        "analysis/{sample}/coverage_stats_raw.csv"
+    conda:
+        "envs/r.yaml"
     log:
         "logs/coverage/{sample}.log"
     script:
@@ -101,6 +103,8 @@ rule coverage_stats_plots:
         "results/cov_global_raw.svg",
         "results/cov_median_raw.svg",
         "results/cov_mean_raw.svg",
+    conda:
+        "envs/r.yaml"
     log:
         "logs/coverage/stats_plot.log"    
     script:
@@ -124,6 +128,8 @@ rule mapq_distribution:
         "files/chromosome_names.csv"
     output:
         "analysis/{sample}/mapq_distribution.svg"
+    conda:
+        "envs/r.yaml"
     log:
         "logs/mapq-dist/{sample}.log"
     script:
@@ -135,6 +141,8 @@ rule cov_distribution:
         "files/chromosome_names.csv"
     output:
         "analysis/{sample}/cov_distribution.svg"
+    conda:
+        "envs/r.yaml"
     log:
         "logs/cov-dist/{sample}.log"
     script:
@@ -188,6 +196,8 @@ rule mapped_plot:
         config["sample_file"]
     output:
         "results/mapped_reads.svg"
+    conda:
+        "envs/r.yaml"
     log:
         "logs/stats/mapped.log"
     script:
@@ -200,6 +210,8 @@ rule mapq:
    output:
         "analysis/{sample}/mapq.bed",
         "analysis/{sample}/mapq_window.bed" 
+    conda:
+        "envs/depth.yaml"
    log:
        "logs/mapq/{sample}.log"
    script:
@@ -212,6 +224,8 @@ rule mapq_plot:
         config["locitsv"]
     output:
         "analysis/{sample}/mapq.svg"
+    conda:
+        "envs/r.yaml"
     log:
         "logs/mapq_plot/{sample}.log"
     script:

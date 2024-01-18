@@ -264,6 +264,8 @@ rule by_cds:
 #     output:
 #         "results/unmapped_count.tsv",
 #         "results/unmapped.svg"
+    # conda:
+    #     "envs/r.yaml"
 #     log:
 #         "logs/liftoff/unmapped_count_plot.log"
 #     script:

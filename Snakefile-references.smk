@@ -37,6 +37,8 @@ rule ref2ref_liftoff:
         lin_gff = REFDIR + "{lineage}.gff",
         unmapped = REFDIR + "{lineage}_unmapped_features.txt"
     threads: config["threads_liftoff"] 
+    conda:
+        "envs/liftoff.yaml"
     log:
         "logs/references/{lineage}_ref_liftoff.log"
     params:
@@ -63,6 +65,8 @@ rule unmapped_count_plot:
     output:
         REFDIR + "references_unmapped_count.tsv",
         REFDIR + "references_unmapped.svg"
+    conda:
+        "envs/r.yaml"
     log:
         "logs/references/unmapped_count_plot.log"
     script:
