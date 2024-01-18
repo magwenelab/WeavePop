@@ -15,7 +15,7 @@ The environment from which everything must me run has the following packages and
   * [Graphviz](https://graphviz.org/) (optional, to see Snakemake DAG in a graph) 
 * [Seqkit](https://bioinf.shenwei.me/seqkit/)
 
-The following programs are installed by Snakemake in conda environments, if you want to install them use, the specified environment `yaml` files running the command `mamba env create --file envs/myname.yaml`.
+The following programs are installed by Snakemake in conda environments, if you want to install them use, the specified environment `yaml` files running the command `mamba env create --file envs/envname.yaml`.
 | Module | Software | Environment file |
 | :---------------- | ----: |----: |
 | Module 0|[Sra-Tools](https://github.com/ncbi/sra-tools) , [Entrez-Direct](https://www.ncbi.nlm.nih.gov/books/NBK25501/) |`envs/sra-tools.yaml`|
