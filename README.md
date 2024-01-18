@@ -6,16 +6,17 @@
 
 ## Requirements
 
-The environment from which everything must me run has the following packages and you can install it with: `mamba env create --file envs/diversity.yml`
+The environment from which Modules 1-3 must me run has the following software and you can install it with: `mamba env create --file envs/diversity.yml`
 * Mamba/Conda [Microforge3](https://mamba.readthedocs.io/en/latest/installation/mamba-installation.html)
 * Python
 * Python modules -- Pandas, Click
 * [Xonsh](https://xon.sh/)
 * [Snakemake](https://snakemake.github.io/)
-  * [Graphviz](https://graphviz.org/) (optional, to see Snakemake DAG in a graph) 
+* [Graphviz](https://graphviz.org/) (optional, to seethe Snakemake DAG in a graph) 
 * [Seqkit](https://bioinf.shenwei.me/seqkit/)
 
-The following programs are installed by Snakemake in conda environments, if you want to install them use, the specified environment `yaml` files running the command `mamba env create --file envs/envname.yaml`.
+To install the required programs for each module you can run `mamba env create --file envs/envname.yaml` using the specified environment file in the table bellow. The environments for Modules 1 - 3 are installed by Snakemake, so you don't need to do it.
+
 | Module | Software | Environment file |
 | :---------------- | ----: |----: |
 | Module 0|[Sra-Tools](https://github.com/ncbi/sra-tools) , [Entrez-Direct](https://www.ncbi.nlm.nih.gov/books/NBK25501/) |`envs/sra-tools.yaml`|
@@ -24,18 +25,17 @@ The following programs are installed by Snakemake in conda environments, if you 
 | Module 3|[Mosdepth](https://github.com/brentp/mosdepth), [Samtools](https://www.htslib.org/)|`envs/depth.yaml`|
 | Module 3|R and R libraries -- tidyverse ComplexHeatmap, svglite, scales, RColorBrewer|`envs/r.yaml`|
 
-## Overview  
 
-### Structure of repository:  
+## Structure of repository:  
   * The working directory has the scripts and Snakefiles to run.  
   * `files/` has some of the starting files and files created by the pipeline.
   * `scripts/` has the scripts used by the Snakefiles, not by the user directly.  
   * `references/` has the reference genomes.  
-  * `analyses/` has one directory per sample, all the resulting files of the analyses performed per sample are there with a generic name.  
+  * `analyses/` has one directory per sample, all the resulting files of the analyses performed per sample will be there with a generic name.  
   * `results/` has the resulting files of the analyses that consider all the samples.  
   * `logs/` has the log files of all runs.  
 
-### Starting files: 
+## Starting files: 
   * `files/sample_metadata.csv` with columns (using these names): strain, sample (the names in the fastq file names), group (lineage or group to associate to a reference genome), more-optional-metadata-fields.
   * `files/lineage_references.csv` with columns (using these names): group, file (file name of reference genome assembly), strain, more-optional-metadata-fields (like genbank accession and bioproject)
   * Lists of genes of loci of interest:  
@@ -49,67 +49,109 @@ The following programs are installed by Snakemake in conda environments, if you 
       * If your genomes have a mitochondrial chromosome you can run `bash get-removed-chrom.sh path-to-fasta path-to-gff seq_id` to remove it, in an environment with Seqkit available (crypto_div).
 
 
-### Modules to be run in this order:
+## Modules to be run in this order:
 You can start from Module 0, Module 1 or Module 2.
 
-#### Module 0 (Optional): To download all fastqs of a BioProject
-Using the `sra-tools` environment:
-1. Get files: `xonsh get-seqdata-of-bioproject.xsh -p PRJNA685103`   
-2. Combine fastqs of the same sample, rename with sample ID and compress:
-   `parallel xonsh get-fastqs-combined.xsh {} files/read_pair_table.csv fastqs/ fastq_combined/ :::: files/samples.txt`
-It is possible that this module does not download all the samples that you expect (sometimes a BioProject has a BioSample associated but there is no SRA file for it). Make sure the metadata you are providing only 
-has the samples that will be processed in Module 2.
+### Module 0 (Optional):
+ To download all FASTQs of a BioProject, compress them and rename them with the SRS sample ID. If a sample has more than one set of read files they will be concatenated into one set (one forward and one reverse fastq).
 
-#### Module 1 (Optional): Annotate references according to main reference
-`Snakefile-references.smk` -- is a Snakefile to lift over annotations from the main reference into the reference genomes (`{lineage}.fasta`).  
-   * It currently works with:  
-  ` snakemake --snakefile Snakefile-references.smk --cores 1 --use-conda -p`:  
-      ⚠️ `--cores 1` is because there is a problem if Liftoff runs in parallel because the different jobs try to create `mainReference.gff_db` at the same time and that is not cool.     
-  * Output:  
+| Input provenance | Input | Description |
+| :---------------- | ----: | ----:|
+| - | BioProject ID |BioProject with valid SRA short read sequencing fastq files.|
 
-      *  `references/{lineage}.gff`
-      *  `references/{lineage}.gff.tsv`
-      *  `references/references_unmapped.svg`
-      * And more intermediate and extra files
+| Output | Output description |Needed for:|
+| :---------------- | ----: |----: | 
+|`srafiles/`|Directory with `.sra` files.| This module.|
+|`fastqs/`|Directory with `.fastq` files|This module.|
+|`files/read_pair_table.csv`|Column names: sample, run, file1, file2, size|This module.|
+|`files/unpaired_fastqs.csv`|Column names: sample, run, files|This module.|
+|`files/samples.txt`|List of SRS sample IDs|This module.|
+| `fastq_combined/` |Directory with `.fq.gz` files|Modules 1-3|
 
-#### Module 2: Main analyses
-`Snakefile-main.smk`-- is the Snakefile to run the analysis per sample, it uses the `config.yaml` file.   
-It runs **snippy**, **liftoff** and **agat** for each sample, it **extracts sequences** (cds and protein) of each sample and **concatenates** them by cds and by protein.
 
-  * Output:  
-    
-      * `{lineage}.gff.tsv`
-      * `{lineage}_predicted_cds.fa`
-      * `{lineage}_predicted_proteins.fa`
-      * `analyses/{sample}/snps.consensus.fa` and extra assembly files    
-      * `analyses/{sample}/snps.bam` and extra alignment files  
-      * `analyses/{sample}/snps.vcf` and extra variant calling files  
-      * `analyses/{sample}/lifted.gff_polished` and extra annotation files  
-      * `analyses/{sample}/predicted_cds.fa`  and extra index files
-      * `analyses/{sample}/predicted_proteins.fa`  and extra index files
-      * `results/cds/{protein}.fa`
-      * `results/proteins/{protein}.fa`
+~~~
+$ conda activate sra-tools
+$ xonsh get-seqdata-of-bioproject.xsh -p PRJNA685103
+$ parallel xonsh get-fastqs-combined.xsh {} files/read_pair_table.csv fastqs/ fastq_combined/ :::: files/samples.txt 
+~~~
 
-#### Module 3: Quality and depth analyses
-`Snakefile-depth-quality.smk`: Generates **quality and coverage** plots, and adds the MAPQ and Coverage of each locus's window to the GFF file.  
-   * Output:  
-  
-     * `results/mapped_reads.svg` and `results/mapping_stats.txt` plot and table with fraction of mappied reads per sample.  
-     * `analyses/{sample}/snps.bam.stats` and `analyses/{sample}/bamstats/` directory with `plot-bamstats` resulting plots.  
-     * `analyses/{sample}/coverage.svg` coverage along chromosome plot (with location of interesting loci).  
-     * `analyses/{sample}/cov_distribution_.svg` ditribution of coverage values plot.  
-     * `analyses/{sample}/mapq.svg` mapping quality along chromosome plot (with location of interesting loci).  
-     * `analyses/{sample}/mapq_distribution.svg` distribution of maping quality values plot.    
-     * `analyses/{sample}/annotation.gff` GFF file with complete annotation plus average MAPQ and coverage of windows in which the features are located.    
-     * `results/cov_norm_good.csv` table with all coverage stats of good quality mappings, per chromosome of all samples (genome-wide and per chromosome mean and median and normalized) 
-     * `results/cov_global_good.svg` plot of mean and median genome-wide coverage of good quality mappings of all samples.
-     * `results/cov_median_good.svg` plot of median coverage per chromosome (of good quality mappings) normalized by genome-wide median coverage.
-     * `results/cov_mean_good.svg` plot of mean coverage per chromosome (of good quality mappings) normalized by genome-wide mean coverage.
-     * `results/cov_norm_raw.csv` table with all coverage stats of all mappings, per chromosome of all samples (genome-wide and per chromosome mean and median and normalized) 
-     * `results/cov_global_raw.svg` plot of mean and median genome-wide coverage of all mappings of all samples.
-     * `results/cov_median_raw.svg` plot of median coverage per chromosome (of all mappings) normalized by genome-wide median coverage.
-     * `results/cov_mean_raw.svg` plot of mean coverage per chromosome (of all mappings) normalized by genome-wide mean coverage.
+It is possible that this module does not download all the samples that you expect (sometimes a BioProject has a BioSample associated but there is no SRA file for it). Make sure the **metadata** you provide only has the samples that will be processed in Module 2.
+
+### Module 1 (Optional):
+Lift over annotations from the main reference into the reference genomes.  
+
+| Input provenance | Input | Description |
+| :---------------- | ----: | ----:|
+||||
+
+| Output | Description |Needed for:|
+| :---------------- | ----: |----: | 
+| `references/{lineage}.gff`|||
+|`references/{lineage}.gff.tsv`|||
+|`references/references_unmapped.svg`|||
+
+~~~
+$ conda activate diveristy
+$ snakemake --snakefile Snakefile-references.smk --cores 1 --use-conda -p 
+~~~
+
+⚠️ `--cores 1` is because there is a problem if Liftoff runs in parallel because the different jobs try to create `mainReference.gff_db` at the same time and that is not cool.     
+
+### Module 2:
+Run the analysis per sample. It runs **snippy**, **liftoff** and **agat** for each sample, it **extracts sequences** (cds and protein) of each sample and **concatenates** them by cds and by protein.
+
+| Input | Description |Input provenance |
+|:---- | ----: |----------------:|
+||||
+
+| Output | Description |Needed for:|
+| :---------------- | ----: |----: | 
+|`{lineage}.gff.tsv`|||
+|`{lineage}_predicted_cds.fa`|||
+|`{lineage}_predicted_proteins.fa`|||
+|`analyses/{sample}/snps.consensus.fa` and extra assembly files|||
+|`analyses/{sample}/snps.bam` and extra alignment files |||
+|`analyses/{sample}/snps.vcf` and extra variant calling files |||
+|`analyses/{sample}/lifted.gff_polished` and extra annotation files|||
+|`analyses/{sample}/predicted_cds.fa`  and extra index files|||
+|`analyses/{sample}/predicted_proteins.fa`  and extra index files|||
+|`results/cds/{protein}.fa`|||
+|`results/proteins/{protein}.fa`|||
+~~~
+$ conda activate diveristy
+$ snakemake --snakefile Snakefile-main.smk --cores <n> --use-conda -p 
+~~~
+
+### Module 3: Quality and depth analyses
+
+Generates **quality and coverage** plots, and adds the MAPQ and Coverage of each locus's window to the GFF file.  
+| Input | Description |Input provenance |
+|:---- | ----: |----------------:|
+||||
+
+| Output | Description |Needed for: |
+|:---- | ----: |----------------:|
+|`results/mapped_reads.svg` and `results/mapping_stats.txt`|plot and table with fraction of mappied reads per sample.||
+|`analyses/{sample}/snps.bam.stats` and `analyses/{sample}/bamstats/`|directory with `plot-bamstats` resulting plots.  ||
+|`analyses/{sample}/coverage.svg`|coverage along chromosome plot (with location of interesting loci).  ||
+|`analyses/{sample}/cov_distribution_.svg`| ditribution of coverage values plot.  ||
+|`analyses/{sample}/mapq.svg` |mapping quality along chromosome plot (with location of interesting loci).  ||
+|`analyses/{sample}/mapq_distribution.svg`| distribution of maping quality values plot.||
+|`analyses/{sample}/annotation.gff` |GFF file with complete annotation plus average MAPQ and coverage of windows in which the features are located. |||
+|`results/cov_norm_good.csv` |table with all coverage stats of good quality mappings, per chromosome of all samples (genome-wide and per chromosome mean and median and normalized) ||
+|`results/cov_global_good.svg` |plot of mean and median genome-wide coverage of good quality mappings of all samples.||
+|`results/cov_median_good.svg`| plot of median coverage per chromosome (of good quality mappings) normalized by genome-wide median coverage.||
+|`results/cov_mean_good.svg` |plot of mean coverage per chromosome (of good quality mappings) normalized by genome-wide mean coverage.||
+|`results/cov_norm_raw.csv`| table with all coverage stats of all mappings, per chromosome of all samples (genome-wide and per chromosome mean and median and normalized) ||
+|`results/cov_global_raw.svg` |plot of mean and median genome-wide coverage of all mappings of all samples.||
+|`results/cov_median_raw.svg`| plot of median coverage per chromosome (of all mappings) normalized by genome-wide median coverage.||
+|`results/cov_mean_raw.svg`| plot of mean coverage per chromosome (of all mappings) normalized by genome-wide mean coverage.||
  
+~~~
+$ conda activate diveristy
+$ snakemake --snakefile Snakefile-depth-quality.smk --cores <n> --use-conda -p 
+~~~
+
 # To run all
 
 ```
