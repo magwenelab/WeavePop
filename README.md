@@ -60,13 +60,12 @@ You can start from Module 0, Module 1 or Module 2.
 
 | Output | Output description |Needed for:|
 | :---------------- | ----: |----: | 
-|`srafiles/`|Directory with `.sra` files.| This module.|
-|`fastqs/`|Directory with `.fastq` files|This module.|
-|`files/read_pair_table.csv`|Column names: sample, run, file1, file2, size|This module.|
-|`files/unpaired_fastqs.csv`|Column names: sample, run, files|This module.|
-|`files/samples.txt`|List of SRS sample IDs|This module.|
-| `fastq_combined/` |Directory with `.fq.gz` files|Modules 1-3|
-
+|`srafiles/`|Directory with `.sra` files.| This module|
+|`fastqs/`|Directory with `.fastq` files|This module|
+|`files/read_pair_table.csv`|Column names: sample, run, file1, file2, size|This module|
+|`files/unpaired_fastqs.csv`|Column names: sample, run, files|This module|
+|`files/samples.txt`|List of SRS sample IDs|This module|
+| `fastq_combined/` |Directory with `.fq.gz` files|Modules 2|
 
 ~~~
 $ conda activate sra-tools
@@ -79,15 +78,19 @@ It is possible that this module does not download all the samples that you expec
 ### Module 1 (Optional):
 Lift over annotations from the main reference into the reference genomes.  
 
-| Input provenance | Input | Description |
-| :---------------- | ----: | ----:|
-||||
+| Input | Description |Input provenance |
+| :---- | ----:|----------------: |
+|`files/sample_metadata.csv`| Columns: `sample`(the names in the fastq file names), `group` (lineage or group to associate to a reference genome), `strain`, more-optional-metadata-fields|You|
+|`references/mainReference.fasta`|Main reference genome assembly. Will be used to lift over the annotation of this genome to the reference genomes|You (Tipically public genome from FungiDB or NCBI)|
+|`references/mainReference.gff`|GFF annotation file of the genome described above|You (Tipically public genome from FungiDB or NCBI)|
+|`references/{lineage}.fasta`|Genome assembly of each group/lineage that you want to use as reference for the mapping in Module 2. The filename must have the names used in the `group` column of the `sample_metadata.csv`|You|
+|`files/features.txt`|List of level 1 features to lift over from the references, check [this](https://github.com/agshumate/Liftoff?tab=readme-ov-file#feature-types) to know more |Provided in this repository|
 
 | Output | Description |Needed for:|
 | :---------------- | ----: |----: | 
-| `references/{lineage}.gff`|||
-|`references/{lineage}.gff.tsv`|||
-|`references/references_unmapped.svg`|||
+| `references/{lineage}.gff`|Annotation GFF of each group/lineage|Module 2,3|
+|`references/mainReference.gff.tsv`|Tabular version of the GFF of the main reference|Module 2,3|
+|`references/references_unmapped.svg`|Heatmap showing the features that were not lifted over from the main reference to each group genome|-|
 
 ~~~
 $ conda activate diveristy
