@@ -1,23 +1,23 @@
-# Required for all modules
+## Required 
 sample_file: "files/sample_metadata.csv" # CSV table with columns: sample, group, strain, and extra metadata.
 fastq_suffix1: "_1.fq.gz" # Everything after the sample name of the forward reads file.
 fastq_suffix2: "_2.fq.gz" # Everything after the sample name of the reverse reads file.
 reference_directory: "references/" # Directory name with your references (must end with the "/" )
 fastq_directory: "fastq_combined/" # Directory name with your fastq files (must end with the "/")
 
-# Required for Module 1
+## Required for Module 1 
 reference_gff: "FungiDB-65_CneoformansH99.gff" # Main reference gff. Ignore if Module 1 will not be used.
 reference_fasta: "FungiDB-65_CneoformansH99_Genome.fasta" # Main reference fasta. Ignore if Module 1 will not be used.
 
-# Parameters
-threads_snippy: 12
-threads_liftoff: 12
-threads_mosdepth: 12
+## Required for Module 2 
+loci: "-g files/Centromeres.txt -g files/MAT.txt -g files/rRNA.txt" # Leave a blank string "" if no loci should be plotted. Filename should be my-locus-name.txt and have the option -g before each filename. 
+# Parameters for Module 2 (change according to your needs)
+threads_snippy: 4
+threads_liftoff: 4
+
+## Required for Module 3
+metad_color: "isolation_source" # Name of character column in sample_metadata.csv to color each sample in the coverage per chromosome plots.
+# Parameters for Module 3 (change according to your needs)
+threads_mosdepth: 4
 mosdepth_window: 500
 mosdepth_min_mapq: 20
-
-# Required for Module 2 if you will run Module 3. Leave a blank string "" if no loci should be plotted.
-loci: "-g files/Centromeres.txt -g files/MAT.txt -g files/rRNA.txt" # Names of files with gene IDs to add to plots. Filename should be my-locus-name.txt and have the option -g before each filename. 
-
-# Required for Module 3
-metad_color: "isolation_source" # Name of character column in sample_metadata.csv to color each sample in the coverage per chromosome plots.
