@@ -22,7 +22,7 @@ rule all:
         expand("analysis/{sample}/mapq_cov_window.bed",sample=samples),
         expand("analysis/{sample}/annotation.gff",sample=samples),
         expand(REFDIR + "{lineage}.gff.tsv", lineage= LINS),
-        config["locitsv"]
+        "files/loci_to_plot.tsv"
 
 rule mosdepth:
     input:
@@ -152,7 +152,7 @@ rule loci:
     input:
         expand(REFDIR + "{lineage}.gff.tsv", lineage=LINS)
     output:
-        config["locitsv"]
+        "files/loci_to_plot.tsv"
     params:
         loci=config["loci"]
     log: 

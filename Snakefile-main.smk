@@ -32,7 +32,7 @@ rule reference_table:
     input:
         config["sample_file"],
     output:
-        config["sample_reference_file"]
+        "files/sample_reference.csv"
     params:
         f1 = config["fastq_suffix1"],
         f2= config["fastq_suffix2"] 
@@ -94,11 +94,11 @@ rule snippy:
     input:
         config["fastq_directory"] + "{sample}" + config["fastq_suffix1"],
         config["fastq_directory"] + "{sample}" + config["fastq_suffix2"],
-        config["sample_reference_file"]
+        "files/sample_reference.csv"
     params:
-        ref = lambda wildcards: (REFDIR + pd.read_csv(config["sample_reference_file"], sep = ",", index_col=['sample']).loc[wildcards.sample,'refgenome']),
-        file1 = lambda wildcards: (pd.read_csv(config["sample_reference_file"], sep = ",", index_col=['sample']).loc[wildcards.sample,'file1']),
-        file2 = lambda wildcards: (pd.read_csv(config["sample_reference_file"], sep = ",", index_col=['sample']).loc[wildcards.sample,'file2']),
+        ref = lambda wildcards: (REFDIR + pd.read_csv("files/sample_reference.csv", sep = ",", index_col=['sample']).loc[wildcards.sample,'refgenome']),
+        file1 = lambda wildcards: (pd.read_csv("files/sample_reference.csv", sep = ",", index_col=['sample']).loc[wildcards.sample,'file1']),
+        file2 = lambda wildcards: (pd.read_csv("files/sample_reference.csv", sep = ",", index_col=['sample']).loc[wildcards.sample,'file2']),
         fqdir = config["fastq_directory"] 
     output:
         "analysis/{sample}/snps.consensus.fa",
@@ -119,12 +119,12 @@ rule snippy:
 
 rule liftoff:
     input:
-        config["sample_reference_file"],
+        "files/sample_reference.csv",
         target = "analysis/{sample}/snps.consensus.fa",
         features = "files/features.txt"
     params:
-        refgff = lambda wildcards:(REFDIR + pd.read_csv(config["sample_reference_file"], sep = ",", index_col=['sample']).loc[wildcards.sample, 'group'] + ".gff"),
-        refgenome = lambda wildcards:(REFDIR + pd.read_csv(config["sample_reference_file"], sep = ",", index_col=['sample']).loc[wildcards.sample, 'refgenome'])
+        refgff = lambda wildcards:(REFDIR + pd.read_csv("files/sample_reference.csv", sep = ",", index_col=['sample']).loc[wildcards.sample, 'group'] + ".gff"),
+        refgenome = lambda wildcards:(REFDIR + pd.read_csv("files/sample_reference.csv", sep = ",", index_col=['sample']).loc[wildcards.sample, 'refgenome'])
     output:
         "analysis/{sample}/lifted.gff",        
         "analysis/{sample}/lifted.gff_polished",

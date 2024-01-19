@@ -20,7 +20,7 @@ rule coverage_plot:
         "analysis/{sample}/coverage.regions.bed.gz",
         "analysis/{sample}/coverage_good.regions.bed.gz",
         "files/chromosome_names.csv",
-        config["locitsv"]
+        "files/loci_to_plot.tsv"
     output:
         "analysis/{sample}/coverage.svg",
         "analysis/{sample}/coverage_stats.svg",
@@ -126,7 +126,7 @@ rule mapq_plot:
     input:
         "analysis/{sample}/mapq_window.bed",
         "files/chromosome_names.csv",
-        config["locitsv"]
+        "files/loci_to_plot.tsv"
     output:
         "analysis/{sample}/mapq.svg"
     conda:
