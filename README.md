@@ -38,10 +38,11 @@ The environments for Modules 1 - 3 are installed by Snakemake, so you don't need
   * `logs/` has the log files of all runs.  
 
 ## Starting files: 
-  * `config.yaml`: This is a Snakemake configuration file, provided in this repository, that you must edit according to your filenames and desired parameters.
-  * `files/sample_metadata.csv` with columns (using these names):  sample (the names in the fastq file names), group (lineage or group to associate to a reference genome), strain, more-optional-metadata-fields.
+
+  * `config.yaml`: This is a Snakemake configuration file, provided [here](https://github.com/magwenelab/DiversityPipeline/blob/main/config.yaml), that you must edit according to your filenames and desired parameters.
+  * `files/sample_metadata.csv` with columns (using these exact names):  sample (the names in the fastq file names), group (lineage or group to associate to a reference genome), strain, more-optional-metadata-fields.
   * Lists of genes of loci of interest:  
-    * `files/locusA.txt` (with IDs of genes in main reference GFF)
+    * `files/Locus.txt` (with IDs of genes in main reference GFF)
   * `files/chromosome_names.csv` with columns (without column names): group, chromosome ID (the sequence ID in the Fasta and GFF of the references), chromosome name (typically a number). If your genomes are Complete Genomes from NCBI use `bash get-chromosome_names.sh` to get this file.
   * `files/features.txt` list of feature names to lift over. This file is provided in this repository.
   * `references/` directory with:
@@ -49,6 +50,8 @@ The environments for Modules 1 - 3 are installed by Snakemake, so you don't need
     * Optional: Fasta and GFF files of main reference (one with available annotation with the desired gene IDs). If your main reference is one of your reference genomes, duplicate the genome files and give another name to the ones that will be used as main.
     * If main reference is not provided, GFF files of reference genomes are needed (with the same name as the fastas).
       * If your genomes have a mitochondrial chromosome you can run `bash get-removed-chrom.sh path-to-fasta path-to-gff seq_id` to remove it, in an environment with Seqkit available (diversity).
+
+See example files [here](https://github.com/magwenelab/DiversityPipeline/tree/main/files).
 
 
 ## Modules
