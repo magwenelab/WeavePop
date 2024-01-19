@@ -1,0 +1,11 @@
+prefix: bamstats
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - samtools
+  - gnuplot
+  - matplotlib
+  - tectonic
+  - texlive-core
