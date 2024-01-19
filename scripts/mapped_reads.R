@@ -41,5 +41,7 @@ plot <- ggplot(stats_long, aes(color = measurement, x=name, y= value))+
     ylab("Percentage of reads") +
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = 5))
 
-#ggsave("./results/mapped_reads.svg", plot = plot, units = "cm", height = 15, width = 60)
-ggsave(snakemake@output[[1]], plot = plot, units = "cm", height = 15, width = 60)
+gwidth <- 12 + 0.15 * nlevels(stats_long$name)
+gheight <- gwidth/2
+
+ggsave(snakemake@output[[1]], plot = plot,  units = "cm", height = gheight, width = gwidth)

@@ -1,0 +1,11 @@
+name: depth
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:  
+  - samtools
+  - bedtools
+  - xonsh
+  - pandas
+  - click
