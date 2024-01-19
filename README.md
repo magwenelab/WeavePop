@@ -15,7 +15,7 @@ The environment from which Modules 1-3 must me run has the following software an
 * [Graphviz](https://graphviz.org/) (optional, to seethe Snakemake DAG in a graph) 
 * [Seqkit](https://bioinf.shenwei.me/seqkit/)
 
-To install the required programs for each module you can run `mamba env create --file envs/envname.yaml` using the specified environment file in the table bellow. The environments for Modules 1 - 3 are installed by Snakemake, so you don't need to do it.
+The environments for Modules 1 - 3 are installed by Snakemake, so you don't need to do it. If you want to install them you can run `mamba env create --file envs/envname.yaml` using the specified environment file in the table bellow. 
 
 | Module | Software | Environment files |
 | :---------------- | ----: |----: |
@@ -54,12 +54,17 @@ You can start from Module 0, Module 1 or Module 2.
 
 ### Module 0 (Optional):
 To download all FASTQs of a BioProject, compress them and rename them with the SRS sample ID. If a sample has more than one set of read files they will be concatenated into one set (one forward and one reverse fastq).
+<details>
+<summary>Input</summary> 
 
 | Input origin | Input | Description |
 | :---------------- | ----: | ----:|
 | - | BioProject ID |BioProject with valid SRA short read sequencing fastq files.|
+</details>
+<details>
+<summary>Output</summary> 
 
-| Output | Output description |Needed for:|
+| Output | Output description |Needed for|
 | :---------------- | ----: |----: | 
 |`srafiles/`|Directory with `.sra` files.| This module|
 |`fastqs/`|Directory with `.fastq` files|This module|
@@ -67,6 +72,7 @@ To download all FASTQs of a BioProject, compress them and rename them with the S
 |`files/unpaired_fastqs.csv`|Column names: sample, run, files|This module|
 |`files/samples.txt`|List of SRS sample IDs|This module|
 | `fastq_combined/` |Directory with `.fq.gz` files|Modules 2|
+</details>
 
 ~~~
 $ conda activate sra-tools
@@ -78,6 +84,8 @@ It is possible that this module does not download all the samples that you expec
 
 ### Module 1 (Optional):
 Lift over annotations from the main reference into the reference genomes.  
+<details>
+<summary>Input</summary> 
 
 | Input | Description |Input origin |
 | :---- | ----:|----------------: |
@@ -86,12 +94,17 @@ Lift over annotations from the main reference into the reference genomes.
 |`references/mainReference.gff`|GFF annotation file of the genome described above|You (Tipically public genome from FungiDB or NCBI)|
 |`references/{lineage}.fasta`|Genome assembly of each group/lineage. The filename must have the names used in the `group` column of the `sample_metadata.csv`|You|
 |`files/features.txt`|List of level 1 features to lift over from the references, check [this](https://github.com/agshumate/Liftoff?tab=readme-ov-file#feature-types) to know more |Provided in this repository|
+</details>
 
-|Output | Description |Needed for:|
+<details>
+<summary>Output</summary> 
+
+|Output | Description |Needed for|
 |:---------------- | ----: |----: | 
 |`references/mainReference.gff.tsv`|Tabular version of the GFF of the main reference|Module 2,3|
 |`references/{lineage}.gff`|Annotation GFF of each group/lineage|Module 2,3|
 |`references/references_unmapped.svg`|Heatmap showing the features that were not lifted over from the main reference to each group's genome|-|
+</details>
 
 ~~~
 $ conda activate diversity
@@ -102,6 +115,8 @@ $ snakemake --snakefile Snakefile-references.smk --cores 1 --use-conda -p
 
 ### Module 2:
 It runs **snippy**, **liftoff** and **agat** for each sample, it **extracts sequences** (cds and protein) of each sample.
+<details>
+<summary>Input</summary>  
 
 | Input | Description |Input origin |
 |:---- | ----: |----------------:|
@@ -110,10 +125,12 @@ It runs **snippy**, **liftoff** and **agat** for each sample, it **extracts sequ
 |`references/{lineage}.fasta`|Genome assembly of each group/lineage. The filename must have the names used in the `group` column of the `sample_metadata.csv`|You|
 |`references/{lineage}.gff`|Annotation GFF of each group/lineage|Module 1 or You|
 |`files/features.txt`|List of level 1 features to lift over from the references, check [this](https://github.com/agshumate/Liftoff?tab=readme-ov-file#feature-types) to know more |Provided in this repository|
+</details>
 
+<details>
+<summary>Output</summary> 
 
-
-| Output | Description |Needed for:|
+| Output | Description |Needed for|
 | :---------------- | ----: |----: | 
 |`{lineage}_predicted_cds.fa`|Fasta file with the coding sequences (for each isoform) for each reference genome||
 |`{lineage}_predicted_proteins.fa`|Fasta file with aminoacid sequence of each protein isoform for each reference genome||
@@ -125,57 +142,90 @@ It runs **snippy**, **liftoff** and **agat** for each sample, it **extracts sequ
 |`analyses/{sample}/predicted_proteins.fa`  and extra index files|Fasta file with aminoacid sequence of each protein isoform for each sample||
 |`results/cds/{protein}.fa`|A fasta file for each isoform with the coding sequence of all samples||
 |`results/proteins/{protein}.fa`|A fasta file for each isoform with the aminoacid sequence of all samples||
+</details>
+
 ~~~
-$ conda activate diveristy
+$ conda activate diversity
 $ snakemake --snakefile Snakefile-main.smk --cores <n> --use-conda -p 
 ~~~
 
 ### Module 3: Quality and depth analyses
 
 Generates **quality and coverage** plots, and adds the MAPQ and Coverage of each locus's window to the GFF file.  
+
+<details>
+<summary>Input</summary>  
+
 | Input | Description |Input origin |
 |:---- | ----: |----------------:|
+|`files/sample_metadata.csv`| Columns: `sample`(the names in the fastq file names), `group` (lineage or group to associate to a reference genome), `strain`, more-optional-metadata-fields|You|
 |`analyses/{sample}/snps.bam`||Module 2|
 |`analyses/{sample}/lifted.gff_polished`||Module 2|
 |`references/{lineage}.gff`||Module 1 or You|
+</details>
+<details>
+<summary>Output</summary> 
 
-| Output | Description |Needed for: |
+| Output | Description |Needed for |
 |:---- | ----: |----------------:|
-|`analyses/{sample}/snps.bam.stats` and `analyses/{sample}/bamstats/`|directory with `plot-bamstats` resulting plots.  ||
-|`analyses/{sample}/annotation.gff` |GFF file with complete annotation plus average MAPQ and coverage of windows in which the features are located. |||
+|`analyses/{sample}/coverage.regions.bed.gz`|Mean coverage of each window | This module and Module 4|
+|`analyses/{sample}/coverage_good.regions.bed.gz`|Mean coverage of each window without bad quality mappings |Module 4|
+|`analyses/{sample}/cov.csv`| Number of positions with each coverage value |Module 4|
+|`analyses/{sample}/mapq.csv`| Number of positions with each MAPQ value |Module 4|
+|`analyses/{sample}/snps.bam.stats`|Results of samtools stats |This module and Module 4|
+|`results/mapping_stats.txt`|Stats on number o mapped reads of all samples|Module 4|
+|`analysis/{sample}/mapq.bed`|Mapping quality of each position|Module 4|
+|`analysis/{sample}/mapq_window.bed`|Mean mapping quality of each window||
+|`analysis/{sample}/mapq_cov_window.bed`|Mean MAPQ and Coverage of each window ||
+|`analyses/{sample}/annotation.gff` |GFF file with complete annotation plus average MAPQ and coverage of the windows in which the features are located. ||
+|`references/{lineage}.gff.tsv`|GFF in table format |This module|
+|`files/loci_to_plot.tsv`|GFF in TSV format of all reference genomes, only with genes in loci of interest. Includes a column with the name of the locus |Module 4|
+</details>
 
-|`results/cov_norm_raw.csv`| table with all coverage stats of all mappings, per chromosome of all samples (genome-wide and per chromosome mean and median and normalized) ||
-
- 
 ~~~
-$ conda activate diveristy
+$ conda activate diversity
 $ snakemake --snakefile Snakefile-depth-quality.smk --cores <n> --use-conda -p 
 ~~~
 
 ### Module 4: Plotting
 
+<details>
+<summary>Input</summary>  
+
 | Input | Description |Input origin |
 |:---- | ----: |----------------:|
-||||
-||||
-||||
+|`files/sample_metadata.csv`| Columns: `sample`(the names in the fastq file names), `group` (lineage or group to associate to a reference genome), `strain`, more-optional-metadata-fields|You|
+|`files/chromosome_names.csv`||You, if your genomes are Complete Genomes from NCBI run `bash get-chromosome_names.sh` to get this file.|
+|`analyses/{sample}/coverage.regions.bed.gz`|Mean coverage of each window |Module 3|
+|`analyses/{sample}/coverage_good.regions.bed.gz`|Mean coverage of each window without bad quality mappings |Module 3|
+|`analyses/{sample}/cov.csv`|Number of positions with each coverage value |Module 3|
+|`analyses/{sample}/mapq.csv`|Number of positions with each MAPQ value |Module 3|
+|`analyses/{sample}/snps.bam.stats`|Results of samtools stats|Module 3|
+|`results/mapping_stats.txt`|Stats on number o mapped reads of all samples|Module 3|
+|`analysis/{sample}/mapq_window.bed`|Mean MAPQ and Coverage of each window |Module 3|
+|`files/loci_to_plot.tsv`|GFF in TSV format of all reference genomes, only with genes in loci of interest. Includes a column with the name of the locus|Module 3|
+</details>
 
-| Output | Description |Needed for: |
-|:---- | ----: |----------------:|
-|`results/mapped_reads.svg` and `results/mapping_stats.txt`|plot and table with fraction of mappied reads per sample.||
-|`analyses/{sample}/bamstats/`|directory with `plot-bamstats` resulting plots.  ||
-|`analyses/{sample}/coverage.svg`|coverage along chromosome plot (with location of interesting loci).  ||
-|`analyses/{sample}/cov_distribution_.svg`| ditribution of coverage values plot.  ||
-|`analyses/{sample}/mapq.svg` |mapping quality along chromosome plot (with location of interesting loci).  ||
-|`analyses/{sample}/mapq_distribution.svg`| distribution of maping quality values plot.||
-|`results/cov_norm_good.csv` |table with all coverage stats of good quality mappings, per chromosome of all samples (genome-wide and per chromosome mean and median and normalized) ||
-|`results/cov_global_good.svg` |plot of mean and median genome-wide coverage of good quality mappings of all samples.||
-|`results/cov_median_good.svg`| plot of median coverage per chromosome (of good quality mappings) normalized by genome-wide median coverage.||
-|`results/cov_mean_good.svg` |plot of mean coverage per chromosome (of good quality mappings) normalized by genome-wide mean coverage.||
-|`results/cov_norm_raw.csv`| table with all coverage stats of all mappings, per chromosome of all samples (genome-wide and per chromosome mean and median and normalized) ||
-|`results/cov_global_raw.svg` |plot of mean and median genome-wide coverage of all mappings of all samples.||
-|`results/cov_median_raw.svg`| plot of median coverage per chromosome (of all mappings) normalized by genome-wide median coverage.||
-|`results/cov_mean_raw.svg`| plot of mean coverage per chromosome (of all mappings) normalized by genome-wide mean coverage.||
+<details>
+<summary>Output</summary>  
+
+| Output | Description |
+|:---- | ----: |
+|`analyses/{sample}/bamstats/`|Directory with `plot-bamstats` resulting plots. |
+|`results/mapped_reads.svg` and `results/mapping_stats.txt`|plot and table with fraction of mappied reads per sample.|
+|`analyses/{sample}/coverage.svg`|coverage along chromosome plot (with location of interesting loci).  |
+|`analyses/{sample}/cov_distribution.svg`| ditribution of coverage values plot.  |
+|`analyses/{sample}/mapq.svg` |mapping quality along chromosome plot (with location of interesting loci).  |
+|`analyses/{sample}/mapq_distribution.svg`| distribution of maping quality values plot.|
+|`results/cov_norm_good.csv` |table with all coverage stats of good quality mappings, per chromosome of all samples (genome-wide and per chromosome mean and median and normalized) |
+|`results/cov_global_good.svg` |plot of mean and median genome-wide coverage of good quality mappings of all samples.|
+|`results/cov_median_good.svg`| plot of median coverage per chromosome (of good quality mappings) normalized by genome-wide median coverage.|
+|`results/cov_mean_good.svg` |plot of mean coverage per chromosome (of good quality mappings) normalized by genome-wide mean coverage.|
+|`results/cov_norm_raw.csv`| table with all coverage stats of all mappings, per chromosome of all samples (genome-wide and per chromosome mean and median and normalized) |
+|`results/cov_global_raw.svg` |plot of mean and median genome-wide coverage of all mappings of all samples.|
+|`results/cov_median_raw.svg`| plot of median coverage per chromosome (of all mappings) normalized by genome-wide median coverage.|
+|`results/cov_mean_raw.svg`| plot of mean coverage per chromosome (of all mappings) normalized by genome-wide mean coverage.|
+</details>
 
 # To run all
 
