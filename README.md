@@ -17,13 +17,13 @@ The environment from which Modules 1-3 must me run has the following software an
 
 To install the required programs for each module you can run `mamba env create --file envs/envname.yaml` using the specified environment file in the table bellow. The environments for Modules 1 - 3 are installed by Snakemake, so you don't need to do it.
 
-| Module | Software | Environment file |
+| Module | Software | Environment files |
 | :---------------- | ----: |----: |
 | Module 0|[Sra-Tools](https://github.com/ncbi/sra-tools) , [Entrez-Direct](https://www.ncbi.nlm.nih.gov/books/NBK25501/) |`envs/sra-tools.yaml`|
 | Module 1|[Litoff](https://github.com/agshumate/Liftoff), [AGAT](https://github.com/NBISweden/AGAT)|`envs/liftoff.yaml`,`envs/agat.yaml`|
 | Module 2|[Snippy](https://github.com/tseemann/snippy), [Litoff](https://github.com/agshumate/Liftoff), [AGAT](https://github.com/NBISweden/AGAT)|`envs/snippy.yaml`, `envs/liftoff.yaml`, `envs/agat.yaml`|
-| Module 3|[Mosdepth](https://github.com/brentp/mosdepth), [Samtools](https://www.htslib.org/)|`envs/depth.yaml`|
-| Module 3|R and R libraries -- tidyverse ComplexHeatmap, svglite, scales, RColorBrewer|`envs/r.yaml`|
+| Module 3|[Mosdepth](https://github.com/brentp/mosdepth), [Samtools](https://www.htslib.org/)|`envs/depth.yaml`, `envs/samtools.yaml`|
+| Module 4|[Samtools](https://www.htslib.org/), Gnuplot, matplotlib, tectonic, texlive-core, R and R libraries -- tidyverse ComplexHeatmap, svglite, scales, RColorBrewer|`envs/plot-bamstats.yaml`,`envs/r.yaml`|
 
 
 ## Structure of repository:  
@@ -48,13 +48,14 @@ To install the required programs for each module you can run `mamba env create -
       * If your genomes have a mitochondrial chromosome you can run `bash get-removed-chrom.sh path-to-fasta path-to-gff seq_id` to remove it, in an environment with Seqkit available (crypto_div).
 
 
-## Modules to be run in this order:
+## Modules
+Modules should be run in order 0 to 4.  
 You can start from Module 0, Module 1 or Module 2.
 
 ### Module 0 (Optional):
- To download all FASTQs of a BioProject, compress them and rename them with the SRS sample ID. If a sample has more than one set of read files they will be concatenated into one set (one forward and one reverse fastq).
+To download all FASTQs of a BioProject, compress them and rename them with the SRS sample ID. If a sample has more than one set of read files they will be concatenated into one set (one forward and one reverse fastq).
 
-| Input provenance | Input | Description |
+| Input origin | Input | Description |
 | :---------------- | ----: | ----:|
 | - | BioProject ID |BioProject with valid SRA short read sequencing fastq files.|
 
@@ -78,47 +79,52 @@ It is possible that this module does not download all the samples that you expec
 ### Module 1 (Optional):
 Lift over annotations from the main reference into the reference genomes.  
 
-| Input | Description |Input provenance |
+| Input | Description |Input origin |
 | :---- | ----:|----------------: |
 |`files/sample_metadata.csv`| Columns: `sample`(the names in the fastq file names), `group` (lineage or group to associate to a reference genome), `strain`, more-optional-metadata-fields|You|
-|`references/mainReference.fasta`|Main reference genome assembly. Will be used to lift over the annotation of this genome to the reference genomes|You (Tipically public genome from FungiDB or NCBI)|
+|`references/mainReference.fasta`|Main reference genome assembly.|You (Tipically public genome from FungiDB or NCBI)|
 |`references/mainReference.gff`|GFF annotation file of the genome described above|You (Tipically public genome from FungiDB or NCBI)|
-|`references/{lineage}.fasta`|Genome assembly of each group/lineage that you want to use as reference for the mapping in Module 2. The filename must have the names used in the `group` column of the `sample_metadata.csv`|You|
+|`references/{lineage}.fasta`|Genome assembly of each group/lineage. The filename must have the names used in the `group` column of the `sample_metadata.csv`|You|
 |`files/features.txt`|List of level 1 features to lift over from the references, check [this](https://github.com/agshumate/Liftoff?tab=readme-ov-file#feature-types) to know more |Provided in this repository|
 
-| Output | Description |Needed for:|
-| :---------------- | ----: |----: | 
-| `references/{lineage}.gff`|Annotation GFF of each group/lineage|Module 2,3|
+|Output | Description |Needed for:|
+|:---------------- | ----: |----: | 
 |`references/mainReference.gff.tsv`|Tabular version of the GFF of the main reference|Module 2,3|
-|`references/references_unmapped.svg`|Heatmap showing the features that were not lifted over from the main reference to each group genome|-|
+|`references/{lineage}.gff`|Annotation GFF of each group/lineage|Module 2,3|
+|`references/references_unmapped.svg`|Heatmap showing the features that were not lifted over from the main reference to each group's genome|-|
 
 ~~~
-$ conda activate diveristy
+$ conda activate diversity
 $ snakemake --snakefile Snakefile-references.smk --cores 1 --use-conda -p 
 ~~~
 
 ⚠️ `--cores 1` is because there is a problem if Liftoff runs in parallel because the different jobs try to create `mainReference.gff_db` at the same time and that is not cool.     
 
 ### Module 2:
-Run the analysis per sample. It runs **snippy**, **liftoff** and **agat** for each sample, it **extracts sequences** (cds and protein) of each sample and **concatenates** them by cds and by protein.
+It runs **snippy**, **liftoff** and **agat** for each sample, it **extracts sequences** (cds and protein) of each sample.
 
-| Input | Description |Input provenance |
+| Input | Description |Input origin |
 |:---- | ----: |----------------:|
-||||
+|`files/sample_metadata.csv`| Columns: `sample`(the names in the fastq file names), `group` (lineage or group to associate to a reference genome), `strain`, more-optional-metadata-fields|You|
+|`fastq_combined/` |Directory with `.fq.gz` files|Module 0 or You |
+|`references/{lineage}.fasta`|Genome assembly of each group/lineage. The filename must have the names used in the `group` column of the `sample_metadata.csv`|You|
+|`references/{lineage}.gff`|Annotation GFF of each group/lineage|Module 1 or You|
+|`files/features.txt`|List of level 1 features to lift over from the references, check [this](https://github.com/agshumate/Liftoff?tab=readme-ov-file#feature-types) to know more |Provided in this repository|
+
+
 
 | Output | Description |Needed for:|
 | :---------------- | ----: |----: | 
-|`{lineage}.gff.tsv`|||
-|`{lineage}_predicted_cds.fa`|||
-|`{lineage}_predicted_proteins.fa`|||
-|`analyses/{sample}/snps.consensus.fa` and extra assembly files|||
-|`analyses/{sample}/snps.bam` and extra alignment files |||
-|`analyses/{sample}/snps.vcf` and extra variant calling files |||
-|`analyses/{sample}/lifted.gff_polished` and extra annotation files|||
-|`analyses/{sample}/predicted_cds.fa`  and extra index files|||
-|`analyses/{sample}/predicted_proteins.fa`  and extra index files|||
-|`results/cds/{protein}.fa`|||
-|`results/proteins/{protein}.fa`|||
+|`{lineage}_predicted_cds.fa`|Fasta file with the coding sequences (for each isoform) for each reference genome||
+|`{lineage}_predicted_proteins.fa`|Fasta file with aminoacid sequence of each protein isoform for each reference genome||
+|`analyses/{sample}/snps.consensus.fa` and extra assembly files|A version of the corresponding reference genome with the SNPs of the sample instead.||
+|`analyses/{sample}/snps.bam` and extra alignment files |Mapping BAM file for each sample|Module 3|
+|`analyses/{sample}/snps.vcf` and extra variant calling files |Variants VCF file for each sample||
+|`analyses/{sample}/lifted.gff_polished` and extra annotation files|GFF annotation file|Module 3|
+|`analyses/{sample}/predicted_cds.fa`  and extra index files|Fasta file with the coding sequences (for each isoform) for each sample||
+|`analyses/{sample}/predicted_proteins.fa`  and extra index files|Fasta file with aminoacid sequence of each protein isoform for each sample||
+|`results/cds/{protein}.fa`|A fasta file for each isoform with the coding sequence of all samples||
+|`results/proteins/{protein}.fa`|A fasta file for each isoform with the aminoacid sequence of all samples||
 ~~~
 $ conda activate diveristy
 $ snakemake --snakefile Snakefile-main.smk --cores <n> --use-conda -p 
@@ -127,19 +133,41 @@ $ snakemake --snakefile Snakefile-main.smk --cores <n> --use-conda -p
 ### Module 3: Quality and depth analyses
 
 Generates **quality and coverage** plots, and adds the MAPQ and Coverage of each locus's window to the GFF file.  
-| Input | Description |Input provenance |
+| Input | Description |Input origin |
 |:---- | ----: |----------------:|
+|`analyses/{sample}/snps.bam`||Module 2|
+|`analyses/{sample}/lifted.gff_polished`||Module 2|
+|`references/{lineage}.gff`||Module 1 or You|
+
+| Output | Description |Needed for: |
+|:---- | ----: |----------------:|
+|`analyses/{sample}/snps.bam.stats` and `analyses/{sample}/bamstats/`|directory with `plot-bamstats` resulting plots.  ||
+|`analyses/{sample}/annotation.gff` |GFF file with complete annotation plus average MAPQ and coverage of windows in which the features are located. |||
+
+|`results/cov_norm_raw.csv`| table with all coverage stats of all mappings, per chromosome of all samples (genome-wide and per chromosome mean and median and normalized) ||
+
+ 
+~~~
+$ conda activate diveristy
+$ snakemake --snakefile Snakefile-depth-quality.smk --cores <n> --use-conda -p 
+~~~
+
+### Module 4: Plotting
+
+| Input | Description |Input origin |
+|:---- | ----: |----------------:|
+||||
+||||
 ||||
 
 | Output | Description |Needed for: |
 |:---- | ----: |----------------:|
 |`results/mapped_reads.svg` and `results/mapping_stats.txt`|plot and table with fraction of mappied reads per sample.||
-|`analyses/{sample}/snps.bam.stats` and `analyses/{sample}/bamstats/`|directory with `plot-bamstats` resulting plots.  ||
+|`analyses/{sample}/bamstats/`|directory with `plot-bamstats` resulting plots.  ||
 |`analyses/{sample}/coverage.svg`|coverage along chromosome plot (with location of interesting loci).  ||
 |`analyses/{sample}/cov_distribution_.svg`| ditribution of coverage values plot.  ||
 |`analyses/{sample}/mapq.svg` |mapping quality along chromosome plot (with location of interesting loci).  ||
 |`analyses/{sample}/mapq_distribution.svg`| distribution of maping quality values plot.||
-|`analyses/{sample}/annotation.gff` |GFF file with complete annotation plus average MAPQ and coverage of windows in which the features are located. |||
 |`results/cov_norm_good.csv` |table with all coverage stats of good quality mappings, per chromosome of all samples (genome-wide and per chromosome mean and median and normalized) ||
 |`results/cov_global_good.svg` |plot of mean and median genome-wide coverage of good quality mappings of all samples.||
 |`results/cov_median_good.svg`| plot of median coverage per chromosome (of good quality mappings) normalized by genome-wide median coverage.||
@@ -148,11 +176,6 @@ Generates **quality and coverage** plots, and adds the MAPQ and Coverage of each
 |`results/cov_global_raw.svg` |plot of mean and median genome-wide coverage of all mappings of all samples.||
 |`results/cov_median_raw.svg`| plot of median coverage per chromosome (of all mappings) normalized by genome-wide median coverage.||
 |`results/cov_mean_raw.svg`| plot of mean coverage per chromosome (of all mappings) normalized by genome-wide mean coverage.||
- 
-~~~
-$ conda activate diveristy
-$ snakemake --snakefile Snakefile-depth-quality.smk --cores <n> --use-conda -p 
-~~~
 
 # To run all
 
