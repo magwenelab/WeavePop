@@ -9,3 +9,11 @@ analysis/
 results/
 files/SraRunTable.txt
 backup*
+files/loci_to_plot.tsv
+files/PRJNA*
+files/protein_list.txt
+files/read_pair_table.csv
+files/sample_reference.csv
+files/samples.txt
+files/unpaired_fastqs.csv
+
