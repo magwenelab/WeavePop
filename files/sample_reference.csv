@@ -1,4 +1,0 @@
-group,sample,file1,file2,refgenome
-VNBI,SRS8318901,SRS8318901_1.fq.gz,SRS8318901_2.fq.gz,VNBI.fasta
-VNBI,SRS8318900,SRS8318900_1.fq.gz,SRS8318900_2.fq.gz,VNBI.fasta
-VNI,SRS8318899,SRS8318899_1.fq.gz,SRS8318899_2.fq.gz,VNI.fasta
