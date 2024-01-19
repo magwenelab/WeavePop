@@ -4,6 +4,9 @@ import pandas as pd
 
 samplefile=(pd.read_csv(config["sample_file"], sep=","))
 samples=list(set(samplefile["sample"]))
+LINS=list(set(samplefile["group"]))
+REFDIR = str(config["reference_directory"])
+
 
 rule all:
     input:
@@ -18,6 +21,9 @@ rule all:
         expand("analysis/{sample}/mapq_window.bed",sample=samples),
         expand("analysis/{sample}/mapq_cov_window.bed",sample=samples),
         expand("analysis/{sample}/annotation.gff",sample=samples),
+        expand(REFDIR + "{lineage}.gff.tsv", lineage= LINS),
+        config["locitsv"]
+
 rule mosdepth:
     input:
         "analysis/{sample}/snps.bam"
@@ -127,3 +133,32 @@ rule mapqcov2gff:
         "logs/gff/{sample}.log"
     shell:
         "xonsh scripts/mapqcov2gff.xsh {input.mapqbed} {input.covbed} {input.gff} {output.covmapq} {output.newgff} &> {log}"
+
+rule gff2tsv:
+    input:
+        REFDIR + "{lineage}.gff"
+    output:
+        REFDIR + "{lineage}.gff.tsv"
+    conda:
+        "envs/agat.yaml"
+    log:
+        "logs/references/{lineage}_gff2tsv.log"
+    shell:
+        "agat_convert_sp_gff2tsv.pl -gff {input} -o {output} "
+        "&> {log} && "
+        "rm {wildcards.lineage}.agat.log || true"
+
+rule loci:
+    input:
+        expand(REFDIR + "{lineage}.gff.tsv", lineage=LINS)
+    output:
+        config["locitsv"]
+    params:
+        loci=config["loci"]
+    log: 
+        "logs/references/loci.log"
+    run:
+        if config["loci"] == "":
+            shell("touch {output}")
+        else:
+            shell("xonsh scripts/loci.xsh {params.loci} -o {output} {input} &> {log}")

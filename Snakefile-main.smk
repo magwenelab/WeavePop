@@ -9,8 +9,6 @@ REFDIR = str(config["reference_directory"])
 
 rule all:
     input:
-        expand(REFDIR + "{lineage}.gff.tsv", lineage=LINS),
-        config["locitsv"],
         expand(REFDIR + "{lineage}_predicted_cds.fa", lineage=LINS),
         expand(REFDIR + "{lineage}_predicted_proteins.fa", lineage=LINS),
         expand(REFDIR + "{lineage}_protein_list.txt", lineage=LINS),
@@ -42,35 +40,6 @@ rule reference_table:
         "logs/reftable.log"
     shell:
         "xonsh scripts/reference_table.xsh -s {input} -o {output} -f1 {params.f1} -f2 {params.f2} &> {log}"
-
-rule gff2tsv:
-    input:
-        REFDIR + "{lineage}.gff"
-    output:
-        REFDIR + "{lineage}.gff.tsv"
-    conda:
-        "envs/agat.yaml"
-    log:
-        "logs/references/{lineage}_gff2tsv.log"
-    shell:
-        "agat_convert_sp_gff2tsv.pl -gff {input} -o {output} "
-        "&> {log} && "
-        "rm {wildcards.lineage}.agat.log || true"
-
-rule loci:
-    input:
-        expand(REFDIR + "{lineage}.gff.tsv", lineage=LINS)
-    output:
-        config["locitsv"]
-    params:
-        loci=config["loci"]
-    log: 
-        "logs/references/loci.log"
-    run:
-        if config["loci"] == "":
-            shell("touch {output}")
-        else:
-            shell("xonsh scripts/loci.xsh {params.loci} -o {output} {input} &> {log}")
 
 rule ref_agat:
     input: 
