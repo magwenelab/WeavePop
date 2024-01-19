@@ -16,6 +16,8 @@ The environment from which Modules 1-3 must me run has the following software an
 * [Seqkit](https://bioinf.shenwei.me/seqkit/)
 
 The environments for Modules 1 - 3 are installed by Snakemake, so you don't need to do it. If you want to install them you can run `mamba env create --file envs/envname.yaml` using the specified environment file in the table bellow. 
+<details>
+<summary>Requirements per module </summary> 
 
 | Module | Software | Environment files |
 | :---------------- | ----: |----: |
@@ -24,7 +26,7 @@ The environments for Modules 1 - 3 are installed by Snakemake, so you don't need
 | Module 2|[Snippy](https://github.com/tseemann/snippy), [Litoff](https://github.com/agshumate/Liftoff), [AGAT](https://github.com/NBISweden/AGAT)|`envs/snippy.yaml`, `envs/liftoff.yaml`, `envs/agat.yaml`|
 | Module 3|[Mosdepth](https://github.com/brentp/mosdepth), [Samtools](https://www.htslib.org/)|`envs/depth.yaml`, `envs/samtools.yaml`|
 | Module 4|[Samtools](https://www.htslib.org/), Gnuplot, matplotlib, tectonic, texlive-core, R and R libraries -- tidyverse ComplexHeatmap, svglite, scales, RColorBrewer|`envs/plot-bamstats.yaml`,`envs/r.yaml`|
-
+</details>
 
 ## Structure of repository:  
   * The working directory has the scripts and Snakefiles to run.  
@@ -52,14 +54,16 @@ The environments for Modules 1 - 3 are installed by Snakemake, so you don't need
 Modules should be run in order 0 to 4.  
 You can start from Module 0, Module 1 or Module 2.
 
-### Module 0 (Optional):
-To download all FASTQs of a BioProject, compress them and rename them with the SRS sample ID. If a sample has more than one set of read files they will be concatenated into one set (one forward and one reverse fastq).
+### Module 0 (Optional): Download all FASTQs of a BioProject
+This module has one script (`get-seqdata-of-bioproject.xsh`) that takes a BioProject ID uses Entrez-Direct to know which samples from this project are in the [SRA](https://www.ncbi.nlm.nih.gov/sra/docs/), and Sra-Tools to download them in FASTQ format. 
+The second script (`get-fastqs-combined.xsh`) renames and compresses the FASTQ files, if a sample has more than one set of read files they will be concatenated into one set (one forward and one reverse FASTQ). If there are single-end sequencing reads they will be ignored.
+
 <details>
 <summary>Input</summary> 
 
-| Input origin | Input | Description |
-| :---------------- | ----: | ----:|
-| - | BioProject ID |BioProject with valid SRA short read sequencing fastq files.|
+| Input | Description |
+| ----: | ----:|
+| BioProject ID |BioProject with valid short read paired-end sequencing FASTQ files in the SRA|
 </details>
 <details>
 <summary>Output</summary> 
@@ -71,19 +75,20 @@ To download all FASTQs of a BioProject, compress them and rename them with the S
 |`files/read_pair_table.csv`|Column names: sample, run, file1, file2, size|This module|
 |`files/unpaired_fastqs.csv`|Column names: sample, run, files|This module|
 |`files/samples.txt`|List of SRS sample IDs|This module|
-| `fastq_combined/` |Directory with `.fq.gz` files|Modules 2|
+|`fastq_combined/` |Directory with `.fq.gz` files|Modules 2|
 </details>
 
+Run:
 ~~~
 $ conda activate sra-tools
 $ xonsh get-seqdata-of-bioproject.xsh -p PRJNA685103
 $ parallel xonsh get-fastqs-combined.xsh {} files/read_pair_table.csv fastqs/ fastq_combined/ :::: files/samples.txt 
 ~~~
 
-It is possible that this module does not download all the samples that you expect (sometimes a BioProject has a BioSample associated but there is no SRA file for it). Make sure the **metadata** you provide only has the samples that will be processed in Module 2.
+It is possible that this module does not download all the samples that you expect, sometimes a BioProject has a BioSample associated but there is no SRA file for it.
 
-### Module 1 (Optional):
-Lift over annotations from the main reference into the reference genomes.  
+### Module 1 (Optional): Annotate reference genomes
+Lift over annotations from a main reference (a genome with available FASTA and GFF files and the gene IDs that you want to use) into the reference genomes, of one or more group/lineage, that will be used for mapping the reads.  
 <details>
 <summary>Input</summary> 
 
@@ -106,6 +111,7 @@ Lift over annotations from the main reference into the reference genomes.
 |`references/references_unmapped.svg`|Heatmap showing the features that were not lifted over from the main reference to each group's genome|-|
 </details>
 
+Run:
 ~~~
 $ conda activate diversity
 $ snakemake --snakefile Snakefile-references.smk --cores 1 --use-conda -p 
@@ -113,8 +119,9 @@ $ snakemake --snakefile Snakefile-references.smk --cores 1 --use-conda -p
 
 ⚠️ `--cores 1` is because there is a problem if Liftoff runs in parallel because the different jobs try to create `mainReference.gff_db` at the same time and that is not cool.     
 
-### Module 2:
-It runs **snippy**, **liftoff** and **agat** for each sample, it **extracts sequences** (cds and protein) of each sample.
+### Module 2: Mapping, annotation and sequence extraction
+This module runs Snippy to map the reads of each sample to the reference genome of the corresponding group/lineage, call variants and provide a genome assembly. It uses Liftover to do a functional annotation, and it extracts the nucleotide and aminoacid sequences of all the genes with AGAT.
+
 <details>
 <summary>Input</summary>  
 
@@ -149,9 +156,9 @@ $ conda activate diversity
 $ snakemake --snakefile Snakefile-main.smk --cores <n> --use-conda -p 
 ~~~
 
-### Module 3: Quality and depth analyses
+### Module 3: Quality and coverage analyses
 
-Generates **quality and coverage** plots, and adds the MAPQ and Coverage of each locus's window to the GFF file.  
+This module generates mapping quality and coverage plots, and adds the MAPQ and Coverage of each locus's window to the GFF file.  
 
 <details>
 <summary>Input</summary>  
@@ -187,7 +194,9 @@ $ conda activate diversity
 $ snakemake --snakefile Snakefile-depth-quality.smk --cores <n> --use-conda -p 
 ~~~
 
-### Module 4: Plotting
+### Module 4: Quality and coverage plotting
+
+The module takes the output files of Module 3 to make mapping quality and coverage plots.
 
 <details>
 <summary>Input</summary>  
@@ -227,13 +236,7 @@ $ snakemake --snakefile Snakefile-depth-quality.smk --cores <n> --use-conda -p
 |`results/cov_mean_raw.svg`| plot of mean coverage per chromosome (of all mappings) normalized by genome-wide mean coverage.|
 </details>
 
-# To run all
-
-```
-echo "Running References" &&
-snakemake --snakefile Snakefile-references.smk --cores 1 --use-conda --conda-frontend conda -p &> all.log &&
-echo "Running Main" &&
-snakemake --snakefile Snakefile-main.smk --cores 12 --use-conda --conda-frontend conda -p  &>> all.log &&
-echo "Running Depth" &&
-snakemake --snakefile Snakefile-depth-quality.smk --cores 8 --use-conda --conda-frontend conda -p &>> all.log
-```
+~~~
+$ conda activate diversity
+$ snakemake --snakefile Snakefile-plotting.smk --cores <n> --use-conda -p 
+~~~
