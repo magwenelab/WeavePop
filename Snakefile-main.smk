@@ -6,6 +6,7 @@ samplefile=(pd.read_csv(config["sample_file"], sep=","))
 SAMPLES=list(set(samplefile["sample"]))
 LINS=list(set(samplefile["group"]))
 REFDIR = str(config["reference_directory"])
+REF_GFF = REFDIR + str(config["reference_gff"])
 
 rule all:
     input:
@@ -19,7 +20,7 @@ rule all:
         expand("analysis/{sample}/predicted_proteins.fa",sample=SAMPLES),
         "results/proteins.done",
         "results/cds.done",
-        # "results/unmapped.svg"
+        "results/unmapped.svg"
 
 rule samples_list:
     output: 
@@ -223,17 +224,17 @@ rule by_cds:
     script:
         "scripts/by_cds.sh"
 
-# rule unmapped_count_plot:
-#     input:
-#         REF_GFF + ".tsv",
-#         config["sample_file"],
-#         expand("analysis/{sample}/unmapped_features.txt", sample=SAMPLES)        
-#     output:
-#         "results/unmapped_count.tsv",
-#         "results/unmapped.svg"
-    # conda:
-    #     "envs/r.yaml"
-#     log:
-#         "logs/liftoff/unmapped_count_plot.log"
-#     script:
-#         "scripts/count_sample_unmapped.R"
+rule unmapped_count_plot:
+    input:
+        REF_GFF + ".tsv",
+        config["sample_file"],
+        expand("analysis/{sample}/unmapped_features.txt", sample=SAMPLES)        
+    output:
+        "results/unmapped_count.tsv",
+        "results/unmapped.svg"
+    conda:
+        "envs/r.yaml"
+    log:
+        "logs/liftoff/unmapped_count_plot.log"
+    script:
+        "scripts/count_sample_unmapped.R"

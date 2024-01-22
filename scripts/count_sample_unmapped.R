@@ -6,10 +6,10 @@ suppressPackageStartupMessages(library(tidyverse))
 library(ComplexHeatmap)
 library(RColorBrewer)
 
-# genes<-read_delim("references/FungiDB-65_CneoformansH99.gff.tsv", col_names = TRUE, na = "N/A", show_col_types = FALSE )
+# genes<-read_delim("references/main.gff.tsv", col_names = TRUE, na = "N/A", show_col_types = FALSE )
 genes<-read_delim(snakemake@input[[1]], col_names = TRUE, na = "N/A", show_col_types = FALSE )
 genes<- genes %>% 
-  # filter(str_detect(primary_tag, "gene" ))%>%
+  filter(str_detect(primary_tag, "gene" ))%>%
   as.data.frame()
 rownames(genes)<- genes$ID
 
@@ -27,6 +27,12 @@ for (samp in samples$sample){
 unmapped <- genes %>% 
   select(Chromosome = seq_id, Feature_type = primary_tag, samples$sample)%>%
   filter(rowSums(. == 0) > 0)
+
+if(nrow(unmapped)== 0){
+  print('There are no unmapped features in your set of samples.')
+  file.create(snakemake@output[[1]])
+  file.create(snakemake@output[[2]])
+} else {
 
 unmapped_count <- unmapped %>%
   select(samples$sample)
@@ -68,4 +74,4 @@ Heatmap(mat,
         column_names_gp = gpar(fontsize = 5))
 dev.off()
 
-
+}

@@ -6,23 +6,22 @@ suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(ComplexHeatmap))
 library(RColorBrewer)
 
-# genes<-read_delim("references/FungiDB-65_CneoformansH99.gff.tsv", col_names = TRUE, na = "N/A", show_col_types = FALSE )
-genes<-read_delim(snakemake@input[[1]], col_names = TRUE, na = "N/A", show_col_types = FALSE )
+# genes<-read_delim("refs/FungiDB-65_CneoformansH99.gff.tsv", col_names = TRUE, na = c("NA","N/A", ""), show_col_types = FALSE )
+genes<-read_delim(snakemake@input[[1]], col_names = TRUE, na = c("NA","N/A", ""), show_col_types = FALSE )
 genes<- genes %>% 
-  # filter(str_detect(primary_tag, "gene" ))%>%
+  filter(str_detect(primary_tag, "gene" ))%>%
   as.data.frame()
 rownames(genes)<- genes$ID
-# lins <- read.csv("files/lineage_references.csv", header = TRUE)
+# lins <- read.csv("files/sample_metadata.csv", header = TRUE)
 lins <- read.csv(snakemake@input[[2]], header = TRUE)
-lins$group <- as.factor(lins$group)
 
-# for (lin in lins$group){
-#   file <- paste("references/", lin, "_unmapped_features.txt", sep = "")
+# for (lin in levels(as.factor(lins$group))){
+#   file <- paste("refs/", lin, "_unmapped_features.txt", sep = "")
 #   df<- read.csv(file, header = FALSE, col.names = c("ID"), colClasses = "character")
 #   genes <- genes %>%
 #     mutate(!!lin := ifelse(ID %in% df$ID, 0, 1))
 # }
-for (lin in levels(lins$group)){
+for (lin in levels(as.factor(lins$group))){
  file <- paste(snakemake@config[["reference_directory"]], lin, "_unmapped_features.txt", sep = "")
  df<- read.csv(file, header = FALSE, col.names = c("ID"), colClasses = "character")
  genes <- genes %>%
@@ -67,5 +66,3 @@ Heatmap(mat,
         right_annotation = row_ha,
         row_names_gp = gpar(fontsize = 5))
 dev.off()
-
-
