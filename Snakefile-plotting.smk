@@ -11,7 +11,7 @@ rule all:
         "results/cov_median_good.svg",
         expand("analysis/{sample}/mapq_distribution.svg",sample=samples),
         expand("analysis/{sample}/cov_distribution.svg",sample=samples),
-        expand("analysis/{sample}/bamstats", sample=samples),
+        # expand("analysis/{sample}/bamstats", sample=samples),
         "results/mapped_reads.svg",
         expand("analysis/{sample}/mapq.svg", sample=samples)
 
@@ -97,17 +97,17 @@ rule cov_distribution:
     script:
         "scripts/coverage-distribution.R"
 
-rule plot_bamstats:
-    input:
-        "analysis/{sample}/snps.bam.stats"
-    output:
-        directory("analysis/{sample}/bamstats")
-    conda:
-        "envs/plot-bamstats.yaml"
-    log:
-        "logs/plot-bamstats/{sample}.log"
-    shell:
-        "plot-bamstats -p {output}/ {input} &> {log}"
+# rule plot_bamstats:
+#     input:
+#         "analysis/{sample}/snps.bam.stats"
+#     output:
+#         directory("analysis/{sample}/bamstats")
+#     conda:
+#         "envs/plot-bamstats.yaml"
+#     log:
+#         "logs/plot-bamstats/{sample}.log"
+#     shell:
+#         "plot-bamstats -p {output}/ {input} &> {log}"
 
 rule mapped_plot:
     input:

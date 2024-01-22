@@ -150,7 +150,7 @@ rule gff2tsv:
 
 rule loci:
     input:
-        expand(REFDIR + "{lineage}.gff.tsv", lineage=LINS)
+        expand(REFDIR + "{lineage}.gff.tsv", lineage=LINS),
     output:
         "files/loci_to_plot.tsv"
     params:
@@ -159,6 +159,6 @@ rule loci:
         "logs/references/loci.log"
     run:
         if config["loci"] == "":
-            shell("touch {output}")
+            shell("head -n1 {input} | tail -n1 > {output}")
         else:
-            shell("xonsh scripts/loci.xsh {params.loci} -o {output} {input} &> {log}")
+            shell("xonsh scripts/loci.xsh -g {params.loci} -o {output} {input} &> {log}")
