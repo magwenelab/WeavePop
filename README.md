@@ -41,8 +41,7 @@ The environments for Modules 1 - 3 are installed by Snakemake, so you don't need
 
   * `config.yaml`: This is a Snakemake configuration file, provided [here](https://github.com/magwenelab/DiversityPipeline/blob/main/config.yaml), that you must edit according to your filenames and desired parameters.
   * `files/sample_metadata.csv` with columns (using these exact names):  sample (the names in the fastq file names), group (lineage or group to associate to a reference genome), strain, more-optional-metadata-fields.
-  * Lists of genes of loci of interest:  
-    * `files/Locus.txt` (with IDs of genes in main reference GFF)
+  * Optional: `files/loci.csv`, CSV with first column with the gene IDs and second column with the name of the locus/pathway the gene belongs to if you want genes to be plotted to coverage and MAPQ plots  No column names.
   * `files/chromosome_names.csv` with columns (without column names): group, chromosome ID (the sequence ID in the Fasta and GFF of the references), chromosome name (typically a number). If your genomes are Complete Genomes from NCBI use `bash get-chromosome_names.sh` to get this file.
   * `files/features.txt` list of feature names to lift over. This file is provided in this repository.
   * `references/` directory with:
@@ -173,7 +172,7 @@ This module generates mapping quality and coverage plots, and adds the MAPQ and 
 |`analyses/{sample}/snps.bam`||Module 2|
 |`analyses/{sample}/lifted.gff_polished`||Module 2|
 |`references/{lineage}.gff`||Module 1 or You|
-|`files/{Locus}.txt`| One file per locus of interest that you want to show in the plots of coverage and MAPQ along the chromosomes. The file is a list of gene IDs and the name of the file is the one you want to appear in the plots.|You |
+|`files/loci.csv`|CSV with first column with the gene IDs and second column with the name of the locus/pathway the gene belongs to |You |
 </details>
 <details>
 <summary>Output</summary> 
