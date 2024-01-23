@@ -3,7 +3,6 @@ import glob
 
 configfile: "config-annotate-references.yaml"
 
-
 REF_FASTA = config["main_fasta"]
 REF_GFF = config["main_gff"]
 REF_NAME, _ = os.path.splitext(os.path.basename(REF_GFF))
