@@ -1,3 +1,6 @@
+# Lift over annotation from a "main" reference genome
+# To a set of other genomes 
+
 import os.path
 import glob
 
@@ -39,6 +42,7 @@ rule ref_gff2tsv:
         "rm {params.REF_NAME}.agat.log || true" 
 
 
+# Rule for lifting over GFF features from main reference to sub-references
 rule ref2ref_liftoff:
     input:
         target_fasta = os.path.join(SUBREF_DIR, "{target}.fasta"),
@@ -54,20 +58,24 @@ rule ref2ref_liftoff:
     log:
         "logs/references/{target}_ref_liftoff.log"
     params:
-        SUBREF_DIR = SUBREF_DIR
+        liftoff_out = os.path.join(SUBREF_DIR, "{target}_liftoff.gff"),
+        liftoff_intermediate = os.path.join(SUBREF_DIR, "{target}_intermediate_files"),
+        liftoff_polished = os.path.join(SUBREF_DIR, "{target}_liftoff.gff_polished")
     shell:
         "liftoff "
         "-g {input.ref_gff} "
         "-polish "
         "-f {input.features} "
-        "-o {params.SUBREF_DIR}/{wildcards.target}_liftoff.gff "
-        "-dir {params.SUBREF_DIR}/{wildcards.target}_intermediate_files "
+        "-o {params.liftoff_out} "
+        "-dir {params.liftoff_intermediate} "
         "-u {output.target_unmapped} "
         "-p {threads} "
         "{input.target_fasta} {input.ref_fasta} "
         "&> {log} "
         "&& "
-        "mv {params.SUBREF_DIR}/{wildcards.target}_liftoff.gff_polished {output.target_gff} "
+        "mv {params.liftoff_polished} {output.target_gff} "
+
+
 
 # rule for generating features.txt if it doesn't exist        
 rule generate_features:
