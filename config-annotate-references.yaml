@@ -7,11 +7,6 @@ main_gff: "FungiDB-65_CneoformansH99.gff"
 # Directory name with the sub references FASTA files
 subref_directory: "sub_references/" 
 
-# File specifying names of sub-references FASTA files to annotate
-# If None,  pipeline will use all .fasta and .fa files in subref_directory
-subref_fastas: 
-
-output_dir: "sub_references_gff"
 
 # Specifies the set of features to be lifted over
 feature_file: "features.txt"
