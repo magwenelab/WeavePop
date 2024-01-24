@@ -25,6 +25,9 @@ rule all:
         os.path.join(SUBREF_DIR, REF_GFF + ".tsv"),
         FEATURE_FILE
 
+
+
+# generate a TSV file from the master GFF file
 rule ref_gff2tsv:
     input:
         REF_GFF

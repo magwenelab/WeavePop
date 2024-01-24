@@ -9,7 +9,9 @@
 The environment from which Modules 1-3 must me run has the following software and you can install it with: `mamba env create --file envs/diversity.yml`
 * Mamba/Conda [Microforge3](https://mamba.readthedocs.io/en/latest/installation/mamba-installation.html)
 * Python
-* Python modules -- Pandas, Click
+* Python modules
+  - Pandas
+  - Click
 * [Xonsh](https://xon.sh/)
 * [Snakemake](https://snakemake.github.io/)
 * [Graphviz](https://graphviz.org/) (optional, to seethe Snakemake DAG in a graph) 

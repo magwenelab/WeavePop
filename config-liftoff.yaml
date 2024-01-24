@@ -1,0 +1,9 @@
+## Required 
+sample_table: "samples_gff.csv" # CSV table with columns: sample, lineage, strain, and extra metadata.
+
+reference_directory: "refs" # Directory name with your references 
+output_directory: "analysis"
+
+feature_file: "features.txt"
+
+threads: 4

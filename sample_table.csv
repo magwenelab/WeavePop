@@ -1,0 +1,4 @@
+lineage,sample,fq1,fq2,refgenome
+VNBI,SRS881151,SRS881151_1.fq.gz,SRS881151_2.fq.gz,VNBI_Genome.fasta
+VNBI,SRS881152,SRS881152_1.fq.gz,SRS881152_2.fq.gz,VNBI_Genome.fasta
+

@@ -1,54 +1,60 @@
-configfile: "config.yaml"
-
+import os.path
 import pandas as pd
 
-samplefile=(pd.read_csv(config["sample_file"], sep=","))
-SAMPLES=list(set(samplefile["sample"]))
-LINS=list(set(samplefile["group"]))
-REFDIR = str(config["reference_directory"])
-REF_GFF = REFDIR + str(config["reference_gff"])
+
+configfile: "config-main.yaml"
+
+SAMPLE_TABLE = pd.read_csv(config["sample_table"]).set_index("sample", drop=False)
+SAMPLES = list(set(SAMPLETBL["sample"]))
+LINEAGES=list(set(SAMPLETBL["lineages"]))
+
+REFDIR = config["reference_directory"]
+OUTDIR = config["output_directory"]
+FASTQDIR = config["fastq_directory"]
+
 
 rule all:
     input:
-        expand(REFDIR + "{lineage}_predicted_cds.fa", lineage=LINS),
-        expand(REFDIR + "{lineage}_predicted_proteins.fa", lineage=LINS),
-        expand(REFDIR + "{lineage}_protein_list.txt", lineage=LINS),
-        expand("analysis/{sample}/snps.consensus.fa",sample=SAMPLES),
-        expand("analysis/{sample}/snps.bam",sample=SAMPLES),
-        expand("analysis/{sample}/lifted.gff_polished", sample=SAMPLES),
-        expand("analysis/{sample}/predicted_cds.fa",sample=SAMPLES),
-        expand("analysis/{sample}/predicted_proteins.fa",sample=SAMPLES),
-        "results/proteins.done",
-        "results/cds.done",
-        "results/unmapped.svg"
+        expand(os.path.join(REFDIR, "{lineage}_predicted_cds.fa"), lineage=LINEAGES),
+        expand(os.path.join(REFDIR, "{lineage}_predicted_proteins.fa"), lineage=LINEAGES),
+        expand(os.path.join(REFDIR, "{lineage}_protein_list.txt"), lineage=LINEAGES),
+        expand(os.path.join(OUTDIR, "{sample}/snps.consensus.fa"), sample=SAMPLES),
+        expand(os.path.join(OUTDIR, "{sample}/snps.bam"), sample=SAMPLES),
+        expand(os.path.join(OUTDIR, "{sample}/lifted.gff_polished"), sample=SAMPLES),
+        expand(os.path.join(OUTDIR, "{sample}/predicted_cds.fa"), sample=SAMPLES),
+        expand(os.path.join(OUTDIR, "{sample}/predicted_proteins.fa"), sample=SAMPLES),
+        os.path.join(OUTDIR, "proteins.done"),
+        os.path.join(OUTDIR, "cds.done"),
+
 
 rule samples_list:
     output: 
-        "files/samples.txt"
+        os.path.join(OUTDIR, "samples.txt")
     run:
-        sample = samplefile["sample"]
-        sample.to_csv("files/samples.txt", index = False, header = False)
+        sample = SAMPLETBL["sample"]
+        sample.to_csv("{output}", index = False, header = False)
 
-rule reference_table:
-    input:
-        config["sample_file"],
-    output:
-        "files/sample_reference.csv"
-    params:
-        f1 = config["fastq_suffix1"],
-        f2= config["fastq_suffix2"] 
-    log:
-        "logs/reftable.log"
-    shell:
-        "xonsh scripts/reference_table.xsh -s {input} -o {output} -f1 {params.f1} -f2 {params.f2} &> {log}"
+# rule reference_table:
+#     input:
+#         config["sample_file"],
+#     output:
+#         "files/sample_reference.csv"
+#     params:
+#         f1 = config["fastq_suffix1"],
+#         f2= config["fastq_suffix2"] 
+#     log:
+#         "logs/reftable.log"
+#     shell:
+#         "scripts/build_reference_table.py -s {input} -o {output} -f1 {params.f1} -f2 {params.f2} &> {log}"
+
 
 rule ref_agat:
     input: 
-        lin_gff = REFDIR + "{lineage}.gff",
-        lin_fasta = REFDIR + "{lineage}.fasta"
+        lin_gff = os.path.join(REFDIR, "{lineage}.gff"),
+        lin_fasta = os.path.join(REFDIR, "{lineage}.fasta")
     output:
-        cds = REFDIR + "{lineage}_predicted_cds.fa",
-        prots = REFDIR + "{lineage}_predicted_proteins.fa"
+        cds = os.path.join(REFDIR,"{lineage}_predicted_cds.fa"),
+        prots = os.path.join(REFDIR,"{lineage}_predicted_proteins.fa")
     conda:
         "envs/agat.yaml"
     log:
@@ -69,21 +75,22 @@ rule ref_agat:
         " && "
         "rm {wildcards.lineage}.agat.log || true"  
 
-rule protein_list:
+rule ref_protein_list:
     input:
-        fasta = REFDIR + "{lineage}_predicted_proteins.fa"
+        fasta = os.path.join(REFDIR, "{lineage}_predicted_proteins.fa")
     output:
-        list = REFDIR + "{lineage}_protein_list.txt"
+        protein_list = os.path.join(REFDIR, "{lineage}_protein_list.txt")
     conda:
         "envs/agat.yaml"
     log:
         "logs/references/{lineage}_protein_list.log"
     shell:
-        "seqkit seq -n -i {input.fasta} 1> {output.list} 2> {log}"
+        "seqkit seq -n -i {input.fasta} 1> {output.protein_list} 2> {log}"
 
-rule cat_lists:
+
+rule cat_protein_lists:
     input: 
-        expand(REFDIR + "{lineage}_protein_list.txt", lineage=LINS)
+        expand(os.path.join(REFDIR, "{lineage}_protein_list.txt"), lineage=LINS)
     output:
         "files/protein_list.txt"
     log:
@@ -91,19 +98,32 @@ rule cat_lists:
     shell:
         "cat {input} | sort | uniq > {output} 2> {log}"
 
+
+def fq1_from_sample(wildcards):
+  return SAMPLE_TABLE.loc[wildcards.sample, "fastq1"]
+
+def fq2_from_sample(wildcards):
+  return SAMPLE_TABLE.loc[wildcards.sample, "fastq2"]
+
+def lineage_from_sample(wildcards):
+    return SAMPLE_TABLE.loc[wildcards.sample, "lineage"]
+
+def refgenome_from_sample(wildcards):
+    return SAMPLE_TABLE.loc[wildcards.sample, "refgenome"]
+
+
 rule snippy:
     input:
-        config["fastq_directory"] + "{sample}" + config["fastq_suffix1"],
-        config["fastq_directory"] + "{sample}" + config["fastq_suffix2"],
-        "files/sample_reference.csv"
+        fq1 = fq1_from_sample,
+        fq2 = fq2_from_sample,
+        refgenome = refgenome_from_sample,
+        lineage = lineage_from_sample 
     params:
-        ref = lambda wildcards: (REFDIR + pd.read_csv("files/sample_reference.csv", sep = ",", index_col=['sample']).loc[wildcards.sample,'refgenome']),
-        file1 = lambda wildcards: (pd.read_csv("files/sample_reference.csv", sep = ",", index_col=['sample']).loc[wildcards.sample,'file1']),
-        file2 = lambda wildcards: (pd.read_csv("files/sample_reference.csv", sep = ",", index_col=['sample']).loc[wildcards.sample,'file2']),
-        fqdir = config["fastq_directory"] 
+        outdir = OUTDIR
+        fqdir = FASTQDIR
     output:
-        "analysis/{sample}/snps.consensus.fa",
-        "analysis/{sample}/snps.bam"
+        os.path.join(OUTDIR, "{sample}/snps.consensus.fa"),
+        os.path.join(OUTDIR, "{sample}/snps.bam")
     threads: 
         config["threads_snippy"]
     conda:
@@ -111,12 +131,13 @@ rule snippy:
     log:
         "logs/snippy/{sample}.log"
     shell:
-        "snippy --outdir analysis/{wildcards.sample} "
+        "snippy --outdir {OUTDIR}/{wildcards.sample} "
         "--cpus {threads} "
-        "--ref {params.ref} "
-        "--R1 {params.fqdir}{params.file1} "
-        "--R2 {params.fqdir}{params.file2} "
+        "--ref {input.refgenome} "
+        "--R1 {FASTQDIR}/{input.fq1} "
+        "--R2 {FASTQDIR}/{input.fq2} "
         "--force &> {log}"
+
 
 rule liftoff:
     input:
@@ -224,17 +245,3 @@ rule by_cds:
     script:
         "scripts/by_cds.sh"
 
-rule unmapped_count_plot:
-    input:
-        REF_GFF + ".tsv",
-        config["sample_file"],
-        expand("analysis/{sample}/unmapped_features.txt", sample=SAMPLES)        
-    output:
-        "results/unmapped_count.tsv",
-        "results/unmapped.svg"
-    conda:
-        "envs/r.yaml"
-    log:
-        "logs/liftoff/unmapped_count_plot.log"
-    script:
-        "scripts/count_sample_unmapped.R"
