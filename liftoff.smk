@@ -9,15 +9,14 @@ configfile: "config-liftoff.yaml"
 SAMPLE_TABLE = pd.read_csv(config["sample_table"]).set_index("sample", drop=False)
 SAMPLES = list(set(SAMPLE_TABLE["sample"]))
 
+OUTDIR = config["output_directory"]
+OUTPATH = Path(OUTDIR) / "liftoff"
 
-REFPATH, OUTPATH = [
-    Path(config[i]) for i in ("reference_directory", "output_directory")
-]
 
 FEATURE_FILE = config["feature_file"]
 
 
-rule:
+rule liftoff_all:
     input:
         expand(OUTPATH / "{sample}/lifted.gff_polished", sample=SAMPLES),
         expand(OUTPATH / "{sample}/snps.bam", sample=SAMPLES),
@@ -32,10 +31,9 @@ def liftoff_from_df(wildcards):
     }
 
 
-rule liftoff:
+rule run_liftoff:
     input:
         unpack(liftoff_from_df),
-        target=OUTPATH / "{sample}/snps.consensus.fa",
         features=FEATURE_FILE,
     output:
         OUTPATH / "{sample}/lifted.gff",
@@ -55,5 +53,5 @@ rule liftoff:
         "-u {OUTPATH}/{wildcards.sample}/unmapped_features.txt "
         "-o {OUTPATH}/{wildcards.sample}/lifted.gff "
         "-p {threads} "
-        "{input.target} "
+        "{input.samplegenome} "
         "{input.refgenome} &> {log}"

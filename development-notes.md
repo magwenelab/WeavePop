@@ -19,7 +19,7 @@ Other than OUTDIR, avoid hard coding or requiring path info in config file, rath
 * snippy line:  
 
     ```
-    PMY1234, refgenomes/H99_genome.fasta, fastqs/PMY1234_r1.fq.gz, fastqs/PMY1234_r1.fq.gz
+    PMY1234, refgenomes/H99_genome.fasta, fastqs/PMY1234_r1.fq.gz, fastqs/PMY1234_r2.fq.gz
     ```
 
     In the above `refgenomes/` and `fastqs/` are not part of the config. Instead, build scripts to generate appropriate table entries
@@ -27,3 +27,26 @@ Other than OUTDIR, avoid hard coding or requiring path info in config file, rath
 
 
 
+
+
+## 
+
+Metadata File:
+
+* sample, fq1, fq2, refgenome, refgff
+
+
+Snippy:
+
+* input table: sample, fq1, fq2, refgenome
+* output: OUTDIR/snippy/SAMPLE/...{samplegenome = snps.consensus.fa}
+
+Liftoff:
+
+* input table: sample, samplegenome (snps.consensus.fa), refgenome, refgff
+* output: OUTDIR/liftoff/SAMPLE/...{samplegff = lifted.gff_polished}
+
+Agat:
+
+* input table: sample, samplegenome (OUTDIR/snippy/SAMPLE/snps.consensus.fa), samplegff (OUTDIR/liftoff/SAMPLE/lifted.gff_polished)
+* output: OUTDIR/agat/SAMPLE/...{samplecds = predicted_cds.fa, sampleprots = predicted_proteins.fa}

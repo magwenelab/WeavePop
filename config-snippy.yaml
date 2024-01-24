@@ -1,8 +1,4 @@
 ## Required 
 sample_table: "sample_table.csv" # CSV table with columns: sample, lineage, strain, and extra metadata.
-
-reference_directory: "refs" # Directory name with your references 
-fastq_directory: "fastqs" # Directory name with your fastq files
 output_directory: "analysis"
-
-threads_snippy: 8
+threads: 8
