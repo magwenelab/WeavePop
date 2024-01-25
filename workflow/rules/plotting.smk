@@ -135,3 +135,19 @@ rule mapq_plot:
         "logs/mapq_plot/{sample}.log"
     script:
         "scripts/mapq.R"
+
+                
+rule unmapped_count_plot:
+    input:
+        REF_GFF + ".tsv",
+        config["sample_file"],
+        expand(REFDIR + "{lineage}_unmapped_features.txt", lineage=LINS)        
+    output:
+        REFDIR + "references_unmapped_count.tsv",
+        REFDIR + "references_unmapped.svg"
+    conda:
+        "envs/r.yaml"
+    log:
+        "logs/references/unmapped_count_plot.log"
+    script:
+        "scripts/count_reference_unmapped.R"

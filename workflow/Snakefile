@@ -1,0 +1,23 @@
+from snakemake.utils import min_version
+
+##### set minimum snakemake version #####
+min_version("8.2.1")
+
+##### set configfile #####
+configfile: "config/config.yaml"
+
+##### load rules #####
+
+include: "rules/common.smk"
+#include: "rules/main.smk"
+# include: "rules/depth-qc.smk"
+# include: "rules/plotting.smk"
+
+if config["annotate_references"]["activate"]:
+    include: "rules/references.smk"
+
+##### target rules #####
+
+rule all:
+    input:
+        get_final_output(),

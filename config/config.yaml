@@ -1,0 +1,42 @@
+sample_file: "config/sample_metadata.csv" # CSV table with columns: sample, group, strain, and extra metadata.
+
+# fastqs:
+#   directory: "data/samples" # REVIEW
+#   fastq_suffix1: "_1.fq.gz" # Everything after the sample name of the forward reads file.
+#   fastq_suffix2: "_2.fq.gz" # Everything after the sample name of the reverse reads file.
+
+references: 
+  directory: "data/references/" # REVIEW
+
+annotate_references:
+  activate: True
+  directory: "data/main_reference" # REVIEW
+  gff: "FungiDB-65_CneoformansH99.gff" # Main reference gff. 
+  fasta: "FungiDB-65_CneoformansH99_Genome.fasta" # Main reference fasta.
+  liftoff:
+    threads: 4
+    extra: ""
+
+# ## Required 
+# sample_file: "files/sample_metadata.csv" # CSV table with columns: sample, group, strain, and extra metadata.
+# fastq_suffix1: "_1.fq.gz" # Everything after the sample name of the forward reads file.
+# fastq_suffix2: "_2.fq.gz" # Everything after the sample name of the reverse reads file.
+# reference_directory: "references/" # Directory name with your references (must end with the "/" )
+# fastq_directory: "fastq_combined/" # Directory name with your fastq files (must end with the "/")
+
+# ## Required for Module 1 
+# reference_gff: "FungiDB-65_CneoformansH99.gff" # Main reference gff. Ignore if Module 1 will not be used.
+# reference_fasta: "FungiDB-65_CneoformansH99_Genome.fasta" # Main reference fasta. Ignore if Module 1 will not be used.
+
+# ## Required for Module 2 
+# loci: "files/loci.csv" # Leave a blank string "" if no locus should be plotted. CSV with first column with the gene IDs and second column with the name of the locus/pathway the gene belongs to. No column names
+# # Parameters for Module 2 (change according to your needs)
+# threads_snippy: 4
+# threads_liftoff: 4
+
+# ## Required for Module 3
+# metad_color: "isolation_source" # Name of character column in sample_metadata.csv to color each sample in the coverage per chromosome plots.
+# # Parameters for Module 3 (change according to your needs)
+# threads_mosdepth: 4
+# mosdepth_window: 500
+# mosdepth_min_mapq: 20
