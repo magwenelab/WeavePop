@@ -2,7 +2,7 @@
 import pandas as pd
 from pathlib import Path
 
-configfile: "config-test.yaml"
+configfile: "config-snippy.yaml"
 
 
 SAMPLE_TABLE = pd.read_csv(config["sample_table"]).set_index("sample", drop=False)
@@ -33,7 +33,9 @@ rule run_snippy:
     output:
         OUTPATH / "{sample}/snps.consensus.fa",
         OUTPATH / "{sample}/snps.bam",
-    threads: config["threads"]
+    params:
+        extra = config["snippy"]["extra_params"]
+    threads: config["snippy"]["threads"]
     conda:
         "envs/snippy.yaml"
     log:
@@ -45,4 +47,5 @@ rule run_snippy:
         "--ref {input.refgenome} "
         "--R1 {input.fq1} "
         "--R2 {input.fq2} "
+        "{params.extra} "
         "--force &> {log}"

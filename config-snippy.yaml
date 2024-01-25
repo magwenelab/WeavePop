@@ -1,4 +1,7 @@
 ## Required 
 sample_table: "sample_table.csv" # CSV table with columns: sample, lineage, strain, and extra metadata.
 output_directory: "analysis"
-threads: 8
+
+snippy:
+  threads: 4
+  extra_params: ""   
