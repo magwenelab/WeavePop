@@ -1,60 +1,4 @@
 
-# rule samples_list:
-#     output: 
-#         "files/samples.txt"
-#     run:
-#         sample = samplefile["sample"]
-#         sample.to_csv("files/samples.txt", index = False, header = False)
-
-# rule ref_agat:
-#     input: 
-#         lin_gff = REFDIR + "{lineage}.gff",
-#         lin_fasta = REFDIR + "{lineage}.fasta"
-#     output:
-#         cds = REFDIR + "{lineage}_predicted_cds.fa",
-#         prots = REFDIR + "{lineage}_predicted_proteins.fa"
-#     conda:
-#         "../envs/agat.yaml"
-#     log:
-#         cds = "logs/references/{lineage}_ref_agat_cds.log",   
-#         prots = "logs/references/{lineage}_ref_agat_prots.log"
-#     shell:
-#         "agat_sp_extract_sequences.pl "
-#         "-g {input.lin_gff} "
-#         "-f {input.lin_fasta} "
-#         "-o {output.cds} "
-#         "&> {log.cds} "
-#         " && "
-#         "agat_sp_extract_sequences.pl "
-#         "-g {input.lin_gff} "
-#         "-f {input.lin_fasta} "
-#         "-o {output.prots} "
-#         "-p &> {log.prots} "
-#         " && "
-#         "rm {wildcards.lineage}.agat.log || true"  
-
-# rule protein_list:
-#     input:
-#         fasta = REFDIR + "{lineage}_predicted_proteins.fa"
-#     output:
-#         list = REFDIR + "{lineage}_protein_list.txt"
-#     conda:
-#         "../envs/agat.yaml"
-#     log:
-#         "logs/references/{lineage}_protein_list.log"
-#     shell:
-#         "seqkit seq -n -i {input.fasta} 1> {output.list} 2> {log}"
-
-# rule cat_lists:
-#     input: 
-#         expand(REFDIR + "{lineage}_protein_list.txt", lineage=LINS)
-#     output:
-#         "files/protein_list.txt"
-#     log:
-#         "logs/references/cat_list.log"
-#     shell:
-#         "cat {input} | sort | uniq > {output} 2> {log}"
-
 rule snippy:
     input:
         unpack(snippy_input)
@@ -111,79 +55,47 @@ rule liftoff:
         "{input.target} "
         "{input.refgenome} &> {log}"
 
-# rule agat:
-#     input:
-#         gff = "analysis/{sample}/lifted.gff_polished",
-#         fa = "analysis/{sample}/snps.consensus.fa"
-#     output:
-#         cds = "analysis/{sample}/predicted_cds.fa",
-#         prots = "analysis/{sample}/predicted_proteins.fa"
-#     conda:
-#         "../envs/agat.yaml"
-#     log: 
-#         cds = "logs/agat/{sample}_cds.log",
-#         prots = "logs/agat/{sample}_prots.log"
-#     shell:
-#         "agat_sp_extract_sequences.pl "
-#         "-g {input.gff} " 
-#         "-f {input.fa} "
-#         "-o {output.cds} "
-#         "&> {log.cds} "
-#         " && "
-#         "agat_sp_extract_sequences.pl "
-#         "-g {input.gff} " 
-#         "-f {input.fa} "
-#         "-o {output.prots} "
-#         "-p  &> {log.prots} " 
-#         " && "
-#         "rm lifted.agat.log || true"
+rule agat:
+    input:
+        gff = rules.liftoff.output.gff,
+        fa = rules.snippy.output.fa
+    output:
+        cds = OUTDIR / "agat" / "{sample}/predicted_cds.fa",
+        prots = OUTDIR / "agat" / "{sample}/predicted_proteins.fa"
+    conda:
+        "../envs/agat.yaml"
+    params:
+        extra = config["agat"]["extra"]
+    log: 
+        cds = "logs/agat/{sample}_cds.log",
+        prots = "logs/agat/{sample}_prots.log"
+    shell:
+        "agat_sp_extract_sequences.pl "
+        "-g {input.gff} " 
+        "-f {input.fa} "
+        "-o {output.cds} "
+        "{params.extra} "
+        "&> {log.cds} "
+        " && "
+        "agat_sp_extract_sequences.pl "
+        "-g {input.gff} " 
+        "-f {input.fa} "
+        "-o {output.prots} "
+        "-p  &> {log.prots} "
+        "{params.extra} " 
+        " && "
+        "rm lifted.agat.log || true"
 
-# rule index_proteins:
-#     input:
-#         "analysis/{sample}/predicted_proteins.fa"
-#     output:
-#         "analysis/{sample}/predicted_proteins.fa.fai"
-#     conda:
-#         "../envs/agat.yaml"        
-#     log:
-#         "logs/faidx/{sample}_proteins.log"    
-#     shell:
-#         "seqkit faidx {input} &> {log}"
-
-# rule index_cds:
-#     input:
-#         "analysis/{sample}/predicted_cds.fa"
-#     output:
-#         "analysis/{sample}/predicted_cds.fa.fai"
-#     conda:
-#         "../envs/agat.yaml"        
-#     log:
-#         "logs/faidx/{sample}_cds.log"      
-#     shell:
-#         "seqkit faidx {input} &> {log}"
-
-# rule by_proteins:
-#     input:
-#         "files/protein_list.txt",
-#         "files/samples.txt",
-#         expand("analysis/{sample}/predicted_proteins.fa",sample=SAMPLES),
-#         expand("analysis/{sample}/predicted_proteins.fa.fai",sample=SAMPLES)
-#     output:
-#         "results/proteins.done"
-#     log:
-#         "logs/proteins/proteins.log"  
-#     script:
-#         "scripts/by_proteins.sh"
-
-# rule by_cds:
-#     input:
-#         "files/protein_list.txt",
-#         "files/samples.txt",
-#         expand("analysis/{sample}/predicted_cds.fa",sample=SAMPLES),
-#         expand("analysis/{sample}/predicted_cds.fa.fai",sample=SAMPLES)
-#     output:
-#         "results/cds.done"
-#     log:
-#         "logs/cds/cds.log"  
-#     script:
-#         "scripts/by_cds.sh"
+rule agat_header:
+    input:
+        cds = rules.agat.output.cds,
+        prots = rules.agat.output.prots
+    output:
+        cds = OUTDIR / "agat" / "{sample}/cds.fa",
+        prots = OUTDIR / "agat" / "{sample}/proteins.fa"
+    shell:
+        "seqkit replace -p '($)' -r ' sample={wildcards.sample}' {input.cds} > {output.cds} "
+        "&& "
+        "seqkit replace -p '($)' -r ' sample={wildcards.sample}' {input.prots} > {output.prots} "
+        "&& "
+        "rm {input.cds} {input.prots}"

@@ -10,6 +10,7 @@ configfile: "config/config.yaml"
 
 include: "rules/common.smk"
 include: "rules/main.smk"
+include: "rules/by-gene.smk"
 # include: "rules/depth-qc.smk"
 # include: "rules/plotting.smk"
 

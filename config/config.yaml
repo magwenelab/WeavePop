@@ -14,16 +14,20 @@ annotate_references:
   gff: "FungiDB-65_CneoformansH99.gff" # Main reference gff. 
   fasta: "FungiDB-65_CneoformansH99_Genome.fasta" # Main reference fasta.
   liftoff:
-    threads: 4
+    threads: 12
     extra: ""
 
 snippy:
-  extra: ""
   threads: 12
+  extra: ""
 
 liftoff:
-  extra: ""
   threads: 12
+  extra: ""
+
+agat:
+  extra: ""
+
 # ## Required 
 # sample_file: "files/sample_metadata.csv" # CSV table with columns: sample, group, strain, and extra metadata.
 # fastq_suffix1: "_1.fq.gz" # Everything after the sample name of the forward reads file.
