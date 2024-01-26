@@ -151,3 +151,18 @@ rule unmapped_count_plot:
         "logs/references/unmapped_count_plot.log"
     script:
         "scripts/count_reference_unmapped.R"
+
+rule unmapped_samples_plot:
+    input:
+        REF_GFF + ".tsv",
+        config["sample_file"],
+        expand("analysis/{sample}/unmapped_features.txt", sample=SAMPLES)        
+    output:
+        "results/unmapped_count.tsv",
+        "results/unmapped.svg"
+    conda:
+        "envs/r.yaml"
+    log:
+        "logs/liftoff/unmapped_count_plot.log"
+    script:
+        "scripts/count_sample_unmapped.R"

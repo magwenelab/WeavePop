@@ -1,9 +1,9 @@
-sample_file: "config/sample_metadata.csv" # CSV table with columns: sample, group, strain, and extra metadata.
+sample_table: "config/sample_metadata.csv" # CSV table with columns: sample, group, strain, and extra metadata.
 
-# fastqs:
-#   directory: "data/samples" # REVIEW
-#   fastq_suffix1: "_1.fq.gz" # Everything after the sample name of the forward reads file.
-#   fastq_suffix2: "_2.fq.gz" # Everything after the sample name of the reverse reads file.
+fastqs:
+  directory: "data/samples" # REVIEW
+  fastq_suffix1: "_1.fq.gz" # Everything after the sample name of the forward reads file.
+  fastq_suffix2: "_2.fq.gz" # Everything after the sample name of the reverse reads file.
 
 references: 
   directory: "data/references/" # REVIEW
@@ -17,6 +17,9 @@ annotate_references:
     threads: 4
     extra: ""
 
+snippy:
+  extra: ""
+  threads: 4
 # ## Required 
 # sample_file: "files/sample_metadata.csv" # CSV table with columns: sample, group, strain, and extra metadata.
 # fastq_suffix1: "_1.fq.gz" # Everything after the sample name of the forward reads file.

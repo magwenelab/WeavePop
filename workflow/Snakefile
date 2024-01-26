@@ -9,7 +9,7 @@ configfile: "config/config.yaml"
 ##### load rules #####
 
 include: "rules/common.smk"
-#include: "rules/main.smk"
+include: "rules/main.smk"
 # include: "rules/depth-qc.smk"
 # include: "rules/plotting.smk"
 
