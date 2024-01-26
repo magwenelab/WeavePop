@@ -1,9 +1,22 @@
+# Generate softlinks of main reference
+rule main_links:
+    input:
+        gff = MAIN_GFF,
+        fasta = MAIN_FASTA
+    output:
+        gff = REFDIR / "{lineage}" / str(MAIN_NAME + ".gff"),
+        fasta = REFDIR / "{lineage}" / str(MAIN_NAME + ".fasta")
+    shell:
+        "ln -s -r {input.gff} {output.gff} "
+        "&& "
+        "ln -s -r {input.fasta} {output.fasta} "
+
 # Generate a TSV version of the main reference annotation
 rule main_gff2tsv: 
     input:
         MAIN_GFF
     output:
-        os.path.join(REFDIR, MAIN_NAME + ".tsv")
+        REFDIR / str(MAIN_NAME + ".tsv")
     conda:
         "../envs/agat.yaml"
     params: 
@@ -21,33 +34,33 @@ rule main_gff2tsv:
 # Lift over annotation of the main reference to the reference genomes
 rule ref2ref_liftoff:
     input:
-        target_refs = os.path.join(REFDIR, "{lineage}.fasta"),
-        fasta = MAIN_FASTA,
-        gff = MAIN_GFF,
+        target_refs = REFDIR / "{lineage}" / "{lineage}.fasta",
+        fasta = rules.main_links.output.fasta,
+        gff = rules.main_links.output.gff,
         features = FEATURE_FILE
     output:
-        target_gff = os.path.join(REFDIR, "{lineage}.gff"),
-        unmapped = os.path.join(REFDIR, "{lineage}_unmapped_features.txt")
+        target_gff = REFDIR / "{lineage}" / "{lineage}.gff",
+        unmapped = REFDIR / "{lineage}" / "unmapped_features.txt"
     threads: 
         config["annotate_references"]["liftoff"]["threads"]
     conda:
         "../envs/liftoff.yaml"
     log:
-        "logs/references/{lineage}_ref_liftoff.log"
+        "logs/references/{lineage}_liftoff.log"
     params:
         refdir = REFDIR,
         extra = config["annotate_references"]["liftoff"]["extra"]
     shell:
         "liftoff "
         "-g {input.gff} "
-        "-polish "
-        "-f {input.features} "
-        "-o {params.refdir}/{wildcards.lineage}_liftoff.gff "
-        "-dir {params.refdir}/{wildcards.lineage}_intermediate_files "
+        "-o {params.refdir}/{wildcards.lineage}/liftoff.gff "
+        "-dir {params.refdir}/{wildcards.lineage}/intermediate_files "
         "-u {output.unmapped} "
         "-p {threads} "
+        "-f {input.features} "
+        "-polish "
         "{params.extra} "
         "{input.target_refs} {input.fasta} "
         "&> {log} "
         "&& "
-        "mv {params.refdir}/{wildcards.lineage}_liftoff.gff_polished {output.target_gff} "
+        "mv {params.refdir}/{wildcards.lineage}/liftoff.gff_polished {output.target_gff} "
