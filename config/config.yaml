@@ -19,7 +19,11 @@ annotate_references:
 
 snippy:
   extra: ""
-  threads: 4
+  threads: 12
+
+liftoff:
+  extra: ""
+  threads: 12
 # ## Required 
 # sample_file: "files/sample_metadata.csv" # CSV table with columns: sample, group, strain, and extra metadata.
 # fastq_suffix1: "_1.fq.gz" # Everything after the sample name of the forward reads file.

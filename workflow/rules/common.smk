@@ -19,6 +19,7 @@ REFDIR = Path("results/references")
 
 FEATURE_FILE = "config/features.txt"
 
+#### Defining sample-dependent input files ####
 d={'sample': sampletable["sample"],
     'group': sampletable["group"],
     'fq1': FQ_DATA / (sampletable["sample"] + FQ1),
@@ -35,7 +36,13 @@ def snippy_input(wildcards):
         "refgenome": s["refgenome"],
     }
 
-
+def liftoff_input(wildcards):
+    s = SAMPLE_REFERENCE.loc[wildcards.sample,]
+    return {
+        "target": OUTDIR / "snippy" / s["sample"] / "snps.consensus.fa" ,
+        "refgff": s["refgff"],
+        "refgenome": s["refgenome"],
+    }
 #### Defining variables for the reference annotation module(references.smk) ####
 if config["annotate_references"]["activate"]:
     MAIN_DIR = Path(config["annotate_references"]["directory"])
@@ -46,7 +53,8 @@ if config["annotate_references"]["activate"]:
 def get_final_output():
     final_output = expand(OUTDIR / "snippy" / "{sample}/snps.consensus.fa",sample=SAMPLES)
     final_output.extend(expand(OUTDIR / "snippy" / "{sample}/snps.bam",sample=SAMPLES))
-
+    final_output.extend(expand(OUTDIR / "liftoff" / "{sample}/lifted.gff_polished",sample=SAMPLES))
+    final_output.extend(expand(OUTDIR / "liftoff" / "{sample}/unmapped_features.txt",sample=SAMPLES))
     if config["annotate_references"]["activate"]:
         final_output.extend(expand(REFDIR / "{lineage}" / "{lineage}.gff",lineage=LINEAGES))
         final_output.append(REFDIR / str(MAIN_NAME + ".tsv"))

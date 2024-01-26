@@ -6,19 +6,6 @@
 #         sample = samplefile["sample"]
 #         sample.to_csv("files/samples.txt", index = False, header = False)
 
-# rule reference_table:
-#     input:
-#         config["sample_file"],
-#     output:
-#         "files/sample_reference.csv"
-#     params:
-#         f1 = config["fastq_suffix1"],
-#         f2= config["fastq_suffix2"] 
-#     log:
-#         "logs/reftable.log"
-#     shell:
-#         "xonsh scripts/reference_table.xsh -s {input} -o {output} -f1 {params.f1} -f2 {params.f2} &> {log}"
-
 # rule ref_agat:
 #     input: 
 #         lin_gff = REFDIR + "{lineage}.gff",
@@ -92,34 +79,37 @@ rule snippy:
         "{params.extra} "
         "--force &> {log}"
 
-# rule liftoff:
-#     input:
-#         "files/sample_reference.csv",
-#         target = "analysis/{sample}/snps.consensus.fa",
-#         features = "files/features.txt"
-#     params:
-#         refgff = lambda wildcards:(REFDIR + pd.read_csv("files/sample_reference.csv", sep = ",", index_col=['sample']).loc[wildcards.sample, 'group'] + ".gff"),
-#         refgenome = lambda wildcards:(REFDIR + pd.read_csv("files/sample_reference.csv", sep = ",", index_col=['sample']).loc[wildcards.sample, 'refgenome'])
-#     output:
-#         "analysis/{sample}/lifted.gff",        
-#         "analysis/{sample}/lifted.gff_polished",
-#         "analysis/{sample}/unmapped_features.txt"
-#     threads: config["threads_liftoff"]
-#     conda:
-#         "../envs/liftoff.yaml"
-#     log:
-#         "logs/liftoff/{sample}.log" 
-#     shell:
-#         "liftoff "
-#         "-g {params.refgff} " 
-#         "-polish "
-#         "-f {input.features} "
-#         "-dir analysis/{wildcards.sample}/intermediate_files "
-#         "-u analysis/{wildcards.sample}/unmapped_features.txt "
-#         "-o analysis/{wildcards.sample}/lifted.gff "
-#         "-p {threads} "
-#         "{input.target} "
-#         "{params.refgenome} &> {log}"
+rule liftoff:
+    input:
+        unpack(liftoff_input),
+        features = FEATURE_FILE
+    output:
+        gff = OUTDIR / "liftoff" / "{sample}/lifted.gff",
+        polished = OUTDIR / "liftoff" / "{sample}/lifted.gff_polished",
+        unmapped = OUTDIR / "liftoff" / "{sample}/unmapped_features.txt" 
+    threads: 
+        config["liftoff"]["threads"]
+    params:
+        extra = config["liftoff"]["extra"],
+        outpath =  OUTDIR / "liftoff",
+    conda:
+        "../envs/liftoff.yaml"
+    log:
+        "logs/liftoff/{sample}.log" 
+    shell:
+        "ln -s -r {input.refgff} {params.outpath}/{wildcards.sample}/ref.gff "
+        "&& "
+        "liftoff "
+        "-g {params.outpath}/{wildcards.sample}/ref.gff " 
+        "-f {input.features} "
+        "-o {output.gff} "
+        "-dir {params.outpath}/{wildcards.sample}/intermediate_files "
+        "-u {params.outpath}/{wildcards.sample}/unmapped_features.txt "
+        "-p {threads} "
+        "-polish "
+        "{params.extra} "
+        "{input.target} "
+        "{input.refgenome} &> {log}"
 
 # rule agat:
 #     input:
