@@ -57,12 +57,17 @@ def get_final_output():
     final_output.extend(expand(OUTDIR / "liftoff" / "{sample}/unmapped_features.txt",sample=SAMPLES))
     final_output.extend(expand(OUTDIR / "agat" / "{sample}/cds.fa",sample=SAMPLES))
     final_output.extend(expand(OUTDIR / "agat" / "{sample}/proteins.fa",sample=SAMPLES))
-    final_output.append(DATASET_OUTDIR / "cds.done")
-    final_output.append(DATASET_OUTDIR / "prots.done")
+    final_output.extend(expand(OUTDIR / "agat" / "{sample}/by_cds.done",sample=SAMPLES))
+    final_output.extend(expand(OUTDIR / "agat" / "{sample}/by_proteins.done",sample=SAMPLES))
     if config["annotate_references"]["activate"]:
         final_output.extend(expand(REFDIR / "{lineage}" / "{lineage}.gff",lineage=LINEAGES))
         final_output.append(REFDIR / str(MAIN_NAME + ".tsv"))
     return final_output
+
+# def get_ids(wildcards):
+#     ck_output = checkpoints.mock.get(**wildcards).output[0]
+#     IDS, = glob_wildcards(os.path.join(ck_output, "{id}.fa"))
+#     return expand(os.path.join(ck_output, "{ID}.fa"), ID=IDS)
 
 #### Creating softlinks to have the reference genomes in the REFDIR ####
 rule links:

@@ -10,7 +10,6 @@ configfile: "config/config.yaml"
 
 include: "rules/common.smk"
 include: "rules/main.smk"
-include: "rules/by-gene.smk"
 # include: "rules/depth-qc.smk"
 # include: "rules/plotting.smk"
 
@@ -22,3 +21,4 @@ if config["annotate_references"]["activate"]:
 rule all:
     input:
         get_final_output(),
+        # get_ids

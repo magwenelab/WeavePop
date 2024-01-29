@@ -55,20 +55,18 @@ rule liftoff:
         "{input.target} "
         "{input.refgenome} &> {log}"
 
-rule agat:
+rule agat_cds:
     input:
         gff = rules.liftoff.output.gff,
         fa = rules.snippy.output.fa
     output:
-        cds = OUTDIR / "agat" / "{sample}/predicted_cds.fa",
-        prots = OUTDIR / "agat" / "{sample}/predicted_proteins.fa"
+        cds = OUTDIR / "agat" / "{sample}/cds.fa",
     conda:
         "../envs/agat.yaml"
     params:
         extra = config["agat"]["extra"]
     log: 
         cds = "logs/agat/{sample}_cds.log",
-        prots = "logs/agat/{sample}_prots.log"
     shell:
         "agat_sp_extract_sequences.pl "
         "-g {input.gff} " 
@@ -76,7 +74,20 @@ rule agat:
         "-o {output.cds} "
         "{params.extra} "
         "&> {log.cds} "
-        " && "
+
+rule agat_prots:
+    input:
+        gff = rules.liftoff.output.gff,
+        fa = rules.snippy.output.fa
+    output:
+        prots = OUTDIR / "agat" / "{sample}/proteins.fa"
+    conda:
+        "../envs/agat.yaml"
+    params:
+        extra = config["agat"]["extra"]
+    log: 
+        prots = "logs/agat/{sample}_prots.log"
+    shell:
         "agat_sp_extract_sequences.pl "
         "-g {input.gff} " 
         "-f {input.fa} "
@@ -86,16 +97,32 @@ rule agat:
         " && "
         "rm lifted.agat.log || true"
 
-rule agat_header:
+# checkpoint mock:
+#     output:
+#         directory(DATASET_OUTDIR / "cds")
+#     shell:
+#         "mkdir -p {output} && "
+#         "echo {params} && "
+#         "cut -f12 results/references/FungiDB-65_CneoformansH99.tsv | sort | uniq | grep CNAG | while read line; do touch {output}/$line.fa; echo someline2 >> {output}/$line.fa ; done"
+
+rule by_id_cds:
     input:
-        cds = rules.agat.output.cds,
-        prots = rules.agat.output.prots
+        rules.agat_cds.output.cds
     output:
-        cds = OUTDIR / "agat" / "{sample}/cds.fa",
-        prots = OUTDIR / "agat" / "{sample}/proteins.fa"
+        done = touch(OUTDIR / "agat" / "{sample}/by_cds.done")
+    params: 
+        pyfile = workflow.source_path("../scripts/by_id.py"), 
+        outdir = directory(DATASET_OUTDIR / "cds")
     shell:
-        "seqkit replace -p '($)' -r ' sample={wildcards.sample}' {input.cds} > {output.cds} "
-        "&& "
-        "seqkit replace -p '($)' -r ' sample={wildcards.sample}' {input.prots} > {output.prots} "
-        "&& "
-        "rm {input.cds} {input.prots}"
+        "python {params.pyfile} {input} {wildcards.sample} --outdir {params.outdir} "
+
+rule by_id_proteins:
+    input:
+        rules.agat_prots.output.prots
+    output:
+        touch(OUTDIR / "agat" / "{sample}/by_proteins.done")
+    params: 
+        pyfile = workflow.source_path("../scripts/by_id.py"),
+        outdir = DATASET_OUTDIR / "proteins"                 
+    shell:
+        "python {params.pyfile} {input} {wildcards.sample} --outdir {params.outdir} "
