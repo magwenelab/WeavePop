@@ -17,3 +17,4 @@ files/sample_reference.csv
 files/samples.txt
 files/unpaired_fastqs.csv
 data
+*log
