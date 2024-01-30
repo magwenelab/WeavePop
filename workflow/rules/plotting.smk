@@ -1,9 +1,3 @@
-configfile: "config.yaml"
-
-import pandas as pd
-
-samplefile=(pd.read_csv(config["sample_file"], sep=","))
-samples=list(set(samplefile["sample"]))
 
 rule all:
     input:
@@ -14,6 +8,35 @@ rule all:
         # expand("analysis/{sample}/bamstats", sample=samples),
         "results/mapped_reads.svg",
         expand("analysis/{sample}/mapq.svg", sample=samples)
+
+rule gff2tsv:
+    input:
+        REFDIR + "{lineage}.gff"
+    output:
+        REFDIR + "{lineage}.gff.tsv"
+    conda:
+        "../envs/agat.yaml"
+    log:
+        "logs/references/{lineage}_gff2tsv.log"
+    shell:
+        "agat_convert_sp_gff2tsv.pl -gff {input} -o {output} "
+        "&> {log} && "
+        "rm {wildcards.lineage}.agat.log || true"
+
+rule loci:
+    input:
+        expand(REFDIR + "{lineage}.gff.tsv", lineage=LINS),
+    output:
+        "files/loci_to_plot.tsv"
+    params:
+        loci=config["loci"]
+    log: 
+        "logs/references/loci.log"
+    run:
+        if config["loci"] == "":
+            shell("head -n1 {input} | tail -n1 > {output}")
+        else:
+            shell("xonsh scripts/loci.xsh -g {params.loci} -o {output} {input} &> {log}")
 
 rule coverage_plot:
     input:
@@ -27,7 +50,7 @@ rule coverage_plot:
         "analysis/{sample}/coverage_stats_good.csv",
         "analysis/{sample}/coverage_stats_raw.csv"
     conda:
-        "envs/r.yaml"
+        "../envs/r.yaml"
     log:
         "logs/coverage/{sample}.log"
     script:
@@ -65,7 +88,7 @@ rule coverage_stats_plots:
         "results/cov_median_raw.svg",
         "results/cov_mean_raw.svg",
     conda:
-        "envs/r.yaml"
+        "../envs/r.yaml"
     log:
         "logs/coverage/stats_plot.log"    
     script:
@@ -78,7 +101,7 @@ rule mapq_distribution:
     output:
         "analysis/{sample}/mapq_distribution.svg"
     conda:
-        "envs/r.yaml"
+        "../envs/r.yaml"
     log:
         "logs/mapq-dist/{sample}.log"
     script:
@@ -91,7 +114,7 @@ rule cov_distribution:
     output:
         "analysis/{sample}/cov_distribution.svg"
     conda:
-        "envs/r.yaml"
+        "../envs/r.yaml"
     log:
         "logs/cov-dist/{sample}.log"
     script:
@@ -103,7 +126,7 @@ rule cov_distribution:
 #     output:
 #         directory("analysis/{sample}/bamstats")
 #     conda:
-#         "envs/plot-bamstats.yaml"
+#         "../envs/plot-bamstats.yaml"
 #     log:
 #         "logs/plot-bamstats/{sample}.log"
 #     shell:
@@ -116,7 +139,7 @@ rule mapped_plot:
     output:
         "results/mapped_reads.svg"
     conda:
-        "envs/r.yaml"
+        "../envs/r.yaml"
     log:
         "logs/stats/mapped.log"
     script:
@@ -130,7 +153,7 @@ rule mapq_plot:
     output:
         "analysis/{sample}/mapq.svg"
     conda:
-        "envs/r.yaml"
+        "../envs/r.yaml"
     log:
         "logs/mapq_plot/{sample}.log"
     script:
@@ -146,7 +169,7 @@ rule unmapped_count_plot:
         REFDIR + "references_unmapped_count.tsv",
         REFDIR + "references_unmapped.svg"
     conda:
-        "envs/r.yaml"
+        "../envs/r.yaml"
     log:
         "logs/references/unmapped_count_plot.log"
     script:
@@ -161,7 +184,7 @@ rule unmapped_samples_plot:
         "results/unmapped_count.tsv",
         "results/unmapped.svg"
     conda:
-        "envs/r.yaml"
+        "../envs/r.yaml"
     log:
         "logs/liftoff/unmapped_count_plot.log"
     script:

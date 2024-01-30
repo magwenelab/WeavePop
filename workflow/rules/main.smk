@@ -3,8 +3,9 @@ rule snippy:
     input:
         unpack(snippy_input)
     output:
-        fa = OUTDIR / "snippy" / "{sample}/snps.consensus.fa",
-        bam = OUTDIR / "snippy" / "{sample}/snps.bam"
+        fa = OUTDIR / "snippy" / "{sample}" / "snps.consensus.fa",
+        bam = OUTDIR / "snippy" / "{sample}" / "snps.bam",
+        ref = OUTDIR / "snippy" / "{sample}" / "ref.fa"
     threads: 
         config["snippy"]["threads"]
     params:
@@ -28,9 +29,9 @@ rule liftoff:
         unpack(liftoff_input),
         features = FEATURE_FILE
     output:
-        gff = OUTDIR / "liftoff" / "{sample}/lifted.gff",
-        polished = OUTDIR / "liftoff" / "{sample}/lifted.gff_polished",
-        unmapped = OUTDIR / "liftoff" / "{sample}/unmapped_features.txt" 
+        gff = OUTDIR / "liftoff" / "{sample}" / "lifted.gff",
+        polished = OUTDIR / "liftoff" / "{sample}" / "lifted.gff_polished",
+        unmapped = OUTDIR / "liftoff" / "{sample}" / "unmapped_features.txt" 
     threads: 
         config["liftoff"]["threads"]
     params:
@@ -60,7 +61,7 @@ rule agat_cds:
         gff = rules.liftoff.output.gff,
         fa = rules.snippy.output.fa
     output:
-        cds = OUTDIR / "agat" / "{sample}/cds.fa",
+        cds = OUTDIR / "agat" / "{sample}" / "cds.fa",
     conda:
         "../envs/agat.yaml"
     params:
@@ -80,7 +81,7 @@ rule agat_prots:
         gff = rules.liftoff.output.gff,
         fa = rules.snippy.output.fa
     output:
-        prots = OUTDIR / "agat" / "{sample}/proteins.fa"
+        prots = OUTDIR / "agat" / "{sample}" / "proteins.fa"
     conda:
         "../envs/agat.yaml"
     params:
@@ -109,20 +110,20 @@ rule by_id_cds:
     input:
         rules.agat_cds.output.cds
     output:
-        done = touch(OUTDIR / "agat" / "{sample}/by_cds.done")
+        done = touch(OUTDIR / "agat" / "{sample}" / "by_cds.done")
     params: 
-        pyfile = workflow.source_path("../scripts/by_id.py"), 
+        script = workflow.source_path("../scripts/by_id.py"), 
         outdir = directory(DATASET_OUTDIR / "cds")
     shell:
-        "python {params.pyfile} {input} {wildcards.sample} --outdir {params.outdir} "
+        "python {params.script} {input} {wildcards.sample} --outdir {params.outdir} "
 
 rule by_id_proteins:
     input:
         rules.agat_prots.output.prots
     output:
-        touch(OUTDIR / "agat" / "{sample}/by_proteins.done")
+        touch(OUTDIR / "agat" / "{sample}" / "by_proteins.done")
     params: 
-        pyfile = workflow.source_path("../scripts/by_id.py"),
+        script = workflow.source_path("../scripts/by_id.py"),
         outdir = DATASET_OUTDIR / "proteins"                 
     shell:
-        "python {params.pyfile} {input} {wildcards.sample} --outdir {params.outdir} "
+        "python {params.script} {input} {wildcards.sample} --outdir {params.outdir} "

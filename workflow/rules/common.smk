@@ -51,17 +51,36 @@ def liftoff_input(wildcards):
 
 #### Defining which final output files are being requested ####
 def get_final_output():
-    final_output = expand(OUTDIR / "snippy" / "{sample}/snps.consensus.fa",sample=SAMPLES)
-    final_output.extend(expand(OUTDIR / "snippy" / "{sample}/snps.bam",sample=SAMPLES))
-    final_output.extend(expand(OUTDIR / "liftoff" / "{sample}/lifted.gff_polished",sample=SAMPLES))
-    final_output.extend(expand(OUTDIR / "liftoff" / "{sample}/unmapped_features.txt",sample=SAMPLES))
-    final_output.extend(expand(OUTDIR / "agat" / "{sample}/cds.fa",sample=SAMPLES))
-    final_output.extend(expand(OUTDIR / "agat" / "{sample}/proteins.fa",sample=SAMPLES))
-    final_output.extend(expand(OUTDIR / "agat" / "{sample}/by_cds.done",sample=SAMPLES))
-    final_output.extend(expand(OUTDIR / "agat" / "{sample}/by_proteins.done",sample=SAMPLES))
+    final_output = expand(OUTDIR / "snippy" / "{sample}" / "snps.consensus.fa",sample=SAMPLES)
+    final_output.extend(expand(OUTDIR / "snippy" / "{sample}" / "snps.bam",sample=SAMPLES))
+    final_output.extend(expand(OUTDIR / "liftoff" / "{sample}" / "lifted.gff_polished",sample=SAMPLES))
+    final_output.extend(expand(OUTDIR / "liftoff" / "{sample}" / "unmapped_features.txt",sample=SAMPLES))
+    final_output.extend(expand(OUTDIR / "agat" / "{sample}" / "cds.fa",sample=SAMPLES))
+    final_output.extend(expand(OUTDIR / "agat" / "{sample}" / "proteins.fa",sample=SAMPLES))
+    final_output.extend(expand(OUTDIR / "agat" / "{sample}" / "by_cds.done",sample=SAMPLES))
+    final_output.extend(expand(OUTDIR / "agat" / "{sample}" / "by_proteins.done",sample=SAMPLES))
     if config["annotate_references"]["activate"]:
         final_output.extend(expand(REFDIR / "{lineage}" / "{lineage}.gff",lineage=LINEAGES))
         final_output.append(REFDIR / str(MAIN_NAME + ".tsv"))
+    if config["coverage_quality"]["activate"]:
+        final_output.extend(expand(OUTDIR / "mosdepth" / "{sample}" / "coverage.regions.bed.gz",sample=SAMPLES))
+        final_output.extend(expand(OUTDIR / "mosdepth" / "{sample}" / "coverage_good.regions.bed.gz",sample=SAMPLES))
+        final_output.extend(expand(OUTDIR / "samtools" / "{sample}" / "distrib_mapq.csv",sample=SAMPLES))
+        final_output.extend(expand(OUTDIR / "samtools" / "{sample}" / "distrib_cov.csv",sample=SAMPLES))
+        final_output.extend(expand(OUTDIR / "samtools" / "{sample}" / "snps.bam.stats",sample=SAMPLES))
+        final_output.extend(expand(OUTDIR / "samtools" / "{sample}" / "mapq.bed",sample=SAMPLES))
+        final_output.extend(expand(OUTDIR / "samtools" / "{sample}" / "mapq_window.bed",sample=SAMPLES))
+        final_output.extend(expand(OUTDIR / "samtools" / "{sample}" / "mapq_cov_window.bed",sample=SAMPLES))
+        final_output.extend(expand(OUTDIR / "samtools" / "{sample}" / "annotation.gff",sample=SAMPLES))
+        final_output.append(DATASET_OUTDIR / "mapping_stats.txt")
+    # if config["coverage_quality"]["plotting"]["activate"]:
+    #     final.output.extend(expand(OUTDIR / "plots" / "{sample}" / "coverage.svg",sample=SAMPLES))
+    #     final.output.extend(expand(OUTDIR / "plots" / "{sample}" / "cov_distribution",sample=SAMPLES))
+    #     final.output.extend(expand(OUTDIR / "plots" / "{sample}" / "mapq_distribution.svg",sample=SAMPLES))
+    #     final.output.extend(expand(OUTDIR / "plots" / "{sample}" / "mapq.svg",sample=SAMPLES))
+    #     final_output.append(DATASET_OUTDIR / "plots" / "mapped_reads.svg")
+    #     final_output.append(DATASET_OUTDIR / "plots" / "cov_median_good.svg")
+
     return final_output
 
 # def get_ids(wildcards):
