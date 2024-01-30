@@ -4,9 +4,10 @@ import glob
 from pathlib import Path
 
 #### Defining global variables ####
-sampletable=(pd.read_csv(config["sample_table"], sep=","))
-SAMPLES=list(set(sampletable["sample"]))
-LINEAGES=list(set(sampletable["group"]))
+SAMPLEFILE=config["sample_table"]
+SAMPLETABLE=(pd.read_csv(config["sample_table"], sep=","))
+SAMPLES=list(set(SAMPLETABLE["sample"]))
+LINEAGES=list(set(SAMPLETABLE["group"]))
 REF_DATA = Path(config["references"]["directory"])
 
 FQ_DATA = Path(config["fastqs"]["directory"])
@@ -17,7 +18,11 @@ OUTDIR= Path("results/samples")
 DATASET_OUTDIR = Path("results/dataset")
 REFDIR = Path("results/references")
 
+# FIX : Add conditional statements to allow for absence of these files
 FEATURE_FILE = "config/features.txt"
+LOCI_FILE = "config/loci.csv"
+CHROM_NAMES = "config/chromosome_names.csv"
+
 #### Defining variables for the reference annotation module(references.smk) ####
 if config["annotate_references"]["activate"]:
     MAIN_DIR = Path(config["annotate_references"]["directory"])
@@ -26,12 +31,12 @@ if config["annotate_references"]["activate"]:
     MAIN_NAME, _ = os.path.splitext(os.path.basename(MAIN_GFF))
 
 #### Defining sample-dependent input files ####
-d={'sample': sampletable["sample"],
-    'group': sampletable["group"],
-    'fq1': FQ_DATA / (sampletable["sample"] + FQ1),
-    'fq2': FQ_DATA / (sampletable["sample"] + FQ2),
-    'refgenome' : REFDIR / sampletable["group"] / (sampletable["group"] + ".fasta"),
-    'refgff' : REFDIR / sampletable["group"] / (sampletable["group"] + ".gff")}
+d={'sample': SAMPLETABLE["sample"],
+    'group': SAMPLETABLE["group"],
+    'fq1': FQ_DATA / (SAMPLETABLE["sample"] + FQ1),
+    'fq2': FQ_DATA / (SAMPLETABLE["sample"] + FQ2),
+    'refgenome' : REFDIR / SAMPLETABLE["group"] / (SAMPLETABLE["group"] + ".fasta"),
+    'refgff' : REFDIR / SAMPLETABLE["group"] / (SAMPLETABLE["group"] + ".gff")}
 SAMPLE_REFERENCE = pd.DataFrame(data=d).set_index("sample", drop=False)
 def snippy_input(wildcards):
     s = SAMPLE_REFERENCE.loc[wildcards.sample,]
@@ -55,8 +60,6 @@ def get_final_output():
     final_output.extend(expand(OUTDIR / "snippy" / "{sample}" / "snps.bam",sample=SAMPLES))
     final_output.extend(expand(OUTDIR / "liftoff" / "{sample}" / "lifted.gff_polished",sample=SAMPLES))
     final_output.extend(expand(OUTDIR / "liftoff" / "{sample}" / "unmapped_features.txt",sample=SAMPLES))
-    final_output.extend(expand(OUTDIR / "agat" / "{sample}" / "cds.fa",sample=SAMPLES))
-    final_output.extend(expand(OUTDIR / "agat" / "{sample}" / "proteins.fa",sample=SAMPLES))
     final_output.extend(expand(OUTDIR / "agat" / "{sample}" / "by_cds.done",sample=SAMPLES))
     final_output.extend(expand(OUTDIR / "agat" / "{sample}" / "by_proteins.done",sample=SAMPLES))
     if config["annotate_references"]["activate"]:
@@ -67,19 +70,18 @@ def get_final_output():
         final_output.extend(expand(OUTDIR / "mosdepth" / "{sample}" / "coverage_good.regions.bed.gz",sample=SAMPLES))
         final_output.extend(expand(OUTDIR / "samtools" / "{sample}" / "distrib_mapq.csv",sample=SAMPLES))
         final_output.extend(expand(OUTDIR / "samtools" / "{sample}" / "distrib_cov.csv",sample=SAMPLES))
-        final_output.extend(expand(OUTDIR / "samtools" / "{sample}" / "snps.bam.stats",sample=SAMPLES))
         final_output.extend(expand(OUTDIR / "samtools" / "{sample}" / "mapq.bed",sample=SAMPLES))
         final_output.extend(expand(OUTDIR / "samtools" / "{sample}" / "mapq_window.bed",sample=SAMPLES))
         final_output.extend(expand(OUTDIR / "samtools" / "{sample}" / "mapq_cov_window.bed",sample=SAMPLES))
         final_output.extend(expand(OUTDIR / "samtools" / "{sample}" / "annotation.gff",sample=SAMPLES))
         final_output.append(DATASET_OUTDIR / "mapping_stats.txt")
-    # if config["coverage_quality"]["plotting"]["activate"]:
-    #     final.output.extend(expand(OUTDIR / "plots" / "{sample}" / "coverage.svg",sample=SAMPLES))
-    #     final.output.extend(expand(OUTDIR / "plots" / "{sample}" / "cov_distribution",sample=SAMPLES))
-    #     final.output.extend(expand(OUTDIR / "plots" / "{sample}" / "mapq_distribution.svg",sample=SAMPLES))
-    #     final.output.extend(expand(OUTDIR / "plots" / "{sample}" / "mapq.svg",sample=SAMPLES))
-    #     final_output.append(DATASET_OUTDIR / "plots" / "mapped_reads.svg")
-    #     final_output.append(DATASET_OUTDIR / "plots" / "cov_median_good.svg")
+    if config["plotting"]["activate"]:
+        final_output.extend(expand(OUTDIR / "plots" / "{sample}" / "coverage.svg",sample=SAMPLES))
+        final_output.extend(expand(OUTDIR / "plots" / "{sample}" / "cov_distribution.svg",sample=SAMPLES))
+        final_output.extend(expand(OUTDIR / "plots" / "{sample}" / "mapq_distribution.svg",sample=SAMPLES))
+        final_output.extend(expand(OUTDIR / "plots" / "{sample}" / "mapq.svg",sample=SAMPLES))
+        final_output.append(DATASET_OUTDIR / "plots" / "mapped_reads.svg")
+        final_output.append(DATASET_OUTDIR / "plots" / "cov_median_good.svg")
 
     return final_output
 

@@ -1,3 +1,4 @@
+# Get the coverage of all the mapped reads per window along all chromosomes
 rule mosdepth:
     input:
         bam = rules.snippy.output.bam
@@ -18,6 +19,7 @@ rule mosdepth:
         "{params.outdir}/{wildcards.sample}/coverage {input} "
         "&> {log}"
 
+# Get the coverage of the good quality (above a MAPQ value) mapped reads per window along all chromosomes
 rule mosdepth_good:
     input:
         bam = rules.snippy.output.bam
@@ -39,6 +41,7 @@ rule mosdepth_good:
         "{params.outdir}/{wildcards.sample}/coverage_good {input} "
         "&> {log}"
 
+# Get 
 rule samtools_stats:
     input:
         bam = rules.snippy.output.bam,
@@ -81,7 +84,7 @@ rule mapped_cat:
     input:
         expand(rules.mapped_edit.output.mapstats, sample=SAMPLES)   
     output: 
-        DATASET_OUTDIR / "mapping_stats.txt"
+        stats = DATASET_OUTDIR / "mapping_stats.txt"
     shell:
        'cat {input} > {output}'  
 

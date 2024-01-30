@@ -1,4 +1,4 @@
-
+# Map reads to corresponding reference genome
 rule snippy:
     input:
         unpack(snippy_input)
@@ -24,6 +24,7 @@ rule snippy:
         "{params.extra} "
         "--force &> {log}"
 
+# Lift over annotation from corresponding reference genome to sample assembly
 rule liftoff:
     input:
         unpack(liftoff_input),
@@ -56,6 +57,7 @@ rule liftoff:
         "{input.target} "
         "{input.refgenome} &> {log}"
 
+# Extract the nucleotide sequence of each isoform of each gene of a sample
 rule agat_cds:
     input:
         gff = rules.liftoff.output.gff,
@@ -76,6 +78,7 @@ rule agat_cds:
         "{params.extra} "
         "&> {log.cds} "
 
+# Extract the amino acid sequence of each isoform of each gene of a sample
 rule agat_prots:
     input:
         gff = rules.liftoff.output.gff,
@@ -106,6 +109,7 @@ rule agat_prots:
 #         "echo {params} && "
 #         "cut -f12 results/references/FungiDB-65_CneoformansH99.tsv | sort | uniq | grep CNAG | while read line; do touch {output}/$line.fa; echo someline2 >> {output}/$line.fa ; done"
 
+# Make a fasta file for each isoform with the nucleotide sequence of samples it is present in
 rule by_id_cds:
     input:
         rules.agat_cds.output.cds
@@ -117,6 +121,7 @@ rule by_id_cds:
     shell:
         "python {params.script} {input} {wildcards.sample} --outdir {params.outdir} "
 
+# Make a fasta file for each isoform with the amino acid sequence of samples it is present in
 rule by_id_proteins:
     input:
         rules.agat_prots.output.prots

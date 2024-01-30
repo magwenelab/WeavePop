@@ -11,7 +11,7 @@ configfile: "config/config.yaml"
 include: "rules/common.smk"
 include: "rules/main.smk"
 include: "rules/depth-qc.smk"
-# include: "rules/plotting.smk"
+include: "rules/plotting.smk"
 
 if config["annotate_references"]["activate"]:
     include: "rules/references.smk"
