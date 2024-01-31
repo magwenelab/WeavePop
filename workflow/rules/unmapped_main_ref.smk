@@ -1,0 +1,35 @@
+# Plot and count the features that were not lifted over from the main reference
+rule unmapped_ref_features:
+    input:
+        SAMPLEFILE,
+        rules.main_gff2tsv.output,
+        expand(rules.ref2ref_liftoff.output.unmapped, lineage=LINEAGES)        
+    output:
+        REFDIR / "unmapped_count.tsv",
+        REFDIR / "unmapped.svg"
+    conda:
+        "../envs/r.yaml"
+    params:
+        refdir = REFDIR
+    log:
+        "logs/references/unmapped_count_plot.log"
+    script:
+        "../scripts/unmapped_features_refs.R"
+
+rule unmapped_samples_plot:
+    input:
+        SAMPLEFILE,
+        rules.main_gff2tsv.output,
+        expand(rules.liftoff.output.unmapped, sample=SAMPLES)        
+    output:
+        DATASET_OUTDIR / "files" / "unmapped_count.tsv",
+        DATASET_OUTDIR / "plots" / "unmapped.svg"
+    conda:
+        "../envs/r.yaml"
+    params:
+        script = workflow.source_path("../scripts/samples_unmapped_main.R"),
+        dir = OUTDIR / "liftoff"
+    log:
+        "logs/liftoff/unmapped_count_plot.log"
+    script:
+        "{params.script}"

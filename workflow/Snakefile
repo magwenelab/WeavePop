@@ -16,6 +16,12 @@ include: "rules/plotting.smk"
 if config["annotate_references"]["activate"]:
     include: "rules/references.smk"
 
+if config["plotting"]["activate"] and config["annotate_references"]["activate"]:
+    include: "rules/unmapped_main_ref.smk"
+
+if config["plotting"]["activate"] and not config["annotate_references"]["activate"]:
+    include: "rules/unmapped_per_lineage.smk"
+
 ##### target rules #####
 
 rule all:

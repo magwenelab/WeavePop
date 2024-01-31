@@ -6,30 +6,35 @@ suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(ComplexHeatmap))
 library(RColorBrewer)
 
-# genes<-read_delim("refs/FungiDB-65_CneoformansH99.gff.tsv", col_names = TRUE, na = c("NA","N/A", ""), show_col_types = FALSE )
-genes<-read_delim(snakemake@input[[1]], col_names = TRUE, na = c("NA","N/A", ""), show_col_types = FALSE )
+# lins <- read.csv("config/sample_metadata.csv", header = TRUE)
+lins <- read.csv(snakemake@input[[1]], header = TRUE)
+
+# genes<-read_delim("results/references/FungiDB-65_CneoformansH99.tsv", col_names = TRUE, na = c("NA","N/A", ""), show_col_types = FALSE )
+genes<-read_delim(snakemake@input[[2]], col_names = TRUE, na = c("NA","N/A", ""), show_col_types = FALSE )
 genes<- genes %>% 
-  filter(str_detect(primary_tag, "gene" ))%>%
+  select(Chromosome = seq_id, Feature_type = primary_tag, ID, description = matches("description|product"), contains("Name"))%>%
+  filter(str_detect(Feature_type, "gene" ))%>%
   as.data.frame()
-rownames(genes)<- genes$ID
-# lins <- read.csv("files/sample_metadata.csv", header = TRUE)
-lins <- read.csv(snakemake@input[[2]], header = TRUE)
+toFeature <- colnames(genes)[! colnames(genes) %in% c("Chromosome", "Feature_type")]
+genes <- unite(genes, Feature, all_of(toFeature), sep = " ", remove = FALSE, na.rm = TRUE)
+rownames(genes)<- genes$Feature
+
 
 # for (lin in levels(as.factor(lins$group))){
-#   file <- paste("refs/", lin, "_unmapped_features.txt", sep = "")
+#   file <- paste("results/references/", lin, "/unmapped_features.txt", sep = "")
 #   df<- read.csv(file, header = FALSE, col.names = c("ID"), colClasses = "character")
 #   genes <- genes %>%
 #     mutate(!!lin := ifelse(ID %in% df$ID, 0, 1))
 # }
 for (lin in levels(as.factor(lins$group))){
- file <- paste(snakemake@config[["reference_directory"]], lin, "_unmapped_features.txt", sep = "")
+ file <- paste(snakemake@params[[1]], lin, "unmapped_features.txt", sep = "/")
  df<- read.csv(file, header = FALSE, col.names = c("ID"), colClasses = "character")
  genes <- genes %>%
    mutate(!!lin := ifelse(ID %in% df$ID, 0, 1))
 }
 
 unmapped <- genes %>% 
-  select(Chromosome = seq_id, Feature_type = primary_tag, lins$group)%>%
+  select(Chromosome, Feature_type, lins$group)%>%
   filter(rowSums(. == 0) > 0)
 
 unmapped_count <- unmapped %>%
@@ -52,8 +57,11 @@ names(featureCols) = unique(unmapped$Feature_type)
 split <- select(unmapped, Chromosome)
 row_ha <- rowAnnotation(Feature_type = unmapped$Feature_type, col = list(Feature_type = featureCols))
 
-# svg("unmapped.svg",width=16,height=25)
-svg(snakemake@output[[2]],width=16,height=25)
+
+pwidth = 5 + 0.5 * nlevels(as.factor(lins$group))
+pheight = 3 + 0.05 * nrow(unmapped)
+#svg("unmapped.svg",width=pwidth,height=pheight)
+svg(snakemake@output[[2]],width=pwidth,height=pheight)
 Heatmap(mat, 
         name = "Mapped features",
         col = colors,
@@ -64,5 +72,6 @@ Heatmap(mat,
         show_column_dend = FALSE,
         row_title_rot = 0,
         right_annotation = row_ha,
-        row_names_gp = gpar(fontsize = 5))
+        row_names_gp = gpar(fontsize = 5),
+        show_heatmap_legend = FALSE)
 dev.off()

@@ -82,7 +82,11 @@ def get_final_output():
         final_output.extend(expand(OUTDIR / "plots" / "{sample}" / "mapq.svg",sample=SAMPLES))
         final_output.append(DATASET_OUTDIR / "plots" / "mapped_reads.svg")
         final_output.append(DATASET_OUTDIR / "plots" / "cov_median_good.svg")
-
+        final_output.append(DATASET_OUTDIR / "files" / "unmapped_count.tsv")
+        final_output.append(DATASET_OUTDIR / "plots" / "unmapped.svg")
+    if config["annotate_references"]["activate"] and config["plotting"]["activate"]:
+        final_output.append(REFDIR / "unmapped_count.tsv")
+        final_output.append(REFDIR / "unmapped.svg")
     return final_output
 
 # def get_ids(wildcards):

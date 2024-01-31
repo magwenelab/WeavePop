@@ -157,36 +157,3 @@ rule mapq_plot:
 #     shell:
 #         "plot-bamstats -p {output}/ {input} &> {log}"
                 
-# rule unmapped_count_plot:
-#     input:
-#         REF_GFF + ".tsv",
-#         SAMPLEFILE,
-#         expand(REFDIR + "{lineage}_unmapped_features.txt", lineage=LINEAGES)        
-#     output:
-#         REFDIR + "references_unmapped_count.tsv",
-#         REFDIR + "references_unmapped.svg"
-#     conda:
-#         "../envs/r.yaml"
-#     params:
-#         script = workflow.source_path("../scripts/count_reference_unmapped.R")
-#     log:
-#         "logs/references/unmapped_count_plot.log"
-#     script:
-#         "{params.script}"
-
-# rule unmapped_samples_plot:
-#     input:
-#         REF_GFF + ".tsv",
-#         SAMPLEFILE,
-#         expand("analysis/{sample}/unmapped_features.txt", sample=SAMPLES)        
-#     output:
-#         "results/unmapped_count.tsv",
-#         "results/unmapped.svg"
-#     conda:
-#         "../envs/r.yaml"
-#     params:
-#         script = workflow.source_path("../scripts/count_sample_unmapped.R")
-#     log:
-#         "logs/liftoff/unmapped_count_plot.log"
-#     script:
-#         "{params.script}"
