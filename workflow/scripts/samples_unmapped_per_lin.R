@@ -3,14 +3,15 @@ sink(log, type = "output")
 sink(log, type = "message")
 
 suppressPackageStartupMessages(library(tidyverse))
-library(ComplexHeatmap)
-library(RColorBrewer)
+suppressPackageStartupMessages(library(ComplexHeatmap))
+suppressPackageStartupMessages(library(RColorBrewer))
 #setwd("/hpc/group/magwenelab/czirion/projects/experimental_evo/")
 #metadata<- read.csv("files/sample_metadata.csv", header = TRUE)
 metadata <- read.csv(snakemake@input[[1]], header = TRUE)
 rownames(metadata) <- metadata$sample
 metadata$group <- as.factor(metadata$group)
 
+plot_list <- list()
 for (lin in levels(metadata$group)){
     REFDIR / "{lineage}" / "{lineage}.gff"
   genes<-read_delim(paste(paste(snakemake@params[[1]], lin, lin, sep ="/"), ".gff.tsv", sep = ""), col_names = TRUE, na = "N/A", show_col_types = FALSE )
@@ -78,10 +79,12 @@ for (lin in levels(metadata$group)){
             row_names_gp = gpar(fontsize = 5),
             column_names_gp = gpar(fontsize = 5),
             show_heatmap_legend = FALSE)
-
-   png(paste(snakemake@params[[1]], "unmapped_", lin, ".png", sep = ""))
-   draw(plot)
-   dev.off()
+  
+    plot_list[[length(plot_list) + 1]]  <- plot
   }
 }
 
+combined_plot<- wrap_plots(plot_list)
+png(paste(snakemake@params[[1]], "unmapped_", lin, ".png", sep = ""))
+draw(combined_plot)
+dev.off()
