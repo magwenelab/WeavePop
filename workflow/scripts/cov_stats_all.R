@@ -5,7 +5,6 @@ sink(log, type = "message")
 suppressPackageStartupMessages(library(tidyverse))
 library(RColorBrewer)
 suppressPackageStartupMessages(library(scales))
-library(svglite)
 
 #metadata <- read.csv("files/sample_metadata.csv", header = TRUE, stringsAsFactors = TRUE)
 metadata <- read.csv(snakemake@input[[1]], header = TRUE, stringsAsFactors = TRUE)
@@ -51,7 +50,7 @@ g <- ggplot(good_stats, aes(x=reorder(name, -Global_Mean, sum)))+
 gwidth <- 12 + 0.15 * nlevels(good_stats$sample)
 gheight <- gwidth/2
 
-#ggsave("results/cov_global_good.svg", plot = g,  units = "cm", height = gheight, width = gwidth)
+#ggsave("results/cov_global_good.png", plot = g,  units = "cm", height = gheight, width = gwidth)
 ggsave(snakemake@output[[2]], plot = g,  units = "cm", height = gheight, width = gwidth)
 
 # Median by Chromosome ####MAKE COLOR AES CONFIGURABLE ####
@@ -80,7 +79,7 @@ medianplot <- ggplot(good_stats, aes(x=reorder(name, -Global_Mean, sum), y= Norm
 pwidth <- 12 + 0.15 * nlevels(good_stats$sample)
 pheight <- 10 + 1 * length(unique(good_stats$Chromosome))
 
-#ggsave("results/cov_median_good.svg", plot = medianplot,  units = "cm", height = pheight, width = pwidth)
+#ggsave("results/cov_median_good.png", plot = medianplot,  units = "cm", height = pheight, width = pwidth)
 ggsave(snakemake@output[[3]], plot = medianplot,  units = "cm", height = pheight, width = pwidth)
 
 # Mean by Chromosome
@@ -106,7 +105,7 @@ meanplot <- ggplot(good_stats, aes(x=reorder(name, -Global_Mean, sum), y= Norm_M
          x = "Sample",
          y = ylabel)
 
-#ggsave("results/cov_mean_good.svg", plot = meanplot,  units = "cm", height = 30, width = 60)
+#ggsave("results/cov_mean_good.png", plot = meanplot,  units = "cm", height = 30, width = 60)
 ggsave(snakemake@output[[4]], plot = meanplot,  units = "cm", height = pheight, width = pwidth)
 
 #### All quality mappings ####
@@ -146,7 +145,7 @@ g <- ggplot(raw_stats, aes(x=reorder(name, -Global_Mean, sum)))+
             x= "Sample",
             y= "Coverage (X)")
 
-#ggsave("results/cov_global_raw.svg", plot = g,  units = "cm", height = gheight, width = gwidth)
+#ggsave("results/cov_global_raw.png", plot = g,  units = "cm", height = gheight, width = gwidth)
 ggsave(snakemake@output[[6]], plot = g,  units = "cm", height = gheight, width = gwidth)
 
 # Median by Chromosome ####MAKE COLOR AES CONFIGURABLE ####
@@ -172,7 +171,7 @@ medianplot <- ggplot(raw_stats, aes(x=reorder(name, -Global_Mean, sum), y= Norm_
          x = "Sample",
          y = ylabel)
 
-#ggsave("results/cov_median_raw.svg", plot = medianplot,  units = "cm", height = pheight, width = pwidth)
+#ggsave("results/cov_median_raw.png", plot = medianplot,  units = "cm", height = pheight, width = pwidth)
 ggsave(snakemake@output[[7]], plot = medianplot,  units = "cm", height = pheight, width = pwidth)
 
 # Mean by Chromosome
@@ -198,5 +197,5 @@ meanplot <- ggplot(raw_stats, aes(x=reorder(name, -Global_Mean, sum), y= Norm_Me
          x = "Sample",
          y = ylabel)
 
-#ggsave("results/cov_mean_raw.svg", plot = meanplot,  units = "cm", height = pheight, width = pwidth)
+#ggsave("results/cov_mean_raw.png", plot = meanplot,  units = "cm", height = pheight, width = pwidth)
 ggsave(snakemake@output[[8]], plot = meanplot,  units = "cm", height = pheight, width = pwidth)

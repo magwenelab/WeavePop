@@ -60,8 +60,8 @@ row_ha <- rowAnnotation(Feature_type = unmapped$Feature_type, col = list(Feature
 
 pwidth = 5 + 0.5 * nlevels(as.factor(lins$group))
 pheight = 3 + 0.05 * nrow(unmapped)
-#svg("unmapped.svg",width=pwidth,height=pheight)
-svg(snakemake@output[[2]],width=pwidth,height=pheight)
+#png("unmapped.png",width=pwidth,height=pheight)
+png(snakemake@output[[2]],width=pwidth,height=pheight)
 Heatmap(mat, 
         name = "Mapped features",
         col = colors,

@@ -5,7 +5,7 @@ rule unmapped_samples_plot:
         expand(rules.liftoff.output.unmapped, sample=SAMPLES)        
     output:
         DATASET_OUTDIR / "files" / "unmapped_count.tsv",
-        DATASET_OUTDIR / "plots" / "unmapped.svg"
+        DATASET_OUTDIR / "plots" / "unmapped.png"
     conda:
         "../envs/r.yaml"
     params:

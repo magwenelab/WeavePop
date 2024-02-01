@@ -5,7 +5,7 @@ sink(log, type = "message")
 suppressPackageStartupMessages(library(tidyverse))
 library(RColorBrewer)
 suppressPackageStartupMessages(library(scales))
-library(svglite)
+
 metadata <- read.csv(snakemake@input[[2]], header = TRUE)%>%
     select(sample, strain, lineage = group)
 

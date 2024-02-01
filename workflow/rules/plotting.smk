@@ -30,8 +30,8 @@ rule coverage_plot:
         CHROM_NAMES,
         rules.loci.output.locitable
     output:
-        cov = OUTDIR / "plots" / "{sample}" / "coverage.svg",
-        stats = OUTDIR / "plots" / "{sample}" / "coverage_stats.svg",
+        cov = OUTDIR / "plots" / "{sample}" / "coverage.png",
+        stats = OUTDIR / "plots" / "{sample}" / "coverage_stats.png",
         good = OUTDIR / "files" / "{sample}" / "coverage_stats_good.csv",
         raw = OUTDIR / "files" / "{sample}" / "coverage_stats_raw.csv"
     conda:
@@ -63,13 +63,13 @@ rule coverage_stats_plots:
         rules.cat_stats.output.allr
     output:
         DATASET_OUTDIR / "files" / "cov_norm_good.csv",
-        DATASET_OUTDIR / "plots" / "cov_global_good.svg",
-        DATASET_OUTDIR / "plots" / "cov_median_good.svg",
-        DATASET_OUTDIR / "plots" / "cov_mean_good.svg",
+        DATASET_OUTDIR / "plots" / "cov_global_good.png",
+        DATASET_OUTDIR / "plots" / "cov_median_good.png",
+        DATASET_OUTDIR / "plots" / "cov_mean_good.png",
         DATASET_OUTDIR / "files" / "cov_norm_raw.csv",
-        DATASET_OUTDIR / "plots" / "cov_global_raw.svg",
-        DATASET_OUTDIR / "plots" / "cov_median_raw.svg",
-        DATASET_OUTDIR / "plots" / "cov_mean_raw.svg",
+        DATASET_OUTDIR / "plots" / "cov_global_raw.png",
+        DATASET_OUTDIR / "plots" / "cov_median_raw.png",
+        DATASET_OUTDIR / "plots" / "cov_mean_raw.png",
     conda:
         "../envs/r.yaml"
     params:
@@ -84,7 +84,7 @@ rule mapq_distribution:
         rules.samtools_stats.output.mapq,
         CHROM_NAMES
     output:
-        OUTDIR / "plots" / "{sample}" / "mapq_distribution.svg"
+        OUTDIR / "plots" / "{sample}" / "mapq_distribution.png"
     conda:
         "../envs/r.yaml"   
     log:
@@ -97,7 +97,7 @@ rule cov_distribution:
         rules.samtools_stats.output.cov,
         CHROM_NAMES
     output:
-        OUTDIR / "plots" / "{sample}" / "cov_distribution.svg"
+        OUTDIR / "plots" / "{sample}" / "cov_distribution.png"
     conda:
         "../envs/r.yaml"
     log:
@@ -110,7 +110,7 @@ rule mapped_plot:
         rules.mapped_cat.output.stats,
         SAMPLEFILE
     output:
-        DATASET_OUTDIR / "plots" / "mapped_reads.svg"
+        DATASET_OUTDIR / "plots" / "mapped_reads.png"
     conda:
         "../envs/r.yaml"
     log:
@@ -124,7 +124,7 @@ rule mapq_plot:
         CHROM_NAMES,
         rules.loci.output.locitable
     output:
-        OUTDIR / "plots" / "{sample}" / "mapq.svg"
+        OUTDIR / "plots" / "{sample}" / "mapq.png"
     conda:
         "../envs/r.yaml"
     log:

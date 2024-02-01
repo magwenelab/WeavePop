@@ -5,7 +5,6 @@ sink(log, type = "message")
 suppressPackageStartupMessages(library(tidyverse))
 library(RColorBrewer)
 suppressPackageStartupMessages(library(scales))
-library(svglite)
 
 print("Reading files")
 

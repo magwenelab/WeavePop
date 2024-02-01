@@ -5,7 +5,6 @@ sink(log, type = "message")
 suppressPackageStartupMessages(library(tidyverse))
 library(RColorBrewer)
 suppressPackageStartupMessages(library(scales))
-library(svglite)
 
 print("Reading files and joining data with chromosome names")
 #setwd("./genomes-annotations/SRS404449/")
@@ -35,7 +34,7 @@ plot <- ggplot(cov, aes(x=Coverage, y=Count))+
   theme(legend.position="none")+
   labs(title = paste(lineage, sample,  sep = " "))
 
-#ggsave("../../cov_distribution.svg", plot = plot, units = "cm", height = 22, width = 22)
+#ggsave("../../cov_distribution.png", plot = plot, units = "cm", height = 22, width = 22)
 
 print("Saving plot")
 ggsave(snakemake@output[[1]], plot = plot, units = "cm", height = 22, width = 22)

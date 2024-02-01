@@ -76,17 +76,17 @@ def get_final_output():
         final_output.extend(expand(OUTDIR / "samtools" / "{sample}" / "annotation.gff",sample=SAMPLES))
         final_output.append(DATASET_OUTDIR / "mapping_stats.txt")
     if config["plotting"]["activate"]:
-        final_output.extend(expand(OUTDIR / "plots" / "{sample}" / "coverage.svg",sample=SAMPLES))
-        final_output.extend(expand(OUTDIR / "plots" / "{sample}" / "cov_distribution.svg",sample=SAMPLES))
-        final_output.extend(expand(OUTDIR / "plots" / "{sample}" / "mapq_distribution.svg",sample=SAMPLES))
-        final_output.extend(expand(OUTDIR / "plots" / "{sample}" / "mapq.svg",sample=SAMPLES))
-        final_output.append(DATASET_OUTDIR / "plots" / "mapped_reads.svg")
-        final_output.append(DATASET_OUTDIR / "plots" / "cov_median_good.svg")
+        final_output.extend(expand(OUTDIR / "plots" / "{sample}" / "coverage.png",sample=SAMPLES))
+        final_output.extend(expand(OUTDIR / "plots" / "{sample}" / "cov_distribution.png",sample=SAMPLES))
+        final_output.extend(expand(OUTDIR / "plots" / "{sample}" / "mapq_distribution.png",sample=SAMPLES))
+        final_output.extend(expand(OUTDIR / "plots" / "{sample}" / "mapq.png",sample=SAMPLES))
+        final_output.append(DATASET_OUTDIR / "plots" / "mapped_reads.png")
+        final_output.append(DATASET_OUTDIR / "plots" / "cov_median_good.png")
         final_output.append(DATASET_OUTDIR / "files" / "unmapped_count.tsv")
-        final_output.append(DATASET_OUTDIR / "plots" / "unmapped.svg")
+        final_output.append(DATASET_OUTDIR / "plots" / "unmapped.png")
     if config["annotate_references"]["activate"] and config["plotting"]["activate"]:
         final_output.append(REFDIR / "unmapped_count.tsv")
-        final_output.append(REFDIR / "unmapped.svg")
+        final_output.append(REFDIR / "unmapped.png")
     return final_output
 
 # def get_ids(wildcards):

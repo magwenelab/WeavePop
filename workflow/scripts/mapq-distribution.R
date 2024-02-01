@@ -5,7 +5,6 @@ sink(log, type = "message")
 suppressPackageStartupMessages(library(tidyverse))
 library(RColorBrewer)
 suppressPackageStartupMessages(library(scales))
-library(svglite)
 
 print("Reading files and joining data with chromosome names")
 #setwd("./genomes-annotations/SRS404449/")
@@ -35,7 +34,7 @@ plot <- ggplot(mapq, aes(x=MAPQ, y=Count))+
   theme(legend.position="none")+
   labs(title = paste(lineage, sample,  sep = " "))
 
-#ggsave("../../mapq_distribution.svg", plot = plot, units = "cm", height = 22, width = 22)
+#ggsave("../../mapq_distribution.png", plot = plot, units = "cm", height = 22, width = 22)
 
 print("Saving plot")
 ggsave(snakemake@output[[1]], plot = plot, units = "cm", height = 22, width = 22)
@@ -57,4 +56,4 @@ print("Done!")
 #  theme_bw()+
 #  theme(legend.position="none")
 
-##ggsave("mapq_distribution_binned.svg", plot = plot, units = "cm", height = 22, width = 22)
+##ggsave("mapq_distribution_binned.png", plot = plot, units = "cm", height = 22, width = 22)

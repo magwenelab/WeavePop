@@ -80,8 +80,8 @@ if(nrow(unmapped)== 0){
           column_names_gp = gpar(fontsize = 5),
           show_heatmap_legend = FALSE)
 
-  #svg("unmapped.svg",width=pwidth,height=pheight)
-  svg(snakemake@output[[2]],width=pwidth,height=pheight)
+  #png("unmapped.png",width=pwidth,height=pheight)
+  png(snakemake@output[[2]],width=pwidth,height=pheight)
   draw(plot)
   dev.off()
 

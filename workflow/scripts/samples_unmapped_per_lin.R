@@ -5,7 +5,7 @@ sink(log, type = "message")
 suppressPackageStartupMessages(library(tidyverse))
 library(ComplexHeatmap)
 library(RColorBrewer)
-setwd("/hpc/group/magwenelab/czirion/projects/experimental_evo/")
+#setwd("/hpc/group/magwenelab/czirion/projects/experimental_evo/")
 #metadata<- read.csv("files/sample_metadata.csv", header = TRUE)
 metadata <- read.csv(snakemake@input[[1]], header = TRUE)
 rownames(metadata) <- metadata$sample
@@ -79,7 +79,7 @@ for (lin in levels(metadata$group)){
             column_names_gp = gpar(fontsize = 5),
             show_heatmap_legend = FALSE)
 
-   svg(paste(snakemake@params[[1]], "unmapped_", lin, ".svg", sep = ""))
+   png(paste(snakemake@params[[1]], "unmapped_", lin, ".png", sep = ""))
    draw(plot)
    dev.off()
   }
