@@ -58,11 +58,11 @@ def output_by_id(input, sample, outdir):
     if not os.path.exists(outdir):
         os.makedirs(outdir)
     for record in SeqIO.parse(input, "fasta"):
-        id = record.id
-        old_header = record.description
-        new_header = f"{old_header} sample={sample}"
-        record.description = new_header
-        with open(Path(outdir) / f"{id}.fasta", "a") as output_handle:
+        old_id = record.id 
+        new_id = f"{sample}_{old_id}"
+        record.description = f"{sample}_{record.description}"
+        record.id = new_id
+        with open(Path(outdir) / f"{old_id}.fasta", "a") as output_handle:
             fcntl.flock(output_handle, fcntl.LOCK_EX)
             SeqIO.write(record, output_handle, "fasta")
             fcntl.flock(output_handle, fcntl.LOCK_UN)
