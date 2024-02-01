@@ -49,14 +49,12 @@ rule samtools_stats:
     output:
         mapq = OUTDIR / "samtools" / "{sample}" / "distrib_mapq.csv",
         cov = OUTDIR / "samtools" / "{sample}" / "distrib_cov.csv"
-    params:
-        script = workflow.source_path("../scripts/samtools-stats.xsh")
     conda: 
         "../envs/samtools.yaml"
     log:
         "logs/stats/{sample}.log"
     shell:
-        "xonsh {params.script} {wildcards.sample} {input.bam} {input.ref} {output.mapq} {output.cov} &> {log}"
+        "xonsh workflow/scripts/samtools-stats.xsh {wildcards.sample} {input.bam} {input.ref} {output.mapq} {output.cov} &> {log}"
 
 rule bamstats:
     input:
@@ -97,12 +95,10 @@ rule mapq:
         winbed = OUTDIR / "samtools" / "{sample}" / "mapq_window.bed" 
     conda:
         "../envs/samtools.yaml"
-    params:
-        script = workflow.source_path("../scripts/pileup_mapq.sh")
     log:
        "logs/mapq/{sample}.log"
     script:
-        "{params.script}"
+        "../scripts/pileup_mapq.sh"
 
 rule mapqcov2gff:
     input:
@@ -114,10 +110,8 @@ rule mapqcov2gff:
         newgff = OUTDIR / "samtools" / "{sample}" / "annotation.gff"
     conda:
         "../envs/samtools.yaml"
-    params:
-        script = workflow.source_path("../scripts/mapqcov2gff.xsh")
     log: 
         "logs/gff/{sample}.log"
     shell:
-        "xonsh {params.script} {input.mapqbed} {input.covbed} {input.gff} {output.covmapq} {output.newgff} &> {log}"
+        "xonsh workflow/scripts/mapqcov2gff.xsh {input.mapqbed} {input.covbed} {input.gff} {output.covmapq} {output.newgff} &> {log}"
 

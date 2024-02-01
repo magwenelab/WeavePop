@@ -116,10 +116,9 @@ rule by_id_cds:
     output:
         done = touch(OUTDIR / "agat" / "{sample}" / "by_cds.done")
     params: 
-        script = workflow.source_path("../scripts/by_id.py"), 
         outdir = directory(DATASET_OUTDIR / "cds")
     shell:
-        "python {params.script} {input} {wildcards.sample} --outdir {params.outdir} "
+        "python workflow/scripts/by_id.py {input} {wildcards.sample} --outdir {params.outdir} "
 
 # Make a fasta file for each isoform with the amino acid sequence of samples it is present in
 rule by_id_proteins:
@@ -128,7 +127,6 @@ rule by_id_proteins:
     output:
         touch(OUTDIR / "agat" / "{sample}" / "by_proteins.done")
     params: 
-        script = workflow.source_path("../scripts/by_id.py"),
         outdir = DATASET_OUTDIR / "proteins"                 
     shell:
-        "python {params.script} {input} {wildcards.sample} --outdir {params.outdir} "
+        "python workflow/scripts/by_id.py {input} {wildcards.sample} --outdir {params.outdir} "

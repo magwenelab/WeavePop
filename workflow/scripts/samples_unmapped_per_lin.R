@@ -13,7 +13,7 @@ metadata$group <- as.factor(metadata$group)
 
 for (lin in levels(metadata$group)){
     REFDIR / "{lineage}" / "{lineage}.gff"
-  genes<-read_delim(paste(paste(snakemake@params[[2]], lin, lin, sep ="/"), ".gff.tsv", sep = ""), col_names = TRUE, na = "N/A", show_col_types = FALSE )
+  genes<-read_delim(paste(paste(snakemake@params[[1]], lin, lin, sep ="/"), ".gff.tsv", sep = ""), col_names = TRUE, na = "N/A", show_col_types = FALSE )
   
   genes<- genes %>% 
     select(Chromosome = seq_id, Feature_type = primary_tag, ID, description = matches("description|product"), contains("Name"))%>%
@@ -27,7 +27,7 @@ for (lin in levels(metadata$group)){
     filter(group == lin)
 
   for (samp in samples$sample){
-    file <- paste(snakemake@params[[3]], samp, "unmapped_features.txt", sep = "/")
+    file <- paste(snakemake@params[[2]], samp, "unmapped_features.txt", sep = "/")
     df<- read.csv(file, header = FALSE, col.names = c("ID"), colClasses = "character")
     genes <- genes %>%
       mutate(!!samp := ifelse(ID %in% df$ID, 0, 1))

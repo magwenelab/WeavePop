@@ -18,12 +18,10 @@ rule loci:
         loci=LOCI_FILE
     output:
         locitable = DATASET_OUTDIR / "loci_to_plot.tsv"
-    params:
-        script = workflow.source_path("../scripts/loci.xsh")
     log: 
         "logs/references/loci.log"
     shell:
-        "xonsh {params.script} -g {input.loci} -o {output} {input.refs} &> {log}"
+        "xonsh workflow/scripts/loci.xsh -g {input.loci} -o {output} {input.refs} &> {log}"
 
 rule coverage_plot:
     input:
@@ -38,12 +36,10 @@ rule coverage_plot:
         raw = OUTDIR / "files" / "{sample}" / "coverage_stats_raw.csv"
     conda:
         "../envs/r.yaml"
-    params:
-        script = workflow.source_path("../scripts/coverage.R")
     log:
         "logs/coverage/{sample}.log"
     script:
-        "{params.script}"
+        "../scripts/coverage.R"
 
 rule cat_stats:
     input:
@@ -77,12 +73,11 @@ rule coverage_stats_plots:
     conda:
         "../envs/r.yaml"
     params:
-        config["plotting"]["metadata2color"],
-        script = workflow.source_path("../scripts/cov_stats_all.R")
+        config["plotting"]["metadata2color"]
     log:
         "logs/coverage/stats_plot.log"    
     script:
-        "{params.script}"
+        "../scripts/cov_stats_all.R"
 
 rule mapq_distribution:
     input:
@@ -91,13 +86,11 @@ rule mapq_distribution:
     output:
         OUTDIR / "plots" / "{sample}" / "mapq_distribution.svg"
     conda:
-        "../envs/r.yaml"
-    params:
-        script = workflow.source_path("../scripts/mapq-distribution.R")    
+        "../envs/r.yaml"   
     log:
         "logs/mapq-dist/{sample}.log"
     script:
-        "{params.script}"
+        "../scripts/mapq-distribution.R"
 
 rule cov_distribution:
     input:
@@ -107,12 +100,10 @@ rule cov_distribution:
         OUTDIR / "plots" / "{sample}" / "cov_distribution.svg"
     conda:
         "../envs/r.yaml"
-    params:
-        script = workflow.source_path("../scripts/coverage-distribution.R") 
     log:
         "logs/cov-dist/{sample}.log"
     script:
-        "{params.script}"
+        "../scripts/coverage-distribution.R"
 
 rule mapped_plot:
     input:
@@ -124,10 +115,8 @@ rule mapped_plot:
         "../envs/r.yaml"
     log:
         "logs/stats/mapped.log"
-    params:
-        script = workflow.source_path("../scripts/mapped_reads.R") 
     script:
-        "{params.script}"
+        "../scripts/mapped_reads.R"
 
 rule mapq_plot:
     input:
@@ -138,12 +127,10 @@ rule mapq_plot:
         OUTDIR / "plots" / "{sample}" / "mapq.svg"
     conda:
         "../envs/r.yaml"
-    params:
-        script = workflow.source_path("../scripts/mapq.R")
     log:
         "logs/mapq_plot/{sample}.log"
     script:
-        "{params.script}"
+        "../scripts/mapq.R"
 
 # rule plot_bamstats:
 #     input:
