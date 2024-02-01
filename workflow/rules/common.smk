@@ -68,6 +68,8 @@ def get_final_output():
     if config["coverage_quality"]["activate"]:
         final_output.extend(expand(OUTDIR / "mosdepth" / "{sample}" / "coverage.regions.bed.gz",sample=SAMPLES))
         final_output.extend(expand(OUTDIR / "mosdepth" / "{sample}" / "coverage_good.regions.bed.gz",sample=SAMPLES))
+        final_output.extend(expand(OUTDIR / "mosdepth" / "{sample}" / "good_stats_regions.csv",sample=SAMPLES))
+        final_output.extend(expand(OUTDIR / "mosdepth" / "{sample}" / "raw_stats_regions.csv",sample=SAMPLES))
         final_output.extend(expand(OUTDIR / "samtools" / "{sample}" / "distrib_mapq.csv",sample=SAMPLES))
         final_output.extend(expand(OUTDIR / "samtools" / "{sample}" / "distrib_cov.csv",sample=SAMPLES))
         final_output.extend(expand(OUTDIR / "samtools" / "{sample}" / "mapq.bed",sample=SAMPLES))

@@ -25,21 +25,20 @@ rule loci:
 
 rule coverage_plot:
     input:
-        rules.mosdepth.output.bed,
-        rules.mosdepth_good.output.bed,
-        CHROM_NAMES,
+        rules.coverage.output.good,
+        rules.coverage.output.raw,
         rules.loci.output.locitable
     output:
         cov = OUTDIR / "plots" / "{sample}" / "coverage.png",
         stats = OUTDIR / "plots" / "{sample}" / "coverage_stats.png",
-        good = OUTDIR / "files" / "{sample}" / "coverage_stats_good.csv",
-        raw = OUTDIR / "files" / "{sample}" / "coverage_stats_raw.csv"
+        good = OUTDIR / "mosdepth" / "{sample}" / "good_stats_chroms.csv",
+        raw = OUTDIR / "mosdepth" / "{sample}" / "raw_stats_chroms.csv"
     conda:
         "../envs/r.yaml"
     log:
-        "logs/coverage/{sample}.log"
+        "logs/coverage_plot/{sample}.log"
     script:
-        "../scripts/coverage.R"
+        "../scripts/coverage_plots.R"
 
 rule cat_stats:
     input:

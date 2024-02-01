@@ -115,3 +115,17 @@ rule mapqcov2gff:
     shell:
         "xonsh workflow/scripts/mapqcov2gff.xsh {input.mapqbed} {input.covbed} {input.gff} {output.covmapq} {output.newgff} &> {log}"
 
+rule coverage:
+    input:
+        rules.mosdepth.output.bed,
+        rules.mosdepth_good.output.bed,
+        CHROM_NAMES,
+    output:
+        good = OUTDIR / "mosdepth" / "{sample}" / "good_stats_regions.csv",
+        raw = OUTDIR / "mosdepth" / "{sample}" / "raw_stats_regions.csv"
+    conda:
+        "../envs/r.yaml"
+    log:
+        "logs/coverage/{sample}.log"
+    script:
+        "../scripts/coverage.R"
