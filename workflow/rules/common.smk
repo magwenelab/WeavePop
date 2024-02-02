@@ -75,6 +75,7 @@ def get_final_output():
         final_output.extend(expand(OUTDIR / "samtools" / "{sample}" / "mapq_cov_window.bed",sample=SAMPLES))
         final_output.extend(expand(OUTDIR / "samtools" / "{sample}" / "annotation.gff",sample=SAMPLES))
         final_output.append(DATASET_OUTDIR / "mapping_stats.txt")
+        final_output.extend(expand(OUTDIR / "mosdepth" / "{sample}" / "ploidy_table.csv",sample=SAMPLES))
     if config["plotting"]["activate"]:
         final_output.extend(expand(OUTDIR / "plots" / "{sample}" / "coverage.png",sample=SAMPLES))
         final_output.extend(expand(OUTDIR / "plots" / "{sample}" / "cov_distribution.png",sample=SAMPLES))

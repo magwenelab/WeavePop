@@ -59,7 +59,7 @@ topCov <- quantile(good_stats_regions$Norm_Median, 0.75) * 4
 good_stats_regions$Norm_Median <- ifelse(good_stats_regions$Norm_Median >= topCov, topCov, good_stats_regions$Norm_Median)
 plot <- ggplot()+
   geom_col(data = good_stats_regions, aes(x= Start, y = Norm_Median), color = good_color)+ 
-  facet_wrap(~Chromosome,ncol = 2, scales = "free_x")+
+  facet_wrap(~Chromosome,ncol = 1, scales = "free_x")+
   scale_x_continuous(name = "Position (bp) ", labels = comma)+
   theme_bw()+
   theme(legend.position="right",panel.grid.major.x = element_blank(),
@@ -72,8 +72,9 @@ if (nrow(loci) != 0){
   plot <- plot +
   geom_point(data = loci, aes(x= start, y = 0, color = Loci), size = 1, shape = 15)
 }
-
-ggsave(snakemake@output[[1]], plot = plot, units = "cm", height = 22, width = 22)
+pheight <- 10 + 2 * length(unique((good_stats_regions$Chromosome)))
+pwidth <- 25
+ggsave(snakemake@output[[1]], plot = plot, units = "cm", height = pheight, width = pwidth)
 
 plot <- ggplot()+
   ylim(0,toplim) +

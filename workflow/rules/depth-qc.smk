@@ -129,3 +129,19 @@ rule coverage:
         "logs/coverage/{sample}.log"
     script:
         "../scripts/coverage.R"
+
+rule ploidy_table:
+    input:
+        rules.coverage.output.good
+    output:
+        OUTDIR / "mosdepth" / "{sample}" / "ploidy_table.csv"
+    conda:
+        "../envs/r.yaml"
+    params:
+        diff_threshold = config["coverage_quality"]["ploidy"]["diff"],  
+        size_threshold = config["coverage_quality"]["ploidy"]["size"], 
+        change_threshold = config["coverage_quality"]["ploidy"]["change"]  
+    log:
+        "logs/ploidy/{sample}.log"
+    script:
+        "../scripts/ploidy_table.R"
