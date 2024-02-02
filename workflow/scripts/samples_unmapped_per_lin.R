@@ -47,7 +47,7 @@ for (lin in levels(metadata$group)){
       sink(paste(snakemake@params[[4]], paste(lin, "unmapped_count.tsv", sep = "_"), sep = "/"))
       cat("There are no unmapped features in your set of samples.")
       sink()
-    file.create(paste(snakemake@params[[3]], paste(lin, "unmapped.png", sep = "_"), sep = "/"))
+    file.create(paste(snakemake@params[[3]], paste(lin, "unmapped.svg", sep = "_"), sep = "/"))
 
   } else {
     
