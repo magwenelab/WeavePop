@@ -5,6 +5,7 @@ sink(log, type = "message")
 suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(ComplexHeatmap))
 suppressPackageStartupMessages(library(RColorBrewer))
+suppressPackageStartupMessages(library(svglite))
 
 # samples <- read.csv("config/sample_metadata.csv", header = TRUE)
 samples <- read.csv(snakemake@input[[1]], header = TRUE)
@@ -37,7 +38,9 @@ unmapped <- genes %>%
 
 if(nrow(unmapped)== 0){
   print('There are no unmapped features in your set of samples.')
-  file.create(snakemake@output[[1]])
+  sink(snakemake@output[[1]])
+  cat("There are no unmapped features in your set of samples.")
+  sink()
   file.create(snakemake@output[[2]])
 } else {
   unmapped_count <- unmapped %>%
@@ -54,7 +57,7 @@ if(nrow(unmapped)== 0){
     mutate_all(as.integer)%>%
     as.matrix()
 
-  colors <-  c( "0" = "gray", "1" = "black")
+  colors <-  c( "0" = "gray", "1" = "hotpink4")
   featureCols =colorRampPalette(brewer.pal(8, "Dark2"))(length(unique(unmapped$Feature_type)))
   names(featureCols) = unique(unmapped$Feature_type)
   linCols =colorRampPalette(brewer.pal(12, "Paired"))(length(unique(samples$group)))
@@ -62,9 +65,6 @@ if(nrow(unmapped)== 0){
   split <- select(unmapped, Chromosome)
   row_ha <- rowAnnotation(Feature_type = unmapped$Feature_type, col = list(Feature_type = featureCols))
   col_ha <- HeatmapAnnotation(Lineage = samples$group , col = list(Lineage = linCols))
-  
-  pwidth = 5 + 0.5 * nlevels(as.factor(samples$sample))
-  pheight = 3 + 0.05 * nrow(unmapped)
 
   plot <-   Heatmap(mat, 
           col = colors,
@@ -78,10 +78,13 @@ if(nrow(unmapped)== 0){
           top_annotation = col_ha,
           row_names_gp = gpar(fontsize = 5),
           column_names_gp = gpar(fontsize = 5),
-          show_heatmap_legend = FALSE)
+          show_heatmap_legend = TRUE,
+          heatmap_legend_param = list(
+              title = "Mapped features", at = c(0,1), 
+              labels = c("Unmapped", "Mapped")))
 
   #png("unmapped.png",width=pwidth,height=pheight)
-  png(snakemake@output[[2]],width=pwidth,height=pheight)
+  svg(snakemake@output[[2]])
   draw(plot)
   dev.off()
 

@@ -4,7 +4,8 @@ sink(log, type = "message")
 
 suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(ComplexHeatmap))
-library(RColorBrewer)
+suppressPackageStartupMessages(library(RColorBrewer))
+suppressPackageStartupMessages(library(svglite))
 
 # lins <- read.csv("config/sample_metadata.csv", header = TRUE)
 lins <- read.csv(snakemake@input[[1]], header = TRUE)
@@ -51,17 +52,14 @@ mat <- unmapped %>%
   mutate_all(as.integer)%>%
   as.matrix()
   
-colors <-  c( "0" = "gray", "1" = "black")
+colors <-  c( "0" = "gray", "1" = "hotpink4")
 featureCols =colorRampPalette(brewer.pal(8, "Dark2"))(length(unique(unmapped$Feature_type)))
 names(featureCols) = unique(unmapped$Feature_type)
 split <- select(unmapped, Chromosome)
 row_ha <- rowAnnotation(Feature_type = unmapped$Feature_type, col = list(Feature_type = featureCols))
 
-
-pwidth = 5 + 0.5 * nlevels(as.factor(lins$group))
-pheight = 3 + 0.05 * nrow(unmapped)
 #png("unmapped.png",width=pwidth,height=pheight)
-png(snakemake@output[[2]],width=pwidth,height=pheight)
+svg(snakemake@output[[2]])
 Heatmap(mat, 
         name = "Mapped features",
         col = colors,
@@ -73,5 +71,8 @@ Heatmap(mat,
         row_title_rot = 0,
         right_annotation = row_ha,
         row_names_gp = gpar(fontsize = 5),
-        show_heatmap_legend = FALSE)
+        show_heatmap_legend = TRUE,
+            heatmap_legend_param = list(
+              title = "Mapped features", at = c(0,1), 
+              labels = c("Unmapped", "Mapped")))
 dev.off()

@@ -6,7 +6,7 @@ rule unmapped_ref_features:
         expand(rules.ref2ref_liftoff.output.unmapped, lineage=LINEAGES)        
     output:
         REFDIR / "unmapped_count.tsv",
-        REFDIR / "unmapped.png"
+        REFDIR / "unmapped.svg"
     conda:
         "../envs/r.yaml"
     params:
@@ -23,7 +23,7 @@ rule unmapped_samples_plot:
         expand(rules.liftoff.output.unmapped, sample=SAMPLES)        
     output:
         DATASET_OUTDIR / "files" / "unmapped_count.tsv",
-        DATASET_OUTDIR / "plots" / "unmapped.png"
+        DATASET_OUTDIR / "plots" / "unmapped.svg"
     conda:
         "../envs/r.yaml"
     params:

@@ -68,8 +68,6 @@ def get_final_output():
     if config["coverage_quality"]["activate"]:
         final_output.extend(expand(OUTDIR / "mosdepth" / "{sample}" / "coverage.regions.bed.gz",sample=SAMPLES))
         final_output.extend(expand(OUTDIR / "mosdepth" / "{sample}" / "coverage_good.regions.bed.gz",sample=SAMPLES))
-        final_output.extend(expand(OUTDIR / "mosdepth" / "{sample}" / "good_stats_regions.csv",sample=SAMPLES))
-        final_output.extend(expand(OUTDIR / "mosdepth" / "{sample}" / "raw_stats_regions.csv",sample=SAMPLES))
         final_output.extend(expand(OUTDIR / "samtools" / "{sample}" / "distrib_mapq.csv",sample=SAMPLES))
         final_output.extend(expand(OUTDIR / "samtools" / "{sample}" / "distrib_cov.csv",sample=SAMPLES))
         final_output.extend(expand(OUTDIR / "samtools" / "{sample}" / "mapq.bed",sample=SAMPLES))
@@ -84,11 +82,16 @@ def get_final_output():
         final_output.extend(expand(OUTDIR / "plots" / "{sample}" / "mapq.png",sample=SAMPLES))
         final_output.append(DATASET_OUTDIR / "plots" / "mapped_reads.png")
         final_output.append(DATASET_OUTDIR / "plots" / "cov_median_good.png")
-        final_output.append(DATASET_OUTDIR / "files" / "unmapped_count.tsv")
-        final_output.append(DATASET_OUTDIR / "plots" / "unmapped.png")
     if config["annotate_references"]["activate"] and config["plotting"]["activate"]:
         final_output.append(REFDIR / "unmapped_count.tsv")
-        final_output.append(REFDIR / "unmapped.png")
+        final_output.append(REFDIR / "unmapped.svg")
+    if not config["annotate_references"]["activate"] and config["plotting"]["activate"]:
+        final_output.extend(expand(DATASET_OUTDIR / "files" / "{lineage}_unmapped_count.tsv", lineage=LINEAGES))
+        final_output.extend(expand(DATASET_OUTDIR / "plots" / "{lineage}_unmapped.svg", lineage=LINEAGES))
+    if config["annotate_references"]["activate"] and config["plotting"]["activate"]:
+        final_output.append(DATASET_OUTDIR / "files" / "unmapped_count.tsv")
+        final_output.append(DATASET_OUTDIR / "plots" / "unmapped.svg")
+    
     return final_output
 
 # def get_ids(wildcards):
