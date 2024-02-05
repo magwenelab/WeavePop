@@ -49,11 +49,15 @@ chrom_names <- good_stats_regions %>%
     distinct()
 
 print("Ploting good quality coverage")            
-raw_color = "lightskyblue1"
-good_color = "lightskyblue3"
+raw_color = "#B3B3B3"
+good_color = "#666666" 
 color_quality = c("Good quality alignments" = good_color, "All alignments" = raw_color)
 topCov <- quantile(good_stats_regions$Norm_Median, 0.75) * 4
 good_stats_regions$Norm_Median <- ifelse(good_stats_regions$Norm_Median >= topCov, topCov, good_stats_regions$Norm_Median)
+palette1 <- brewer.pal(n = 7, name = "Dark2")
+palette2 <- brewer.pal(n = 7, name = "Set2")
+combined_palette <- c(palette1, palette2)
+
 plot <- ggplot()+
   geom_col(data = good_stats_regions, aes(x= Start, y = Norm_Median), color = good_color)+ 
   facet_wrap(~Chromosome,ncol = 1, scales = "free_x")+
@@ -68,9 +72,10 @@ plot <- ggplot()+
 if (nrow(loci) != 0){
   loci_chrom <- left_join(loci, chrom_names, by = c("Accession"))
   loci_chrom <- loci_chrom %>% filter(Lineage %in% lineage)
-  loci_colors <- colorRampPalette(brewer.pal(8, "Dark2")[-8])(nlevels(loci_chrom$Loci))
+  loci_colors <- combined_palette[1:nlevels(loci_chrom$Loci)]
+  combined_palette<- setdiff(combined_palette, loci_colors)
   plot <- plot +
-  geom_point(data = loci_chrom, aes(x= start, y = 0, color = Loci), size = 3, shape = 15)+
+  geom_point(data = loci_chrom, aes(x= start, y = 0, color = Loci), size = 2, shape = 19)+
   scale_color_manual(name = "Loci", values = loci_colors)
 }
 
@@ -79,11 +84,11 @@ struc_vars <- struc_vars %>%
   filter(!is.na(End))
 
 if (nrow(struc_vars) != 0){
-  structure_colors <- colorRampPalette(brewer.pal(11, "RdBu")[c(-1, -2)])(nlevels(struc_vars$Structure))
+  structure_colors <-combined_palette[1:(nlevels(struc_vars$Structure))]
   
   plot <- plot +
     new_scale_color()+
-    geom_segment(data = struc_vars, aes(x= Start, y = topCov -1, xend = End, yend = topCov -1, color = Structure), size = 3)+
+    geom_segment(data = struc_vars, aes(x= Start, y = topCov -1, xend = End, yend = topCov -1, color = Structure), linewidth = 2)+
     scale_color_manual(name = "Structural variant", values = structure_colors)
 }
 
