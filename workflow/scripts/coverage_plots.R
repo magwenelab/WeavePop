@@ -4,6 +4,8 @@ sink(log, type = "message")
 
 suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(scales))
+suppressPackageStartupMessages(library(ggnewscale))
+suppressPackageStartupMessages(library(RColorBrewer))
 
 sample <- snakemake@input[[1]]
 Split <- str_split(sample, "/")
@@ -46,11 +48,6 @@ chrom_names <- good_stats_regions %>%
     select(Accession, Chromosome, Lineage)%>%
     distinct()
 
-if (nrow(loci) != 0){
-  loci <- left_join(loci, chrom_names, by = c("Accession"))
-  loci <- loci %>% filter(Lineage %in% lineage)
-}
-
 print("Ploting good quality coverage")            
 raw_color = "lightskyblue1"
 good_color = "lightskyblue3"
@@ -69,9 +66,27 @@ plot <- ggplot()+
         y = "Normalized coverage")
 
 if (nrow(loci) != 0){
+  loci_chrom <- left_join(loci, chrom_names, by = c("Accession"))
+  loci_chrom <- loci_chrom %>% filter(Lineage %in% lineage)
+  loci_colors <- colorRampPalette(brewer.pal(8, "Dark2")[-8])(nlevels(loci_chrom$Loci))
   plot <- plot +
-  geom_point(data = loci, aes(x= start, y = 0, color = Loci), size = 1, shape = 15)
+  geom_point(data = loci_chrom, aes(x= start, y = 0, color = Loci), size = 3, shape = 15)+
+  scale_color_manual(name = "Loci", values = loci_colors)
 }
+
+struc_vars <- read.delim(snakemake@input[[4]], sep= ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
+struc_vars <- struc_vars %>%
+  filter(!is.na(End))
+
+if (nrow(struc_vars) != 0){
+  structure_colors <- colorRampPalette(brewer.pal(11, "RdBu")[c(-1, -2)])(nlevels(struc_vars$Structure))
+  
+  plot <- plot +
+    new_scale_color()+
+    geom_segment(data = struc_vars, aes(x= Start, y = topCov -1, xend = End, yend = topCov -1, color = Structure), size = 3)+
+    scale_color_manual(name = "Structural variant", values = structure_colors)
+}
+
 pheight <- 10 + 2 * length(unique((good_stats_regions$Chromosome)))
 pwidth <- 25
 ggsave(snakemake@output[[1]], plot = plot, units = "cm", height = pheight, width = pwidth)

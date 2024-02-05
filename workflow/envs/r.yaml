@@ -10,3 +10,4 @@ dependencies:
   - r-rcolorbrewer
   - r-scales
   - bioconductor-complexheatmap
+  - r-ggnewscale

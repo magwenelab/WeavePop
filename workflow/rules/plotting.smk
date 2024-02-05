@@ -27,7 +27,8 @@ rule coverage_plot:
     input:
         rules.coverage.output.good,
         rules.coverage.output.raw,
-        rules.loci.output.locitable
+        rules.loci.output.locitable,
+        rules.ploidy_table.output
     output:
         cov = OUTDIR / "plots" / "{sample}" / "coverage.png",
         stats = OUTDIR / "plots" / "{sample}" / "coverage_stats.png",
