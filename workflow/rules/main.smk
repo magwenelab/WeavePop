@@ -99,9 +99,9 @@ rule agat_prots:
         "-p  &> {log.prots} "
         "{params.extra} " 
         "&& "
-        "sed -i 's/type=cds//g' {output} "
+        "sed -i 's/type=cds//g' {output} &>> {log.prots} "
         "&& "
-        "rm lifted.agat.log || true"
+        "rm lifted.agat.log &>> {log.prots} || true"
 
 # checkpoint mock:
 #     output:
