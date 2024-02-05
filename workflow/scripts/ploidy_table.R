@@ -15,7 +15,7 @@ dupdels <- list()
 for (chrom in levels(as.factor(regions$Chromosome))){
   regions_select <- regions %>%
     select(Chromosome, Start, End, Norm_Median)%>%
-    filter(Chromosome == chrom)
+    filter(Chromosome == chrom) # TEST
   
 
   regions_windowed <- regions_select
@@ -28,20 +28,19 @@ for (chrom in levels(as.factor(regions$Chromosome))){
   
   windows<- regions_windowed %>%
     group_by(window_index)%>%
-    mutate(window_mean = round(mean(Norm_Median), 2), n = n())%>%
+    mutate(Window_Norm_Cov = round(mean(Norm_Median), 2), n = n())%>%
+    mutate(Win_Start = Start[1], Win_End = End[n])%>%
     filter(row_number()==1)%>%
     ungroup()%>%
-    select(-c(Norm_Median, window_index))
+    mutate(Window_Size = n*region_size)%>%
+    select(-c(Norm_Median, window_index, Start, End))%>%
+    select(Chromosome, Start = Win_Start, End = Win_End, Window_Size, Window_Norm_Cov )
   
-  windows$End <- 0
-  for (i in 1:nrow(windows)){
-    windows$End[i]<- windows$Start[i+1]
-  } 
   windows$Structure <- "Haploid"
   for (i in 1:nrow(windows)){
-    if(windows$window_mean[i] > 1 + change_threshold){
+    if(windows$Window_Norm_Cov[i] > 1 + change_threshold){
        windows$Structure[i] <- "Duplication"
-    } else if (windows$window_mean[i] < 1 - change_threshold) {
+    } else if (windows$Window_Norm_Cov[i] < 1 - change_threshold) {
       windows$Structure[i]<- "Deletion"
     } else {
       windows$Structure[i] <- "Haploid"
@@ -49,11 +48,9 @@ for (chrom in levels(as.factor(regions$Chromosome))){
   }
   
   chrom_dupdels <- windows %>%
-    mutate(window_size = n*region_size)%>%
-    filter(window_size >= size_threshold)%>%
-    filter(Structure != "Haploid")%>%
-    select(-n)
-  
+    filter(Window_Size >= size_threshold)%>%
+    filter(Structure != "Haploid")
+
   dupdels[[chrom]] <- chrom_dupdels
 }
 
