@@ -43,7 +43,7 @@ rule liftoff:
     log:
         "logs/liftoff/{sample}.log" 
     shell:
-        "ln -s -r {input.refgff} {params.outpath}/{wildcards.sample}/ref.gff "
+        "ln -s -r {input.refgff} {params.outpath}/{wildcards.sample}/ref.gff &> {log} || true "
         "&& "
         "liftoff "
         "-g {params.outpath}/{wildcards.sample}/ref.gff " 
@@ -55,7 +55,7 @@ rule liftoff:
         "-polish "
         "{params.extra} "
         "{input.target} "
-        "{input.refgenome} &> {log}"
+        "{input.refgenome} &>> {log}"
 
 # Extract the nucleotide sequence of each isoform of each gene of a sample
 rule agat_cds:
