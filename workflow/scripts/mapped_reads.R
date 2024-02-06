@@ -37,11 +37,17 @@ plot <- ggplot(stats_long, aes(color = measurement, x=name, y= value))+
     scale_color_discrete(labels=c('Mapped', 'Properly paired'),guide = guide_legend(title = NULL))+
     labs(shape = NULL)+
     theme_bw()+
+    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = 5),
+        panel.grid.minor = element_blank(),
+        strip.text = element_text(size = 15),
+        legend.text = element_text(size = 15),
+        legend.title = element_text(size = 17),
+        plot.title = element_text(size = 20),
+        axis.title = element_text(size = 17))+
     xlab("Sample") +
-    ylab("Percentage of reads") +
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = 5))
+    ylab("Percentage of reads")
 
-gwidth <- 12 + 0.15 * nlevels(stats_long$name)
-gheight <- gwidth/2
+gwidth <- 13.3
+gheight <- 7.5
 
-ggsave(snakemake@output[[1]], plot = plot,  units = "cm", height = gheight, width = gwidth)
+ggsave(snakemake@output[[1]], plot = plot, scale = 0.5 , units = "in", height = gheight, width = gwidth)

@@ -60,7 +60,7 @@ combined_palette <- c(palette1, palette2)
 
 plot <- ggplot()+
   geom_col(data = good_stats_regions, aes(x= Start, y = Norm_Median), color = good_color)+ 
-  facet_wrap(~Chromosome,ncol = 1, scales = "free_x")+
+  facet_wrap(~Chromosome,ncol = 2, scales = "free_x")+
   scale_x_continuous(name = "Position (bp) ", labels = comma)+
   theme_bw()+
   theme(legend.position="right",panel.grid.major.x = element_blank(),
@@ -92,9 +92,9 @@ if (nrow(struc_vars) != 0){
     scale_color_manual(name = "Structural variant", values = structure_colors)
 }
 
-pheight <- 10 + 2 * length(unique((good_stats_regions$Chromosome)))
-pwidth <- 25
-ggsave(snakemake@output[[1]], plot = plot, units = "cm", height = pheight, width = pwidth)
+pheight <- 0.5 + length(unique((good_stats_regions$Chromosome)))/2
+pwidth <- pheight * 1.78
+ggsave(snakemake@output[[1]], plot = plot, units = "in", height = pheight, width = pwidth)
 
 plot <- ggplot()+
   ylim(0,toplim) +
@@ -112,4 +112,4 @@ plot <- ggplot()+
   scale_linetype_manual(values = c("solid","dotted"), name = NULL)+
   scale_color_manual(name= "Alignment quality", values= color_quality)
 
-ggsave(snakemake@output[[2]], plot = plot, units = "cm", height = 15, width = 15)
+ggsave(snakemake@output[[2]], plot = plot, units = "in", height = 7.5, width = 7)

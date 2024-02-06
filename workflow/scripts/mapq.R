@@ -20,12 +20,10 @@ loci <- read.delim(snakemake@input[[3]], header = TRUE, stringsAsFactors = TRUE,
 loci <- loci %>% rename(Accession = seq_id)
 lineage <- levels(as.factor(raw$Lineage))
 
-if (nrow(loci) != 0){
-  loci <- left_join(loci, chrom_names, by = "Accession")
-  loci <- loci %>% filter(Lineage %in% lineage)
-}
-
-raw_color <- "bisque3"
+raw_color <- "#B3B3B3"
+palette1 <- brewer.pal(n = 7, name = "Dark2")
+palette2 <- brewer.pal(n = 7, name = "Set2")
+combined_palette <- c(palette1, palette2)
 
 print("Plotting chromosome MAPQ")
 plot <- ggplot()+
@@ -37,9 +35,15 @@ plot <- ggplot()+
   labs(title = paste(lineage, sample,  sep = " "), y = "Mapping quality (phred score)")
 
 if (nrow(loci) != 0){
+  loci_chrom <- left_join(loci, chrom_names, by = "Accession")
+  loci_chrom <- loci_chrom %>% filter(Lineage %in% lineage)
+  loci_colors <- combined_palette[1:nlevels(loci_chrom$Loci)]
   plot <- plot +
-  geom_point(data = loci, aes(x= start, y = 1, color = Loci), size = 1, shape = 15)
+    geom_point(data = loci_chrom, aes(x= start, y = 1, color = Loci), size = 2, shape = 19)+
+    scale_color_manual(name = "Loci", values = loci_colors)
 }
 
-ggsave(snakemake@output[[1]], plot = plot, units = "cm", height = 22, width = 22)
+pheight <- 0.5 + length(unique((raw$Chromosome)))/2
+pwidth <- pheight * 1.78
+ggsave(snakemake@output[[1]], plot = plot, units = "in", height = pheight, width = pwidth)
 

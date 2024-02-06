@@ -62,29 +62,32 @@ if(nrow(unmapped)== 0){
   names(featureCols) = unique(unmapped$Feature_type)
   linCols =colorRampPalette(brewer.pal(12, "Paired"))(length(unique(samples$group)))
   names(linCols) = unique(samples$group)
-  split <- select(unmapped, Chromosome)
+  row_split <- select(unmapped, Chromosome)
+  col_split <- select(samples, group)
   row_ha <- rowAnnotation(Feature_type = unmapped$Feature_type, col = list(Feature_type = featureCols))
-  col_ha <- HeatmapAnnotation(Lineage = samples$group , col = list(Lineage = linCols))
+  #col_ha <- HeatmapAnnotation(Lineage = samples$group , col = list(Lineage = linCols))
 
   plot <-   Heatmap(mat, 
           col = colors,
           show_row_names = TRUE,
           cluster_rows = TRUE,
-          row_split = split, 
+          row_split = row_split, 
+          column_split = col_split,
           show_row_dend = FALSE,
           show_column_dend = FALSE,
           row_title_rot = 0,
+          column_title_rot = 90,
           right_annotation = row_ha,
-          top_annotation = col_ha,
+          #top_annotation = col_ha,
           row_names_gp = gpar(fontsize = 5),
-          column_names_gp = gpar(fontsize = 5),
+          column_names_gp = gpar(fontsize = 3),
           show_heatmap_legend = TRUE,
           heatmap_legend_param = list(
               title = "Mapped features", at = c(0,1), 
               labels = c("Unmapped", "Mapped")))
 
   #png("unmapped.png",width=pwidth,height=pheight)
-  svg(snakemake@output[[2]])
+  svg(snakemake@output[[2]], width = 13.3, height= 7.5)
   draw(plot)
   dev.off()
 

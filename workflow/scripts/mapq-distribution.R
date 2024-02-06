@@ -36,8 +36,10 @@ plot <- ggplot(mapq, aes(x=MAPQ, y=Count))+
 
 #ggsave("../../mapq_distribution.png", plot = plot, units = "cm", height = 22, width = 22)
 
-print("Saving plot")
-ggsave(snakemake@output[[1]], plot = plot, units = "cm", height = 22, width = 22)
+pheight <- 0.5 + length(unique((mapq$Chromosome)))/2
+pwidth <- pheight * 1.78
+ggsave(snakemake@output[[1]], plot = plot, units = "in", height = pheight, width = pwidth)
+
 print("Done!")
 
 # Binned version
