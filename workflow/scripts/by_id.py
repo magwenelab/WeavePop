@@ -59,8 +59,8 @@ def output_by_id(input, sample, outdir):
         os.makedirs(outdir)
     for record in SeqIO.parse(input, "fasta"):
         old_id = record.id 
-        new_id = f"{sample}_{old_id}"
-        record.description = f"{sample}_{record.description}"
+        new_id = f"{sample}|{old_id}"
+        record.description = f"{sample}|{record.description} sample={sample}"
         record.id = new_id
         with open(Path(outdir) / f"{old_id}.fasta", "a") as output_handle:
             fcntl.flock(output_handle, fcntl.LOCK_EX)
