@@ -103,32 +103,18 @@ rule agat_prots:
         "&& "
         "rm lifted.agat.log &>> {log.prots} || true"
 
-# checkpoint mock:
-#     output:
-#         directory(DATASET_OUTDIR / "cds")
-#     shell:
-#         "mkdir -p {output} && "
-#         "echo {params} && "
-#         "cut -f12 results/references/FungiDB-65_CneoformansH99.tsv | sort | uniq | grep CNAG | while read line; do touch {output}/$line.fa; echo someline2 >> {output}/$line.fa ; done"
-
-# Make a fasta file for each isoform with the nucleotide sequence of samples it is present in
-rule by_id_cds:
-    input:
-        rules.agat_cds.output.cds
+rule by_id:
+    input: 
+        prots = rules.agat_prots.output.prots,
+        cds = rules.agat_cds.output.cds,
     output:
-        done = touch(OUTDIR / "agat" / "{sample}" / "by_cds.done")
-    params: 
-        outdir = directory(DATASET_OUTDIR / "cds")
+        touch(OUTDIR / "agat" / "{sample}" / "cds.done"),
+        touch(OUTDIR / "agat" / "{sample}" / "prots.done")
+    params:
+        db = DATASET_OUTDIR / "sequences.db"
+    log:
+        "logs/agat/database_{sample}.log"
     shell:
-        "python workflow/scripts/by_id.py {input} {wildcards.sample} --outdir {params.outdir} "
-
-# Make a fasta file for each isoform with the amino acid sequence of samples it is present in
-rule by_id_proteins:
-    input:
-        rules.agat_prots.output.prots
-    output:
-        touch(OUTDIR / "agat" / "{sample}" / "by_proteins.done")
-    params: 
-        outdir = DATASET_OUTDIR / "proteins"                 
-    shell:
-        "python workflow/scripts/by_id.py {input} {wildcards.sample} --outdir {params.outdir} "
+        "python workflow/scripts/sqlfasta.py populate-db {params.db} {input.prots} {wildcards.sample} -t Protein &> {log}"
+        "&& "
+        "python workflow/scripts/sqlfasta.py populate-db {params.db} {input.cds} {wildcards.sample} -t DNA &>> {log}"

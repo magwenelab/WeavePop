@@ -60,8 +60,8 @@ def get_final_output():
     final_output.extend(expand(OUTDIR / "snippy" / "{sample}" / "snps.bam",sample=SAMPLES))
     final_output.extend(expand(OUTDIR / "liftoff" / "{sample}" / "lifted.gff_polished",sample=SAMPLES))
     final_output.extend(expand(OUTDIR / "liftoff" / "{sample}" / "unmapped_features.txt",sample=SAMPLES))
-    final_output.extend(expand(OUTDIR / "agat" / "{sample}" / "by_cds.done",sample=SAMPLES))
-    final_output.extend(expand(OUTDIR / "agat" / "{sample}" / "by_proteins.done",sample=SAMPLES))
+    final_output.append(expand(OUTDIR / "agat" / "{sample}" / "cds.done", sample=SAMPLES))
+    final_output.append(expand(OUTDIR / "agat" / "{sample}" / "prots.done", sample=SAMPLES))
     if config["annotate_references"]["activate"]:
         final_output.extend(expand(REFDIR / "{lineage}" / "{lineage}.gff",lineage=LINEAGES))
         final_output.append(REFDIR / str(MAIN_NAME + ".tsv"))
