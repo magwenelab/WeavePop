@@ -25,9 +25,10 @@ coverage_quality:
     min_mapq: 20
     extra: ""
   ploidy:
-    diff: 0.5
+    smoothing_size: 5
+    diff: 0.25
     size: 5000
-    change: 0.5
+    change: 0.25
 
 plotting: 
   activate: True

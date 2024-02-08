@@ -130,9 +130,19 @@ rule coverage:
     script:
         "../scripts/coverage.R"
 
-rule ploidy_table:
+rule smoothing:
     input:
         rules.coverage.output.good
+    output:
+        OUTDIR / "mosdepth" / "{sample}" / "smooth_good_stats_regions.csv"
+    params:
+        size = config["coverage_quality"]["ploidy"]["smoothing_size"]
+    script:
+        "../scripts/median_filtering.py"
+
+rule ploidy_table:
+    input:
+        rules.smoothing.output
     output:
         OUTDIR / "mosdepth" / "{sample}" / "ploidy_table.csv"
     conda:
