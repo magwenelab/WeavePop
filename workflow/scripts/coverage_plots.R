@@ -11,8 +11,8 @@ sample <- snakemake@input[[1]]
 Split <- str_split(sample, "/")
 sample <- Split[[1]][length(Split[[1]])-1]
 
-good_stats_regions <- read.delim(snakemake@input[[1]], sep= ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
-raw_stats_regions <- read.delim(snakemake@input[[2]], sep= ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
+good_stats_regions <- read.delim(snakemake@input[[1]], sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
+raw_stats_regions <- read.delim(snakemake@input[[2]], sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
 
 good_stats_chroms <- good_stats_regions %>%
   select(c(-Start, -End, -Depth, -Norm_Mean, -Norm_Median))%>%

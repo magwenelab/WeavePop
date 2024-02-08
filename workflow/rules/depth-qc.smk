@@ -130,9 +130,21 @@ rule coverage:
     script:
         "../scripts/coverage.R"
 
-rule ploidy_table:
+rule smoothing:
     input:
         rules.coverage.output.good
+    output:
+        OUTDIR / "mosdepth" / "{sample}" / "smooth_good_stats_regions.csv"
+    params:
+        bandwidth = 10
+    shell:
+        """
+        tail -n+2 {input} | cut -f1,4,12 | python workflow/scripts/kernelsmoothing.py --bandwidth={params.bandwidth} - {output}
+        """
+
+rule ploidy_table:
+    input:
+        rules.smoothing.output
     output:
         OUTDIR / "mosdepth" / "{sample}" / "ploidy_table.csv"
     conda:

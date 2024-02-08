@@ -4,7 +4,10 @@ sink(log, type = "message")
 
 suppressPackageStartupMessages(library(tidyverse))
 
-regions <-  read.csv(snakemake@input[[1]], header = TRUE, stringsAsFactors = TRUE)
+regions <-  read.csv(snakemake@input[[1]], header = FALSE,sep = "\t", col.names = c("Chromosome", "Start", "Coverage", "Smooth"), colClasses = c("factor", "numeric", "numeric", "numeric"))
+regions <- regions %>%
+  mutate(End = Start + 500)
+head(regions)
 
 diff_threshold <- snakemake@params[[1]]
 size_threshold <- snakemake@params[[2]]
@@ -14,26 +17,27 @@ region_size <- regions$End[1]
 dupdels <- list()
 for (chrom in levels(as.factor(regions$Chromosome))){
   regions_select <- regions %>%
-    select(Chromosome, Start, End, Norm_Median)%>%
-    filter(Chromosome == chrom) # TEST
+    filter(Chromosome == chrom) 
   
 
   regions_windowed <- regions_select
   regions_windowed$window_index <- 1
   for (i in 2:nrow(regions_windowed)){
-    regions_windowed$window_index[i] <- ifelse(abs(regions_windowed$Norm_Median[i]-regions_windowed$Norm_Median[i-1]) < diff_threshold,
+    regions_windowed$window_index[i] <- ifelse(abs(regions_windowed$Smooth[i]-regions_windowed$Smooth[i-1]) < diff_threshold,
                                           regions_windowed$window_index[i-1],
                                           regions_windowed$window_index[i-1]+1 )
   }
   
+  print(regions_windowed)
+
   windows<- regions_windowed %>%
     group_by(window_index)%>%
-    mutate(Window_Norm_Cov = round(mean(Norm_Median), 2), n = n())%>%
+    mutate(Window_Norm_Cov = round(mean(Smooth), 2), n = n())%>%
     mutate(Win_Start = Start[1], Win_End = End[n])%>%
     filter(row_number()==1)%>%
     ungroup()%>%
     mutate(Window_Size = n*region_size)%>%
-    select(-c(Norm_Median, window_index, Start, End))%>%
+    select(-c(Smooth, window_index, Start, End))%>%
     select(Chromosome, Start = Win_Start, End = Win_End, Window_Size, Window_Norm_Cov )
   
   windows$Structure <- "Haploid"
