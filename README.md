@@ -1,8 +1,9 @@
 
 # Reference-based mapping, variant calling and assembly / Annotation liftover / Mapping quality and coverage
 
-## Broad description
+## Description
 
+This is a Snakemake workflow to map short-reads of samples to the reference genome of the corresponding lineage/group. You will get the mapping file, variant calling file, a reference-based assembly, and an annotation GFF. Additionaly you can get analyses of the coverage and the mapping quality and plots with this analyses' results, including detection of structural variants. If you want to have a common naming scheme of your genes and/or you don't have GFF files of your reference genomes you can provide a main reference to lift over the annotation from this one to your reference genomes.
 
 ## Requirements
 
@@ -57,6 +58,6 @@ The environments for particular software used in Snakemake rules are installed b
 
   * `config/loci.csv`: CSV with first column with the gene IDs and second column with the name of the locus/pathway the gene belongs to if you want genes to be plotted to coverage and MAPQ plots  No column names.[Example](https://github.com/magwenelab/DiversityPipeline/blob/workflow-style/config/loci.csv)
   * `config/chromosome_names.csv`: CSV with colums group, chromosome ID (the sequence ID in the FASTA and GFF of the references), chromosome name (typically a number). No column names. [Example](https://github.com/magwenelab/DiversityPipeline/blob/workflow-style/config/chromosome_names.csv).
-  * `config/features.txt`: List of feature names to lift over. This file is provided in this repository.[File](https://github.com/magwenelab/DiversityPipeline/blob/workflow-style/config/features.txt)
+  * `config/features.txt`: List of feature names to lift over, more info [here](https://github.com/agshumate/Liftoff?tab=readme-ov-file#feature-types). This file is provided [here](https://github.com/magwenelab/DiversityPipeline/blob/workflow-style/config/features.txt), but you can edit it if you want.
 
 
