@@ -148,7 +148,6 @@ rule ploidy_table:
     conda:
         "../envs/r.yaml"
     params:
-        diff_threshold = config["coverage_quality"]["ploidy"]["diff"],  
         size_threshold = config["coverage_quality"]["ploidy"]["size"], 
         change_threshold = config["coverage_quality"]["ploidy"]["change"]  
     log:
