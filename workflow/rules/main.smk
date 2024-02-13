@@ -21,8 +21,8 @@ rule snippy:
         "--ref {input.refgenome} "
         "--R1 {input.fq1} "
         "--R2 {input.fq2} "
-        "{params.extra} "
-        "--force &> {log}"
+        "--force "
+        "{params.extra} &> {log}"
 
 # Lift over annotation from corresponding reference genome to sample assembly
 rule liftoff:

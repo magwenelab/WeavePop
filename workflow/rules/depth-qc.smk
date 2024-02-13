@@ -137,6 +137,8 @@ rule smoothing:
         OUTDIR / "mosdepth" / "{sample}" / "smooth_good_stats_regions.csv"
     params:
         size = config["coverage_quality"]["ploidy"]["smoothing_size"]
+    log:
+        "logs/ploidy/smoothing_{sample}.log"
     script:
         "../scripts/median_filtering.py"
 
