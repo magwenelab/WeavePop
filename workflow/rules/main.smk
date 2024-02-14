@@ -5,7 +5,8 @@ rule snippy:
     output:
         fa = OUTDIR / "snippy" / "{sample}" / "snps.consensus.fa",
         bam = OUTDIR / "snippy" / "{sample}" / "snps.bam",
-        ref = OUTDIR / "snippy" / "{sample}" / "ref.fa"
+        ref = OUTDIR / "snippy" / "{sample}" / "ref.fa",
+        bai = OUTDIR / "snippy" / "{sample}" / "snps.bam.bai"
     threads: 
         config["snippy"]["threads"]
     params:

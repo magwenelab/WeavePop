@@ -23,8 +23,10 @@ write_csv(good_stats,snakemake@output[[1]], col_names = TRUE)
 gwidth = 13.3
 gheight = 7.5
 if (nlevels(good_stats$sample) <= 15 ){
-    gscale = 0.5
-    gsize = 10
+    gwidth = 6
+    gheight = 7
+    gscale = 1
+    gsize = 5
 } else if (nlevels(good_stats$sample) > 15 && nlevels(good_stats$sample) <= 60 ){
     gscale = 0.8
     gsize = 8
@@ -51,17 +53,15 @@ g <- ggplot(good_stats, aes(x=reorder(name, -Global_Mean, sum)))+
     facet_grid(~group,scale = "free_x" , space='free_x')+
     theme_bw()+
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = gsize),
-        panel.grid.minor = element_blank(),
-        strip.text = element_text(size = 15),
-        legend.text = element_text(size = 15),
-        legend.title = element_text(size = 17),
-        plot.title = element_text(size = 20),
-        axis.title = element_text(size = 17))+
+        panel.grid.minor = element_blank())+
+        # strip.text = element_text(size = 15),
+        # legend.text = element_text(size = 15),
+        # legend.title = element_text(size = 17),
+        # plot.title = element_text(size = 20),
+        # axis.title = element_text(size = 17))+
     labs(title= "Genome-wide coverage",
             x= "Sample",
             y= "Coverage (X)")
-
-
 
 ggsave(snakemake@output[[2]], plot = g, scale = gscale,  units = "in", height = gheight, width = gwidth)
 
@@ -78,16 +78,15 @@ medianplot <- ggplot(good_stats, aes(x=reorder(name, -Global_Mean, sum), y= Norm
     scale_color_brewer(palette = "Set2", name = str_to_title(snakemake@params[[1]]))+
     theme_bw()+
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = gsize),
-          panel.grid.minor = element_blank(),
-          strip.text = element_text(size = 15),
-          legend.text = element_text(size = 15),
-          legend.title = element_text(size = 17),
-          plot.title = element_text(size = 20),
-          axis.title = element_text(size = 17))+
+          panel.grid.minor = element_blank())+
+        #   strip.text = element_text(size = 15),
+        #   legend.text = element_text(size = 15),
+        #   legend.title = element_text(size = 17),
+        #   plot.title = element_text(size = 20),
+        #   axis.title = element_text(size = 17))+
     labs(title = "Normalized median coverage of chromosomes",
          x = "Sample",
          y = ylabel)
-
 
 
 ggsave(snakemake@output[[3]], plot = medianplot, scale = gscale,  units = "in", height = gheight, width = gwidth)
@@ -105,12 +104,12 @@ meanplot <- ggplot(good_stats, aes(x=reorder(name, -Global_Mean, sum), y= Norm_M
     scale_color_brewer(palette = "Set2", name = str_to_title(snakemake@params[[1]]))+
     theme_bw()+
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = gsize),
-          panel.grid.minor = element_blank(),
-          strip.text = element_text(size = 15),
-          legend.text = element_text(size = 15),
-          legend.title = element_text(size = 17),
-          plot.title = element_text(size = 20),
-          axis.title = element_text(size = 17))+
+          panel.grid.minor = element_blank())+
+        #   strip.text = element_text(size = 15),
+        #   legend.text = element_text(size = 15),
+        #   legend.title = element_text(size = 17),
+        #   plot.title = element_text(size = 20),
+        #   axis.title = element_text(size = 17))+
     labs(title = "Normalized mean coverage of chromosomes",
          x = "Sample",
          y = ylabel)
@@ -141,12 +140,12 @@ g <- ggplot(raw_stats, aes(x=reorder(name, -Global_Mean, sum)))+
     facet_grid(~group,scale = "free_x" , space='free_x')+
     theme_bw()+
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = gsize),
-        panel.grid.minor = element_blank(),
-        strip.text = element_text(size = 15),
-        legend.text = element_text(size = 15),
-        legend.title = element_text(size = 17),
-        plot.title = element_text(size = 20),
-        axis.title = element_text(size = 17))+
+        panel.grid.minor = element_blank())+
+        # strip.text = element_text(size = 15),
+        # legend.text = element_text(size = 15),
+        # legend.title = element_text(size = 17),
+        # plot.title = element_text(size = 20),
+        # axis.title = element_text(size = 17))+
     labs(title= "Genome-wide coverage",
             x= "Sample",
             y= "Coverage (X)")
@@ -166,12 +165,12 @@ medianplot <- ggplot(raw_stats, aes(x=reorder(name, -Global_Mean, sum), y= Norm_
     scale_color_brewer(palette = "Set2", name = str_to_title(snakemake@params[[1]]))+
     theme_bw()+
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = gsize),
-          panel.grid.minor = element_blank(),
-          strip.text = element_text(size = 15),
-          legend.text = element_text(size = 15),
-          legend.title = element_text(size = 17),
-          plot.title = element_text(size = 20),
-          axis.title = element_text(size = 17))+
+          panel.grid.minor = element_blank())+
+        #   strip.text = element_text(size = 15),
+        #   legend.text = element_text(size = 15),
+        #   legend.title = element_text(size = 17),
+        #   plot.title = element_text(size = 20),
+        #   axis.title = element_text(size = 17))+
     labs(title = "Normalized median coverage of chromosomes",
          x = "Sample",
          y = ylabel)
@@ -191,12 +190,12 @@ meanplot <- ggplot(raw_stats, aes(x=reorder(name, -Global_Mean, sum), y= Norm_Me
     scale_color_brewer(palette = "Set2", name = str_to_title(snakemake@params[[1]]))+
     theme_bw()+
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = gsize),
-          panel.grid.minor = element_blank(),
-          strip.text = element_text(size = 15),
-          legend.text = element_text(size = 15),
-          legend.title = element_text(size = 17),
-          plot.title = element_text(size = 20),
-          axis.title = element_text(size = 17))+
+          panel.grid.minor = element_blank())+
+        #   strip.text = element_text(size = 15),
+        #   legend.text = element_text(size = 15),
+        #   legend.title = element_text(size = 17),
+        #   plot.title = element_text(size = 20),
+        #   axis.title = element_text(size = 17))+
     labs(title = "Normalized mean coverage of chromosomes",
          x = "Sample",
          y = ylabel)

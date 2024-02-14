@@ -97,7 +97,8 @@ rule cov_distribution:
         rules.samtools_stats.output.cov,
         CHROM_NAMES
     output:
-        OUTDIR / "plots" / "{sample}" / "cov_distribution.png"
+        OUTDIR / "plots" / "{sample}" / "cov_distribution.png",
+        OUTDIR / "plots" / "{sample}" / "cov_global_distribution.png"
     conda:
         "../envs/r.yaml"
     log:

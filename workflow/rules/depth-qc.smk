@@ -1,7 +1,8 @@
 # Get the coverage of all the mapped reads per window along all chromosomes
 rule mosdepth:
     input:
-        bam = rules.snippy.output.bam
+        bam = rules.snippy.output.bam,
+        bai = rules.snippy.output.bai
     output:
         bed = OUTDIR / "mosdepth" / "{sample}" / "coverage.regions.bed.gz"
     params:
@@ -16,13 +17,14 @@ rule mosdepth:
         "logs/mosdepth/{sample}.log"
     shell:
         "mosdepth -n --by {params.window} -t {threads} {params.extra} "
-        "{params.outdir}/{wildcards.sample}/coverage {input} "
+        "{params.outdir}/{wildcards.sample}/coverage {input.bam} "
         "&> {log}"
 
 # Get the coverage of the good quality (above a MAPQ value) mapped reads per window along all chromosomes
 rule mosdepth_good:
     input:
-        bam = rules.snippy.output.bam
+        bam = rules.snippy.output.bam,
+        bai = rules.snippy.output.bai
     output:
         bed = OUTDIR / "mosdepth" / "{sample}" / "coverage_good.regions.bed.gz"
     params:
@@ -38,13 +40,32 @@ rule mosdepth_good:
         "logs/mosdepth_good/{sample}.log"
     shell:
         "mosdepth -n --by {params.window} --mapq {params.min_mapq} -t {threads} {params.extra} "
-        "{params.outdir}/{wildcards.sample}/coverage_good {input} "
+        "{params.outdir}/{wildcards.sample}/coverage_good {input.bam} "
         "&> {log}"
 
 # Get 
+rule bam_good:
+    input:
+        bam = rules.snippy.output.bam
+    output:
+        bam_good = OUTDIR / "samtools" / "{sample}" / "snps_good.bam",
+        bai_good = OUTDIR / "samtools" / "{sample}" / "snps_good.bam.bai"
+    conda:
+        "../envs/samtools.yaml"
+    params:
+        min_mapq = config["coverage_quality"]["mosdepth"]["min_mapq"]   
+    log:
+        "logs/stats/bam_good_{sample}.log"
+    shell:
+        "samtools view -q {params.min_mapq} -b {input} > {output.bam_good} 2> {log} && "
+        "samtools index {output.bam_good} -o {output.bai_good}"
+
 rule samtools_stats:
     input:
         bam = rules.snippy.output.bam,
+        bai = rules.snippy.output.bai,
+        bam_good = rules.bam_good.output.bam_good,
+        bai_good = rules.bam_good.output.bai_good,
         ref = rules.snippy.output.ref
     output:
         mapq = OUTDIR / "samtools" / "{sample}" / "distrib_mapq.csv",
@@ -54,11 +75,12 @@ rule samtools_stats:
     log:
         "logs/stats/{sample}.log"
     shell:
-        "xonsh workflow/scripts/samtools-stats.xsh {wildcards.sample} {input.bam} {input.ref} {output.mapq} {output.cov} &> {log}"
+        "xonsh workflow/scripts/samtools-stats.xsh {wildcards.sample} {input.bam} {input.bam_good} {input.ref} {output.mapq} {output.cov} &> {log}"
 
 rule bamstats:
     input:
-        bam = rules.snippy.output.bam
+        bam = rules.snippy.output.bam,
+        bai = rules.snippy.output.bai
     output:
         stats = OUTDIR / "samtools" / "{sample}" / "snps.bam.stats",
     conda:
