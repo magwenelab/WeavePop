@@ -11,8 +11,8 @@ sample <- snakemake@input[[1]]
 Split <- str_split(sample, "/")
 sample <- Split[[1]][length(Split[[1]])-1]
 
-good_stats_regions <- read.delim(snakemake@input[[1]], sep= ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
-raw_stats_regions <- read.delim(snakemake@input[[2]], sep= ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
+good_stats_regions <- read.delim(snakemake@input[[1]], sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
+raw_stats_regions <- read.delim(snakemake@input[[2]], sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
 
 good_stats_chroms <- good_stats_regions %>%
   select(c(-Start, -End, -Depth, -Norm_Mean, -Norm_Median))%>%
@@ -21,7 +21,7 @@ good_stats_chroms$Sample <- sample
 good_stats_chroms <- good_stats_chroms %>%
   select(Sample, Lineage, Chromosome, Global_Mean, Global_Median, Chrom_Mean, Chrom_Median)
 
-write_csv(good_stats_chroms, snakemake@output[[3]], col_names = TRUE)
+write.table(good_stats_chroms, snakemake@output[[3]], col.names = TRUE, row.names = FALSE, quote = FALSE, sep = "\t")
 
 raw_stats_chroms <- raw_stats_regions %>%
   select(c(-Start, -End, -Depth, -Norm_Mean, -Norm_Median))%>%
@@ -30,7 +30,7 @@ raw_stats_chroms$Sample <- sample
 raw_stats_chroms <- raw_stats_chroms %>%
   select(Sample, Lineage, Chromosome, Global_Mean, Global_Median, Chrom_Mean, Chrom_Median)
 
-write_csv(good_stats_chroms, snakemake@output[[4]], col_names = TRUE)
+write.table(good_stats_chroms, snakemake@output[[4]], col.names = TRUE, row.names = FALSE, quote = FALSE, sep = "\t")
 
 good_stats_long <- good_stats_chroms %>%
   pivot_longer(c(Chrom_Mean, Chrom_Median), names_to = "Measurement", values_to = "Value")
@@ -79,7 +79,7 @@ if (nrow(loci) != 0){
   scale_color_manual(name = "Loci", values = loci_colors)
 }
 
-struc_vars <- read.delim(snakemake@input[[4]], sep= ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
+struc_vars <- read.delim(snakemake@input[[4]], sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
 struc_vars <- struc_vars %>%
   filter(!is.na(End))
 

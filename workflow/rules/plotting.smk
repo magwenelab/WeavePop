@@ -32,8 +32,8 @@ rule coverage_plot:
     output:
         cov = OUTDIR / "plots" / "{sample}" / "coverage.png",
         stats = OUTDIR / "plots" / "{sample}" / "coverage_stats.png",
-        good = OUTDIR / "mosdepth" / "{sample}" / "good_stats_chroms.csv",
-        raw = OUTDIR / "mosdepth" / "{sample}" / "raw_stats_chroms.csv"
+        good = OUTDIR / "mosdepth" / "{sample}" / "good_stats_chroms.tsv",
+        raw = OUTDIR / "mosdepth" / "{sample}" / "raw_stats_chroms.tsv"
     conda:
         "../envs/r.yaml"
     log:
@@ -46,8 +46,8 @@ rule cat_stats:
         r = expand(rules.coverage_plot.output.raw,sample=SAMPLES),
         g = expand(rules.coverage_plot.output.good,sample=SAMPLES),
     output:
-        allr = DATASET_OUTDIR / "files" / "coverage_raw.csv",
-        allg = DATASET_OUTDIR / "files" / "coverage_good.csv",
+        allr = DATASET_OUTDIR / "files" / "coverage_raw.tsv",
+        allg = DATASET_OUTDIR / "files" / "coverage_good.tsv",
     log:
         "logs/coverage/cat_stats.log"
     shell:
@@ -62,11 +62,11 @@ rule coverage_stats_plots:
         rules.cat_stats.output.allg,
         rules.cat_stats.output.allr
     output:
-        DATASET_OUTDIR / "files" / "cov_norm_good.csv",
+        DATASET_OUTDIR / "files" / "cov_norm_good.tsv",
         DATASET_OUTDIR / "plots" / "cov_global_good.png",
         DATASET_OUTDIR / "plots" / "cov_median_good.png",
         DATASET_OUTDIR / "plots" / "cov_mean_good.png",
-        DATASET_OUTDIR / "files" / "cov_norm_raw.csv",
+        DATASET_OUTDIR / "files" / "cov_norm_raw.tsv",
         DATASET_OUTDIR / "plots" / "cov_global_raw.png",
         DATASET_OUTDIR / "plots" / "cov_median_raw.png",
         DATASET_OUTDIR / "plots" / "cov_mean_raw.png",

@@ -24,9 +24,9 @@ good_stats_regions <- good %>%
   mutate(Chrom_Mean = round(mean(Depth),2),
          Chrom_Median = round(median(Depth),2))%>%
   ungroup()%>%
-  select(Chromosome, Accession, Lineage, Start, End, Depth, Global_Mean, Global_Median, Chrom_Mean, Chrom_Median, Norm_Mean, Norm_Median)
+  select(Accession, Start, End, Chromosome, Lineage, Depth, Global_Mean, Global_Median, Chrom_Mean, Chrom_Median, Norm_Mean, Norm_Median)
 
-write_csv(good_stats_regions, snakemake@output[[1]], col_names = TRUE)
+write.table(good_stats_regions, snakemake@output[[1]], col.names = TRUE, row.names = FALSE, quote = FALSE, sep = "\t")
 
 raw_stats_regions <- raw %>%
   mutate(Global_Mean = round(mean(Depth),2),
@@ -37,10 +37,10 @@ raw_stats_regions <- raw %>%
   mutate(Chrom_Mean = round(mean(Depth),2),
          Chrom_Median = round(median(Depth),2))%>%
   ungroup()%>%
-  select(Chromosome, Accession, Lineage, Start, End, Depth, Global_Mean, Global_Median, Chrom_Mean, Chrom_Median, Norm_Mean, Norm_Median)
+  select(Accession, Start, End, Chromosome,  Lineage, Depth, Global_Mean, Global_Median, Chrom_Mean, Chrom_Median, Norm_Mean, Norm_Median)
 
 
-write_csv(raw_stats_regions, snakemake@output[[2]], col_names = TRUE)
+write.table(raw_stats_regions, snakemake@output[[2]], col.names = TRUE, row.names = FALSE, quote = FALSE, sep = "\t")
 
 
 

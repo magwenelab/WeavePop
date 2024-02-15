@@ -10,7 +10,7 @@ metadata <- read.csv(snakemake@input[[1]], header = TRUE, stringsAsFactors = TRU
 metadata <- mutate(metadata, name = paste(strain, sample, sep=" " ))
 
 #### Good quality mappings ####
-good_stats <-read.csv(snakemake@input[[2]], header = FALSE, col.names = c("sample", "Lineage", "Chromosome", "Global_Mean", "Global_Median", "Mean", "Median"), stringsAsFactors = TRUE)
+good_stats <-read.delim(snakemake@input[[2]], sep = "\t", header = FALSE, col.names = c("sample", "Lineage", "Chromosome", "Global_Mean", "Global_Median", "Mean", "Median"), stringsAsFactors = TRUE)
 good_stats <- left_join(good_stats, metadata, by = "sample")
 good_stats <- good_stats%>%
     group_by(Chromosome, sample)%>%
@@ -18,7 +18,7 @@ good_stats <- good_stats%>%
     mutate(Norm_Median= round(Median/Global_Median, 2))%>%
     ungroup()
 
-write_csv(good_stats,snakemake@output[[1]], col_names = TRUE)
+write.table(good_stats,snakemake@output[[1]], col.names = TRUE, row.names = FALSE, quote = FALSE, sep = "\t")
 
 gwidth = 13.3
 gheight = 7.5
@@ -117,7 +117,7 @@ meanplot <- ggplot(good_stats, aes(x=reorder(name, -Global_Mean, sum), y= Norm_M
 ggsave(snakemake@output[[4]], plot = meanplot, scale = gscale,  units = "in", height = gheight, width = gwidth)
 
 #### All quality mappings ####
-raw_stats <-read.csv(snakemake@input[[2]], header = FALSE, col.names = c("sample", "Lineage", "Chromosome", "Global_Mean", "Global_Median", "Mean", "Median"), stringsAsFactors = TRUE)
+raw_stats <-read.delim(snakemake@input[[3]], sep = "\t", header = FALSE, col.names = c("sample", "Lineage", "Chromosome", "Global_Mean", "Global_Median", "Mean", "Median"), stringsAsFactors = TRUE)
 raw_stats <- left_join(raw_stats, metadata, by = "sample")
 
 raw_stats <- raw_stats%>%
@@ -126,7 +126,7 @@ raw_stats <- raw_stats%>%
     mutate(Norm_Median= round(Median/Global_Median, 2))%>%
     ungroup()
 
-write_csv(raw_stats,snakemake@output[[5]], col_names = TRUE)
+write.table(raw_stats,snakemake@output[[5]], col.names = TRUE, row.names = FALSE, quote = FALSE, sep = "\t")
 
 # Global
 topylim <- max(raw_stats$Global_Mean) + max(raw_stats$Global_Mean/10)

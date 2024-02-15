@@ -143,8 +143,8 @@ rule coverage:
         rules.mosdepth_good.output.bed,
         CHROM_NAMES,
     output:
-        good = OUTDIR / "mosdepth" / "{sample}" / "good_stats_regions.csv",
-        raw = OUTDIR / "mosdepth" / "{sample}" / "raw_stats_regions.csv"
+        good = OUTDIR / "mosdepth" / "{sample}" / "good_stats_regions.tsv",
+        raw = OUTDIR / "mosdepth" / "{sample}" / "raw_stats_regions.tsv"
     conda:
         "../envs/r.yaml"
     log:
@@ -152,11 +152,44 @@ rule coverage:
     script:
         "../scripts/coverage.R"
 
+# rule repeats_database:
+#     output:
+#         REFDIR / "repeats_database.fasta"
+#     params:
+#         dir = REFDIR,
+#         database = "https://www.girinst.org/server/RepBase/protected/RepBase29.01.fasta.tar.gz"
+#     shell:
+#         """
+#         wget -O {params.dir}/database {params.database}
+#         tar -xvzf {params.dir}/database --one-top-level={params.dir}/database_dir
+#         cat {params.dir}/database_dir/*.ref > {params.dir}/database.fasta
+#         cat {params.dir}/database.fasta/appendix/*.ref >> {params.dir}/database.fasta
+#         rm -rf {params.dir}/database_dir/ {params.dir}/database
+#         """
+
+rule repeats:
+    input:
+        rules.links.output
+    output:
+        REFDIR / "{lineage}" / "repeats" / "05_full_out" / "{lineage}.full_mask.bed"
+    params:
+        lineage = "{lineage}",
+        repeat_dir = REFDIR / "{lineage}" / "repeats",
+        database = config["coverage_quality"]["ploidy"]["repeats_database"]
+    threads:
+        config["coverage_quality"]["ploidy"]["repeats_threads"]
+    conda:
+        "../envs/repeatmasker.yaml"
+    log:
+        "logs/ploidy/{lineage}.log"
+    script:
+        "../scripts/repeat-masker.sh"
+
 rule smoothing:
     input:
         rules.coverage.output.good
     output:
-        OUTDIR / "mosdepth" / "{sample}" / "smooth_good_stats_regions.csv"
+        OUTDIR / "mosdepth" / "{sample}" / "smooth_good_stats_regions.tsv"
     params:
         size = config["coverage_quality"]["ploidy"]["smoothing_size"]
     log:
@@ -164,11 +197,27 @@ rule smoothing:
     script:
         "../scripts/median_filtering.py"
 
+rule intersect:
+    input:
+        bed = rules.repeats.output, # MAKE IT USE THE ONE OF THE APPROPRIATE LINEAGE
+        tsv = rules.smoothing.output
+    output:
+        OUTDIR / "mosdepth" / "{sample}" / "smooth_repeats_good_stats_regions.tsv"
+    conda:
+        "../envs/repeatmasker.yaml"
+    params:
+        OUTDIR / "mosdepth" / "{sample}" / "intersect.bed"
+    shell:
+        """
+        tail -n +2 {input.tsv} | bedtools intersect -wa -c -a stdin -b {input.bed} > {params}
+        head -n1 {input.tsv} | paste - <(echo "Nb_Repeats") | cat - {params}> {output}
+        """
+
 rule ploidy_table:
     input:
-        rules.smoothing.output
+        rules.intersect.output
     output:
-        OUTDIR / "mosdepth" / "{sample}" / "ploidy_table.csv"
+        OUTDIR / "mosdepth" / "{sample}" / "ploidy_table.tsv"
     conda:
         "../envs/r.yaml"
     params:
