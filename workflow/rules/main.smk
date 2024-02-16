@@ -70,14 +70,14 @@ rule agat_cds:
     params:
         extra = config["agat"]["extra"]
     log: 
-        cds = "logs/agat/{sample}_cds.log",
+        "logs/agat/cds_{sample}.log",
     shell:
         "agat_sp_extract_sequences.pl "
         "-g {input.gff} " 
         "-f {input.fa} "
         "-o {output.cds} "
         "{params.extra} "
-        "&> {log.cds} "
+        "&> {log} "
 
 # Extract the amino acid sequence of each isoform of each gene of a sample
 rule agat_prots:
@@ -91,19 +91,20 @@ rule agat_prots:
     params:
         extra = config["agat"]["extra"]
     log: 
-        prots = "logs/agat/{sample}_prots.log"
+        "logs/agat/prots_{sample}.log"
     shell:
         "agat_sp_extract_sequences.pl "
         "-g {input.gff} " 
         "-f {input.fa} "
         "-o {output.prots} "
-        "-p  &> {log.prots} "
+        "-p  &> {log} "
         "{params.extra} " 
         "&& "
-        "sed -i 's/type=cds//g' {output} &>> {log.prots} "
+        "sed -i 's/type=cds//g' {output} &>> {log} "
         "&& "
-        "rm lifted.agat.log &>> {log.prots} || true"
+        "rm lifted.agat.log &>> {log} || true"
 
+# Make SQL database with cds and prots of all samples
 rule by_id:
     input: 
         prots = rules.agat_prots.output.prots,
@@ -114,7 +115,7 @@ rule by_id:
     params:
         db = DATASET_OUTDIR / "sequences.db"
     log:
-        "logs/agat/database_{sample}.log"
+        "logs/agat/by_id_{sample}.log"
     shell:
         "python workflow/scripts/sqlfasta.py populate-db {params.db} {input.prots} {wildcards.sample} -t Protein &> {log}"
         "&& "

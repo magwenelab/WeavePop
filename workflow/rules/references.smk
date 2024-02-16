@@ -6,10 +6,12 @@ rule main_links:
     output:
         gff = REFDIR / "{lineage}" / str(MAIN_NAME + ".gff"),
         fasta = REFDIR / "{lineage}" / str(MAIN_NAME + ".fasta")
+    log:
+        "logs/references/main_liks_{lineage}.log"
     shell:
-        "ln -s -r {input.gff} {output.gff} "
+        "ln -s -r {input.gff} {output.gff} &> {log}"
         "&& "
-        "ln -s -r {input.fasta} {output.fasta} "
+        "ln -s -r {input.fasta} {output.fasta} &>> {log}"
 
 # Generate a TSV version of the main reference annotation
 rule main_gff2tsv: 
@@ -22,14 +24,14 @@ rule main_gff2tsv:
     params: 
         ref_name = MAIN_NAME    
     log: 
-        "logs/references/ref_gff2tsv_agat.log"
+        "logs/references/main_gff2tsv.log"
     shell:
         "agat_convert_sp_gff2tsv.pl "
         "-gff {input} "
         "-o {output} "
         "&> {log} "
         "&& "
-        "rm {params.ref_name}.agat.log || true" 
+        "rm {params.ref_name}.agat.log &>> {log} || true" 
 
 # Lift over annotation of the main reference to the reference genomes
 rule ref2ref_liftoff:
@@ -46,7 +48,7 @@ rule ref2ref_liftoff:
     conda:
         "../envs/liftoff.yaml"
     log:
-        "logs/references/{lineage}_liftoff.log"
+        "logs/references/ref2ref_liftoff_{lineage}.log"
     params:
         refdir = REFDIR,
         extra = config["annotate_references"]["liftoff"]["extra"]
@@ -63,4 +65,4 @@ rule ref2ref_liftoff:
         "{input.target_refs} {input.fasta} "
         "&> {log} "
         "&& "
-        "mv {params.refdir}/{wildcards.lineage}/liftoff.gff_polished {output.target_gff} "
+        "mv {params.refdir}/{wildcards.lineage}/liftoff.gff_polished {output.target_gff} &>> {log}"

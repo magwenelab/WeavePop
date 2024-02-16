@@ -37,7 +37,7 @@ rule mosdepth_good:
     threads:
        config["coverage_quality"]["mosdepth"]["threads"]   
     log:
-        "logs/mosdepth_good/{sample}.log"
+        "logs/mosdepth/good_{sample}.log"
     shell:
         "mosdepth -n --by {params.window} --mapq {params.min_mapq} -t {threads} {params.extra} "
         "{params.outdir}/{wildcards.sample}/coverage_good {input.bam} "
@@ -58,7 +58,7 @@ rule bam_good:
         "logs/stats/bam_good_{sample}.log"
     shell:
         "samtools view -q {params.min_mapq} -b {input} > {output.bam_good} 2> {log} && "
-        "samtools index {output.bam_good} -o {output.bai_good}"
+        "samtools index {output.bam_good} -o {output.bai_good} 2>> {log} "
 
 rule samtools_stats:
     input:
@@ -73,7 +73,7 @@ rule samtools_stats:
     conda: 
         "../envs/samtools.yaml"
     log:
-        "logs/stats/{sample}.log"
+        "logs/stats/samtools_stats_{sample}.log"
     shell:
         "xonsh workflow/scripts/samtools-stats.xsh {wildcards.sample} {input.bam} {input.bam_good} {input.ref} {output.mapq} {output.cov} &> {log}"
 
@@ -86,7 +86,7 @@ rule bamstats:
     conda:
         "../envs/samtools.yaml"
     log:
-        "logs/bamstats/{sample}.log"
+        "logs/stats/bamstats_{sample}.log"
     shell:
         "samtools stats {input.bam} 1> {output.stats} 2> {log}"
 
@@ -95,16 +95,20 @@ rule mapped_edit:
         stats = rules.bamstats.output.stats 
     output: 
         mapstats = OUTDIR / "samtools" / "{sample}" / "mapping_stats.txt"
+    log:
+        "logs/stats/mapped_edit_{sample}.log"
     shell:
-        "grep reads {input.stats} | cut -d'#' -f1 | cut -f 2- | grep . > {output.mapstats} "
+        "grep reads {input.stats} | cut -d'#' -f1 | cut -f 2- | grep . > {output.mapstats} 2> {log} "
         " && "
-        'sed -i "s/$/:\\{wildcards.sample}/" {output.mapstats}'
+        'sed -i "s/$/:\\{wildcards.sample}/" {output.mapstats} 2>> {log}'
 
 rule mapped_cat:
     input:
         expand(rules.mapped_edit.output.mapstats, sample=SAMPLES)   
     output: 
         stats = DATASET_OUTDIR / "mapping_stats.txt"
+    log:
+        "logs/stats/mapped_cat.log"
     shell:
        'cat {input} > {output}'  
 
@@ -133,7 +137,7 @@ rule mapqcov2gff:
     conda:
         "../envs/samtools.yaml"
     log: 
-        "logs/gff/{sample}.log"
+        "logs/mapq/mapqcov2gff_{sample}.log"
     shell:
         "xonsh workflow/scripts/mapqcov2gff.xsh {input.mapqbed} {input.covbed} {input.gff} {output.covmapq} {output.newgff} &> {log}"
 
@@ -250,6 +254,6 @@ rule ploidy_table:
         size_threshold = config["coverage_quality"]["ploidy"]["size"], 
         change_threshold = config["coverage_quality"]["ploidy"]["change"]  
     log:
-        "logs/ploidy/{sample}.log"
+        "logs/ploidy/ploidy_table_{sample}.log"
     script:
         "../scripts/ploidy_table.R"

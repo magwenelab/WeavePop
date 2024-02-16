@@ -14,6 +14,6 @@ rule unmapped_samples_plot:
         datasetplots = DATASET_OUTDIR / "plots",
         datasetfiles = DATASET_OUTDIR / "files"
     log:
-        "logs/liftoff/unmapped_count_plot.log"
+        "logs/liftoff/unmapped_samples_plot.log"
     script:
         "../scripts/samples_unmapped_per_lin.R"

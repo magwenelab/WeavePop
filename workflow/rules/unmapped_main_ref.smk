@@ -12,7 +12,7 @@ rule unmapped_ref_features:
     params:
         refdir = REFDIR
     log:
-        "logs/references/unmapped_count_plot.log"
+        "logs/references/unmapped_ref_features.log"
     script:
         "../scripts/unmapped_features_refs.R"
 
@@ -29,6 +29,6 @@ rule unmapped_samples_plot:
     params:
         dir = OUTDIR / "liftoff"
     log:
-        "logs/liftoff/unmapped_count_plot.log"
+        "logs/liftoff/unmapped_samples_plot.log"
     script:
         "../scripts/samples_unmapped_main.R"

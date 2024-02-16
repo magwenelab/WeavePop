@@ -6,11 +6,11 @@ rule gff2tsv:
     conda:
         "../envs/agat.yaml"
     log:
-        "logs/references/{lineage}_gff2tsv.log"
+        "logs/references/gff2tsv_{lineage}.log"
     shell:
         "agat_convert_sp_gff2tsv.pl -gff {input} -o {output} "
         "&> {log} && "
-        "rm {wildcards.lineage}.agat.log || true"
+        "rm {wildcards.lineage}.agat.log &>> {log} || true"
 
 rule loci:
     input:
@@ -37,7 +37,7 @@ rule coverage_plot:
     conda:
         "../envs/r.yaml"
     log:
-        "logs/coverage_plot/{sample}.log"
+        "logs/coverage/coverage_plot_{sample}.log"
     script:
         "../scripts/coverage_plots.R"
 
@@ -88,7 +88,7 @@ rule mapq_distribution:
     conda:
         "../envs/r.yaml"   
     log:
-        "logs/mapq-dist/{sample}.log"
+        "logs/mapq/mapq_distribution_{sample}.log"
     script:
         "../scripts/mapq-distribution.R"
 
@@ -102,7 +102,7 @@ rule cov_distribution:
     conda:
         "../envs/r.yaml"
     log:
-        "logs/cov-dist/{sample}.log"
+        "logs/coverage/cov_distribution_{sample}.log"
     script:
         "../scripts/coverage-distribution.R"
 
@@ -115,7 +115,7 @@ rule mapped_plot:
     conda:
         "../envs/r.yaml"
     log:
-        "logs/stats/mapped.log"
+        "logs/stats/mapped_plot.log"
     script:
         "../scripts/mapped_reads.R"
 
@@ -129,7 +129,7 @@ rule mapq_plot:
     conda:
         "../envs/r.yaml"
     log:
-        "logs/mapq_plot/{sample}.log"
+        "logs/mapq/mapq_plot_{sample}.log"
     script:
         "../scripts/mapq.R"
 
