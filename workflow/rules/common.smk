@@ -35,9 +35,12 @@ d={'sample': SAMPLETABLE["sample"],
     'group': SAMPLETABLE["group"],
     'fq1': FQ_DATA / (SAMPLETABLE["sample"] + FQ1),
     'fq2': FQ_DATA / (SAMPLETABLE["sample"] + FQ2),
-    'refgenome' : REFDIR / SAMPLETABLE["group"] / (SAMPLETABLE["group"] + ".fasta"),
-    'refgff' : REFDIR / SAMPLETABLE["group"] / (SAMPLETABLE["group"] + ".gff")}
+    'refgenome': REFDIR / SAMPLETABLE["group"] / (SAMPLETABLE["group"] + ".fasta"),
+    'refgff': REFDIR / SAMPLETABLE["group"] / (SAMPLETABLE["group"] + ".gff"),
+    'maskbed': REFDIR / SAMPLETABLE["group"]  / "repeats" / "05_full_out" / (SAMPLETABLE["group"] + ".full_mask.bed")}
+
 SAMPLE_REFERENCE = pd.DataFrame(data=d).set_index("sample", drop=False)
+
 def snippy_input(wildcards):
     s = SAMPLE_REFERENCE.loc[wildcards.sample,]
     return {
@@ -52,6 +55,13 @@ def liftoff_input(wildcards):
         "target": OUTDIR / "snippy" / s["sample"] / "snps.consensus.fa" ,
         "refgff": s["refgff"],
         "refgenome": s["refgenome"],
+    }
+
+def intersect_input(wildcards):
+    s = SAMPLE_REFERENCE.loc[wildcards.sample,]
+    return {
+        "sampletsv": OUTDIR / "mosdepth" / s["sample"] / "smooth_good_stats_regions.tsv" ,
+        "maskbed": s["maskbed"],
     }
 
 #### Defining which final output files are being requested ####
@@ -95,10 +105,6 @@ def get_final_output():
     
     return final_output
 
-# def get_ids(wildcards):
-#     ck_output = checkpoints.mock.get(**wildcards).output[0]
-#     IDS, = glob_wildcards(os.path.join(ck_output, "{id}.fa"))
-#     return expand(os.path.join(ck_output, "{ID}.fa"), ID=IDS)
 
 #### Creating softlinks to have the reference genomes in the REFDIR ####
 rule links:
