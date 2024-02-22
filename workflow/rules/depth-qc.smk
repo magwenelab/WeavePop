@@ -43,7 +43,7 @@ rule mosdepth_good:
         "{params.outdir}/{wildcards.sample}/coverage_good {input.bam} "
         "&> {log}"
 
-# Get 
+# Get bam files with only good alignments
 rule bam_good:
     input:
         bam = rules.snippy.output.bam
@@ -60,6 +60,7 @@ rule bam_good:
         "samtools view -q {params.min_mapq} -b {input} > {output.bam_good} 2> {log} && "
         "samtools index {output.bam_good} -o {output.bai_good} 2>> {log} "
 
+# Get distribution of MAPQ and Coverage values in all alignments and only good alignments
 rule samtools_stats:
     input:
         bam = rules.snippy.output.bam,
@@ -77,6 +78,7 @@ rule samtools_stats:
     shell:
         "xonsh workflow/scripts/samtools-stats.xsh {wildcards.sample} {input.bam} {input.bam_good} {input.ref} {output.mapq} {output.cov} &> {log}"
 
+# Run samtools stats on BAM with all alignments
 rule bamstats:
     input:
         bam = rules.snippy.output.bam,
@@ -89,7 +91,7 @@ rule bamstats:
         "logs/stats/bamstats_{sample}.log"
     shell:
         "samtools stats {input.bam} 1> {output.stats} 2> {log}"
-
+# Get stats on number of mapped reads
 rule mapped_edit:
     input:
         stats = rules.bamstats.output.stats 
@@ -102,6 +104,7 @@ rule mapped_edit:
         " && "
         'sed -i "s/$/:\\{wildcards.sample}/" {output.mapstats} 2>> {log}'
 
+# Join the mapping stats of all samples
 rule mapped_cat:
     input:
         expand(rules.mapped_edit.output.mapstats, sample=SAMPLES)   
@@ -112,6 +115,7 @@ rule mapped_cat:
     shell:
        'cat {input} > {output}'  
 
+# Get the MAPQ per position and per window
 rule mapq:
     input:
        rules.snippy.output.bam,
@@ -126,6 +130,7 @@ rule mapq:
     script:
         "../scripts/pileup_mapq.sh"
 
+# Add the MAPQ and Coverage to the gff file
 rule mapqcov2gff:
     input:
         mapqbed = rules.mapq.output.winbed,
@@ -141,6 +146,7 @@ rule mapqcov2gff:
     shell:
         "xonsh workflow/scripts/mapqcov2gff.xsh {input.mapqbed} {input.covbed} {input.gff} {output.covmapq} {output.newgff} &> {log}"
 
+# Get coverage stats for each window
 rule coverage:
     input:
         rules.mosdepth.output.bed,
@@ -171,7 +177,7 @@ rule coverage:
 #         rm -rf {params.dir}/database_dir/ {params.dir}/database
 #         """
 
-
+# Run RepeatModeler for each reference genome
 rule repeat_modeler:
     input:
         rules.links.output
@@ -191,7 +197,7 @@ rule repeat_modeler:
     shell:
         "bash workflow/scripts/repeat-modeler.sh {threads} {params.lin} {params.refdir}/{params.lin}/{params.repdir} &> {log}"
 
-
+# Run RepeatMasker for each reference genome. Obtain a BED file with the location of the reapeat sequences
 rule repeats:
     input:
         REFDIR / "{lineage}" / "repeats" / "{lineage}_known.fa",
@@ -212,6 +218,7 @@ rule repeats:
     shell:
         "bash workflow/scripts/repeat-masker.sh {threads} {params.lin} {params.refdir}/{params.lin}/{params.repdir} {params.database} &> {log}"
 
+# Get smoothed coverage for each sample
 rule smoothing:
     input:
         rules.coverage.output.good
@@ -224,6 +231,7 @@ rule smoothing:
     script:
         "../scripts/median_filtering.py"
 
+# Get the number of repeated sequences in each region (along with coverage stats)
 rule intersect:
     input:
         unpack(intersect_input)
@@ -243,6 +251,7 @@ rule intersect:
         head -n1 {input.sampletsv} | paste - <(echo "Nb_Repeats") | cat - {params.dir}/{params.sample}/{params.file} > {output} 2> {log}
         """
 
+# Detect structural variation
 rule ploidy_table:
     input:
         rules.intersect.output
