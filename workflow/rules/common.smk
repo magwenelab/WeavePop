@@ -33,19 +33,16 @@ if config["annotate_references"]["activate"]:
 #### Defining sample-dependent input files ####
 d={'sample': SAMPLETABLE["sample"],
     'group': SAMPLETABLE["group"],
-    'fq1': FQ_DATA / (SAMPLETABLE["sample"] + FQ1),
-    'fq2': FQ_DATA / (SAMPLETABLE["sample"] + FQ2),
     'refgenome': REFDIR / SAMPLETABLE["group"] / (SAMPLETABLE["group"] + ".fasta"),
-    'refgff': REFDIR / SAMPLETABLE["group"] / (SAMPLETABLE["group"] + ".gff"),
-    'maskbed': REFDIR / SAMPLETABLE["group"]  / "repeats" / "05_full_out" / (SAMPLETABLE["group"] + ".full_mask.bed")}
+    'refgff': REFDIR / SAMPLETABLE["group"] / (SAMPLETABLE["group"] + ".gff")}
 
 SAMPLE_REFERENCE = pd.DataFrame(data=d).set_index("sample", drop=False)
 
 def snippy_input(wildcards):
     s = SAMPLE_REFERENCE.loc[wildcards.sample,]
     return {
-        "fq1": s["fq1"],
-        "fq2": s["fq2"],
+        "fq1": FQ_DATA / (s["sample"] + FQ1),
+        "fq2": FQ_DATA / (s["sample"] + FQ2),
         "refgenome": s["refgenome"],
     }
 
@@ -61,7 +58,7 @@ def intersect_input(wildcards):
     s = SAMPLE_REFERENCE.loc[wildcards.sample,]
     return {
         "sampletsv": OUTDIR / "mosdepth" / s["sample"] / "smooth_good_stats_regions.tsv" ,
-        "maskbed": s["maskbed"],
+        "maskbed": REFDIR / s["group"]  / "repeats" / "05_full_out" / (s["group"] + ".full_mask.bed"),
     }
 
 #### Defining which final output files are being requested ####
