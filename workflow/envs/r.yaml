@@ -11,3 +11,4 @@ dependencies:
   - r-scales
   - bioconductor-complexheatmap
   - r-ggnewscale
+  - r-httpgd
