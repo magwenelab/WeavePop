@@ -54,12 +54,12 @@ def liftoff_input(wildcards):
         "refgenome": s["refgenome"],
     }
 
-def intersect_input(wildcards):
-    s = SAMPLE_REFERENCE.loc[wildcards.sample,]
-    return {
-        "sampletsv": OUTDIR / "mosdepth" / s["sample"] / "smooth_good_stats_regions.tsv" ,
-        "maskbed": REFDIR / s["group"]  / "repeats" / "05_full_out" / (s["group"] + ".full_mask.bed"),
-    }
+# def intersect_input(wildcards):
+#     s = SAMPLE_REFERENCE.loc[wildcards.sample,]
+#     return {
+#         "sampletsv": OUTDIR / "mosdepth" / s["sample"] / "smooth_good_stats_regions.tsv" ,
+#         "maskbed": REFDIR / s["group"]  / "repeats" / "05_full" / (s["group"] + ".bed"),
+#     }
 
 #### Defining which final output files are being requested ####
 def get_final_output():

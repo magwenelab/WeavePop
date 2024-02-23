@@ -28,6 +28,7 @@ coverage_quality:
     smoothing_size: 15
     size: 5000
     change: 0.6
+  repeats:
     repeats_database: "config/RepBase.fasta"
     repeats_threads: 36
 

@@ -189,32 +189,33 @@ rule repeat_modeler:
         lin = "{lineage}",
         repdir = "repeats"
     threads:
-        config["coverage_quality"]["ploidy"]["repeats_threads"]
+        config["coverage_quality"]["repeats"]["repeats_threads"]
     conda:
         "../envs/repeatmasker.yaml"
     log:
-        "logs/ploidy/repeatmodeler_{lineage}.log"
+        "logs/repeats/repeatmodeler_{lineage}.log"
     shell:
         "bash workflow/scripts/repeat-modeler.sh {threads} {params.lin} {params.refdir}/{params.lin}/{params.repdir} &> {log}"
 
 # Run RepeatMasker for each reference genome. Obtain a BED file with the location of the reapeat sequences
 rule repeats:
     input:
+        rules.links.output,
         REFDIR / "{lineage}" / "repeats" / "{lineage}_known.fa",
         REFDIR / "{lineage}" / "repeats" / "{lineage}_unknown.fa"
     output:
-        REFDIR / "{lineage}" / "repeats" / "05_full_out" / "{lineage}.full_mask.bed"
+        REFDIR / "{lineage}" / "repeats" / "05_full" / "{lineage}.bed"
     params:
-        refdir = REFDIR ,
         lin = "{lineage}",
+        refdir = REFDIR,
         repdir = "repeats",
-        database = config["coverage_quality"]["ploidy"]["repeats_database"]
+        database = config["coverage_quality"]["repeats"]["repeats_database"]
     threads:
-        config["coverage_quality"]["ploidy"]["repeats_threads"]
+        config["coverage_quality"]["repeats"]["repeats_threads"]
     conda:
         "../envs/repeatmasker.yaml"
     log:
-        "logs/ploidy/repeatmasker_{lineage}.log"
+        "logs/repeats/repeatmasker_{lineage}.log"
     shell:
         "bash workflow/scripts/repeat-masker.sh {threads} {params.lin} {params.refdir}/{params.lin}/{params.repdir} {params.database} &> {log}"
 
@@ -232,29 +233,29 @@ rule smoothing:
         "../scripts/median_filtering.py"
 
 # Get the number of repeated sequences in each region (along with coverage stats)
-rule intersect:
-    input:
-        unpack(intersect_input)
-    output:
-        OUTDIR / "mosdepth" / "{sample}" / "smooth_repeats_good_stats_regions.tsv"
-    conda:
-        "../envs/repeatmasker.yaml"
-    params:
-        dir = OUTDIR / "mosdepth",
-        sample = "{sample}",
-        file = "intersect.bed"
-    log: 
-        "logs/ploidy/intersect_{sample}.log"
-    shell:
-        """
-        tail -n +2 {input.sampletsv} | bedtools intersect -wa -c -a stdin -b {input.maskbed} > {params.dir}/{params.sample}/{params.file} 2> {log}
-        head -n1 {input.sampletsv} | paste - <(echo "Nb_Repeats") | cat - {params.dir}/{params.sample}/{params.file} > {output} 2> {log}
-        """
+# rule intersect:
+#     input:
+#         unpack(intersect_input)
+#     output:
+#         OUTDIR / "mosdepth" / "{sample}" / "smooth_repeats_good_stats_regions.tsv"
+#     conda:
+#         "../envs/repeatmasker.yaml"
+#     params:
+#         dir = OUTDIR / "mosdepth",
+#         sample = "{sample}",
+#         file = "intersect.bed"
+#     log: 
+#         "logs/ploidy/intersect_{sample}.log"
+#     shell:
+#         """
+#         tail -n +2 {input.sampletsv} | bedtools intersect -wa -c -a stdin -b {input.maskbed} > {params.dir}/{params.sample}/{params.file} 2> {log}
+#         head -n1 {input.sampletsv} | paste - <(echo "Nb_Repeats") | cat - {params.dir}/{params.sample}/{params.file} > {output} 2> {log}
+#         """
 
 # Detect structural variation
 rule ploidy_table:
     input:
-        rules.intersect.output
+        rules.smoothing.output
     output:
         OUTDIR / "mosdepth" / "{sample}" / "ploidy_table.tsv"
     conda:

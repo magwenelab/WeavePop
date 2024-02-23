@@ -13,7 +13,7 @@ region_size <- regions$End[1]
 dupdels <- list()
 for (chrom in levels(as.factor(regions$Chromosome))){
   regions_select <- regions %>%
-    select(Chromosome, Accession, Start, End, Smooth, Norm_Median, Nb_Repeats)%>%
+    select(Chromosome, Accession, Start, End, Smooth, Norm_Median)%>%
     filter(Chromosome == chrom )
 
   regions_windowed <- regions_select
@@ -28,11 +28,9 @@ for (chrom in levels(as.factor(regions$Chromosome))){
     }
   }
   
-  regions_windowed$Repeats <- ifelse(regions_windowed$Nb_Repeats == 0, "No", "Yes")
-
   regions_windowed$window_index <- 1
   for (i in 2:nrow(regions_windowed)){
-    regions_windowed$window_index[i] <- ifelse(regions_windowed$Structure[i]  == regions_windowed$Structure[i-1] && regions_windowed$Repeats[i]  == regions_windowed$Repeats[i-1],
+    regions_windowed$window_index[i] <- ifelse(regions_windowed$Structure[i]  == regions_windowed$Structure[i-1],
                                           regions_windowed$window_index[i-1],
                                           regions_windowed$window_index[i-1]+1 )
   }
@@ -45,13 +43,12 @@ for (chrom in levels(as.factor(regions$Chromosome))){
     ungroup()%>%
     mutate(Window_Size = n*region_size)%>%
     select(-c(Smooth, window_index, Start, End))%>%
-    select(Accession, Start = Win_Start, End = Win_End, Chromosome, Window_Size, Window_Norm_Cov, Window_Smooth_Cov, Structure, Repeats )
+    select(Accession, Start = Win_Start, End = Win_End, Chromosome, Window_Size, Window_Norm_Cov, Window_Smooth_Cov, Structure)
   
 
   chrom_dupdels <- windows %>%
     filter(Window_Size >= size_threshold)%>%
-    filter(Structure != "Haploid")%>%
-    filter(Repeats == "No")
+    filter(Structure != "Haploid")
 
   dupdels[[chrom]] <- chrom_dupdels
 }
