@@ -1,3 +1,4 @@
+# Convert GFF file to TSV format
 rule gff2tsv:
     input:
         REFDIR / "{lineage}" / "{lineage}.gff"
@@ -12,6 +13,7 @@ rule gff2tsv:
         "&> {log} && "
         "rm {wildcards.lineage}.agat.log &>> {log} || true"
 
+# Generate loci table
 rule loci:
     input:
         refs = expand(rules.gff2tsv.output, lineage=LINEAGES),
@@ -23,53 +25,44 @@ rule loci:
     shell:
         "xonsh workflow/scripts/loci.xsh -g {input.loci} -o {output} {input.refs} &> {log}"
 
-rule coverage_plot:
+# Generate coverage per chromosome plot
+# rule coverage_plot_chrom:
+#     input:
+#         rules.intersect.output.good,
+#     output:
+#         OUTDIR / "plots" / "{sample}" / "coverage.png"
+#     conda:
+#         "../envs/r.yaml"
+#     log:
+#         "logs/coverage/coverage_plot_chrom_{sample}.log"
+#     script:
+#         "../scripts/chromosome_plot.R"
+
+# Generate coverage plots
+rule coverage_stats_plot_sample:
     input:
-        rules.coverage.output.good,
-        rules.coverage.output.raw,
-        rules.loci.output.locitable,
-        rules.ploidy_table.output
+        rules.coverage.output.good_chrom,
+        rules.coverage.output.raw_chrom
     output:
-        cov = OUTDIR / "plots" / "{sample}" / "coverage.png",
-        stats = OUTDIR / "plots" / "{sample}" / "coverage_stats.png",
-        good = OUTDIR / "mosdepth" / "{sample}" / "good_stats_chroms.tsv",
-        raw = OUTDIR / "mosdepth" / "{sample}" / "raw_stats_chroms.tsv"
+        stats = OUTDIR / "plots" / "{sample}" / "coverage_stats.png"
     conda:
         "../envs/r.yaml"
     log:
-        "logs/coverage/coverage_plot_{sample}.log"
+        "logs/coverage/coverage_stats_plot_{sample}.log"
     script:
-        "../scripts/coverage_plots.R"
+        "../scripts/coverage_stats_plots.R"
 
-rule cat_stats:
-    input:
-        r = expand(rules.coverage_plot.output.raw,sample=SAMPLES),
-        g = expand(rules.coverage_plot.output.good,sample=SAMPLES),
-    output:
-        allr = DATASET_OUTDIR / "files" / "coverage_raw.tsv",
-        allg = DATASET_OUTDIR / "files" / "coverage_good.tsv",
-    log:
-        "logs/coverage/cat_stats.log"
-    shell:
-        "cat {input.r} | grep -v Sample > {output.allr} "
-        "&& "
-        "cat {input.g} | grep -v Sample > {output.allg} "
-        "2> {log}"
-
-rule coverage_stats_plots:
+# Generate coverage stats plots
+rule coverage_stats_plots_dataset:
     input:
         SAMPLEFILE,
         rules.cat_stats.output.allg,
-        rules.cat_stats.output.allr
+        rules.cat_stats.output.allr,
+        CHROM_NAMES
     output:
-        DATASET_OUTDIR / "files" / "cov_norm_good.tsv",
-        DATASET_OUTDIR / "plots" / "cov_global_good.png",
         DATASET_OUTDIR / "plots" / "cov_median_good.png",
         DATASET_OUTDIR / "plots" / "cov_mean_good.png",
-        DATASET_OUTDIR / "files" / "cov_norm_raw.tsv",
-        DATASET_OUTDIR / "plots" / "cov_global_raw.png",
-        DATASET_OUTDIR / "plots" / "cov_median_raw.png",
-        DATASET_OUTDIR / "plots" / "cov_mean_raw.png",
+        DATASET_OUTDIR / "plots" / "cov_global.png"
     conda:
         "../envs/r.yaml"
     params:
@@ -79,6 +72,7 @@ rule coverage_stats_plots:
     script:
         "../scripts/cov_stats_all.R"
 
+# Generate mapq distribution plot
 rule mapq_distribution:
     input:
         rules.samtools_stats.output.mapq,
@@ -92,6 +86,7 @@ rule mapq_distribution:
     script:
         "../scripts/mapq-distribution.R"
 
+# Generate coverage distribution plots
 rule cov_distribution:
     input:
         rules.samtools_stats.output.cov,
@@ -106,6 +101,7 @@ rule cov_distribution:
     script:
         "../scripts/coverage-distribution.R"
 
+# Generate mapped reads plot
 rule mapped_plot:
     input:
         rules.mapped_cat.output.stats,
@@ -119,6 +115,7 @@ rule mapped_plot:
     script:
         "../scripts/mapped_reads.R"
 
+# Generate mapq plot
 rule mapq_plot:
     input:
         rules.mapq.output.winbed,
@@ -133,6 +130,7 @@ rule mapq_plot:
     script:
         "../scripts/mapq.R"
 
+# Generate bamstats plot
 # rule plot_bamstats:
 #     input:
 #         "analysis/{sample}/snps.bam.stats"
@@ -144,4 +142,3 @@ rule mapq_plot:
 #         "logs/plot-bamstats/{sample}.log"
 #     shell:
 #         "plot-bamstats -p {output}/ {input} &> {log}"
-                

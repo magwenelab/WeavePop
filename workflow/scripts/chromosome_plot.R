@@ -25,7 +25,6 @@ loci_sample <- loci_table %>%
     droplevels()
 loci <- left_join(loci_sample, chrom_names, by = c("Accession"))%>%
   select(Chromosome, Track, Start, End, Loci)
-l_lim <- topCov 
 dark2 <- brewer.pal(8, "Dark2")[1:6]
 l_colors <- dark2[1:nlevels(loci$Loci)]
 
@@ -35,6 +34,7 @@ coverage <- good_stats_regions %>%
   mutate(Track = "Coverage", .after = Chromosome)
 topCov <- quantile(coverage$Coverage, 0.75) * 3
 coverage$Coverage<- ifelse(coverage$Coverage >= topCov, topCov, coverage$Coverage)
+l_lim <- topCov 
 
 structure <- struc_vars %>%
   select(Chromosome, Start, End, Structure)%>%
@@ -80,6 +80,6 @@ c <- ggplot()+
         panel.grid.minor.y = element_blank(),
         panel.background = element_blank(),
         panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 2))
-
+          
 ggsave("plot_simple_repeats.svg", c, height = 7, width = 13)
 

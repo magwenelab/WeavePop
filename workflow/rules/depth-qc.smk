@@ -146,21 +146,41 @@ rule mapqcov2gff:
     shell:
         "xonsh workflow/scripts/mapqcov2gff.xsh {input.mapqbed} {input.covbed} {input.gff} {output.covmapq} {output.newgff} &> {log}"
 
-# Get coverage stats for each window
+# Get coverage stats for each window and each chromosome
 rule coverage:
     input:
         rules.mosdepth.output.bed,
         rules.mosdepth_good.output.bed,
-        CHROM_NAMES,
     output:
         good = OUTDIR / "mosdepth" / "{sample}" / "good_stats_regions.tsv",
-        raw = OUTDIR / "mosdepth" / "{sample}" / "raw_stats_regions.tsv"
+        raw = OUTDIR / "mosdepth" / "{sample}" / "raw_stats_regions.tsv",
+        good_chrom = OUTDIR / "mosdepth" / "{sample}" / "good_stats_chroms.tsv",
+        raw_chrom = OUTDIR / "mosdepth" / "{sample}" / "raw_stats_chroms.tsv"
     conda:
         "../envs/r.yaml"
     log:
         "logs/coverage/{sample}.log"
     script:
         "../scripts/coverage.R"
+
+# Get the coverage stats of all samples
+rule cat_stats:
+    input:
+        g = expand(rules.coverage.output.good_chrom,sample=SAMPLES),
+        r = expand(rules.coverage.output.raw_chrom,sample=SAMPLES)
+    output:
+        allg = DATASET_OUTDIR / "files" / "coverage_good.tsv",
+        allr = DATASET_OUTDIR / "files" / "coverage_raw.tsv"
+    log:
+        "logs/coverage/cat_stats.log"
+    shell:
+        "cat {input.g} | head -n1 > {output.allg} 2> {log} "
+        "&& "
+        "tail -q -n +2 {input.g} >> {output.allg} 2>> {log} "
+        "&& "
+        "cat {input.r} | head -n1 > {output.allr} 2>> {log} "
+        "&& "
+        "tail -q -n +2 {input.r} >> {output.allr} 2>> {log} "
 
 # rule repeats_database:
 #     output:
@@ -224,33 +244,13 @@ rule smoothing:
     input:
         rules.coverage.output.good
     output:
-        OUTDIR / "mosdepth" / "{sample}" / "smooth_good_stats_regions.tsv"
+        OUTDIR / "mosdepth" / "{sample}" / "smooth_coverage_regions.tsv"
     params:
         size = config["coverage_quality"]["ploidy"]["smoothing_size"]
     log:
         "logs/ploidy/smoothing_{sample}.log"
     script:
         "../scripts/median_filtering.py"
-
-# Get the number of repeated sequences in each region (along with coverage stats)
-# rule intersect:
-#     input:
-#         unpack(intersect_input)
-#     output:
-#         OUTDIR / "mosdepth" / "{sample}" / "smooth_repeats_good_stats_regions.tsv"
-#     conda:
-#         "../envs/repeatmasker.yaml"
-#     params:
-#         dir = OUTDIR / "mosdepth",
-#         sample = "{sample}",
-#         file = "intersect.bed"
-#     log: 
-#         "logs/ploidy/intersect_{sample}.log"
-#     shell:
-#         """
-#         tail -n +2 {input.sampletsv} | bedtools intersect -wa -c -a stdin -b {input.maskbed} > {params.dir}/{params.sample}/{params.file} 2> {log}
-#         head -n1 {input.sampletsv} | paste - <(echo "Nb_Repeats") | cat - {params.dir}/{params.sample}/{params.file} > {output} 2> {log}
-#         """
 
 # Detect structural variation
 rule ploidy_table:
@@ -267,3 +267,23 @@ rule ploidy_table:
         "logs/ploidy/ploidy_table_{sample}.log"
     script:
         "../scripts/ploidy_table.R"
+
+# Get the fraction of repeated sequences in each window that is a structural variant
+rule intersect:
+    input:
+        unpack(intersect_input)
+    output:
+        OUTDIR / "mosdepth" / "{sample}" / "ploidy_repeats.tsv"
+    conda:
+        "../envs/repeatmasker.yaml"
+    params:
+        dir = OUTDIR / "mosdepth",
+        sample = "{sample}",
+        file = "intersect.bed"
+    log: 
+        "logs/ploidy/intersect_{sample}.log"
+    shell:
+        """
+        tail -n +2 {input.sampletsv} | bedtools intersect -wo -a stdin -b {input.maskbed} > {params.dir}/{params.sample}/{params.file} 2> {log}
+        head -n1 {input.sampletsv} | paste - <(echo "Nb_Repeats") | cat - {params.dir}/{params.sample}/{params.file} > {output} 2> {log}
+        """

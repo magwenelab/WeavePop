@@ -18,4 +18,6 @@ with open("logs/ploidy/test.log", "w") as f:
 
     cov['Smooth']=pd.Series(smoothed_array)
 
+    cov = cov.loc[:, ~cov.columns.str.startswith('Global') & ~cov.columns.str.startswith('Chrom')]
+
     cov.to_csv(snakemake.output[0], index=False, header = True, sep='\t')

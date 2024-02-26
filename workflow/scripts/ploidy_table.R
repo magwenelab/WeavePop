@@ -6,15 +6,17 @@ suppressPackageStartupMessages(library(tidyverse))
 
 regions <-  read.table(snakemake@input[[1]], header = TRUE, stringsAsFactors = TRUE, sep = "\t")
 
+size_threshold <- 1000
+change_threshold <- 0.5
 size_threshold <- snakemake@params[[1]]
 change_threshold <- snakemake@params[[2]]
 region_size <- regions$End[1]
 
 dupdels <- list()
-for (chrom in levels(as.factor(regions$Chromosome))){
+for (chrom in levels(as.factor(regions$Accession))){
   regions_select <- regions %>%
-    select(Chromosome, Accession, Start, End, Smooth, Norm_Median)%>%
-    filter(Chromosome == chrom )
+    select(Accession, Start, End, Smooth, Norm_Median)%>%
+    filter(Accession == chrom )
 
   regions_windowed <- regions_select
   regions_windowed$Structure <- "Haploid"
@@ -43,7 +45,7 @@ for (chrom in levels(as.factor(regions$Chromosome))){
     ungroup()%>%
     mutate(Window_Size = n*region_size)%>%
     select(-c(Smooth, window_index, Start, End))%>%
-    select(Accession, Start = Win_Start, End = Win_End, Chromosome, Window_Size, Window_Norm_Cov, Window_Smooth_Cov, Structure)
+    select(Accession, Start = Win_Start, End = Win_End, Window_Size, Window_Norm_Cov, Window_Smooth_Cov, Structure)
   
 
   chrom_dupdels <- windows %>%

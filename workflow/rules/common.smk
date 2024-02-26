@@ -54,12 +54,12 @@ def liftoff_input(wildcards):
         "refgenome": s["refgenome"],
     }
 
-# def intersect_input(wildcards):
-#     s = SAMPLE_REFERENCE.loc[wildcards.sample,]
-#     return {
-#         "sampletsv": OUTDIR / "mosdepth" / s["sample"] / "smooth_good_stats_regions.tsv" ,
-#         "maskbed": REFDIR / s["group"]  / "repeats" / "05_full" / (s["group"] + ".bed"),
-#     }
+def intersect_input(wildcards):
+    s = SAMPLE_REFERENCE.loc[wildcards.sample,]
+    return {
+        "sampletsv": OUTDIR / "mosdepth" / s["sample"] / "ploidy_table.tsv" ,
+        "maskbed": REFDIR / s["group"]  / "repeats" / "05_full" / (s["group"] + ".bed")
+    }
 
 #### Defining which final output files are being requested ####
 def get_final_output():
@@ -84,7 +84,7 @@ def get_final_output():
         final_output.append(DATASET_OUTDIR / "mapping_stats.txt")
         final_output.extend(expand(OUTDIR / "mosdepth" / "{sample}" / "ploidy_table.tsv",sample=SAMPLES))
     if config["plotting"]["activate"]:
-        final_output.extend(expand(OUTDIR / "plots" / "{sample}" / "coverage.png",sample=SAMPLES))
+        # final_output.extend(expand(OUTDIR / "plots" / "{sample}" / "coverage.png",sample=SAMPLES))
         final_output.extend(expand(OUTDIR / "plots" / "{sample}" / "cov_distribution.png",sample=SAMPLES))
         final_output.extend(expand(OUTDIR / "plots" / "{sample}" / "mapq_distribution.png",sample=SAMPLES))
         final_output.extend(expand(OUTDIR / "plots" / "{sample}" / "mapq.png",sample=SAMPLES))
