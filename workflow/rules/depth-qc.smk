@@ -273,17 +273,14 @@ rule intersect:
     input:
         unpack(intersect_input)
     output:
-        OUTDIR / "mosdepth" / "{sample}" / "ploidy_repeats.tsv"
+        OUTDIR / "mosdepth" / "{sample}" / "structural_variants.tsv"
     conda:
-        "../envs/repeatmasker.yaml"
+        "../envs/samtools.yaml"
     params:
-        dir = OUTDIR / "mosdepth",
-        sample = "{sample}",
-        file = "intersect.bed"
+        threshold = config["coverage_quality"]["repeats"]["repeats_fraction"]
     log: 
         "logs/ploidy/intersect_{sample}.log"
     shell:
         """
-        tail -n +2 {input.sampletsv} | bedtools intersect -wo -a stdin -b {input.maskbed} > {params.dir}/{params.sample}/{params.file} 2> {log}
-        head -n1 {input.sampletsv} | paste - <(echo "Nb_Repeats") | cat - {params.dir}/{params.sample}/{params.file} > {output} 2> {log}
+        xonsh workflow/scripts/intersect_repeats.xsh -s {input.sampletsv} -r {input.maskbed} -o {output} -t {params.threshold} 2> {log}
         """

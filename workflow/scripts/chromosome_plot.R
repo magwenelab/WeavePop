@@ -4,7 +4,7 @@ suppressPackageStartupMessages(library(ggnewscale))
 suppressPackageStartupMessages(library(RColorBrewer))
 
 
-sample <- "results/samples/mosdepth/SRS8318899/smooth_good_stats_regions.tsv"
+sample <- "results/samples/mosdepth/SRS8318899/smooth_coverage_regions.tsv"
 Split <- str_split(sample, "/")
 sample <- Split[[1]][length(Split[[1]])-1]
 
@@ -80,6 +80,6 @@ c <- ggplot()+
         panel.grid.minor.y = element_blank(),
         panel.background = element_blank(),
         panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 2))
-          
+
 ggsave("plot_simple_repeats.svg", c, height = 7, width = 13)
 
