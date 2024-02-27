@@ -174,13 +174,10 @@ rule cat_stats:
     log:
         "logs/coverage/cat_stats.log"
     shell:
-        "cat {input.g} | head -n1 > {output.allg} 2> {log} "
-        "&& "
-        "tail -q -n +2 {input.g} >> {output.allg} 2>> {log} "
-        "&& "
-        "cat {input.r} | head -n1 > {output.allr} 2>> {log} "
-        "&& "
-        "tail -q -n +2 {input.r} >> {output.allr} 2>> {log} "
+        "cat {input.g} | head -n 1 > {output.allg} && "
+        "cat {input.r} | head -n 1 > {output.allr} && "
+        "tail -q -n +2 {input.g} >> {output.allg} && "
+        "tail -q -n +2 {input.r} >> {output.allr}"
 
 # rule repeats_database:
 #     output:
