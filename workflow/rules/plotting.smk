@@ -26,17 +26,19 @@ rule loci:
         "xonsh workflow/scripts/loci.xsh -g {input.loci} -o {output} {input.refs} &> {log}"
 
 # Generate coverage per chromosome plot
-# rule coverage_plot_chrom:
-#     input:
-#         rules.intersect.output.good,
-#     output:
-#         OUTDIR / "plots" / "{sample}" / "coverage.png"
-#     conda:
-#         "../envs/r.yaml"
-#     log:
-#         "logs/coverage/coverage_plot_chrom_{sample}.log"
-#     script:
-#         "../scripts/chromosome_plot.R"
+rule coverage_plot_chrom:
+    input:
+        unpack(coverage_plot_input),
+        rules.loci.output.locitable,
+        CHROM_NAMES
+    output:
+        OUTDIR / "plots" / "{sample}" / "coverage.svg"
+    conda:
+        "../envs/r.yaml"
+    log:
+        "logs/coverage/coverage_plot_chrom_{sample}.log"
+    script:
+        "../scripts/chromosome_plot.R"
 
 # Generate coverage plots
 rule coverage_stats_plot_sample:

@@ -1,26 +1,32 @@
+log <- file(snakemake@log[[1]], open = "wt")
+sink(log, type = "output")
+sink(log, type = "message")
+
 suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(scales))
 suppressPackageStartupMessages(library(ggnewscale))
 suppressPackageStartupMessages(library(RColorBrewer))
 
 
-sample <- "results/samples/mosdepth/SRS8318899/smooth_coverage_regions.tsv"
+# sample <- "results/samples/mosdepth/SRS8318899/smooth_coverage_regions.tsv"
+sample <- snakemake@input[[1]]
 Split <- str_split(sample, "/")
 sample <- Split[[1]][length(Split[[1]])-1]
 
-good_stats_regions <- read.delim("results/samples/mosdepth/SRS8318899/smooth_good_stats_regions.tsv", sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
-struc_vars <- read.delim("results/samples/mosdepth/SRS8318899/ploidy_table.tsv", sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
-repeats_table <- read.delim("results/references/VNI/repeats/05_full/VNI.bed", sep= "\t", header = FALSE, col.names = c("Accession", "Start", "End", "Repeat_type"), stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
-loci_table <- read.delim("results/dataset/loci_to_plot.tsv", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
-
-chrom_names <- good_stats_regions %>%
-    select(Accession, Chromosome, Lineage)%>%
-    distinct()
-lineage <- levels(as.factor(chrom_names$Lineage))
+coverage_regions <- read.delim(snakemake@input[[1]], sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
+#coverage_regions <- read.delim("results/samples/mosdepth/SRS8318899/smooth_coverage_regions.tsv", sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
+struc_vars <- read.delim(snakemake@input[[2]], sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
+# struc_vars <- read.delim("results/samples/mosdepth/SRS8318899/ploidy_table.tsv", sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
+repeats_table <- read.delim(snakemake@input[[3]], sep= "\t", header = FALSE, col.names = c("Accession", "Start", "End", "Repeat_type"), stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
+# repeats_table <- read.delim("results/references/VNI/repeats/05_full/VNI.bed", sep= "\t", header = FALSE, col.names = c("Accession", "Start", "End", "Repeat_type"), stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
+loci_table <- read.delim(snakemake@input[[4]], header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
+# loci_table <- read.delim("results/dataset/loci_to_plot.tsv", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
+chrom_names <- read.csv(snakemake@input[[5]], sep = ",", header = FALSE, col.names = c("Lineage", "Accession", "Chromosome"), stringsAsFactors = TRUE, na = c("", "N/A"))
+# chrom_names <- read.csv("config/chromosome_names.csv", header = FALSE, col.names = c("Lineage", "Accession", "Chromosome"), stringsAsFactors = TRUE, na = c("", "N/A"))
 
 loci_sample <- loci_table %>% 
     select(Accession = seq_id, Start = start, End = end,Loci)%>%
-    filter(Accession %in% good_stats_regions$Accession)%>%
+    filter(Accession %in% coverage_regions$Accession)%>%
     mutate(Track = "Loci")%>%
     droplevels()
 loci <- left_join(loci_sample, chrom_names, by = c("Accession"))%>%
@@ -28,14 +34,15 @@ loci <- left_join(loci_sample, chrom_names, by = c("Accession"))%>%
 dark2 <- brewer.pal(8, "Dark2")[1:6]
 l_colors <- dark2[1:nlevels(loci$Loci)]
 
-
-coverage <- good_stats_regions %>%
+coverage_regions <- left_join(coverage_regions, chrom_names, by = "Accession")
+coverage <- coverage_regions %>%
   select(Chromosome, Start, End, Coverage = Norm_Median)%>%
   mutate(Track = "Coverage", .after = Chromosome)
 topCov <- quantile(coverage$Coverage, 0.75) * 3
 coverage$Coverage<- ifelse(coverage$Coverage >= topCov, topCov, coverage$Coverage)
 l_lim <- topCov 
 
+struc_vars <- left_join(struc_vars, chrom_names, by = "Accession")
 structure <- struc_vars %>%
   select(Chromosome, Start, End, Structure)%>%
   mutate(Track = "Structural_Variants")
@@ -51,6 +58,8 @@ repeats$Repeat_type <- ifelse(repeats$Repeat_type == "Simple_repeat", "Simple re
 repeats$Repeat_type <- factor(repeats$Repeat_type, levels = c("Simple repeat", "Others"))
 r_lim <- topCov + 2
 r_colors <- colorRampPalette(brewer.pal(12, "Paired"))(nlevels(repeats$Repeat_type))
+
+lineage <- unique(coverage_regions$Lineage)
 
 # Coverage plot
 c <- ggplot()+
@@ -70,7 +79,7 @@ c <- ggplot()+
   geom_point(data = loci, aes(x=Start, y = l_lim, color = Loci))+  
     scale_color_manual(name = "Loci", values = l_colors)+
     guides(color = guide_legend(order=3))+
-  facet_wrap(~factor(Chromosome, c(1,8,2,9,3,10,4,11,5,12,6,13,7,14)),strip.position = "right", ncol = 2)+
+  facet_wrap(~Chromosome,strip.position = "right", ncol = 2)+
   labs(y = "Normalized coverage", title = paste("Lineage:",lineage, "Sample:", sample,  sep = " "))+
   scale_y_continuous(breaks = c(1, 2)) +
   theme(panel.grid = element_blank(),
@@ -81,5 +90,6 @@ c <- ggplot()+
         panel.background = element_blank(),
         panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 2))
 
-ggsave("plot_simple_repeats.svg", c, height = 7, width = 13)
+ggsave(snakemake@output[[1]], c, height = 7, width = 13)
+
 
