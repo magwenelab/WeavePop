@@ -10,7 +10,7 @@ with open("logs/ploidy/test.log", "w") as f:
     import numpy as np
     import pandas as pd
 
-    cov = pd.read_csv(snakemake.input[0], sep = ",", header = 0)
+    cov = pd.read_csv(snakemake.input[0], sep = "\t", header = 0)
 
     cov_array = np.array(cov["Norm_Median"])
 
@@ -18,4 +18,6 @@ with open("logs/ploidy/test.log", "w") as f:
 
     cov['Smooth']=pd.Series(smoothed_array)
 
-    cov.to_csv(snakemake.output[0], index=False, header = True, sep=',')
+    cov = cov.loc[:, ~cov.columns.str.startswith('Global') & ~cov.columns.str.startswith('Chrom')]
+
+    cov.to_csv(snakemake.output[0], index=False, header = True, sep='\t')

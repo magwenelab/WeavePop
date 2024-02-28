@@ -1,3 +1,4 @@
+# Convert GFF file to TSV format
 rule gff2tsv:
     input:
         REFDIR / "{lineage}" / "{lineage}.gff"
@@ -6,12 +7,13 @@ rule gff2tsv:
     conda:
         "../envs/agat.yaml"
     log:
-        "logs/references/{lineage}_gff2tsv.log"
+        "logs/references/gff2tsv_{lineage}.log"
     shell:
         "agat_convert_sp_gff2tsv.pl -gff {input} -o {output} "
         "&> {log} && "
-        "rm {wildcards.lineage}.agat.log || true"
+        "rm {wildcards.lineage}.agat.log &>> {log} || true"
 
+# Generate loci table
 rule loci:
     input:
         refs = expand(rules.gff2tsv.output, lineage=LINEAGES),
@@ -23,53 +25,46 @@ rule loci:
     shell:
         "xonsh workflow/scripts/loci.xsh -g {input.loci} -o {output} {input.refs} &> {log}"
 
-rule coverage_plot:
+# Generate coverage per chromosome plot
+rule coverage_plot_chrom:
     input:
-        rules.coverage.output.good,
-        rules.coverage.output.raw,
+        unpack(coverage_plot_input),
         rules.loci.output.locitable,
-        rules.ploidy_table.output
+        CHROM_NAMES
     output:
-        cov = OUTDIR / "plots" / "{sample}" / "coverage.png",
-        stats = OUTDIR / "plots" / "{sample}" / "coverage_stats.png",
-        good = OUTDIR / "mosdepth" / "{sample}" / "good_stats_chroms.csv",
-        raw = OUTDIR / "mosdepth" / "{sample}" / "raw_stats_chroms.csv"
+        OUTDIR / "plots" / "{sample}" / "coverage.svg"
     conda:
         "../envs/r.yaml"
     log:
-        "logs/coverage_plot/{sample}.log"
+        "logs/coverage/coverage_plot_chrom_{sample}.log"
     script:
-        "../scripts/coverage_plots.R"
+        "../scripts/chromosome_plot.R"
 
-rule cat_stats:
+# Generate coverage plots
+rule coverage_stats_plot_sample:
     input:
-        r = expand(rules.coverage_plot.output.raw,sample=SAMPLES),
-        g = expand(rules.coverage_plot.output.good,sample=SAMPLES),
+        rules.coverage.output.good_chrom,
+        rules.coverage.output.raw_chrom
     output:
-        allr = DATASET_OUTDIR / "files" / "coverage_raw.csv",
-        allg = DATASET_OUTDIR / "files" / "coverage_good.csv",
+        stats = OUTDIR / "plots" / "{sample}" / "coverage_stats.png"
+    conda:
+        "../envs/r.yaml"
     log:
-        "logs/coverage/cat_stats.log"
-    shell:
-        "cat {input.r} | grep -v Sample > {output.allr} "
-        "&& "
-        "cat {input.g} | grep -v Sample > {output.allg} "
-        "2> {log}"
+        "logs/coverage/coverage_stats_plot_{sample}.log"
+    script:
+        "../scripts/coverage_stats_plots.R"
 
-rule coverage_stats_plots:
+# Generate coverage stats plots
+rule coverage_stats_plots_dataset:
     input:
         SAMPLEFILE,
         rules.cat_stats.output.allg,
-        rules.cat_stats.output.allr
+        rules.cat_stats.output.allr,
+        CHROM_NAMES
     output:
-        DATASET_OUTDIR / "files" / "cov_norm_good.csv",
-        DATASET_OUTDIR / "plots" / "cov_global_good.png",
         DATASET_OUTDIR / "plots" / "cov_median_good.png",
         DATASET_OUTDIR / "plots" / "cov_mean_good.png",
-        DATASET_OUTDIR / "files" / "cov_norm_raw.csv",
-        DATASET_OUTDIR / "plots" / "cov_global_raw.png",
-        DATASET_OUTDIR / "plots" / "cov_median_raw.png",
-        DATASET_OUTDIR / "plots" / "cov_mean_raw.png",
+        DATASET_OUTDIR / "plots" / "cov_global.png"
     conda:
         "../envs/r.yaml"
     params:
@@ -79,6 +74,7 @@ rule coverage_stats_plots:
     script:
         "../scripts/cov_stats_all.R"
 
+# Generate mapq distribution plot
 rule mapq_distribution:
     input:
         rules.samtools_stats.output.mapq,
@@ -88,23 +84,26 @@ rule mapq_distribution:
     conda:
         "../envs/r.yaml"   
     log:
-        "logs/mapq-dist/{sample}.log"
+        "logs/mapq/mapq_distribution_{sample}.log"
     script:
         "../scripts/mapq-distribution.R"
 
+# Generate coverage distribution plots
 rule cov_distribution:
     input:
         rules.samtools_stats.output.cov,
         CHROM_NAMES
     output:
-        OUTDIR / "plots" / "{sample}" / "cov_distribution.png"
+        OUTDIR / "plots" / "{sample}" / "cov_distribution.png",
+        OUTDIR / "plots" / "{sample}" / "cov_global_distribution.png"
     conda:
         "../envs/r.yaml"
     log:
-        "logs/cov-dist/{sample}.log"
+        "logs/coverage/cov_distribution_{sample}.log"
     script:
         "../scripts/coverage-distribution.R"
 
+# Generate mapped reads plot
 rule mapped_plot:
     input:
         rules.mapped_cat.output.stats,
@@ -114,10 +113,11 @@ rule mapped_plot:
     conda:
         "../envs/r.yaml"
     log:
-        "logs/stats/mapped.log"
+        "logs/stats/mapped_plot.log"
     script:
         "../scripts/mapped_reads.R"
 
+# Generate mapq plot
 rule mapq_plot:
     input:
         rules.mapq.output.winbed,
@@ -128,10 +128,11 @@ rule mapq_plot:
     conda:
         "../envs/r.yaml"
     log:
-        "logs/mapq_plot/{sample}.log"
+        "logs/mapq/mapq_plot_{sample}.log"
     script:
         "../scripts/mapq.R"
 
+# Generate bamstats plot
 # rule plot_bamstats:
 #     input:
 #         "analysis/{sample}/snps.bam.stats"
@@ -143,4 +144,3 @@ rule mapq_plot:
 #         "logs/plot-bamstats/{sample}.log"
 #     shell:
 #         "plot-bamstats -p {output}/ {input} &> {log}"
-                

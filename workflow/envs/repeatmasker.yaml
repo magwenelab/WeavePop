@@ -1,0 +1,10 @@
+name: repeatmasker
+channels:
+  - bioconda
+  - conda-forge
+  - defaults
+dependencies:
+  - repeatmasker
+  - repeatmodeler
+  - seqkit
+  - bedtools

@@ -33,16 +33,16 @@ if config["annotate_references"]["activate"]:
 #### Defining sample-dependent input files ####
 d={'sample': SAMPLETABLE["sample"],
     'group': SAMPLETABLE["group"],
-    'fq1': FQ_DATA / (SAMPLETABLE["sample"] + FQ1),
-    'fq2': FQ_DATA / (SAMPLETABLE["sample"] + FQ2),
-    'refgenome' : REFDIR / SAMPLETABLE["group"] / (SAMPLETABLE["group"] + ".fasta"),
-    'refgff' : REFDIR / SAMPLETABLE["group"] / (SAMPLETABLE["group"] + ".gff")}
+    'refgenome': REFDIR / SAMPLETABLE["group"] / (SAMPLETABLE["group"] + ".fasta"),
+    'refgff': REFDIR / SAMPLETABLE["group"] / (SAMPLETABLE["group"] + ".gff")}
+
 SAMPLE_REFERENCE = pd.DataFrame(data=d).set_index("sample", drop=False)
+
 def snippy_input(wildcards):
     s = SAMPLE_REFERENCE.loc[wildcards.sample,]
     return {
-        "fq1": s["fq1"],
-        "fq2": s["fq2"],
+        "fq1": FQ_DATA / (s["sample"] + FQ1),
+        "fq2": FQ_DATA / (s["sample"] + FQ2),
         "refgenome": s["refgenome"],
     }
 
@@ -52,6 +52,21 @@ def liftoff_input(wildcards):
         "target": OUTDIR / "snippy" / s["sample"] / "snps.consensus.fa" ,
         "refgff": s["refgff"],
         "refgenome": s["refgenome"],
+    }
+
+def intersect_input(wildcards):
+    s = SAMPLE_REFERENCE.loc[wildcards.sample,]
+    return {
+        "sampletsv": OUTDIR / "mosdepth" / s["sample"] / "ploidy_table.tsv" ,
+        "maskbed": REFDIR / s["group"]  / "repeats" / "05_full" / (s["group"] + ".bed")
+    }
+    
+def coverage_plot_input(wildcards):
+    s = SAMPLE_REFERENCE.loc[wildcards.sample,]
+    return {
+        "coverage": OUTDIR / "mosdepth" / s["sample"] / "smooth_coverage_regions.tsv",
+        "sampletsv": OUTDIR / "mosdepth" / s["sample"] / "ploidy_table.tsv" ,
+        "maskbed": REFDIR / s["group"]  / "repeats" / "05_full" / (s["group"] + ".bed")
     }
 
 #### Defining which final output files are being requested ####
@@ -75,9 +90,9 @@ def get_final_output():
         final_output.extend(expand(OUTDIR / "samtools" / "{sample}" / "mapq_cov_window.bed",sample=SAMPLES))
         final_output.extend(expand(OUTDIR / "samtools" / "{sample}" / "annotation.gff",sample=SAMPLES))
         final_output.append(DATASET_OUTDIR / "mapping_stats.txt")
-        final_output.extend(expand(OUTDIR / "mosdepth" / "{sample}" / "ploidy_table.csv",sample=SAMPLES))
+        final_output.extend(expand(OUTDIR / "mosdepth" / "{sample}" / "structural_variants.tsv",sample=SAMPLES))
     if config["plotting"]["activate"]:
-        final_output.extend(expand(OUTDIR / "plots" / "{sample}" / "coverage.png",sample=SAMPLES))
+        final_output.extend(expand(OUTDIR / "plots" / "{sample}" / "coverage.svg",sample=SAMPLES))
         final_output.extend(expand(OUTDIR / "plots" / "{sample}" / "cov_distribution.png",sample=SAMPLES))
         final_output.extend(expand(OUTDIR / "plots" / "{sample}" / "mapq_distribution.png",sample=SAMPLES))
         final_output.extend(expand(OUTDIR / "plots" / "{sample}" / "mapq.png",sample=SAMPLES))
@@ -86,19 +101,15 @@ def get_final_output():
     if config["annotate_references"]["activate"] and config["plotting"]["activate"]:
         final_output.append(REFDIR / "unmapped_count.tsv")
         final_output.append(REFDIR / "unmapped.svg")
+        final_output.append(DATASET_OUTDIR / "files" / "unmapped_count.tsv")
+        final_output.append(DATASET_OUTDIR / "plots" / "unmapped.svg")
     if not config["annotate_references"]["activate"] and config["plotting"]["activate"]:
         final_output.extend(expand(DATASET_OUTDIR / "files" / "{lineage}_unmapped_count.tsv", lineage=LINEAGES))
         final_output.extend(expand(DATASET_OUTDIR / "plots" / "{lineage}_unmapped.svg", lineage=LINEAGES))
-    if config["annotate_references"]["activate"] and config["plotting"]["activate"]:
-        final_output.append(DATASET_OUTDIR / "files" / "unmapped_count.tsv")
-        final_output.append(DATASET_OUTDIR / "plots" / "unmapped.svg")
+
     
     return final_output
 
-# def get_ids(wildcards):
-#     ck_output = checkpoints.mock.get(**wildcards).output[0]
-#     IDS, = glob_wildcards(os.path.join(ck_output, "{id}.fa"))
-#     return expand(os.path.join(ck_output, "{ID}.fa"), ID=IDS)
 
 #### Creating softlinks to have the reference genomes in the REFDIR ####
 rule links:
