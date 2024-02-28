@@ -199,11 +199,9 @@ rule repeat_modeler:
     input:
         rules.links.output
     output:
-        REFDIR / "{lineage}" / "repeats" / "{lineage}_known.fa",
-        REFDIR / "{lineage}" / "repeats" / "{lineage}_unknown.fa"
+        known = REFDIR / "{lineage}" / "repeats" / "{lineage}_known.fa",
+        unknown = REFDIR / "{lineage}" / "repeats" / "{lineage}_unknown.fa"
     params:
-        refdir = REFDIR ,
-        lin = "{lineage}",
         repdir = "repeats"
     threads:
         config["coverage_quality"]["repeats"]["repeats_threads"]
@@ -212,21 +210,17 @@ rule repeat_modeler:
     log:
         "logs/repeats/repeatmodeler_{lineage}.log"
     shell:
-        "bash workflow/scripts/repeat-modeler.sh {threads} {params.lin} {params.refdir}/{params.lin}/{params.repdir} &> {log}"
+        "bash workflow/scripts/repeat-modeler.sh {threads} {input} {params.repdir} &> {log}"
 
 # Run RepeatMasker for each reference genome. Obtain a BED file with the location of the reapeat sequences
 rule repeats:
     input:
-        rules.links.output,
-        REFDIR / "{lineage}" / "repeats" / "{lineage}_known.fa",
-        REFDIR / "{lineage}" / "repeats" / "{lineage}_unknown.fa"
+        database = config["coverage_quality"]["repeats"]["repeats_database"],
+        fasta = rules.links.output,
+        known = rules.repeat_modeler.output.known,
+        unknown = rules.repeat_modeler.output.unknown
     output:
-        REFDIR / "{lineage}" / "repeats" / "05_full" / "{lineage}.bed"
-    params:
-        lin = "{lineage}",
-        refdir = REFDIR,
-        repdir = "repeats",
-        database = config["coverage_quality"]["repeats"]["repeats_database"]
+        REFDIR / "{lineage}" / "repeats" / "{lineage}_repeats.bed"
     threads:
         config["coverage_quality"]["repeats"]["repeats_threads"]
     conda:
@@ -234,7 +228,7 @@ rule repeats:
     log:
         "logs/repeats/repeatmasker_{lineage}.log"
     shell:
-        "bash workflow/scripts/repeat-masker.sh {threads} {params.lin} {params.refdir}/{params.lin}/{params.repdir} {params.database} &> {log}"
+        "bash workflow/scripts/repeat-masker.sh {threads} {input.database} {input.fasta} {input.known} {input.unknown} {output} &> {log}"
 
 # Get smoothed coverage for each sample
 rule smoothing:

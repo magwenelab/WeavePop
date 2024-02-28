@@ -58,7 +58,7 @@ def intersect_input(wildcards):
     s = SAMPLE_REFERENCE.loc[wildcards.sample,]
     return {
         "sampletsv": OUTDIR / "mosdepth" / s["sample"] / "ploidy_table.tsv" ,
-        "maskbed": REFDIR / s["group"]  / "repeats" / "05_full" / (s["group"] + ".bed")
+        "maskbed": REFDIR / s["group"]  / "repeats" / (s["group"] + "_repeats.bed")
     }
     
 def coverage_plot_input(wildcards):
@@ -66,7 +66,7 @@ def coverage_plot_input(wildcards):
     return {
         "coverage": OUTDIR / "mosdepth" / s["sample"] / "smooth_coverage_regions.tsv",
         "sampletsv": OUTDIR / "mosdepth" / s["sample"] / "ploidy_table.tsv" ,
-        "maskbed": REFDIR / s["group"]  / "repeats" / "05_full" / (s["group"] + ".bed")
+        "maskbed": REFDIR / s["group"]  / "repeats" / (s["group"] + "_repeats.bed")
     }
 
 #### Defining which final output files are being requested ####

@@ -1,26 +1,48 @@
 #!/bin/bash
 
-threads=$1
-echo $threads
-lineage=$2
-echo $lineage
-repeat_dir=$3
-echo "Making directory:" $repeat_dir
-mkdir -p $repeat_dir
-cd $repeat_dir
-ln -s -r -f ../${lineage}.fasta .
-echo "Working directory:" 
-pwd
+threads=$1 
+echo "Using" $threads "threads"
+fasta=$2
+echo "Fasta:" $fasta
+
+# Check if the correct number of arguments were given
+if [ $# -ne 3 ]; then
+    echo "Usage: $0 <threads> <fasta> <outdir>"
+    exit 1
+fi
+
+# Check if the threads argument is an integer number
+if ! [[ $threads =~ ^[0-9]+$ ]]; then
+    echo "Threads argument must be an integer"
+    exit 1
+fi
+
+# Check if the fasta file exists
+if [ ! -f "$fasta" ]; then
+    echo "Fasta file does not exist"
+    exit 1
+fi 
+
+lineage=$(basename "$fasta" .fasta)
+dir=$(dirname "$fasta")
+outdir=$3
+echo "Making directory:" ${dir}/${outdir}
+mkdir -p ${dir}/${outdir}
+
 
 #### RepeatModeler ####
 echo "Starting RepeatModeler"
-mkdir ${lineage}_db 
 echo "Building lineage database"
-BuildDatabase -name ${lineage} -engine ncbi ../${lineage}.fasta
+mkdir -p ${dir}/${outdir}/${lineage}_db/
+BuildDatabase -name ${dir}/${outdir}/${lineage}_db/${lineage} -engine ncbi ${fasta}
+
 echo "Running RepeatModeler"
-RepeatModeler -pa ${threads} -engine ncbi -database ${lineage}
-echo "Moving database files"
-mv ${lineage}.* ${lineage}_db 
+RepeatModeler -pa ${threads} -engine ncbi -database ${dir}/${outdir}/${lineage}_db/${lineage} & PID=$!
+wait ${PID}
+
 echo "Separating known and unknown families"
-cat ${lineage}-families.fa | seqkit fx2tab | grep -v "Unknown" | seqkit tab2fx > ${lineage}_known.fa
-cat ${lineage}-families.fa | seqkit fx2tab | grep "Unknown" | seqkit tab2fx > ${lineage}_unknown.fa
+cat ${dir}/${outdir}/${lineage}_db/${lineage}-families.fa | seqkit fx2tab | grep -v "Unknown" | seqkit tab2fx > ${dir}/${outdir}/${lineage}_known.fa
+cat ${dir}/${outdir}/${lineage}_db/${lineage}-families.fa | seqkit fx2tab | grep "Unknown" | seqkit tab2fx > ${dir}/${outdir}/${lineage}_unknown.fa
+
+echo "Cleaning up"
+rm -r RM_${PID}*
