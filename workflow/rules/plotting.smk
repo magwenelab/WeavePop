@@ -1,18 +1,3 @@
-# Convert GFF file to TSV format
-rule gff2tsv:
-    input:
-        REFDIR / "{lineage}" / "{lineage}.gff"
-    output:
-        REFDIR / "{lineage}" / "{lineage}.gff.tsv"
-    conda:
-        "../envs/agat.yaml"
-    log:
-        "logs/references/gff2tsv_{lineage}.log"
-    shell:
-        "agat_convert_sp_gff2tsv.pl -gff {input} -o {output} "
-        "&> {log} && "
-        "rm {wildcards.lineage}.agat.log &>> {log} || true"
-
 # Generate loci table
 rule loci:
     input:

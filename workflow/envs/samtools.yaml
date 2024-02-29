@@ -1,4 +1,4 @@
-name: depth
+name: samtools
 channels:
   - conda-forge
   - bioconda
@@ -6,6 +6,7 @@ channels:
 dependencies:  
   - samtools
   - bedtools
+  - bcftools
   - xonsh
   - pandas
   - click

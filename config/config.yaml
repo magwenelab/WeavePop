@@ -33,6 +33,10 @@ coverage_quality:
     repeats_threads: 36
     repeats_fraction: 0.5 # Fraction of repetitive bases allowed in structural variant windows
 
+snps:
+  activate: True
+  threads: 12
+
 plotting: 
   activate: True
   metadata2color : "isolation_source"

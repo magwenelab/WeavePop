@@ -106,8 +106,9 @@ def get_final_output():
     if not config["annotate_references"]["activate"] and config["plotting"]["activate"]:
         final_output.extend(expand(DATASET_OUTDIR / "files" / "{lineage}_unmapped_count.tsv", lineage=LINEAGES))
         final_output.extend(expand(DATASET_OUTDIR / "plots" / "{lineage}_unmapped.svg", lineage=LINEAGES))
-
-    
+    if config["snps"]["activate"]:
+        final_output.extend(expand(DATASET_OUTDIR / "snps" / "{lineage}_matrix.tsv", lineage=LINEAGES))
+        final_output.extend(expand(DATASET_OUTDIR / "snps" / "{lineage}_variants_metadata.tsv", lineage=LINEAGES))    
     return final_output
 
 

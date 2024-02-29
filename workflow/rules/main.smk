@@ -6,7 +6,8 @@ rule snippy:
         fa = OUTDIR / "snippy" / "{sample}" / "snps.consensus.fa",
         bam = OUTDIR / "snippy" / "{sample}" / "snps.bam",
         ref = OUTDIR / "snippy" / "{sample}" / "ref.fa",
-        bai = OUTDIR / "snippy" / "{sample}" / "snps.bam.bai"
+        bai = OUTDIR / "snippy" / "{sample}" / "snps.bam.bai",
+        vcf = OUTDIR / "snippy" / "{sample}" / "snps.vcf.gz"
     threads: 
         config["snippy"]["threads"]
     params:
@@ -120,3 +121,18 @@ rule by_id:
         "python workflow/scripts/sqlfasta.py populate-db {params.db} {input.prots} {wildcards.sample} -t Protein &> {log}"
         "&& "
         "python workflow/scripts/sqlfasta.py populate-db {params.db} {input.cds} {wildcards.sample} -t DNA &>> {log}"
+
+# Convert GFF file to TSV format
+rule gff2tsv:
+    input:
+        REFDIR / "{lineage}" / "{lineage}.gff"
+    output:
+        REFDIR / "{lineage}" / "{lineage}.gff.tsv"
+    conda:
+        "../envs/agat.yaml"
+    log:
+        "logs/references/gff2tsv_{lineage}.log"
+    shell:
+        "agat_convert_sp_gff2tsv.pl -gff {input} -o {output} "
+        "&> {log} && "
+        "rm {wildcards.lineage}.agat.log &>> {log} || true"
