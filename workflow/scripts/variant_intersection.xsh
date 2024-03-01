@@ -63,7 +63,7 @@ def variant_intersection(gff_file, lineage, vcf_files, output, temp_dir):
     merged_df.to_csv(output, sep='\t', index=False)
 
     print("Removing temporary files")
-    #$(rm -r @(temp_dir))
+    $(rm -r @(temp_dir))
 
 if __name__ == '__main__':
     variant_intersection()
