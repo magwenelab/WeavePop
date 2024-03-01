@@ -107,8 +107,7 @@ def get_final_output():
         final_output.extend(expand(DATASET_OUTDIR / "files" / "{lineage}_unmapped_count.tsv", lineage=LINEAGES))
         final_output.extend(expand(DATASET_OUTDIR / "plots" / "{lineage}_unmapped.svg", lineage=LINEAGES))
     if config["snps"]["activate"]:
-        final_output.extend(expand(DATASET_OUTDIR / "snps" / "{lineage}_matrix.tsv", lineage=LINEAGES))
-        final_output.extend(expand(DATASET_OUTDIR / "snps" / "{lineage}_variants_metadata.tsv", lineage=LINEAGES))    
+        final_output.extend(expand(DATASET_OUTDIR / "snps" / "{lineage}_variants.tsv", lineage=LINEAGES))
     return final_output
 
 
