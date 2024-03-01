@@ -3,7 +3,7 @@
 
 ## Description
 
-This is a Snakemake workflow to map short-reads of samples to the reference genome of the corresponding lineage/group. You will get the mapping file, variant calling file, a reference-based assembly, and an annotation GFF. Additionaly you can get analyses of the coverage and the mapping quality and plots with this analyses' results, including detection of structural variants. If you want to have a common naming scheme of your genes and/or you don't have GFF files of your reference genomes you can provide a main reference to lift over the annotation from this one to your reference genomes.
+This is a Snakemake workflow to map short-reads of samples to the reference genome of the corresponding lineage/group. You will get the mapping file, variant calling file, a reference-based assembly, and an annotation GFF. Additionaly you can get analyses of the coverage and the mapping quality, plots with this analyses' results, including detection of structural variants, and a table with the intersection of the detected genetic variants between the samples of the same group.  If you want to have a common naming scheme of your genes and/or you don't have GFF files of your reference genomes you can provide a main reference to lift over the annotation from this one to your reference genomes.
 
 ## Requirements
 

@@ -59,8 +59,9 @@ def variant_intersection(gff_file, lineage, vcf_files, output, temp_dir):
     other_columns = [col for col in merged_df.columns if col not in sample_names]
     merged_df = merged_df[other_columns + sample_columns]
 
+    
     print("Saving output file")
-    merged_df.to_csv(output, sep='\t', index=False)
+    merged_df.to_csv(output, sep='\t', index=False, quoting=1, quotechar='"')
 
     print("Removing temporary files")
     $(rm -r @(temp_dir))
