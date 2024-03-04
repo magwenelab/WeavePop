@@ -173,11 +173,8 @@ rule cat_stats:
         allr = DATASET_OUTDIR / "files" / "coverage_raw.tsv"
     log:
         "logs/coverage/cat_stats.log"
-    shell:
-        "cat {input.g} | head -n 1 > {output.allg} && "
-        "cat {input.r} | head -n 1 > {output.allr} && "
-        "tail -q -n +2 {input.g} >> {output.allg} && "
-        "tail -q -n +2 {input.r} >> {output.allr}"
+    script:
+        "../scripts/cat_stats.sh"
 
 # rule repeats_database:
 #     output:
