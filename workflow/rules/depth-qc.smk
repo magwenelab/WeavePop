@@ -109,7 +109,7 @@ rule mapped_cat:
     input:
         expand(rules.mapped_edit.output.mapstats, sample=SAMPLES)   
     output: 
-        stats = DATASET_OUTDIR / "mapping_stats.txt"
+        stats = DATASET_OUTDIR / "files" / "mapping_stats.txt"
     log:
         "logs/stats/mapped_cat.log"
     shell:
@@ -272,3 +272,17 @@ rule intersect:
         """
         xonsh workflow/scripts/intersect_repeats.xsh -s {input.sampletsv} -r {input.maskbed} -o {output} -t {params.threshold} 2> {log}
         """
+
+rule dataset_struc_variants:
+    input:
+        expand(rules.intersect.output, sample=SAMPLES)
+    output:
+        DATASET_OUTDIR / "files" / "structural_variants.tsv"
+    params:
+        nb_files = len(SAMPLES)
+    log:
+        "logs/ploidy/dataset_struc_variants.log"
+    # shell:
+    #     "echo {params.nb_files} > {output} 2> {log}"
+    script:
+        "../scripts/dataset_struc_variants.sh"

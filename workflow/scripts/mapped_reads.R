@@ -3,18 +3,18 @@ sink(log, type = "output")
 sink(log, type = "message")
 
 suppressPackageStartupMessages(library(tidyverse))
-library(RColorBrewer)
+suppressPackageStartupMessages(library(RColorBrewer))
 suppressPackageStartupMessages(library(scales))
 
 metadata <- read.csv(snakemake@input[[2]], header = TRUE)%>%
     select(sample, strain, lineage = group)
 
-# metadata <- read.csv("./sample_metadata.csv", header = TRUE)%>%
-#    select(sample, strain, lineage = Group)
+# metadata <- read.csv("config/sample_metadata.csv", header = TRUE)%>%
+#    select(sample, strain, lineage = group)
 
 stats <- read.delim(snakemake@input[[1]], sep =":", header = FALSE, col.names = c("stat", "value", "sample"))
 
-#stats <- read.delim("./results/mapping_stats.txt", sep =":", header = FALSE, col.names = c("stat", "value", "sample"))
+# stats <- read.delim("./results/dataset/mapping_stats.txt", sep =":", header = FALSE, col.names = c("stat", "value", "sample"))
 stats <- stats %>% pivot_wider(names_from = stat, values_from = value)
 colnames(stats) <- gsub(" ", "_", colnames(stats))
 stats <- stats %>%

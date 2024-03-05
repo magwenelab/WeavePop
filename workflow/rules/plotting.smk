@@ -4,7 +4,7 @@ rule loci:
         refs = expand(rules.gff2tsv.output, lineage=LINEAGES),
         loci=LOCI_FILE
     output:
-        locitable = DATASET_OUTDIR / "loci_to_plot.tsv"
+        locitable = DATASET_OUTDIR / "files"/ "loci_to_plot.tsv"
     log: 
         "logs/references/loci.log"
     shell:

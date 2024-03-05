@@ -66,7 +66,8 @@ def coverage_plot_input(wildcards):
     return {
         "coverage": OUTDIR / "mosdepth" / s["sample"] / "smooth_coverage_regions.tsv",
         "sampletsv": OUTDIR / "mosdepth" / s["sample"] / "ploidy_table.tsv" ,
-        "maskbed": REFDIR / s["group"]  / "repeats" / (s["group"] + "_repeats.bed")
+        "maskbed": REFDIR / s["group"]  / "repeats" / (s["group"] + "_repeats.bed"),
+        # "variants": DATASET_OUTDIR / "snps" / (s["group"] + "_variants.tsv")
     }
 
 #### Defining which final output files are being requested ####
@@ -89,8 +90,8 @@ def get_final_output():
         final_output.extend(expand(OUTDIR / "samtools" / "{sample}" / "mapq_window.bed",sample=SAMPLES))
         final_output.extend(expand(OUTDIR / "samtools" / "{sample}" / "mapq_cov_window.bed",sample=SAMPLES))
         final_output.extend(expand(OUTDIR / "samtools" / "{sample}" / "annotation.gff",sample=SAMPLES))
-        final_output.append(DATASET_OUTDIR / "mapping_stats.txt")
-        final_output.extend(expand(OUTDIR / "mosdepth" / "{sample}" / "structural_variants.tsv",sample=SAMPLES))
+        final_output.append(DATASET_OUTDIR / "files" / "mapping_stats.txt")
+        final_output.append(DATASET_OUTDIR / "files" / "structural_variants.tsv")
     if config["plotting"]["activate"]:
         final_output.extend(expand(OUTDIR / "plots" / "{sample}" / "coverage.svg",sample=SAMPLES))
         final_output.extend(expand(OUTDIR / "plots" / "{sample}" / "cov_distribution.png",sample=SAMPLES))
