@@ -66,3 +66,6 @@ The environments for particular software used in Snakemake rules are installed b
   * `config/features.txt`: List of feature names to lift over, more info [here](https://github.com/agshumate/Liftoff?tab=readme-ov-file#feature-types). This file is provided [here](https://github.com/magwenelab/DiversityPipeline/blob/workflow-style/config/features.txt), but you can edit it if you want.
 
 
+## Filegraph
+
+![Filegraph](all.svg)
