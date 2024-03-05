@@ -30,7 +30,7 @@ if config["annotate_references"]["activate"]:
     MAIN_GFF = MAIN_DIR / config["annotate_references"]["gff"]
     MAIN_NAME, _ = os.path.splitext(os.path.basename(MAIN_GFF))
 
-#### Defining sample-dependent input files ####
+#### Defining table for sample-dependent input files ####
 d={'sample': SAMPLETABLE["sample"],
     'group': SAMPLETABLE["group"],
     'refgenome': REFDIR / SAMPLETABLE["group"] / (SAMPLETABLE["group"] + ".fasta"),
@@ -38,37 +38,6 @@ d={'sample': SAMPLETABLE["sample"],
 
 SAMPLE_REFERENCE = pd.DataFrame(data=d).set_index("sample", drop=False)
 
-def snippy_input(wildcards):
-    s = SAMPLE_REFERENCE.loc[wildcards.sample,]
-    return {
-        "fq1": FQ_DATA / (s["sample"] + FQ1),
-        "fq2": FQ_DATA / (s["sample"] + FQ2),
-        "refgenome": s["refgenome"],
-    }
-
-def liftoff_input(wildcards):
-    s = SAMPLE_REFERENCE.loc[wildcards.sample,]
-    return {
-        "target": OUTDIR / "snippy" / s["sample"] / "snps.consensus.fa" ,
-        "refgff": s["refgff"],
-        "refgenome": s["refgenome"],
-    }
-
-def intersect_input(wildcards):
-    s = SAMPLE_REFERENCE.loc[wildcards.sample,]
-    return {
-        "sampletsv": OUTDIR / "mosdepth" / s["sample"] / "ploidy_table.tsv" ,
-        "maskbed": REFDIR / s["group"]  / "repeats" / (s["group"] + "_repeats.bed")
-    }
-    
-def coverage_plot_input(wildcards):
-    s = SAMPLE_REFERENCE.loc[wildcards.sample,]
-    return {
-        "coverage": OUTDIR / "mosdepth" / s["sample"] / "smooth_coverage_regions.tsv",
-        "sampletsv": OUTDIR / "mosdepth" / s["sample"] / "ploidy_table.tsv" ,
-        "maskbed": REFDIR / s["group"]  / "repeats" / (s["group"] + "_repeats.bed"),
-        # "variants": DATASET_OUTDIR / "snps" / (s["group"] + "_variants.tsv")
-    }
 
 #### Defining which final output files are being requested ####
 def get_final_output():

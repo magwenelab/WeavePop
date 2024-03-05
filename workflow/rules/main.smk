@@ -1,4 +1,12 @@
 # Map reads to corresponding reference genome
+def snippy_input(wildcards):
+    s = SAMPLE_REFERENCE.loc[wildcards.sample,]
+    return {
+        "fq1": FQ_DATA / (s["sample"] + FQ1),
+        "fq2": FQ_DATA / (s["sample"] + FQ2),
+        "refgenome": s["refgenome"],
+    }
+
 rule snippy:
     input:
         unpack(snippy_input)
@@ -27,6 +35,13 @@ rule snippy:
         "{params.extra} &> {log}"
 
 # Lift over annotation from corresponding reference genome to sample assembly
+def liftoff_input(wildcards):
+    s = SAMPLE_REFERENCE.loc[wildcards.sample,]
+    return {
+        "target": OUTDIR / "snippy" / s["sample"] / "snps.consensus.fa" ,
+        "refgff": s["refgff"],
+        "refgenome": s["refgenome"],
+    }
 rule liftoff:
     input:
         unpack(liftoff_input),

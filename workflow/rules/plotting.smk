@@ -11,6 +11,14 @@ rule loci:
         "xonsh workflow/scripts/loci.xsh -g {input.loci} -o {output} {input.refs} &> {log}"
 
 # Generate coverage per chromosome plot
+def coverage_plot_input(wildcards):
+    s = SAMPLE_REFERENCE.loc[wildcards.sample,]
+    return {
+        "coverage": OUTDIR / "mosdepth" / s["sample"] / "smooth_coverage_regions.tsv",
+        "sampletsv": OUTDIR / "mosdepth" / s["sample"] / "ploidy_table.tsv" ,
+        "maskbed": REFDIR / s["group"]  / "repeats" / (s["group"] + "_repeats.bed"),
+        # "variants": DATASET_OUTDIR / "snps" / (s["group"] + "_variants.tsv")
+    }
 rule coverage_plot_chrom:
     input:
         unpack(coverage_plot_input),

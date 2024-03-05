@@ -19,11 +19,12 @@ struc_vars <- read.delim(snakemake@input[[2]], sep= "\t", header = TRUE, strings
 # struc_vars <- read.delim("results/samples/mosdepth/SRS8318899/ploidy_table.tsv", sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
 repeats_table <- read.delim(snakemake@input[[3]], sep= "\t", header = FALSE, col.names = c("Accession", "Start", "End", "Repeat_type"), stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
 # repeats_table <- read.delim("results/references/VNI/repeats/05_full/VNI.bed", sep= "\t", header = FALSE, col.names = c("Accession", "Start", "End", "Repeat_type"), stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
-loci_table <- read.delim(snakemake@input[[4]], header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
+loci_table <- read.delim(snakemake@input[[5]], header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
 # loci_table <- read.delim("results/dataset/loci_to_plot.tsv", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
-chrom_names <- read.csv(snakemake@input[[5]], sep = ",", header = FALSE, col.names = c("Lineage", "Accession", "Chromosome"), stringsAsFactors = TRUE, na = c("", "N/A"))
+chrom_names <- read.csv(snakemake@input[[6]], sep = ",", header = FALSE, col.names = c("Lineage", "Accession", "Chromosome"), stringsAsFactors = TRUE, na = c("", "N/A"))
 # chrom_names <- read.csv("config/chromosome_names.csv", header = FALSE, col.names = c("Lineage", "Accession", "Chromosome"), stringsAsFactors = TRUE, na = c("", "N/A"))
 
+head(loci_table)
 loci_sample <- loci_table %>% 
     select(Accession = seq_id, Start = start, End = end,Loci)%>%
     filter(Accession %in% coverage_regions$Accession)%>%
@@ -61,6 +62,17 @@ r_colors <- colorRampPalette(brewer.pal(12, "Paired"))(nlevels(repeats$Repeat_ty
 
 lineage <- unique(coverage_regions$Lineage)
 
+variants <- read.delim(snakemake@input[[4]], sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
+# variants <- read.delim("results/dataset/snps/VNI_variants.tsv", sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
+
+# variants <- variants %>% 
+#   select(VAR, Accession = CHROM, Start = POS, Sample = all_of(sample), Gene = any_of(c("ID", "gene_id", "locus_tag")), Description = any_of(c("description", "product"))) %>%
+#   mutate(Track = "Variants")%>%
+#   filter(Sample == 1)%>%
+#   droplevels()
+# variants <- left_join(variants, chrom_names, by = "Accession")
+# v_lim <- topCov + 3
+
 # Coverage plot
 c <- ggplot()+
   coord_cartesian(ylim= c(0,r_lim +1), xlim = c(0, max(coverage$End)))+
@@ -79,6 +91,7 @@ c <- ggplot()+
   geom_point(data = loci, aes(x=Start, y = l_lim, color = Loci))+  
     scale_color_manual(name = "Loci", values = l_colors)+
     guides(color = guide_legend(order=3))+
+  # geom_point(data = variants, aes(x=Start, y = v_lim),shape = 24 , size = 2)+
   facet_wrap(~Chromosome,strip.position = "right", ncol = 2)+
   labs(y = "Normalized coverage", title = paste("Lineage:",lineage, "Sample:", sample,  sep = " "))+
   scale_y_continuous(breaks = c(1, 2)) +
@@ -91,5 +104,3 @@ c <- ggplot()+
         panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 2))
 
 ggsave(snakemake@output[[1]], c, height = 7, width = 13)
-
-

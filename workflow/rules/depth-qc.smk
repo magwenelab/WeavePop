@@ -176,21 +176,6 @@ rule cat_stats:
     script:
         "../scripts/cat_stats.sh"
 
-# rule repeats_database:
-#     output:
-#         REFDIR / "repeats_database.fasta"
-#     params:
-#         dir = REFDIR,
-#         database = "https://www.girinst.org/server/RepBase/protected/RepBase29.01.fasta.tar.gz"
-#     shell:
-#         """
-#         wget -O {params.dir}/database {params.database}
-#         tar -xvzf {params.dir}/database --one-top-level={params.dir}/database_dir
-#         cat {params.dir}/database_dir/*.ref > {params.dir}/database.fasta
-#         cat {params.dir}/database.fasta/appendix/*.ref >> {params.dir}/database.fasta
-#         rm -rf {params.dir}/database_dir/ {params.dir}/database
-#         """
-
 # Run RepeatModeler for each reference genome
 rule repeat_modeler:
     input:
@@ -257,6 +242,12 @@ rule ploidy_table:
         "../scripts/ploidy_table.R"
 
 # Get the fraction of repeated sequences in each window that is a structural variant
+def intersect_input(wildcards):
+    s = SAMPLE_REFERENCE.loc[wildcards.sample,]
+    return {
+        "sampletsv": OUTDIR / "mosdepth" / s["sample"] / "ploidy_table.tsv" ,
+        "maskbed": REFDIR / s["group"]  / "repeats" / (s["group"] + "_repeats.bed")
+    }
 rule intersect:
     input:
         unpack(intersect_input)
@@ -272,7 +263,7 @@ rule intersect:
         """
         xonsh workflow/scripts/intersect_repeats.xsh -s {input.sampletsv} -r {input.maskbed} -o {output} -t {params.threshold} 2> {log}
         """
-
+# Get the structural variants of all samples
 rule dataset_struc_variants:
     input:
         expand(rules.intersect.output, sample=SAMPLES)
