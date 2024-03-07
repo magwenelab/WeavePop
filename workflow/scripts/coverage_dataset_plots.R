@@ -19,6 +19,7 @@ chrom_names <- chrom_names %>%
 # good_stats <- read.delim("results/dataset/files/coverage_good.tsv", sep = "\t", header = TRUE, stringsAsFactors = TRUE)
 
 good_stats <- read.delim(snakemake@input[[2]], sep = "\t", header = TRUE, stringsAsFactors = TRUE)
+good_stats <- rename(good_stats, sample = Sample)
 good_stats <- left_join(good_stats, metadata, by = "sample")
 good_stats <- left_join(good_stats, chrom_names, by = "Accession")
 good_stats <- good_stats %>%
@@ -30,6 +31,7 @@ good_stats <- good_stats %>%
 # raw_stats <- read.delim("results/dataset/files/coverage_raw.tsv", sep = "\t", header = TRUE, stringsAsFactors = TRUE)
 
 raw_stats <- read.delim(snakemake@input[[3]], sep = "\t", header = TRUE, stringsAsFactors = TRUE)
+raw_stats <- rename(raw_stats, sample = Sample)
 raw_stats <- left_join(raw_stats, metadata, by = "sample")
 raw_stats <- left_join(raw_stats, chrom_names, by = "Accession")
 

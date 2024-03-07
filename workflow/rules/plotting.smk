@@ -14,9 +14,9 @@ rule loci:
 def coverage_plot_input(wildcards):
     s = SAMPLE_REFERENCE.loc[wildcards.sample,]
     return {
-        "coverage": OUTDIR / "mosdepth" / s["sample"] / "smooth_coverage_regions.tsv",
-        "sampletsv": OUTDIR / "mosdepth" / s["sample"] / "ploidy_table.tsv" ,
-        "maskbed": REFDIR / s["group"]  / "repeats" / (s["group"] + "_repeats.bed"),
+        "coverage": OUTDIR / "mosdepth" / s["sample"] / "good_regions_coverage.tsv",
+        "structure": OUTDIR / "mosdepth" / s["sample"] / "good_structural_variants.tsv" ,
+        "repeats": REFDIR / s["group"]  / "repeats" / (s["group"] + "_repeats.bed"),
         # "variants": DATASET_OUTDIR / "snps" / (s["group"] + "_variants.tsv")
     }
 rule coverage_plot_chrom:
@@ -36,8 +36,9 @@ rule coverage_plot_chrom:
 # Generate coverage plots
 rule coverage_stats_plot_sample:
     input:
-        rules.coverage.output.good_chrom,
-        rules.coverage.output.raw_chrom
+        rules.good_coverage.output.chromosome,
+        rules.raw_coverage.output.chromosome,
+        CHROM_NAMES
     output:
         stats = OUTDIR / "plots" / "{sample}" / "coverage_stats.png"
     conda:
@@ -51,8 +52,8 @@ rule coverage_stats_plot_sample:
 rule coverage_stats_plots_dataset:
     input:
         SAMPLEFILE,
-        rules.cat_stats.output.allg,
-        rules.cat_stats.output.allr,
+        rules.dataset_coverage.output.allg,
+        rules.dataset_coverage.output.allr,
         CHROM_NAMES
     output:
         DATASET_OUTDIR / "plots" / "cov_median_good.png",
@@ -65,7 +66,7 @@ rule coverage_stats_plots_dataset:
     log:
         "logs/coverage/stats_plot.log"    
     script:
-        "../scripts/cov_stats_all.R"
+        "../scripts/coverage_dataset_plots.R"
 
 # Generate mapq distribution plot
 rule mapq_distribution:

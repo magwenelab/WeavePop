@@ -146,36 +146,6 @@ rule mapqcov2gff:
     shell:
         "xonsh workflow/scripts/mapqcov2gff.xsh {input.mapqbed} {input.covbed} {input.gff} {output.covmapq} {output.newgff} &> {log}"
 
-# Get coverage stats for each window and each chromosome
-rule coverage:
-    input:
-        rules.mosdepth.output.bed,
-        rules.mosdepth_good.output.bed,
-    output:
-        good = OUTDIR / "mosdepth" / "{sample}" / "good_stats_regions.tsv",
-        raw = OUTDIR / "mosdepth" / "{sample}" / "raw_stats_regions.tsv",
-        good_chrom = OUTDIR / "mosdepth" / "{sample}" / "good_stats_chroms.tsv",
-        raw_chrom = OUTDIR / "mosdepth" / "{sample}" / "raw_stats_chroms.tsv"
-    conda:
-        "../envs/r.yaml"
-    log:
-        "logs/coverage/{sample}.log"
-    script:
-        "../scripts/coverage.R"
-
-# Get the coverage stats of all samples
-rule cat_stats:
-    input:
-        g = expand(rules.coverage.output.good_chrom,sample=SAMPLES),
-        r = expand(rules.coverage.output.raw_chrom,sample=SAMPLES)
-    output:
-        allg = DATASET_OUTDIR / "files" / "coverage_good.tsv",
-        allr = DATASET_OUTDIR / "files" / "coverage_raw.tsv"
-    log:
-        "logs/coverage/cat_stats.log"
-    script:
-        "../scripts/cat_stats.sh"
-
 # Run RepeatModeler for each reference genome
 rule repeat_modeler:
     input:
@@ -212,68 +182,95 @@ rule repeats:
     shell:
         "bash workflow/scripts/repeat-masker.sh {threads} {input.database} {input.fasta} {input.known} {input.unknown} {output} &> {log}"
 
-# Get smoothed coverage for each sample
-rule smoothing:
-    input:
-        rules.coverage.output.good
-    output:
-        OUTDIR / "mosdepth" / "{sample}" / "smooth_coverage_regions.tsv"
-    params:
-        size = config["coverage_quality"]["ploidy"]["smoothing_size"]
-    log:
-        "logs/ploidy/smoothing_{sample}.log"
-    script:
-        "../scripts/median_filtering.py"
-
-# Detect structural variation
-rule ploidy_table:
-    input:
-        rules.smoothing.output
-    output:
-        OUTDIR / "mosdepth" / "{sample}" / "ploidy_table.tsv"
-    conda:
-        "../envs/r.yaml"
-    params:
-        size_threshold = config["coverage_quality"]["ploidy"]["size"], 
-        change_threshold = config["coverage_quality"]["ploidy"]["change"]  
-    log:
-        "logs/ploidy/ploidy_table_{sample}.log"
-    script:
-        "../scripts/ploidy_table.R"
-
-# Get the fraction of repeated sequences in each window that is a structural variant
-def intersect_input(wildcards):
+# Get coverage stats for each window and each chromosome
+def raw_coverage_input(wildcards):
     s = SAMPLE_REFERENCE.loc[wildcards.sample,]
     return {
-        "sampletsv": OUTDIR / "mosdepth" / s["sample"] / "ploidy_table.tsv" ,
-        "maskbed": REFDIR / s["group"]  / "repeats" / (s["group"] + "_repeats.bed")
+        "coverage": OUTDIR / "mosdepth" / s["sample"] / "coverage.regions.bed.gz" ,
+        "repeats": REFDIR / s["group"]  / "repeats" / (s["group"] + "_repeats.bed")
     }
-rule intersect:
+rule raw_coverage:
     input:
-        unpack(intersect_input)
+        unpack(raw_coverage_input)
     output:
-        OUTDIR / "mosdepth" / "{sample}" / "structural_variants.tsv"
+        chromosome = OUTDIR / "mosdepth" / "{sample}" / "raw_chromosome_coverage.tsv",
+        regions = OUTDIR / "mosdepth" / "{sample}" / "raw_regions_coverage.tsv",
+        structure = OUTDIR / "mosdepth" / "{sample}" / "raw_structural_variants.tsv"
+    params:
+        region = config["coverage_quality"]["mosdepth"]["window"],
+        smooth = config["coverage_quality"]["ploidy"]["smoothing_size"],
+        repeats_threshold = config["coverage_quality"]["repeats"]["repeats_fraction"],
+        change_threshold = config["coverage_quality"]["ploidy"]["change"],
+        repeat_category_threshold = config["coverage_quality"]["repeats"]["category_fraction"]
     conda:
         "../envs/samtools.yaml"
-    params:
-        threshold = config["coverage_quality"]["repeats"]["repeats_fraction"]
-    log: 
-        "logs/ploidy/intersect_{sample}.log"
-    shell:
-        """
-        xonsh workflow/scripts/intersect_repeats.xsh -s {input.sampletsv} -r {input.maskbed} -o {output} -t {params.threshold} 2> {log}
-        """
-# Get the structural variants of all samples
-rule dataset_struc_variants:
-    input:
-        expand(rules.intersect.output, sample=SAMPLES)
-    output:
-        DATASET_OUTDIR / "files" / "structural_variants.tsv"
-    params:
-        nb_files = len(SAMPLES)
     log:
-        "logs/ploidy/dataset_struc_variants.log"
-    # shell:
-    #     "echo {params.nb_files} > {output} 2> {log}"
+        "logs/coverage/{sample}.log"
+    shell:
+        "xonsh workflow/scripts/coverage_analysis.xsh "
+        "-b {input.coverage} "
+        "-rp {input.repeats} "
+        "-ch {output.chromosome} "
+        "-rg {output.regions} "
+        "-sv {output.structure} "
+        "-sn {wildcards.sample} "
+        "-rs {params.region} "
+        "-ss {params.smooth} "
+        "-rt {params.repeats_threshold} "
+        "-ct {params.change_threshold} "
+        "-rct {params.repeat_category_threshold} "
+        "&> {log}"
+
+# Get coverage stats for each window and each chromosome for the good quality mappings
+def good_coverage_input(wildcards):
+    s = SAMPLE_REFERENCE.loc[wildcards.sample,]
+    return {
+        "coverage": OUTDIR / "mosdepth" / s["sample"] / "coverage_good.regions.bed.gz" ,
+        "repeats": REFDIR / s["group"]  / "repeats" / (s["group"] + "_repeats.bed")
+    }
+rule good_coverage:
+    input:
+        unpack(good_coverage_input)
+    output:
+        chromosome = OUTDIR / "mosdepth" / "{sample}" / "good_chromosome_coverage.tsv",
+        regions = OUTDIR / "mosdepth" / "{sample}" / "good_regions_coverage.tsv",
+        structure = OUTDIR / "mosdepth" / "{sample}" / "good_structural_variants.tsv"
+    params:
+        region = config["coverage_quality"]["mosdepth"]["window"],
+        smooth = config["coverage_quality"]["ploidy"]["smoothing_size"],
+        repeats_threshold = config["coverage_quality"]["repeats"]["repeats_fraction"],
+        change_threshold = config["coverage_quality"]["ploidy"]["change"],
+        repeat_category_threshold = config["coverage_quality"]["repeats"]["category_fraction"]
+    conda:
+        "../envs/samtools.yaml"
+    log:
+        "logs/coverage/{sample}.log"
+    shell:
+        "xonsh workflow/scripts/coverage_analysis.xsh "
+        "-b {input.coverage} "
+        "-rp {input.repeats} "
+        "-ch {output.chromosome} "
+        "-rg {output.regions} "
+        "-sv {output.structure} "
+        "-sn {wildcards.sample} "
+        "-rs {params.region} "
+        "-ss {params.smooth} "
+        "-rt {params.repeats_threshold} "
+        "-ct {params.change_threshold} "
+        "-rct {params.repeat_category_threshold} "
+        "&> {log}"
+        
+# Get the coverage stats of all samples
+rule dataset_coverage:
+    input:
+        g = expand(rules.good_coverage.output.chromosome,sample=SAMPLES),
+        r = expand(rules.raw_coverage.output.chromosome,sample=SAMPLES),
+        sv = expand(rules.good_coverage.output.structure,sample=SAMPLES)
+    output:
+        allg = DATASET_OUTDIR / "files" / "coverage_good.tsv",
+        allr = DATASET_OUTDIR / "files" / "coverage_raw.tsv",
+        allsv = DATASET_OUTDIR / "files" / "structural_variants.tsv"
+    log:
+        "logs/coverage/dataset_coverage.log"
     script:
-        "../scripts/dataset_struc_variants.sh"
+        "../scripts/dataset_coverage.sh"

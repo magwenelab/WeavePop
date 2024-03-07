@@ -31,8 +31,8 @@ coverage_quality:
   repeats:
     repeats_database: "config/RepBase.fasta"
     repeats_threads: 36
-    repeats_fraction: 0.5 # Fraction of repetitive bases allowed in structural variant windows
-
+    repeats_fraction: 0.5 # Fraction of repetitive bases allowed for calculating global coverage
+    category_fraction: 0.5 # Fraction of repetitive bases allowed in structural variant windows
 snps:
   activate: True
   threads: 12

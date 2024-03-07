@@ -8,23 +8,17 @@ suppressPackageStartupMessages(library(ggnewscale))
 suppressPackageStartupMessages(library(RColorBrewer))
 
 
-# sample <- "results/samples/mosdepth/SRS8318899/smooth_coverage_regions.tsv"
-sample <- snakemake@input[[1]]
-Split <- str_split(sample, "/")
-sample <- Split[[1]][length(Split[[1]])-1]
-
 coverage_regions <- read.delim(snakemake@input[[1]], sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
 #coverage_regions <- read.delim("results/samples/mosdepth/SRS8318899/smooth_coverage_regions.tsv", sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
 struc_vars <- read.delim(snakemake@input[[2]], sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
 # struc_vars <- read.delim("results/samples/mosdepth/SRS8318899/ploidy_table.tsv", sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
 repeats_table <- read.delim(snakemake@input[[3]], sep= "\t", header = FALSE, col.names = c("Accession", "Start", "End", "Repeat_type"), stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
 # repeats_table <- read.delim("results/references/VNI/repeats/05_full/VNI.bed", sep= "\t", header = FALSE, col.names = c("Accession", "Start", "End", "Repeat_type"), stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
-loci_table <- read.delim(snakemake@input[[5]], header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
+loci_table <- read.delim(snakemake@input[[4]], header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
 # loci_table <- read.delim("results/dataset/loci_to_plot.tsv", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
-chrom_names <- read.csv(snakemake@input[[6]], sep = ",", header = FALSE, col.names = c("Lineage", "Accession", "Chromosome"), stringsAsFactors = TRUE, na = c("", "N/A"))
+chrom_names <- read.csv(snakemake@input[[5]], sep = ",", header = FALSE, col.names = c("Lineage", "Accession", "Chromosome"), stringsAsFactors = TRUE, na = c("", "N/A"))
 # chrom_names <- read.csv("config/chromosome_names.csv", header = FALSE, col.names = c("Lineage", "Accession", "Chromosome"), stringsAsFactors = TRUE, na = c("", "N/A"))
-
-head(loci_table)
+sample <- snakemake@wildcards$sample
 loci_sample <- loci_table %>% 
     select(Accession = seq_id, Start = start, End = end,Loci)%>%
     filter(Accession %in% coverage_regions$Accession)%>%
@@ -42,6 +36,11 @@ coverage <- coverage_regions %>%
 topCov <- quantile(coverage$Coverage, 0.75) * 3
 coverage$Coverage<- ifelse(coverage$Coverage >= topCov, topCov, coverage$Coverage)
 l_lim <- topCov 
+
+smooth <- coverage_regions %>%
+  select(Chromosome, Start, End, Smooth = Smooth_Median)%>%
+  mutate(Track = "Smooth", .after = Chromosome)
+
 
 struc_vars <- left_join(struc_vars, chrom_names, by = "Accession")
 structure <- struc_vars %>%
@@ -91,6 +90,7 @@ c <- ggplot()+
   geom_point(data = loci, aes(x=Start, y = l_lim, color = Loci))+  
     scale_color_manual(name = "Loci", values = l_colors)+
     guides(color = guide_legend(order=3))+
+  geom_line(data = smooth, aes(x=Start, y = Smooth), color = "blue")+
   # geom_point(data = variants, aes(x=Start, y = v_lim),shape = 24 , size = 2)+
   facet_wrap(~Chromosome,strip.position = "right", ncol = 2)+
   labs(y = "Normalized coverage", title = paste("Lineage:",lineage, "Sample:", sample,  sep = " "))+

@@ -53,6 +53,7 @@ def get_final_output():
     if config["coverage_quality"]["activate"]:
         final_output.extend(expand(OUTDIR / "mosdepth" / "{sample}" / "coverage.regions.bed.gz",sample=SAMPLES))
         final_output.extend(expand(OUTDIR / "mosdepth" / "{sample}" / "coverage_good.regions.bed.gz",sample=SAMPLES))
+        final_output.extend(expand(OUTDIR / "mosdepth" / "{sample}" / "good_structural_variants.tsv",sample=SAMPLES))
         final_output.extend(expand(OUTDIR / "samtools" / "{sample}" / "distrib_mapq.csv",sample=SAMPLES))
         final_output.extend(expand(OUTDIR / "samtools" / "{sample}" / "distrib_cov.csv",sample=SAMPLES))
         final_output.extend(expand(OUTDIR / "samtools" / "{sample}" / "mapq.bed",sample=SAMPLES))
@@ -61,11 +62,13 @@ def get_final_output():
         final_output.extend(expand(OUTDIR / "samtools" / "{sample}" / "annotation.gff",sample=SAMPLES))
         final_output.append(DATASET_OUTDIR / "files" / "mapping_stats.txt")
         final_output.append(DATASET_OUTDIR / "files" / "structural_variants.tsv")
+        final_output.append(DATASET_OUTDIR / "files" / "coverage_good.tsv")
     if config["plotting"]["activate"]:
         final_output.extend(expand(OUTDIR / "plots" / "{sample}" / "coverage.svg",sample=SAMPLES))
         final_output.extend(expand(OUTDIR / "plots" / "{sample}" / "cov_distribution.png",sample=SAMPLES))
         final_output.extend(expand(OUTDIR / "plots" / "{sample}" / "mapq_distribution.png",sample=SAMPLES))
         final_output.extend(expand(OUTDIR / "plots" / "{sample}" / "mapq.png",sample=SAMPLES))
+        final_output.extend(expand(OUTDIR / "plots" / "{sample}" / "coverage_stats.png",sample=SAMPLES))
         final_output.append(DATASET_OUTDIR / "plots" / "mapped_reads.png")
         final_output.append(DATASET_OUTDIR / "plots" / "cov_median_good.png")
     if config["annotate_references"]["activate"] and config["plotting"]["activate"]:
