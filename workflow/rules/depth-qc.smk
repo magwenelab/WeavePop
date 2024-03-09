@@ -61,59 +61,29 @@ rule bam_good:
         "samtools index {output.bam_good} -o {output.bai_good} 2>> {log} "
 
 # Get distribution of MAPQ and Coverage values in all alignments and only good alignments
+def samtools_input(wildcards):
+    s = SAMPLE_REFERENCE.loc[wildcards.sample,]
+    return {
+        "bam": OUTDIR / "snippy" / s["sample"] / "snps.bam" ,
+        "bai": OUTDIR / "snippy" / s["sample"] / "snps.bam.bai",
+        "bam_good": OUTDIR / "samtools" / s["sample"] / "snps_good.bam",
+        "bai_good": OUTDIR / "samtools" / s["sample"] / "snps_good.bam.bai",
+        "ref": REFDIR / s["group"]  / (s["group"] + ".fasta"),
+        "chrom_names" : CHROM_NAMES
+        }
 rule samtools_stats:
     input:
-        bam = rules.snippy.output.bam,
-        bai = rules.snippy.output.bai,
-        bam_good = rules.bam_good.output.bam_good,
-        bai_good = rules.bam_good.output.bai_good,
-        ref = rules.snippy.output.ref
+        unpack(samtools_input)
     output:
-        mapq = OUTDIR / "samtools" / "{sample}" / "distrib_mapq.csv",
-        cov = OUTDIR / "samtools" / "{sample}" / "distrib_cov.csv"
+        mapq = OUTDIR / "samtools" / "{sample}" / "distrib_mapq.tsv",
+        cov = OUTDIR / "samtools" / "{sample}" / "distrib_cov.tsv",
+        mapped = OUTDIR / "samtools" / "{sample}" / "mapped.tsv",
     conda: 
         "../envs/samtools.yaml"
     log:
         "logs/stats/samtools_stats_{sample}.log"
     shell:
-        "xonsh workflow/scripts/samtools-stats.xsh {wildcards.sample} {input.bam} {input.bam_good} {input.ref} {output.mapq} {output.cov} &> {log}"
-
-# Run samtools stats on BAM with all alignments
-rule bamstats:
-    input:
-        bam = rules.snippy.output.bam,
-        bai = rules.snippy.output.bai
-    output:
-        stats = OUTDIR / "samtools" / "{sample}" / "snps.bam.stats",
-    conda:
-        "../envs/samtools.yaml"
-    log:
-        "logs/stats/bamstats_{sample}.log"
-    shell:
-        "samtools stats {input.bam} 1> {output.stats} 2> {log}"
-# Get stats on number of mapped reads
-rule mapped_edit:
-    input:
-        stats = rules.bamstats.output.stats 
-    output: 
-        mapstats = OUTDIR / "samtools" / "{sample}" / "mapping_stats.txt"
-    log:
-        "logs/stats/mapped_edit_{sample}.log"
-    shell:
-        "grep reads {input.stats} | cut -d'#' -f1 | cut -f 2- | grep . > {output.mapstats} 2> {log} "
-        " && "
-        'sed -i "s/$/:\\{wildcards.sample}/" {output.mapstats} 2>> {log}'
-
-# Join the mapping stats of all samples
-rule mapped_cat:
-    input:
-        expand(rules.mapped_edit.output.mapstats, sample=SAMPLES)   
-    output: 
-        stats = DATASET_OUTDIR / "files" / "mapping_stats.txt"
-    log:
-        "logs/stats/mapped_cat.log"
-    shell:
-       'cat {input} > {output}'  
+        "xonsh workflow/scripts/samtools-stats.xsh -s {wildcards.sample} -b {input.bam} -g {input.bam_good} -r {input.ref} -cn {input.chrom_names} -m {output.mapq} -c {output.cov} -p {output.mapped} &> {log}"
 
 # Get the MAPQ per position and per window
 rule mapq:
@@ -261,15 +231,17 @@ rule good_coverage:
         "&> {log}"
         
 # Get the coverage stats of all samples
-rule dataset_coverage:
+rule dataset_metrics:
     input:
         g = expand(rules.good_coverage.output.chromosome,sample=SAMPLES),
         r = expand(rules.raw_coverage.output.chromosome,sample=SAMPLES),
-        sv = expand(rules.good_coverage.output.structure,sample=SAMPLES)
+        sv = expand(rules.good_coverage.output.structure,sample=SAMPLES),
+        m = expand(rules.samtools_stats.output.mapped,sample=SAMPLES)
     output:
         allg = DATASET_OUTDIR / "files" / "coverage_good.tsv",
         allr = DATASET_OUTDIR / "files" / "coverage_raw.tsv",
-        allsv = DATASET_OUTDIR / "files" / "structural_variants.tsv"
+        allsv = DATASET_OUTDIR / "files" / "structural_variants.tsv",
+        allm = DATASET_OUTDIR / "files" / "mapping_stats.tsv"
     log:
         "logs/coverage/dataset_coverage.log"
     script:

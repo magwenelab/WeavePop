@@ -5,49 +5,66 @@ sink(log, type = "message")
 suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(RColorBrewer))
 suppressPackageStartupMessages(library(scales))
+suppressPackageStartupMessages(library(patchwork))
 
 metadata <- read.csv(snakemake@input[[2]], header = TRUE)%>%
     select(sample, strain, lineage = group)
 
 # metadata <- read.csv("config/sample_metadata.csv", header = TRUE)%>%
 #    select(sample, strain, lineage = group)
+# stats <- read.table("results/dataset/files/mapping_stats.tsv",header = TRUE, stringsAsFactors = TRUE, sep = "\t")
+stats <- read.table(snakemake@input[[1]],header = TRUE, stringsAsFactors = TRUE, sep = "\t")
+stats_metad <- merge(stats, metadata, by = "sample")
+stats_metad <- stats_metad %>%
+    mutate(name = paste(strain,sample, sep = " "),
+        reads_unmapped = raw_total_sequences - reads_mapped,
+        percent_unmapped = (reads_unmapped/raw_total_sequences)*100,
+        reads_only_mapped = reads_mapped - reads_properly_paired,
+        percent_only_mapped = (reads_only_mapped/raw_total_sequences)*100,
+        percent_properly_paired = (reads_properly_paired/raw_total_sequences)*100,
+        percent_20 = (MAPQ_20/reads_mapped)*100,
+        percent_20_59 = (MAPQ_20_59/reads_mapped)*100,
+        percent_60 = (MAPQ_60/reads_mapped)*100)
 
-stats <- read.delim(snakemake@input[[1]], sep =":", header = FALSE, col.names = c("stat", "value", "sample"))
+stats_long <- stats_metad %>%
+    pivot_longer(cols = -c(sample, name, lineage, strain), names_to = "Metric", values_to = "Value")
+stats_reads <- stats_long %>%
+    filter(Metric %in% c("percent_only_mapped", "percent_unmapped", "percent_properly_paired"))
+stats_reads$Metric <- factor(stats_reads$Metric, levels = c("percent_unmapped", "percent_only_mapped", "percent_properly_paired"),
+                              labels = c("Unmapped", "Mapped", "Mapped and properly paired"))
+stats_qualit <- stats_long %>%
+    filter(Metric %in% c("percent_20", "percent_20_59", "percent_60"))
+stats_qualit$Metric <- factor(stats_qualit$Metric, levels = c("percent_20","percent_20_59","percent_60"),
+                              labels = c("MAPQ < 20", "MAPQ 20 - 59", "MAPQ 60"))
 
-# stats <- read.delim("./results/dataset/mapping_stats.txt", sep =":", header = FALSE, col.names = c("stat", "value", "sample"))
-stats <- stats %>% pivot_wider(names_from = stat, values_from = value)
-colnames(stats) <- gsub(" ", "_", colnames(stats))
-stats <- stats %>%
-    mutate(total_reads = reads_mapped + reads_unmapped,
-            percent_mapped = (reads_mapped/total_reads)*100)%>%
-            as.data.frame()
+palette_reads <- brewer.pal(n = length(unique(stats_reads$Metric)), name = "BuPu")
+palette_qualit <- brewer.pal(n = length(unique(stats_qualit$Metric)), name = "BuGn")
 
-stats <- left_join(stats, metadata, by="sample")
+reads <- ggplot()+
+    geom_bar(data = stats_reads, aes(x = name, y = Value, fill = Metric), stat = "identity")+
+    facet_grid(~ lineage, scales = "free", space = "free_x")+
+    theme(panel.background = element_blank(), 
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          strip.background = element_blank(),
+          panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 2),
+          axis.text.x = element_blank(),
+          axis.ticks.x = element_blank())+
+    labs(x = "", y = "Percentage of reads", fill = "Metric", title = "Percentage of reads by mapping classification")+
+    scale_fill_manual(values = palette_reads, name = "")
 
-stats_long <- stats %>%
-    select(sample, lineage, strain, mapped = percent_mapped, properly_paired = "percentage_of_properly_paired_reads_(%)") %>%
-    pivot_longer(c(mapped, properly_paired), names_to = "measurement", values_to = "value")%>%
-    mutate(name = paste(strain, sample, sep=" " ))
+mapq <- ggplot()+
+    geom_bar(data = stats_qualit, aes(x = name, y = Value, fill = Metric), stat = "identity")+
+    facet_grid(~ lineage, scales = "free", space = "free_x")+
+    theme(panel.background = element_blank(), 
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          strip.background = element_blank(),
+          strip.text = element_blank(),
+          panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 2),
+          axis.text.x = element_text(angle = 90))+
+    labs(x = "", y = "Percentage of reads", fill = "Metric", title = "Percentage of mapped reads by low, medium and high mapping quality")+
+    scale_fill_manual(values = palette_qualit, name = "")
 
-
-plot <- ggplot(stats_long, aes(color = measurement, x=name, y= value))+
-    geom_point()+
-    ylim(0,100)+
-    facet_grid(~lineage, scale = "free_x" , space='free_x')+
-    scale_color_discrete(labels=c('Mapped', 'Properly paired'),guide = guide_legend(title = NULL))+
-    labs(shape = NULL)+
-    theme_bw()+
-    theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1, size = 5),
-        panel.grid.minor = element_blank(),
-        strip.text = element_text(size = 15),
-        legend.text = element_text(size = 15),
-        legend.title = element_text(size = 17),
-        plot.title = element_text(size = 20),
-        axis.title = element_text(size = 17))+
-    xlab("Sample") +
-    ylab("Percentage of reads")
-
-gwidth <- 13.3
-gheight <- 7.5
-
-ggsave(snakemake@output[[1]], plot = plot, scale = 0.5 , units = "in", height = gheight, width = gwidth)
+plot <- reads / mapq 
+ggsave(snakemake@output[[1]], plot = plot)

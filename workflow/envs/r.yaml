@@ -12,3 +12,4 @@ dependencies:
   - bioconductor-complexheatmap
   - r-ggnewscale
   - r-httpgd
+  - r-patchwork

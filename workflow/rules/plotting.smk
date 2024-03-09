@@ -52,8 +52,8 @@ rule coverage_stats_plot_sample:
 rule coverage_stats_plots_dataset:
     input:
         SAMPLEFILE,
-        rules.dataset_coverage.output.allg,
-        rules.dataset_coverage.output.allr,
+        rules.dataset_metrics.output.allg,
+        rules.dataset_metrics.output.allr,
         CHROM_NAMES
     output:
         DATASET_OUTDIR / "plots" / "cov_median_good.png",
@@ -100,7 +100,7 @@ rule cov_distribution:
 # Generate mapped reads plot
 rule mapped_plot:
     input:
-        rules.mapped_cat.output.stats,
+        rules.dataset_metrics.output.allm,
         SAMPLEFILE
     output:
         DATASET_OUTDIR / "plots" / "mapped_reads.png"

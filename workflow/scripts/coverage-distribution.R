@@ -15,7 +15,7 @@ sample <- snakemake@input[[1]]
 Split <- str_split(sample, "/")
 sample <- Split[[1]][length(Split[[1]])-1]
 
-cov<- read.csv(snakemake@input[[1]], header = TRUE, stringsAsFactors = TRUE)
+cov<- read.table(snakemake@input[[1]], header = TRUE, stringsAsFactors = TRUE, sep = "\t")
 cov[is.na(cov)] <- 0
 chrom_names <- read.csv(snakemake@input[[2]], header = FALSE, col.names = c("Lineage", "Accession", "Chromosome"))
 cov <-cov %>%
