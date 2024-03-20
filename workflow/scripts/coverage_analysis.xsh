@@ -26,12 +26,18 @@ def intersect_repeats(bed, repeats, chromosome_table, regions_table, structural_
     header = ['bed_Accession', 'bed_Start', 'bed_End', 'bed_Coverage', 'r_Accession', 'r_Start', 'r_End', 'r_Type', 'Overlap_bp'] 
     df.columns = header
     df = df.drop(['r_Accession', 'r_Start', 'r_End'], axis=1)
+    df['r_Type_mix'] = df.groupby(['bed_Accession', 'bed_Start', 'bed_End', 'bed_Coverage'])['r_Type'].transform(lambda x: ','.join(x))
+    df['Overlap_bp_sum'] = df.groupby(['bed_Accession', 'bed_Start', 'bed_End', 'bed_Coverage'])['Overlap_bp'].transform('sum')
+    df = df.drop(['r_Type', 'Overlap_bp'], axis=1)
+    df = df.drop_duplicates()
+    df.rename(columns={'r_Type_mix': 'r_Type', 'Overlap_bp_sum': 'Overlap_bp'}, inplace=True)    
+    df = df.reset_index(drop=True)
 
     print("Calculate fraction of region with repetitive sequences.")
     regions_repeats = df.copy()
     regions_repeats['Repeat_fraction'] = (regions_repeats['Overlap_bp'] / region_size).round(2)
     regions_repeats.columns = regions_repeats.columns.str.replace('bed_', '')
- 
+
     print("Filter out regions with to many repeats, calculate genome-wide mean and median, and chromosome mean and median.")
     regions_filtered = regions_repeats[regions_repeats['Repeat_fraction'] < repeats_threshold]
     regions_filtered = regions_filtered[['Accession', 'Start', 'End', 'Coverage']]
@@ -50,7 +56,7 @@ def intersect_repeats(bed, repeats, chromosome_table, regions_table, structural_
     regions_norm = regions_repeats[['Accession', 'Start', 'End', 'Coverage', 'Overlap_bp','Repeat_fraction']].copy()
     regions_norm.loc[:,'Norm_Mean'] = regions_norm['Coverage'] / Global_Mean
     regions_norm.loc[:,'Norm_Median'] = regions_norm['Coverage'] / Global_Median
-
+    print(regions_norm.head(12))
     print("Smooth coverage.")
     cov_array = np.array(regions_norm["Norm_Mean"])
     smoothed_array = ndimage.median_filter(cov_array, size=smooth_size)
