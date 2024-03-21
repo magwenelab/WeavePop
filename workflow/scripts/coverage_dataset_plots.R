@@ -7,6 +7,7 @@ suppressPackageStartupMessages(library(RColorBrewer))
 suppressPackageStartupMessages(library(scales))
 suppressPackageStartupMessages(library(patchwork))
 
+gscale = 0.7
 #metadata <- read.csv("config/sample_metadata.csv", header = TRUE, stringsAsFactors = TRUE)
 metadata <- read.csv(snakemake@input[[1]], header = TRUE, stringsAsFactors = TRUE)
 metadata <- mutate(metadata, name = paste(strain, sample, sep = " "))
@@ -47,7 +48,7 @@ values <- seq(0, toplim, by = 1)
 ylabel <- "Normalized coverage"
 
 medianplot <- ggplot(good_stats, aes(x = reorder(name, -Global_Mean, sum), y = Norm_Median)) +
-    geom_point(aes(color = get(snakemake@params[[1]])),size = 0.5) +
+    geom_point(aes(color = get(snakemake@params[[1]]))) +
     ylim(0, toplim) +
     facet_grid(scale = "free_x", space = "free_x", rows = vars(Chromosome), cols = vars(group)) +
     scale_color_brewer(palette = "Set2", name = str_to_title(snakemake@params[[1]])) +
@@ -56,12 +57,12 @@ medianplot <- ggplot(good_stats, aes(x = reorder(name, -Global_Mean, sum), y = N
           panel.grid.minor = element_blank(),
           strip.background = element_blank(),
           panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 1),
-          axis.text.x = element_text(angle = 90, size = 3, vjust = 0.5, hjust = 1))+
+          axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))+
     labs(title = "Normalized median coverage of chromosomes",
          x = "Sample",
          y = ylabel)
 
-ggsave(snakemake@output[[1]], plot = medianplot, units = "in", height = 9, width = 16)
+ggsave(snakemake@output[[1]], plot = medianplot, units = "in", height = 9, width = 16, scale = gscale)
 
 # Mean by Chromosome
 toplim <- ceiling(max(good_stats$Norm_Mean))
@@ -69,7 +70,7 @@ values <- seq(0, toplim, by = 1)
 ylabel <- "Normalized coverage"
 
 meanplot <- ggplot(good_stats, aes(x = reorder(name, -Global_Mean, sum), y = Norm_Mean)) +
-    geom_point(aes(color = get(snakemake@params[[1]])),size = 0.5) +
+    geom_point(aes(color = get(snakemake@params[[1]]))) +
     ylim(0, toplim) +
     facet_grid(scale = "free_x", space = "free_x", rows = vars(Chromosome), cols = vars(group)) +
     scale_color_brewer(palette = "Set2", name = str_to_title(snakemake@params[[1]])) +
@@ -78,12 +79,12 @@ meanplot <- ggplot(good_stats, aes(x = reorder(name, -Global_Mean, sum), y = Nor
             panel.grid.minor = element_blank(),
             strip.background = element_blank(),
             panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 1),
-            axis.text.x = element_text(angle = 90, size = 3, vjust = 0.5, hjust = 1))+
+            axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))+
     labs(title = "Normalized mean coverage of chromosomes",
          x = "Sample",
          y = ylabel)
 
-ggsave(snakemake@output[[2]], plot = meanplot, units = "in", height = 9, width = 16)
+ggsave(snakemake@output[[2]], plot = meanplot, units = "in", height = 9, width = 16, scale = gscale)
 
 # Global
 topylim <- max(good_stats$Global_Mean) + max(good_stats$Global_Mean / 10)
@@ -102,7 +103,7 @@ all <- all %>%
 
 topylim <- max(all$Value) + max(all$Value) / 10
 g <- ggplot(all) +
-    geom_point(aes(x = name, y = Value, shape = Measurement, color = Quality), size = 0.5) +
+    geom_point(aes(x = name, y = Value, shape = Measurement, color = Quality)) +
     ylim(0, topylim) +
     facet_grid(~group, scale = "free_x", space = "free_x") +
     scale_color_manual(name= "", values= color_quality)+
@@ -182,10 +183,10 @@ mapq <- ggplot()+
           strip.background = element_blank(),
           strip.text = element_blank(),
           panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 1),
-          axis.text.x = element_text(angle = 90, size = 3, hjust = 1, vjust=0.5))+
+          axis.text.x = element_text(angle = 90, hjust = 1, vjust=0.5))+
     labs(x = "Sample", y = "Percentage of reads", fill = "Metric", title = "Percentage of mapped reads by mapping quality")+
     scale_fill_manual(values = palette_qualit, name = "")
 
 plot <- g/reads/mapq
-ggsave(snakemake@output[[3]], plot = plot, units = "in", height = 9, width = 16)
+ggsave(snakemake@output[[3]], plot = plot, units = "in", height = 9, width = 16, scale = gscale)
 

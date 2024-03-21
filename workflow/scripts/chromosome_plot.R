@@ -90,7 +90,6 @@ c <- ggplot()+
   geom_point(data = loci, aes(x=Start, y = l_lim, color = Loci))+  
     scale_color_manual(name = "Loci", values = l_colors)+
     guides(color = guide_legend(order=3))+
-  geom_line(data = smooth, aes(x=Start, y = Smooth), color = "blue")+
   # geom_point(data = variants, aes(x=Start, y = v_lim),shape = 24 , size = 2)+
   facet_wrap(~Chromosome,strip.position = "right", ncol = 2)+
   labs(y = "Normalized coverage", title = paste("Lineage:",lineage, "Sample:", sample,  sep = " "))+
@@ -103,4 +102,4 @@ c <- ggplot()+
         panel.background = element_blank(),
         panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 2))
 
-ggsave(snakemake@output[[1]], c, height = 7, width = 13)
+ggsave(snakemake@output[[1]], c, height =9, width = 16)

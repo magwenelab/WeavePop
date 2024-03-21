@@ -85,9 +85,17 @@ rule cov_distribution:
         "../scripts/coverage-distribution.R"
 
 # Generate mapq plot
+def mapq_plot_input(wildcards):
+    s = SAMPLE_REFERENCE.loc[wildcards.sample,]
+    return {
+        "mapq": OUTDIR / "samtools" / s["sample"] / "mapq_window.bed",
+        "structure": OUTDIR / "mosdepth" / s["sample"] / "good_structural_variants.tsv" ,
+        "repeats": REFDIR / s["group"]  / "repeats" / (s["group"] + "_repeats.bed"),
+        # "variants": DATASET_OUTDIR / "snps" / (s["group"] + "_variants.tsv")
+    }
 rule mapq_plot:
     input:
-        rules.mapq.output.winbed,
+        unpack(mapq_plot_input),
         CHROM_NAMES,
         rules.loci.output.locitable
     output:
