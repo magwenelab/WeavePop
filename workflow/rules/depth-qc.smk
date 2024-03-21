@@ -75,7 +75,7 @@ rule samtools_stats:
     input:
         unpack(samtools_input)
     output:
-        mapq = OUTDIR / "samtools" / "{sample}" / "distrib_mapq.tsv",
+        # mapq = OUTDIR / "samtools" / "{sample}" / "distrib_mapq.tsv",
         cov = OUTDIR / "samtools" / "{sample}" / "distrib_cov.tsv",
         mapped = OUTDIR / "samtools" / "{sample}" / "mapped.tsv",
     conda: 
@@ -83,7 +83,7 @@ rule samtools_stats:
     log:
         "logs/stats/samtools_stats_{sample}.log"
     shell:
-        "xonsh workflow/scripts/samtools-stats.xsh -s {wildcards.sample} -b {input.bam} -g {input.bam_good} -r {input.ref} -cn {input.chrom_names} -m {output.mapq} -c {output.cov} -p {output.mapped} &> {log}"
+        "xonsh workflow/scripts/samtools-stats.xsh -s {wildcards.sample} -b {input.bam} -g {input.bam_good} -r {input.ref} -cn {input.chrom_names} -c {output.cov} -p {output.mapped} &> {log}"
 
 # Get the MAPQ per position and per window
 rule mapq:

@@ -52,13 +52,14 @@ rule coverage_stats_plot_sample:
 rule coverage_stats_plots_dataset:
     input:
         SAMPLEFILE,
+        CHROM_NAMES,
         rules.dataset_metrics.output.allg,
         rules.dataset_metrics.output.allr,
-        CHROM_NAMES
+        rules.dataset_metrics.output.allm
     output:
         DATASET_OUTDIR / "plots" / "cov_median_good.png",
         DATASET_OUTDIR / "plots" / "cov_mean_good.png",
-        DATASET_OUTDIR / "plots" / "cov_global.png"
+        DATASET_OUTDIR / "plots" / "global.png"
     conda:
         "../envs/r.yaml"
     params:
@@ -67,20 +68,6 @@ rule coverage_stats_plots_dataset:
         "logs/coverage/stats_plot.log"    
     script:
         "../scripts/coverage_dataset_plots.R"
-
-# Generate mapq distribution plot
-rule mapq_distribution:
-    input:
-        rules.samtools_stats.output.mapq,
-        CHROM_NAMES
-    output:
-        OUTDIR / "plots" / "{sample}" / "mapq_distribution.png"
-    conda:
-        "../envs/r.yaml"   
-    log:
-        "logs/mapq/mapq_distribution_{sample}.log"
-    script:
-        "../scripts/mapq-distribution.R"
 
 # Generate coverage distribution plots
 rule cov_distribution:
@@ -96,20 +83,6 @@ rule cov_distribution:
         "logs/coverage/cov_distribution_{sample}.log"
     script:
         "../scripts/coverage-distribution.R"
-
-# Generate mapped reads plot
-rule mapped_plot:
-    input:
-        rules.dataset_metrics.output.allm,
-        SAMPLEFILE
-    output:
-        DATASET_OUTDIR / "plots" / "mapped_reads.png"
-    conda:
-        "../envs/r.yaml"
-    log:
-        "logs/stats/mapped_plot.log"
-    script:
-        "../scripts/mapped_reads.R"
 
 # Generate mapq plot
 rule mapq_plot:

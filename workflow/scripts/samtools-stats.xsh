@@ -11,11 +11,11 @@ import os
 @click.option("-g", "--bamgood", type=click.Path(exists=True), help="Good BAM file")
 @click.option("-r", "--reference", type=click.Path(exists=True), help="Reference file")
 @click.option("-cn", "--chrom_names", type=click.Path(), help="Chromosome names file")
-@click.option("-m", "--mapq_out", type=click.Path(), help="Output MAPQ file")
+# @click.option("-m", "--mapq_out", type=click.Path(), help="Output MAPQ file")
 @click.option("-c", "--cov_out", type=click.Path(), help="Output coverage file")
 @click.option("-p", "--mapped_out", type=click.Path(), help="Output file with mapped reads metrics")
 
-def stats(sample, bamfile, bamgood, reference, mapq_out, cov_out,mapped_out, chrom_names): # Start definition of function with the sample as argument
+def stats(sample, bamfile, bamgood, reference, cov_out,mapped_out, chrom_names): # Start definition of function with the sample as argument
     chromosomes = pd.read_csv(chrom_names, names = ["Lineage", "Accession", "Chromosome"])
     lineage = os.path.splitext(Path(reference).name)[0]
     lin_chromosomes = chromosomes[chromosomes["Lineage"] == lineage]
@@ -45,7 +45,7 @@ def stats(sample, bamfile, bamgood, reference, mapq_out, cov_out,mapped_out, chr
     quality = pd.concat(out_mapq)
     quality = quality.dropna()
     quality.columns = ["Chromosome", "MAPQ", "Count"]
-    quality.to_csv(mapq_out, index=False, sep = "\t")
+    # quality.to_csv(mapq_out, index=False, sep = "\t")
 
     quality['MAPQ'] = quality['MAPQ'].astype(int)
     quality['Count'] = quality['Count'].astype(int)
