@@ -57,13 +57,14 @@ rule coverage_stats_plots_dataset:
         rules.dataset_metrics.output.allr,
         rules.dataset_metrics.output.allm
     output:
-        DATASET_OUTDIR / "plots" / "cov_median_good.png",
-        DATASET_OUTDIR / "plots" / "cov_mean_good.png",
-        DATASET_OUTDIR / "plots" / "global.png"
+        DATASET_OUTDIR / "plots" / "cov_median_good.svg",
+        DATASET_OUTDIR / "plots" / "cov_mean_good.svg",
+        DATASET_OUTDIR / "plots" / "global.svg"
     conda:
         "../envs/r.yaml"
     params:
-        config["plotting"]["metadata2color"]
+        config["plotting"]["metadata2color"],
+        config["plotting"]["scale"]
     log:
         "logs/coverage/stats_plot.log"    
     script:

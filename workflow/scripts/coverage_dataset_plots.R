@@ -7,7 +7,7 @@ suppressPackageStartupMessages(library(RColorBrewer))
 suppressPackageStartupMessages(library(scales))
 suppressPackageStartupMessages(library(patchwork))
 
-gscale = 0.7
+gscale = snakemake@params[[2]]
 #metadata <- read.csv("config/sample_metadata.csv", header = TRUE, stringsAsFactors = TRUE)
 metadata <- read.csv(snakemake@input[[1]], header = TRUE, stringsAsFactors = TRUE)
 metadata <- mutate(metadata, name = paste(strain, sample, sep = " "))
@@ -57,7 +57,7 @@ medianplot <- ggplot(good_stats, aes(x = reorder(name, -Global_Mean, sum), y = N
           panel.grid.minor = element_blank(),
           strip.background = element_blank(),
           panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 1),
-          axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))+
+          axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 5))+
     labs(title = "Normalized median coverage of chromosomes",
          x = "Sample",
          y = ylabel)
@@ -79,7 +79,7 @@ meanplot <- ggplot(good_stats, aes(x = reorder(name, -Global_Mean, sum), y = Nor
             panel.grid.minor = element_blank(),
             strip.background = element_blank(),
             panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 1),
-            axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))+
+            axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 5))+
     labs(title = "Normalized mean coverage of chromosomes",
          x = "Sample",
          y = ylabel)
@@ -183,7 +183,7 @@ mapq <- ggplot()+
           strip.background = element_blank(),
           strip.text = element_blank(),
           panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 1),
-          axis.text.x = element_text(angle = 90, hjust = 1, vjust=0.5))+
+          axis.text.x = element_text(angle = 90, hjust = 1, vjust=0.5, size = 5))+
     labs(x = "Sample", y = "Percentage of reads", fill = "Metric", title = "Percentage of mapped reads by mapping quality")+
     scale_fill_manual(values = palette_qualit, name = "")
 

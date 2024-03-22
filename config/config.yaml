@@ -40,7 +40,7 @@ snps:
 plotting: 
   activate: True
   metadata2color : "isolation_source"
-
+  scale : 0.7 # This is a value to adjust the size of the plots with ggsave scale parameter. Use lower values for fewer samples and bigger values for more samples.
 snippy:
   threads: 12
   extra: ""
