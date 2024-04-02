@@ -39,6 +39,7 @@ class SeqType(Enum):
 str2SeqType = {t.name:t for t in SeqType}
 
 
+
 def create_tables(con, schema=SCHEMA):
     con.executescript(schema)
     con.commit()
@@ -74,6 +75,7 @@ def populate_fasta_db(outfile, infasta, sample_id, common_name=None, seq_type = 
                      seq_name, seq_description, seq_dbxrefs])
     con.commit()
     return con
+
 
 def dict_factory(cursor, row):
     fields = [column[0] for column in cursor.description]
@@ -156,15 +158,26 @@ def populate_db(dbfile, infasta, sample_id, common_name, seqtype=None, timeout=6
 
 @cli.command()
 @click.argument("db", type=click.Path(dir_okay=False, exists=True))
-@click.argument("query", type=str)
 @click.argument("output", type=click.File('w'))
-def run_query(db, query, output):
+@click.option("--query", type=str)
+@click.option("--query_file", type=click.Path(exists=True))
+def run_query(db, output, query="", query_file=None):
     """ Run a given SQL query against the Sqlite database. 
+
+    \b
+    If --query is specified, the query is given on the command line.
+    If --query_file is specified, the query is read from the file.
+    If both --query and --query_file are specified, --query_file takes precedence.
     """
+    if query_file:
+        with open(query_file) as f:
+            query = f.read()
+
     con = sqlite3.connect(db)
     for result in query_results(con, query):
         SeqIO.write(toSeqRecord(result), output, "fasta")
     con.close()
+
 
 
 @cli.command()
@@ -200,7 +213,7 @@ def lookup(db, output, sample, seqid, seqtype, samplefile=None, showquery=False)
         with open(samplefile) as f:
             for line in f:
                 fromfile.append(line.strip())
-        sample = list(sample) + fromfile
+        sample = list(sample.strip()) + fromfile
     if not sample:
         samplecond = "(SELECT sample_id FROM samples)"
     else:
