@@ -77,7 +77,7 @@ rule liftoff:
 # Extract the nucleotide sequence of each isoform of each gene of a sample
 rule agat_cds:
     input:
-        gff = rules.liftoff.output.gff,
+        gff = rules.liftoff.output.polished,
         fa = rules.snippy.output.fa
     output:
         cds = OUTDIR / "agat" / "{sample}" / "cds.fa",
@@ -98,7 +98,7 @@ rule agat_cds:
 # Extract the amino acid sequence of each isoform of each gene of a sample
 rule agat_prots:
     input:
-        gff = rules.liftoff.output.gff,
+        gff = rules.liftoff.output.polished,
         fa = rules.snippy.output.fa
     output:
         prots = OUTDIR / "agat" / "{sample}" / "proteins.fa"
