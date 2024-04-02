@@ -19,4 +19,5 @@ files/unpaired_fastqs.csv
 data
 *log
 *test*
+*temp*
 config/RepBase.fasta
