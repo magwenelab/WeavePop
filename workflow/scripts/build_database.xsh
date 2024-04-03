@@ -26,7 +26,7 @@ def get_dataframes(lineage, db_name, temp_dir, vcf_files):
     # Convert sites.txt to VCF
     print("Converting sites.txt to VCF")
     sites_txt = pd.read_csv(sites_txt_file, sep='\t', header=None, names=['#CHROM', 'POS', 'REF', 'ALT', 'INFO'], dtype=str)
-    sites_txt['var_id'] = 'VAR_' + (sites_txt.index + 1).astype(str)
+    sites_txt['var_id'] = 'var_' + lineage + '_' + (sites_txt.index + 1).astype(str)
     sites_vcf = sites_txt.copy()
     sites_vcf['INFO'] = 'var_id=' + sites_vcf['var_id'].astype(str) + ';' + 'MAT=' + sites_vcf['INFO'].astype(str)
     sites_vcf.drop(columns=['var_id'], inplace=True)
@@ -106,28 +106,28 @@ def get_dataframes(lineage, db_name, temp_dir, vcf_files):
                 lof_parts = lof.split('|')
                 first = lof_parts[0]
                 gene_name = first.replace('(', '')
-                gene_ID = lof_parts[1]
+                gene_id = lof_parts[1]
                 nb_transcripts = lof_parts[2]
                 last = lof_parts[3]
                 percent_transcripts = last.replace(')', '')
-                data_lofs.append([var_id, gene_name, gene_ID, nb_transcripts, percent_transcripts])
+                data_lofs.append([var_id, gene_name, gene_id, nb_transcripts, percent_transcripts])
             # Iterate over all nmds
             for nmd in nmds:
                 nmd_parts = nmd.split('|')
                 first = nmd_parts[0]
                 gene_name = first.replace('(', '')
-                gene_ID = nmd_parts[1]
+                gene_id = nmd_parts[1]
                 nb_transcripts = nmd_parts[2]
                 last = nmd_parts[3]
                 percent_transcripts = last.replace(')', '')
-                data_nmds.append([var_id, gene_name, gene_ID, nb_transcripts, percent_transcripts])
+                data_nmds.append([var_id, gene_name, gene_id, nb_transcripts, percent_transcripts])
 
     # Create dataframes from the data objects
     print("Creating dataframes")
     df_variants = pd.DataFrame(data_variants, columns=['var_id', 'chrom', 'pos', 'ref', 'alt'])
 
     df_effects = pd.DataFrame(data_effects, columns=['var_id', 'type', 'impact','effect', 'codon_change', 'amino_acid_change', 'amino_acid_length', 'gene_name', 'transcript_biotype', 'gene_coding', 'transcript_id', 'exon_rank'])
-    df_effects['effect_id'] = 'eff_' + (df_effects.index + 1).astype(str)
+    df_effects['effect_id'] = 'eff_' + lineage + '_' + (df_effects.index + 1).astype(str)
     df_effects.insert(0, 'effect_id', df_effects.pop('effect_id'))
 
     df_lofs = pd.DataFrame(data_lofs, columns=['var_id', 'gene_name','gene_id', 'nb_transcripts', 'percent_transcripts'])
