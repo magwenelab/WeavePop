@@ -1,0 +1,14 @@
+name : variants
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - PyVCF
+  - pandas
+  - click
+  - xonsh
+  - bcftools
+  - bedtools
+  - snpEff
+  - duckdb

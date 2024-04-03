@@ -47,6 +47,7 @@ def get_final_output():
     final_output.extend(expand(OUTDIR / "liftoff" / "{sample}" / "unmapped_features.txt",sample=SAMPLES))
     final_output.append(expand(OUTDIR / "agat" / "{sample}" / "cds.done", sample=SAMPLES))
     final_output.append(expand(OUTDIR / "agat" / "{sample}" / "prots.done", sample=SAMPLES))
+    final_output.append(expand(DATASET_OUTDIR / "annotations.db"))
     if config["annotate_references"]["activate"]:
         final_output.extend(expand(REFDIR / "{lineage}" / "{lineage}.gff",lineage=LINEAGES))
         final_output.append(REFDIR / str(MAIN_NAME + ".tsv"))

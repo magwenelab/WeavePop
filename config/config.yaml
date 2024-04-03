@@ -1,4 +1,5 @@
 sample_table: "config/sample_metadata.csv" # Path to CSV table with columns: sample, group, strain, and more optional metadata.
+species_name: "Cryptococcus_neoformans" 
 
 fastqs:
   directory: "data/samples" # REVIEW # Path to directory with all FASTQ files 
@@ -18,7 +19,7 @@ annotate_references:
     extra: ""
 
 coverage_quality: 
-  activate: True
+  activate: 
   mosdepth: 
     threads: 12  
     window: 500 # Window size for mosdepth
@@ -33,14 +34,16 @@ coverage_quality:
     repeats_threads: 36
     repeats_fraction: 0.5 # Fraction of repetitive bases allowed for calculating global coverage
     category_fraction: 0.5 # Fraction of repetitive bases allowed in structural variant windows
+
 snps:
-  activate: True
+  activate: 
   threads: 12
 
 plotting: 
-  activate: True
+  activate: 
   metadata2color : "isolation_source"
   scale : 0.7 # This is a value to adjust the size of the plots with ggsave scale parameter. Use lower values for fewer samples and bigger values for more samples.
+
 snippy:
   threads: 12
   extra: ""
