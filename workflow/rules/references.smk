@@ -1,37 +1,67 @@
+rule agat_fix_gff:
+    input: 
+        gff= MAIN_GFF
+    output:
+        fixed_ID = REFDIR / str(MAIN_NAME + "_fixed_ID.gff"),
+        fixed_locus = REFDIR / str(MAIN_NAME + "_fixed_locus.gff"),
+        fixed_description = REFDIR / str(MAIN_NAME + "_fixed_description.gff"),
+        tsv = REFDIR / str(MAIN_NAME + "_fixed.tsv")
+    conda:
+        "../envs/agat.yaml"
+    log:
+        "logs/references/agat_fix_gff.log"
+    shell:
+        """
+        agat_convert_sp_gxf2gxf.pl -g {input.gff} -o {output.fixed_ID} &> {log} && 
+        agat_sq_add_locus_tag.pl --gff {output.fixed_ID} --li ID -o {output.fixed_locus} &>> {log} && 
+        agat_sp_manage_attributes.pl --gff {output.fixed_locus} --tag product/description -o {output.fixed_description} &>> {log} && 
+        agat_convert_sp_gff2tsv.pl --gff {output.fixed_description} -o {output.tsv} &>> {log}
+        """
+
+rule fix_gff_tsv:
+    input:
+        tsv = rules.agat_fix_gff.output.tsv
+    output:
+        gff = REFDIR / str(MAIN_NAME + "_template.gff"),
+        tsv = REFDIR / str(MAIN_NAME + "_template.tsv")
+    log:
+        "logs/references/fix_gff_tsv.log"
+    shell:
+        """
+        python workflow/scripts/fix_gff.py -i {input.tsv} -og {output.gff} -ot {output.tsv} &> {log}
+        """
+
+rule agat_make_gff:
+    input:
+        tsv = rules.fix_gff_tsv.output.tsv,
+        gff = rules.fix_gff_tsv.output.gff
+    output:
+        gff = REFDIR / str(MAIN_NAME + ".gff"),
+        tsv = REFDIR / str(MAIN_NAME + ".tsv")
+    conda:
+        "../envs/agat.yaml"
+    log:
+        "logs/references/agat_make_gff.log"
+    shell:
+        """
+        agat_sq_add_attributes_from_tsv.pl --gff {input.gff} --tsv {input.tsv} -o {output.gff} &> {log} &&
+        agat_convert_sp_gff2tsv.pl --gff {output.gff} -o {output.tsv} &>> {log}
+        """
+
 # Generate softlinks of main reference
 rule main_links:
     input:
-        gff = MAIN_GFF,
-        fasta = MAIN_FASTA
+        fasta = MAIN_FASTA,
+        gff = rules.agat_make_gff.output.gff
     output:
-        gff = REFDIR / "{lineage}" / str(MAIN_NAME + ".gff"),
-        fasta = REFDIR / "{lineage}" / str(MAIN_NAME + ".fasta")
+        fasta = REFDIR / "{lineage}" / str(MAIN_NAME + ".fasta"),
+        gff = REFDIR / "{lineage}" / str(MAIN_NAME + ".gff")
     log:
         "logs/references/main_liks_{lineage}.log"
     shell:
-        "ln -s -r {input.gff} {output.gff} &> {log}"
-        "&& "
         "ln -s -r {input.fasta} {output.fasta} &>> {log}"
-
-# Generate a TSV version of the main reference annotation
-rule main_gff2tsv: 
-    input:
-        MAIN_GFF
-    output:
-        REFDIR / str(MAIN_NAME + ".tsv")
-    conda:
-        "../envs/agat.yaml"
-    params: 
-        ref_name = MAIN_NAME    
-    log: 
-        "logs/references/main_gff2tsv.log"
-    shell:
-        "agat_convert_sp_gff2tsv.pl "
-        "-gff {input} "
-        "-o {output} "
-        "&> {log} "
         "&& "
-        "rm {params.ref_name}.agat.log &>> {log} || true" 
+        "ln -s -r {input.gff} {output.gff} &>> {log}"
 
 # Lift over annotation of the main reference to the reference genomes
 rule ref2ref_liftoff:
