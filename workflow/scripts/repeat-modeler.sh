@@ -39,7 +39,7 @@ BuildDatabase -name ${dir}/${outdir}/${lineage}_db/${lineage} -engine ncbi ${fas
 echo "Running RepeatModeler"
 RepeatModeler -pa ${threads} -engine ncbi -database ${dir}/${outdir}/${lineage}_db/${lineage} & PID=$!
 wait ${PID}
-
+echo $PID
 echo "Separating known and unknown families"
 cat ${dir}/${outdir}/${lineage}_db/${lineage}-families.fa | seqkit fx2tab | grep -v "Unknown" | seqkit tab2fx > ${dir}/${outdir}/${lineage}_known.fa
 cat ${dir}/${outdir}/${lineage}_db/${lineage}-families.fa | seqkit fx2tab | grep "Unknown" | seqkit tab2fx > ${dir}/${outdir}/${lineage}_unknown.fa
