@@ -2,7 +2,7 @@
 rule unmapped_ref_features:
     input:
         SAMPLEFILE,
-        rules.main_gff2tsv.output,
+        rules.agat_make_gff.output.tsv,
         expand(rules.ref2ref_liftoff.output.unmapped, lineage=LINEAGES)        
     output:
         REFDIR / "unmapped_count.tsv",
@@ -19,7 +19,7 @@ rule unmapped_ref_features:
 rule unmapped_samples_plot:
     input:
         SAMPLEFILE,
-        rules.main_gff2tsv.output,
+        rules.agat_make_gff.output.tsv,
         expand(rules.liftoff.output.unmapped, sample=SAMPLES)        
     output:
         DATASET_OUTDIR / "files" / "unmapped_count.tsv",

@@ -75,7 +75,6 @@ rule samtools_stats:
     input:
         unpack(samtools_input)
     output:
-        # mapq = OUTDIR / "samtools" / "{sample}" / "distrib_mapq.tsv",
         cov = OUTDIR / "samtools" / "{sample}" / "distrib_cov.tsv",
         mapped = OUTDIR / "samtools" / "{sample}" / "mapped.tsv",
     conda: 

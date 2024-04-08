@@ -45,9 +45,8 @@ def get_final_output():
     final_output.extend(expand(OUTDIR / "snippy" / "{sample}" / "snps.bam",sample=SAMPLES))
     final_output.extend(expand(OUTDIR / "liftoff" / "{sample}" / "lifted.gff_polished",sample=SAMPLES))
     final_output.extend(expand(OUTDIR / "liftoff" / "{sample}" / "unmapped_features.txt",sample=SAMPLES))
-    final_output.append(expand(OUTDIR / "agat" / "{sample}" / "cds.done", sample=SAMPLES))
-    final_output.append(expand(OUTDIR / "agat" / "{sample}" / "prots.done", sample=SAMPLES))
-    final_output.append(expand(DATASET_OUTDIR / "annotations.db"))
+    final_output.append(expand(DATASET_OUTDIR / "database" / "{sample}" / "cds.done", sample=SAMPLES))
+    final_output.append(expand(DATASET_OUTDIR / "database" / "{sample}" / "prots.done", sample=SAMPLES))
     if config["annotate_references"]["activate"]:
         final_output.extend(expand(REFDIR / "{lineage}" / "{lineage}.gff",lineage=LINEAGES))
         final_output.append(REFDIR / str(MAIN_NAME + ".tsv"))
@@ -79,7 +78,7 @@ def get_final_output():
         final_output.extend(expand(DATASET_OUTDIR / "files" / "{lineage}_unmapped_count.tsv", lineage=LINEAGES))
         final_output.extend(expand(DATASET_OUTDIR / "plots" / "{lineage}_unmapped.svg", lineage=LINEAGES))
     if config["snps"]["activate"]:
-        final_output.extend(expand(DATASET_OUTDIR / "snps" / "{lineage}_variants.tsv", lineage=LINEAGES))
+        final_output.append(expand(DATASET_OUTDIR / "annotations.db"))
     return final_output
 
 
@@ -91,12 +90,3 @@ rule links:
         REFDIR / "{lineage}" / "{lineage}.fasta"
     shell:
         "ln -s -r {input} {output}"
-
-if not config["annotate_references"]["activate"]:
-    rule gff_links:
-        input:
-            REF_DATA / "{lineage}.gff"
-        output:
-            REFDIR / "{lineage}" / "{lineage}.gff"
-        shell:
-            "ln -s -r {input} {output}"

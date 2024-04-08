@@ -1,7 +1,7 @@
 rule unmapped_samples_plot:
     input:
         SAMPLEFILE,
-        expand(rules.gff2tsv.output, lineage=LINEAGES),
+        expand(rules.agat_make_gff.output.tsv, lineage=LINEAGES),
         expand(rules.liftoff.output.unmapped, sample=SAMPLES)        
     output:
         expand(DATASET_OUTDIR / "files" / "{lineage}_unmapped_count.tsv", lineage=LINEAGES),

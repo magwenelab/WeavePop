@@ -1,7 +1,7 @@
 # Generate loci table
 rule loci:
     input:
-        refs = expand(rules.gff2tsv.output, lineage=LINEAGES),
+        refs = expand(REFDIR / "{lineage}" / "{lineage}.gff.tsv", lineage=LINEAGES),
         loci=LOCI_FILE
     output:
         locitable = DATASET_OUTDIR / "files"/ "loci_to_plot.tsv"

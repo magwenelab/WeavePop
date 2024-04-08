@@ -2,12 +2,14 @@ rule agat_fix_gff:
     input: 
         gff= MAIN_GFF
     output:
-        fixed_ID = REFDIR / str(MAIN_NAME + "_fixed_ID.gff"),
-        fixed_locus = REFDIR / str(MAIN_NAME + "_fixed_locus.gff"),
-        fixed_description = REFDIR / str(MAIN_NAME + "_fixed_description.gff"),
-        tsv = REFDIR / str(MAIN_NAME + "_fixed.tsv")
+        fixed_ID = temp(REFDIR / str(MAIN_NAME + "_fixed_ID.gff")),
+        fixed_locus = temp(REFDIR / str(MAIN_NAME + "_fixed_locus.gff")),
+        fixed_description = temp(REFDIR / str(MAIN_NAME + "_fixed_description.gff")),
+        tsv = temp(REFDIR / str(MAIN_NAME + "_fixed.tsv"))
     conda:
         "../envs/agat.yaml"
+    params:
+        name = MAIN_NAME
     log:
         "logs/references/agat_fix_gff.log"
     shell:
@@ -15,15 +17,16 @@ rule agat_fix_gff:
         agat_convert_sp_gxf2gxf.pl -g {input.gff} -o {output.fixed_ID} &> {log} && 
         agat_sq_add_locus_tag.pl --gff {output.fixed_ID} --li ID -o {output.fixed_locus} &>> {log} && 
         agat_sp_manage_attributes.pl --gff {output.fixed_locus} --tag product/description -o {output.fixed_description} &>> {log} && 
-        agat_convert_sp_gff2tsv.pl --gff {output.fixed_description} -o {output.tsv} &>> {log}
+        agat_convert_sp_gff2tsv.pl --gff {output.fixed_description} -o {output.tsv} &>> {log} && 
+        rm {params.name}_fixed_locus.agat.log {params.name}_fixed_description.agat.log {params.name}.agat.log &>> {log} || true
         """
 
 rule fix_gff_tsv:
     input:
         tsv = rules.agat_fix_gff.output.tsv
     output:
-        gff = REFDIR / str(MAIN_NAME + "_template.gff"),
-        tsv = REFDIR / str(MAIN_NAME + "_template.tsv")
+        gff = temp(REFDIR / str(MAIN_NAME + "_template.gff")),
+        tsv = temp(REFDIR / str(MAIN_NAME + "_template.tsv"))
     log:
         "logs/references/fix_gff_tsv.log"
     shell:
@@ -40,12 +43,15 @@ rule agat_make_gff:
         tsv = REFDIR / str(MAIN_NAME + ".tsv")
     conda:
         "../envs/agat.yaml"
+    params:
+        name = MAIN_NAME
     log:
         "logs/references/agat_make_gff.log"
     shell:
         """
         agat_sq_add_attributes_from_tsv.pl --gff {input.gff} --tsv {input.tsv} -o {output.gff} &> {log} &&
-        agat_convert_sp_gff2tsv.pl --gff {output.gff} -o {output.tsv} &>> {log}
+        agat_convert_sp_gff2tsv.pl --gff {output.gff} -o {output.tsv} &>> {log} 
+        rm {params.name}.agat.log &>> {log} || true
         """
 
 # Generate softlinks of main reference
@@ -96,3 +102,18 @@ rule ref2ref_liftoff:
         "&> {log} "
         "&& "
         "mv {params.refdir}/{wildcards.lineage}/liftoff.gff_polished {output.target_gff} &>> {log}"
+
+# Convert GFF file to TSV format
+rule gff2tsv:
+    input:
+        rules.ref2ref_liftoff.output.target_gff
+    output:
+        REFDIR / "{lineage}" / "{lineage}.gff.tsv"
+    conda:
+        "../envs/agat.yaml"
+    log:
+        "logs/references/gff2tsv_{lineage}.log"
+    shell:
+        "agat_convert_sp_gff2tsv.pl -gff {input} -o {output} "
+        "&> {log} && "
+        "rm {wildcards.lineage}.agat.log &>> {log} || true"
