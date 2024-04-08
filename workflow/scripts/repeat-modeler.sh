@@ -45,4 +45,4 @@ cat ${dir}/${outdir}/${lineage}_db/${lineage}-families.fa | seqkit fx2tab | grep
 cat ${dir}/${outdir}/${lineage}_db/${lineage}-families.fa | seqkit fx2tab | grep "Unknown" | seqkit tab2fx > ${dir}/${outdir}/${lineage}_unknown.fa
 
 echo "Cleaning up"
-rm -r RM_${PID}*
+rm -r RM_${PID}* | true
