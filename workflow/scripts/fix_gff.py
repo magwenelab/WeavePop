@@ -32,17 +32,22 @@ def fix_gff(input, output_tsv, output_gff):
     df_fixed = df.copy()
     df_fixed['ID'] = df_fixed['new_ID']
     df_fixed.drop(['feature_number', 'suffix', 'new_ID'], axis=1, inplace=True)
-    
+
     print("Saving TSV")
-    df_tsv = df_fixed.copy()
-    df_tsv.drop(['seq_id', 'source_tag', 'primary_tag', 'start', 'end', 'score', 'strand', 'frame'], axis=1, inplace=True)
-    df_tsv.to_csv(output_tsv, sep='\t', index=False, header=True)
+    df_fixed.to_csv(output_tsv, sep='\t', index=False, header=True, na_rep='')
+
+    print("Making GFF")
+    attribute_columns = ['ID', 'Parent', 'locus', 'Name', 'description']
+    df_gff = df_fixed.copy()
+    for column in attribute_columns:
+        df_gff[column] = df_gff[column].apply(lambda x: column + '=' + x if pd.notnull(x) else x)
+    df_gff['attributes'] = df_gff[attribute_columns].apply(lambda x: ';'.join(x.dropna()), axis=1)
+    df_gff.drop(attribute_columns, axis=1, inplace=True)
+    df_gff['strand'] = df_gff['strand'].replace(-1,'-').replace(1,'+')
 
     print("Saving GFF")
-    df_gff = df_fixed.copy()
-    df_gff.drop(['Parent', 'locus', 'Name', 'description'], axis=1, inplace=True)
-    df_gff['ID'] = 'ID=' + df_gff['ID'].astype(str)
     df_gff.to_csv(output_gff, sep='\t', index=False, header=False)
 
+    
 if __name__ == '__main__':
     fix_gff()

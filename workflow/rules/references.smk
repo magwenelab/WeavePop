@@ -25,8 +25,8 @@ rule fix_gff_tsv:
     input:
         tsv = rules.agat_fix_gff.output.tsv
     output:
-        gff = temp(REFDIR / str(MAIN_NAME + "_template.gff")),
-        tsv = temp(REFDIR / str(MAIN_NAME + "_template.tsv"))
+        gff = REFDIR / str(MAIN_NAME + ".gff"),
+        tsv = REFDIR / str(MAIN_NAME + ".tsv")
     log:
         "logs/references/fix_gff_tsv.log"
     shell:
@@ -34,31 +34,11 @@ rule fix_gff_tsv:
         python workflow/scripts/fix_gff.py -i {input.tsv} -og {output.gff} -ot {output.tsv} &> {log}
         """
 
-rule agat_make_gff:
-    input:
-        tsv = rules.fix_gff_tsv.output.tsv,
-        gff = rules.fix_gff_tsv.output.gff
-    output:
-        gff = REFDIR / str(MAIN_NAME + ".gff"),
-        tsv = REFDIR / str(MAIN_NAME + ".tsv")
-    conda:
-        "../envs/agat.yaml"
-    params:
-        name = MAIN_NAME
-    log:
-        "logs/references/agat_make_gff.log"
-    shell:
-        """
-        agat_sq_add_attributes_from_tsv.pl --gff {input.gff} --tsv {input.tsv} -o {output.gff} &> {log} &&
-        agat_convert_sp_gff2tsv.pl --gff {output.gff} -o {output.tsv} &>> {log} 
-        rm {params.name}.agat.log &>> {log} || true
-        """
-
 # Generate softlinks of main reference
 rule main_links:
     input:
         fasta = MAIN_FASTA,
-        gff = rules.agat_make_gff.output.gff
+        gff = rules.fix_gff_tsv.output.gff
     output:
         fasta = REFDIR / "{lineage}" / str(MAIN_NAME + ".fasta"),
         gff = REFDIR / "{lineage}" / str(MAIN_NAME + ".gff")
