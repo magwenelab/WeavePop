@@ -1,13 +1,3 @@
-# agat_convert_sp_gxf2gxf.pl -g data/main_reference/FungiDB-65_CneoformansH99.gff -o H99_temp.gff
-# agat_sq_add_locus_tag.pl --gff H99_temp.gff --li ID -o H99_temp2.gff
-# agat_sp_manage_attributes.pl --gff H99_temp2.gff --tag product/description -o H99.gff
-# agat_convert_sp_gff2tsv.pl --gff H99.gff -o H99.tsv
-
-# agat_convert_sp_gxf2gxf.pl -g data/references/North.gff -o North_temp.gff
-# agat_sq_add_locus_tag.pl --gff North_temp.gff --li ID -o North_temp2.gff
-# agat_sp_manage_attributes.pl --gff North_temp2.gff --tag product/description -o North.gff
-# agat_convert_sp_gff2tsv.pl --gff North.gff -o North.tsv
-
 import click
 import pandas as pd
 
