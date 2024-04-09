@@ -7,7 +7,7 @@ import duckdb
 import re
 
 # Get the dataframes to put in the databse
-def get_dataframes(lineage, db_name, temp_dir, vcf_files):
+def get_dataframes(lineage, db_name, temp_dir, vcf_files, db_dir, config):
     temp = os.path.join(temp_dir, "bcf_isec_" + lineage)
     if not os.path.exists(temp):
         os.makedirs(temp)
@@ -56,7 +56,7 @@ def get_dataframes(lineage, db_name, temp_dir, vcf_files):
     snpeff_command = f"snpEff ann -v -classic -s {snpeff_html_path} {db_name} {sites_vcf_path} 1> {ann_vcf_path} 2> {snpeff_log_path}"
     print(snpeff_command)
     
-    $(snpEff ann -v -classic -s @(snpeff_html_path) @(db_name) @(sites_vcf_path) 1> @(ann_vcf_path) 2> @(snpeff_log_path))
+    $(snpEff ann -v -classic -dataDir @(db_dir) -config @(config) -s @(snpeff_html_path) @(db_name) @(sites_vcf_path) 1> @(ann_vcf_path) 2> @(snpeff_log_path))
 
     # Get tables from SnpEFF result
     print("Getting tables from SnpEff result")
@@ -178,10 +178,11 @@ def cli():
 @click.option('--lineage_column', '-c', type=str, help='Name of the column in the metadata file that contains the lineage information')
 @click.option('--species_name', '-s', type=str, help='Name of the species')
 @click.option('--temp_dir', '-t', type=str, help='Directory to store temporary files')
+@click.option('--db_dir', '-d', type=click.Path(), help='Directory with SnpEff databse')
+@click.option('--config', '-n', type=click.Path(), help='Path to the SnpEff config file')
 @click.option('--output', '-o', type=click.Path(), help='Output database file')
-# @click.argument('db_names', nargs=-1)
 @click.argument('vcf_files', nargs=-1, type=click.Path(exists=True))
-def annotate(metadata, lineage_column, species_name, temp_dir, output, vcf_files):
+def annotate(metadata, lineage_column, species_name, temp_dir, db_dir,config, output, vcf_files):
     print("Using the following parameters:")
     print(f"metadata: {metadata}")
     print(f"lineage_column: {lineage_column}")
@@ -211,7 +212,7 @@ def annotate(metadata, lineage_column, species_name, temp_dir, output, vcf_files
         print("Using the following SnpEff database:")
         print(lin_db_name)
         lin_temp_dir = os.path.join(temp_dir, lineage)
-        lin_dfs = get_dataframes(lineage, lin_db_name, lin_temp_dir, lin_vcf_files)
+        lin_dfs = get_dataframes(lineage, lin_db_name, lin_temp_dir, lin_vcf_files, db_dir, config)
         print("Joining dataframes")
         df_presence.append(lin_dfs['df_presence'])
         df_variants.append(lin_dfs['df_variants'])
