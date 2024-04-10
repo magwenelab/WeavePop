@@ -4,9 +4,12 @@ logs/
 fastqs/
 fastq_combined/
 references/
+results/dataset/sequences.db
+results/dataset/annotations.db
 srafiles/
 analysis*
-*results*
+results/samples/
+results/dataset/tmp/
 files/SraRunTable.txt
 backup*
 files/loci_to_plot.tsv
