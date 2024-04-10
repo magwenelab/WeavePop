@@ -91,7 +91,7 @@ def mapq_plot_input(wildcards):
     return {
         "mapq": OUTDIR / "samtools" / s["sample"] / "mapq_window.bed",
         "structure": OUTDIR / "mosdepth" / s["sample"] / "good_structural_variants.tsv" ,
-        "repeats": REFDIR / s["group"]  / "repeats" / (s["group"] + "_repeats.bed"),
+        "repeats": REFDIR / s["group"]  / "repeats" / (s["group"] + "_repeats.bed")
         # "variants": DATASET_OUTDIR / "snps" / (s["group"] + "_variants.tsv")
     }
 rule mapq_plot:

@@ -1,0 +1,201 @@
+bless( {
+         'alignCol' => [
+                         {
+                           'seqStart' => 1,
+                           'rfSeq' => undef,
+                           'lfSeq' => 'ATAAGC',
+                           'seq' => 'TAGAAAACTTGTAATATCAAAACAAATA-AAGACAAATGATT-GTAGAATAGTTTC-C-ATGCAACTTAGACATCTCTGGC-AA-TC--GACACAGCATGCTCAAG-CTC---T---CTCTAGACAACTCTACATCTGACA',
+                           'orient' => '+',
+                           'name' => 'gi|703'
+                         },
+                         {
+                           'name' => 'gi|699',
+                           'end' => 140,
+                           'seqStart' => 7,
+                           'lfSeq' => 'ATAAGC',
+                           'rfSeq' => undef,
+                           'seq' => 'TAGAAAACTTGTAATATGGAAACAAATA-AAGACAAATGATT-GTAGAATAGTTTC-C-ATGCAACTTAGACATCTCTGGC-AA-TC--AACACAGTGTGCTCAAG-CTC---T---CTCTAGACAACTCTACATCCAACA',
+                           'srcDiv' => '5.56',
+                           'seqEnd' => 132,
+                           'start' => 0,
+                           'orient' => '+'
+                         },
+                         {
+                           'end' => 140,
+                           'name' => 'gi|697',
+                           'seqStart' => 7,
+                           'lfSeq' => 'ATAAGC',
+                           'rfSeq' => undef,
+                           'seq' => 'TAGAAAACTTATAATATTGAAACAAATATAAGACAG--GATT-GTAAAATAGTTTC-C-ATGCAACTTAAACATCTCTGGC-AA-TT--GACACAGCATGCTCAAG-CTC---T---CTCTAGACAACTCTACATCTGACA',
+                           'srcDiv' => '5.56',
+                           'seqEnd' => 131,
+                           'start' => 0,
+                           'orient' => '+'
+                         },
+                         {
+                           'start' => 0,
+                           'orient' => '+',
+                           'srcDiv' => '10.32',
+                           'seqEnd' => 132,
+                           'seqStart' => 7,
+                           'lfSeq' => 'ATAAGC',
+                           'rfSeq' => undef,
+                           'seq' => 'TAGAGCACCTACATTATTGAAACAAATA-A-GACAAAGGATT-GTAGAATAGTTTT-CTATGCAACTTAGGCATCTCTGGC-AA-TC--GACACAGCATGCTCAAG-CAC---T---CTCTAGACAACTCTACATCCGACA',
+                           'end' => 140,
+                           'name' => 'gi|698'
+                         },
+                         {
+                           'seqStart' => 7,
+                           'seq' => 'TAGAGCACCTACAATATCGAAACAAATA-A-GACAAAGGATT-GTAGAATAGTTTTAT-ATGCAACTTAGACATCTCTGGC-AA-TT--GACACAGTGTGCTCAAG-CAC---T---CTCTAGATAACTCTACATCCAACA',
+                           'rfSeq' => undef,
+                           'lfSeq' => 'ATAAGC',
+                           'name' => 'gi|700',
+                           'end' => 140,
+                           'orient' => '+',
+                           'start' => 0,
+                           'srcDiv' => '12.70',
+                           'seqEnd' => 132
+                         },
+                         {
+                           'name' => 'gi|701',
+                           'end' => 133,
+                           'seqStart' => 7,
+                           'seq' => 'TAGAGCACCTACAATATTGAAACAAATA-A-GACAAAGGATTTGTAGAATAGTTTT-CTATGCAACTTAGACATCTCTGGC-AA-TT--GACACAGTGTGCTCAAG-CAC---T---CTCTAGACAACTCTACA',
+                           'lfSeq' => 'AAGTAAGAAACCTTCCAAATGATTATT',
+                           'rfSeq' => undef,
+                           'srcDiv' => '10.92',
+                           'seqEnd' => 126,
+                           'orient' => '+',
+                           'start' => 0
+                         },
+                         {
+                           'seqStart' => 28,
+                           'seq' => 'AGATA-AAGATAAAAGACT-GCGGATTTGTTTCTC-ATGCA-TTTAGACATCTCTGATTAC-TC--GACACATCGTGCCTAAC-CTC---T---CCCCAAACGACTCCACATTTAATA',
+                           'rfSeq' => undef,
+                           'lfSeq' => 'C',
+                           'end' => 140,
+                           'name' => 'gi|702',
+                           'orient' => '+',
+                           'start' => 23,
+                           'srcDiv' => '24.27',
+                           'seqEnd' => 131
+                         },
+                         {
+                           'seqEnd' => 103,
+                           'srcDiv' => '5.94',
+                           'start' => 25,
+                           'orient' => '+',
+                           'name' => 'gi|704',
+                           'end' => 140,
+                           'lfSeq' => undef,
+                           'rfSeq' => undef,
+                           'seq' => 'ATATAAGACAAAGGATT-GTAGAATAGTTTC-C-ATGCAACTTAGACATCTCTGGC-AA-TT--GACACAATGTGCTCAAG-CTC---T---CCCTAGACAACTCTACATCTGACA',
+                           'seqStart' => 2
+                         },
+                         {
+                           'orient' => '+',
+                           'start' => 54,
+                           'srcDiv' => '13.51',
+                           'seqEnd' => 76,
+                           'seqStart' => 1,
+                           'seq' => 'TC-C-ATGCAACTTAGGAATATCTGGC-AATTT--GACACAGCTTGTTCAAG-CTT---TCACCTCTAGAC-ACTATA-ACTTGACA',
+                           'rfSeq' => undef,
+                           'lfSeq' => undef,
+                           'end' => 140,
+                           'name' => 'gi|707'
+                         },
+                         {
+                           'seqEnd' => 76,
+                           'srcDiv' => '13.51',
+                           'orient' => '+',
+                           'start' => 54,
+                           'name' => 'gi|706',
+                           'end' => 140,
+                           'seq' => 'TC-C-ATGCAACTTAGGAATATCTGGC-AATTT--GACACAGCTTGTTCAAG-CTT---TCACCTCTAGAC-ACTATA-ACTTGACA',
+                           'lfSeq' => undef,
+                           'rfSeq' => undef,
+                           'seqStart' => 1
+                         },
+                         {
+                           'end' => 140,
+                           'name' => 'gi|705',
+                           'lfSeq' => undef,
+                           'rfSeq' => undef,
+                           'seq' => 'TC-C-ATGCAACTTAGGAATACCTGGC-AA-TTTGAACACAGCTTGTTCAAGCCTCCA-C---CTCTAGAC-ACTATA-ATCTGACA',
+                           'seqStart' => 1,
+                           'seqEnd' => 77,
+                           'srcDiv' => '13.51',
+                           'start' => 54,
+                           'orient' => '+'
+                         },
+                         {
+                           'orient' => '+',
+                           'start' => 54,
+                           'srcDiv' => '14.86',
+                           'seqEnd' => 76,
+                           'seqStart' => 1,
+                           'seq' => 'TC-C-ATGCAACTTTGGAATATCTGGC-AATTT--GACACAGCTTGTTCAAG-CTT---TCACCTCTAGAC-ACTATA-ACTTGACA',
+                           'rfSeq' => undef,
+                           'lfSeq' => undef,
+                           'name' => 'gi|713',
+                           'end' => 140
+                         },
+                         {
+                           'orient' => '+',
+                           'start' => 54,
+                           'seqEnd' => 76,
+                           'srcDiv' => '14.86',
+                           'seq' => 'TC-C-ATGCAACTTAGGAATATCAGGC-AATTT--GACACAGCTTGTTCAAG-CTTTCAT---CTCTAGAC-ACTATA-ACTTGACA',
+                           'rfSeq' => undef,
+                           'lfSeq' => undef,
+                           'seqStart' => 1,
+                           'name' => 'gi|712',
+                           'end' => 140
+                         },
+                         {
+                           'seq' => 'TC-C-ATGCAACTTAGGAATATCAGGC-AATTT--GACACAGCTTGTTCAAG-CTTTCAT---CTCTAGAC-ACTATA-ACTTGACA',
+                           'lfSeq' => undef,
+                           'rfSeq' => undef,
+                           'seqStart' => 1,
+                           'end' => 140,
+                           'name' => 'gi|711',
+                           'orient' => '+',
+                           'start' => 54,
+                           'seqEnd' => 76,
+                           'srcDiv' => '14.86'
+                         },
+                         {
+                           'end' => 140,
+                           'name' => 'gi|710',
+                           'seqStart' => 1,
+                           'seq' => 'TC-C-ATGCAACTTAGGAATATCAGGC-AATTT--GACACAGCTTGTTCAAG-CTT---TCACCTCTAGAC-ACTATA-ACTTGACA',
+                           'rfSeq' => undef,
+                           'lfSeq' => undef,
+                           'srcDiv' => '14.86',
+                           'seqEnd' => 76,
+                           'orient' => '+',
+                           'start' => 54
+                         },
+                         {
+                           'start' => 54,
+                           'orient' => '+',
+                           'seqEnd' => 76,
+                           'srcDiv' => '14.86',
+                           'rfSeq' => undef,
+                           'lfSeq' => undef,
+                           'seq' => 'TC-C-ATGCAACTTAGGAATATCAGGC-AATTT--GACACAGCTTGTTCAAG-CTT---TCACCTCTAGAC-ACTATA-ACTTGACA',
+                           'seqStart' => 1,
+                           'end' => 140,
+                           'name' => 'gi|709'
+                         },
+                         {
+                           'srcDiv' => '14.86',
+                           'end' => 140,
+                           'name' => 'gi|708',
+                           'seqEnd' => 76,
+                           'seqStart' => 1,
+                           'start' => 54,
+                           'seq' => 'TC-C-ATGCAACTTAGGAATATCAGGC-AATTT--GACACAGCTTGTTCAAG-CTT---TCACCTCTAGAC-ACTATA-ACTTGACA'
+                         }
+                       ]
+       }, 'MultAln' )
