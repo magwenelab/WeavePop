@@ -1,12 +1,12 @@
 ## Reserve a VM
 Go to `https://vcm.duke.edu/`
-Click on "Reserve a VM"
-Click on "Ubuntu Server 20.04"
-Accept Terms and Conditions and wait to reveive an e-mail
+Click on "Reserve a VM".
+Click on "Ubuntu Server 20.04".
+Accept Terms and Conditions and wait to receive an e-mail.
 Open a Terminal and access your VM by typing the SSH command in the e-mail. `ssh cz192@vcm-40396.vm.duke.edu`. If you have SSH Keys configured you don't need to provide your Duke password.
 You will get this message:
 ```
-The authenticity of host 'vcm-40528.vm.duke.edu (152.3.56.214)' can't be established.
+The authenticity of host 'vcm-40396.vm.duke.edu (196.3.21.758)' can't be established.
 ED25519 key fingerprint is SHA256:WKqxm4gl3ogU3vXzqCI5bUyujZkUwpO9o4FItfBSUXo.
 This key is not known by any other names
 Are you sure you want to continue connecting (yes/no/[fingerprint])?
@@ -39,7 +39,7 @@ curl -L https://tljh.jupyter.org/bootstrap.py | sudo -E python3 - --admin <admin
 From: `https://tljh.jupyter.org/en/latest/install/custom-server.html`
 
 ## Setup JupyterHub
-In a browser go to `https://152.3.56.214`.  
+In a browser go to `https://196.3.21.758`.  
 Enter the admin username and create a password for it.
 Using the button with the plus "+" symbol you will access the "Launcher". From there you can open a terminal, notebook, python console, etc.  
 
