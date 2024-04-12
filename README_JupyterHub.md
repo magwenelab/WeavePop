@@ -111,5 +111,5 @@ From: `https://tljh.jupyter.org/en/latest/howto/user-env/override-lab-settings.h
 `https://tljh.jupyter.org/en/latest/howto/admin/https.html`
 
 ## May be usefull in the future
-`https://github.com/jupyterhub/the-littlest-jupyterhub/issues/429`
-`https://blog.umd.edu/crstl/useful-links/how-to-setup-and-use-your-own-conda-environment-in-jupyterhub/`
+1) `https://github.com/jupyterhub/the-littlest-jupyterhub/issues/429`
+2) `https://blog.umd.edu/crstl/useful-links/how-to-setup-and-use-your-own-conda-environment-in-jupyterhub/`
