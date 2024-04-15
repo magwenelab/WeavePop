@@ -100,20 +100,20 @@ rule mapq:
         "../scripts/pileup_mapq.sh"
 
 # Add the MAPQ and Coverage to the gff file
-rule mapqcov2gff:
+rule mapqcov:
     input:
         mapqbed = rules.mapq.output.winbed,
         covbed = rules.mosdepth.output.bed,
         gff = rules.liftoff.output.polished
     output:
         covmapq = OUTDIR / "samtools" / "{sample}" / "mapq_cov_window.bed",
-        newgff = OUTDIR / "samtools" / "{sample}" / "annotation.gff"
+        tsv = OUTDIR / "samtools" / "{sample}" / "feature_mapq_cov.tsv"
     conda:
         "../envs/samtools.yaml"
     log: 
-        "logs/mapq/mapqcov2gff_{sample}.log"
+        "logs/mapq/mapqcov_{sample}.log"
     shell:
-        "xonsh workflow/scripts/mapqcov2gff.xsh {input.mapqbed} {input.covbed} {input.gff} {output.covmapq} {output.newgff} &> {log}"
+        "xonsh workflow/scripts/mapqcov.xsh -m {input.mapqbed} -c {input.covbed} -g {input.gff} -cm {output.covmapq} -s {wildcards.sample} -o {output.tsv} &> {log}"
 
 # Run RepeatModeler for each reference genome
 rule repeat_modeler:
@@ -235,12 +235,14 @@ rule dataset_metrics:
         g = expand(rules.good_coverage.output.chromosome,sample=SAMPLES),
         r = expand(rules.raw_coverage.output.chromosome,sample=SAMPLES),
         sv = expand(rules.good_coverage.output.structure,sample=SAMPLES),
-        m = expand(rules.samtools_stats.output.mapped,sample=SAMPLES)
+        m = expand(rules.samtools_stats.output.mapped,sample=SAMPLES),
+        mc = expand(rules.mapqcov.output.tsv,sample=SAMPLES)
     output:
         allg = DATASET_OUTDIR / "files" / "coverage_good.tsv",
         allr = DATASET_OUTDIR / "files" / "coverage_raw.tsv",
         allsv = DATASET_OUTDIR / "files" / "structural_variants.tsv",
-        allm = DATASET_OUTDIR / "files" / "mapping_stats.tsv"
+        allm = DATASET_OUTDIR / "files" / "mapping_stats.tsv",
+        allmc = DATASET_OUTDIR / "files" / "mapqcov.tsv"
     log:
         "logs/coverage/dataset_coverage.log"
     script:

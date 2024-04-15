@@ -11,3 +11,6 @@ tail -q -n +2 ${snakemake_input[sv]}  1>> ${snakemake_output[allsv]} 2>> ${snake
 # Concatenate mapped reads tables of all samples into one
 cat ${snakemake_input[m]} | head -n 1 1> ${snakemake_output[allm]} 2> ${snakemake_log[0]}
 tail -q -n +2 ${snakemake_input[m]}  1>> ${snakemake_output[allm]} 2>> ${snakemake_log[0]}
+# Concatenate mapqcov tables of all samples into one
+cat ${snakemake_input[mc]} | head -n 1 1> ${snakemake_output[allmc]} 2> ${snakemake_log[0]}
+tail -q -n +2 ${snakemake_input[mc]}  1>> ${snakemake_output[allmc]} 2>> ${snakemake_log[0]}
