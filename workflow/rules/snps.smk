@@ -83,7 +83,9 @@ rule annotations_db:
         mc = rules.dataset_metrics.output.allmc,
         vcfs = expand(rules.snippy.output.vcf, sample=SAMPLES),
         databases = expand(rules.build_refs_db.output, lineage=LINEAGES),
-        gffs = rules.join_gffs.output
+        gffs = rules.join_gffs.output,
+        cds = expand(DATASET_OUTDIR / "database" / "{sample}" / "cds.done", sample=SAMPLES),
+        prots = expand(DATASET_OUTDIR / "database" / "{sample}" / "prots.done", sample=SAMPLES)
     output:
         DATASET_OUTDIR / "annotations.db"
     params:
@@ -91,12 +93,13 @@ rule annotations_db:
         sp = config["species_name"],
         temp_dir = DATASET_OUTDIR / 'tmp',
         dir = os.getcwd() / DATASET_OUTDIR / "snpeff_data",
-        config = DATASET_OUTDIR / "snpeff_data" / "snpEff.config"
+        config = DATASET_OUTDIR / "snpeff_data" / "snpEff.config",
+        sequences = DATASET_OUTDIR / "sequences.db"
     conda:
         "../envs/variants.yaml"
     log:
         "logs/snps/annotations_db.log"
     shell:
-        "xonsh workflow/scripts/build_database.xsh annotate -m {input.metadata} -h {input.chrom_names} -v {input.sv} -q {input.mc} -g {input.gffs} -c {params.column} -s {params.sp} -t {params.temp_dir} -d {params.dir} -n {params.config} -o {output}  {input.vcfs} &> {log}"
+        "xonsh workflow/scripts/build_database.xsh annotate -m {input.metadata} -h {input.chrom_names} -v {input.sv} -q {input.mc} -g {input.gffs} -c {params.column} -s {params.sp} -t {params.temp_dir} -d {params.dir} -n {params.config} -db {params.sequences} -o {output}  {input.vcfs} &> {log}"
 
         
