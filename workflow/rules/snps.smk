@@ -1,3 +1,15 @@
+rule join_gffs:
+    input:
+        expand(REFDIR / "{lineage}" / "{lineage}.gff.tsv", lineage=LINEAGES)
+    output:
+        REFDIR / "all.gff.tsv"
+    params:
+        {lineage: REFDIR / lineage / f"{lineage}.gff.tsv" for lineage in LINEAGES}
+    log:
+        "logs/references/join_gffs.log"
+    script:
+        "../scripts/join_gffs.py"
+
 rule extract_ref_seqs:
     input:
         gff = REFDIR / "{lineage}" / "{lineage}.gff",
@@ -70,7 +82,8 @@ rule annotations_db:
         sv = rules.dataset_metrics.output.allsv,
         mc = rules.dataset_metrics.output.allmc,
         vcfs = expand(rules.snippy.output.vcf, sample=SAMPLES),
-        databases = expand(rules.build_refs_db.output, lineage=LINEAGES)
+        databases = expand(rules.build_refs_db.output, lineage=LINEAGES),
+        gffs = rules.join_gffs.output
     output:
         DATASET_OUTDIR / "annotations.db"
     params:
@@ -84,4 +97,6 @@ rule annotations_db:
     log:
         "logs/snps/annotations_db.log"
     shell:
-        "xonsh workflow/scripts/build_database.xsh annotate -m {input.metadata} -h {input.chrom_names} -v {input.sv} -q {input.mc} -c {params.column} -s {params.sp} -t {params.temp_dir} -d {params.dir} -n {params.config} -o {output}  {input.vcfs} &> {log}"
+        "xonsh workflow/scripts/build_database.xsh annotate -m {input.metadata} -h {input.chrom_names} -v {input.sv} -q {input.mc} -g {input.gffs} -c {params.column} -s {params.sp} -t {params.temp_dir} -d {params.dir} -n {params.config} -o {output}  {input.vcfs} &> {log}"
+
+        

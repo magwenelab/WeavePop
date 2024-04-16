@@ -167,13 +167,9 @@ def get_vcf_files(lineage, vcf_files, df_samples, lineage_column):
     return lin_vcf_files
 
 # # Process dataframes to include
-def process_dataframes(struc_vars, chrom_names, mapqcov):
-    # df_gff = pd.read_csv(gff, sep='\t', comment='#', low_memory=False)
-    # keep_columns = ['seq_id', 'primary_tag', 'start', 'end', 'score', 'strand', 'frame', 'ID', 'Parent', 'old_ID', 'Name', 'description']
-    # existing_cols = [column for column in keep_columns if column in df_gff.columns]
-    # df_gff = df_gff[existing_cols]
-    # df_gff['lineage'] = lineage
-    # df_gff['feature_id'] = df_gff['ID'] + '_' + lineage
+def process_dataframes(gff,struc_vars, chrom_names, mapqcov):
+    df_gff = pd.read_csv(gff, sep='\t', header = 0, low_memory=False)
+    df_gff['feature_id'] = df_gff['ID'] + '_' + df_gff['lineage']
 
     df_sv = pd.read_csv(struc_vars, sep='\t')
     df_sv.columns = df_sv.columns.str.lower()
@@ -186,6 +182,7 @@ def process_dataframes(struc_vars, chrom_names, mapqcov):
     dataframes['df_sv'] = df_sv
     dataframes['df_mapqcov'] = df_mapqcov
     dataframes['df_chroms'] = df_chroms
+    dataframes['df_gff'] = df_gff
 
     return dataframes
 
@@ -207,8 +204,9 @@ def cli():
 @click.option('--struc_vars', '-v', type=click.Path(), help='Path to the structural variants file')
 @click.option('--chrom_names', '-h', type=click.Path(), help='Path to the chromosome names file')
 @click.option('--mapqcov', '-q', type=click.Path(), help='Path to the mapq coverage file')
+@click.option('--gff', '-g', type=click.Path(), help='Path to the GFF file')
 @click.argument('vcf_files', nargs=-1, type=click.Path(exists=True))
-def annotate(metadata, lineage_column, species_name, temp_dir, db_dir,config, output, vcf_files, struc_vars, chrom_names, mapqcov):
+def annotate(metadata, lineage_column, species_name, temp_dir, db_dir,config, output, vcf_files, gff, struc_vars, chrom_names, mapqcov):
     print("Using the following parameters:")
     print(f"metadata: {metadata}")
     print(f"lineage_column: {lineage_column}")
@@ -256,7 +254,7 @@ def annotate(metadata, lineage_column, species_name, temp_dir, db_dir,config, ou
     dataframes['df_nmds'] = pd.concat(df_nmds)
     dataframes['df_genes'] = pd.concat(df_genes)
 
-    extra_dfs = process_dataframes(struc_vars, chrom_names, mapqcov)
+    extra_dfs = process_dataframes(gff, struc_vars, chrom_names, mapqcov)
 
     # Connect to the database
 
@@ -269,6 +267,7 @@ def annotate(metadata, lineage_column, species_name, temp_dir, db_dir,config, ou
     con.register('df_nmds', dataframes['df_nmds'])
     con.register('df_genes', dataframes['df_genes'])
     con.register('df_samples', df_samples)
+    con.register('df_gff', extra_dfs['df_gff'])
     con.register('df_sv', extra_dfs['df_sv'])
     con.register('df_mapqcov', extra_dfs['df_mapqcov'])
     con.register('df_chroms', extra_dfs['df_chroms'])
@@ -280,6 +279,7 @@ def annotate(metadata, lineage_column, species_name, temp_dir, db_dir,config, ou
     con.execute("CREATE TABLE IF NOT EXISTS nmds AS SELECT * FROM df_nmds")
     con.execute("CREATE TABLE IF NOT EXISTS genes AS SELECT * FROM df_genes")
     con.execute("CREATE TABLE IF NOT EXISTS samples AS SELECT * FROM df_samples")
+    con.execute("CREATE TABLE IF NOT EXISTS gff AS SELECT * FROM df_gff")
     con.execute("CREATE TABLE IF NOT EXISTS structural_variants AS SELECT * FROM df_sv")
     con.execute("CREATE TABLE IF NOT EXISTS mapq_coverage AS SELECT * FROM df_mapqcov")
     con.execute("CREATE TABLE IF NOT EXISTS chromosome_names AS SELECT * FROM df_chroms")
