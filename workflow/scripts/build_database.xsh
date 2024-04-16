@@ -135,18 +135,12 @@ def get_dataframes(lineage, db_name, temp_dir, vcf_files, db_dir, config):
 
     df_nmds = pd.DataFrame(data_nmds, columns=['var_id', 'gene_name','gene_id', 'nb_transcripts', 'percent_transcripts'])
 
-    df_genes = df_effects[['gene_name','transcript_id', 'effect_id']].copy()
-    df_genes.replace('', None , inplace=True)
-    df_genes.dropna(axis = 0, inplace=True)
-    df_genes.sort_values('transcript_id', inplace=True)
-
     dataframes = {}
     dataframes['df_presence'] = df_presence
     dataframes['df_variants'] = df_variants
     dataframes['df_effects'] = df_effects
     dataframes['df_lofs'] = df_lofs
     dataframes['df_nmds'] = df_nmds
-    dataframes['df_genes'] = df_genes
     
     print('Adding lineage to dataframes')
     for df_name, df in dataframes.items():
@@ -225,7 +219,6 @@ def annotate(metadata, lineage_column, species_name, temp_dir, db_dir,config, ou
     df_effects = []
     df_lofs = []
     df_nmds = []
-    df_genes = []
     lineages = df_samples[lineage_column].unique()
     for lineage in lineages:
         print(f"Processing lineage:")
@@ -244,7 +237,6 @@ def annotate(metadata, lineage_column, species_name, temp_dir, db_dir,config, ou
         df_effects.append(lin_dfs['df_effects'])
         df_lofs.append(lin_dfs['df_lofs'])
         df_nmds.append(lin_dfs['df_nmds'])
-        df_genes.append(lin_dfs['df_genes'])
         print("Finished processing lineage:")
         print(lineage)
 
@@ -254,7 +246,6 @@ def annotate(metadata, lineage_column, species_name, temp_dir, db_dir,config, ou
     dataframes['df_effects'] = pd.concat(df_effects)
     dataframes['df_lofs'] = pd.concat(df_lofs)
     dataframes['df_nmds'] = pd.concat(df_nmds)
-    dataframes['df_genes'] = pd.concat(df_genes)
 
     extra_dfs = process_dataframes(gff, struc_vars, chrom_names, mapqcov)
 
@@ -267,7 +258,6 @@ def annotate(metadata, lineage_column, species_name, temp_dir, db_dir,config, ou
     con.register('df_effects', dataframes['df_effects'])
     con.register('df_lofs', dataframes['df_lofs'])
     con.register('df_nmds', dataframes['df_nmds'])
-    con.register('df_genes', dataframes['df_genes'])
     con.register('df_samples', df_samples)
     con.register('df_gff', extra_dfs['df_gff'])
     con.register('df_sv', extra_dfs['df_sv'])
@@ -279,7 +269,6 @@ def annotate(metadata, lineage_column, species_name, temp_dir, db_dir,config, ou
     con.execute("CREATE TABLE IF NOT EXISTS effects AS SELECT * FROM df_effects")
     con.execute("CREATE TABLE IF NOT EXISTS lofs AS SELECT * FROM df_lofs")
     con.execute("CREATE TABLE IF NOT EXISTS nmds AS SELECT * FROM df_nmds")
-    con.execute("CREATE TABLE IF NOT EXISTS genes AS SELECT * FROM df_genes")
     con.execute("CREATE TABLE IF NOT EXISTS samples AS SELECT * FROM df_samples")
     con.execute("CREATE TABLE IF NOT EXISTS gff AS SELECT * FROM df_gff")
     con.execute("CREATE TABLE IF NOT EXISTS structural_variants AS SELECT * FROM df_sv")
