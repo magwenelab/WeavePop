@@ -66,6 +66,9 @@ rule build_refs_db:
 rule annotations_db:
     input:
         metadata = SAMPLEFILE,
+        chrom_names = CHROM_NAMES,
+        sv = rules.dataset_metrics.output.allsv,
+        mc = rules.dataset_metrics.output.allmc,
         vcfs = expand(rules.snippy.output.vcf, sample=SAMPLES),
         databases = expand(rules.build_refs_db.output, lineage=LINEAGES)
     output:
@@ -81,4 +84,4 @@ rule annotations_db:
     log:
         "logs/snps/annotations_db.log"
     shell:
-        "xonsh workflow/scripts/build_database.xsh annotate -m {input.metadata} -c {params.column} -s {params.sp} -t {params.temp_dir} -d {params.dir} -n {params.config} -o {output}  {input.vcfs} &> {log}"
+        "xonsh workflow/scripts/build_database.xsh annotate -m {input.metadata} -h {input.chrom_names} -v {input.sv} -q {input.mc} -c {params.column} -s {params.sp} -t {params.temp_dir} -d {params.dir} -n {params.config} -o {output}  {input.vcfs} &> {log}"

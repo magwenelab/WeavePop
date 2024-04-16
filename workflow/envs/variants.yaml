@@ -11,4 +11,4 @@ dependencies:
   - bcftools
   - bedtools
   - snpEff
-  - duckdb
+  - python-duckdb=0.10.1
