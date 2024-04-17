@@ -96,44 +96,42 @@ def get_dataframes(lineage, db_name, temp_dir, vcf_files, db_dir, config):
                 codon_change = effect_info_parts[2]
                 aa_change = effect_info_parts[3]
                 aa_length = effect_info_parts[4]
-                gene_name = effect_info_parts[5]
+                locus = effect_info_parts[5]
                 biotype = effect_info_parts[6]
                 coding = effect_info_parts[7]
                 transcript_id = effect_info_parts[8]
                 exon_rank = effect_info_parts[9]
-                data_effects.append([var_id,  effect_type, impact, effect, codon_change, aa_change, aa_length, gene_name, biotype, coding, transcript_id, exon_rank])
+                data_effects.append([var_id,  effect_type, impact, effect, codon_change, aa_change, aa_length, locus, biotype, coding, transcript_id, exon_rank])
             # Iterate over all lofs
             for lof in lofs:
                 lof_parts = lof.split('|')
                 first = lof_parts[0]
-                gene_name = first.replace('(', '')
-                gene_id = lof_parts[1]
+                locus = first.replace('(', '')
                 nb_transcripts = lof_parts[2]
                 last = lof_parts[3]
                 percent_transcripts = last.replace(')', '')
-                data_lofs.append([var_id, gene_name, gene_id, nb_transcripts, percent_transcripts])
+                data_lofs.append([var_id, locus, nb_transcripts, percent_transcripts])
             # Iterate over all nmds
             for nmd in nmds:
                 nmd_parts = nmd.split('|')
                 first = nmd_parts[0]
-                gene_name = first.replace('(', '')
-                gene_id = nmd_parts[1]
+                locus = first.replace('(', '')
                 nb_transcripts = nmd_parts[2]
                 last = nmd_parts[3]
                 percent_transcripts = last.replace(')', '')
-                data_nmds.append([var_id, gene_name, gene_id, nb_transcripts, percent_transcripts])
+                data_nmds.append([var_id, locus, nb_transcripts, percent_transcripts])
 
     # Create dataframes from the data objects
     print("Creating dataframes")
-    df_variants = pd.DataFrame(data_variants, columns=['var_id', 'chrom', 'pos', 'ref', 'alt'])
+    df_variants = pd.DataFrame(data_variants, columns=['var_id', 'accession', 'pos', 'ref', 'alt'])
 
-    df_effects = pd.DataFrame(data_effects, columns=['var_id', 'type', 'impact','effect', 'codon_change', 'amino_acid_change', 'amino_acid_length', 'gene_name', 'transcript_biotype', 'gene_coding', 'transcript_id', 'exon_rank'])
+    df_effects = pd.DataFrame(data_effects, columns=['var_id', 'effect_type', 'impact','effect', 'codon_change', 'amino_acid_change', 'amino_acid_length', 'locus', 'transcript_biotype', 'gene_coding', 'transcript_id', 'exon_rank'])
     df_effects['effect_id'] = 'eff_' + lineage + '_' + (df_effects.index + 1).astype(str)
     df_effects.insert(0, 'effect_id', df_effects.pop('effect_id'))
 
-    df_lofs = pd.DataFrame(data_lofs, columns=['var_id', 'gene_name','gene_id', 'nb_transcripts', 'percent_transcripts'])
+    df_lofs = pd.DataFrame(data_lofs, columns=['var_id', 'locus', 'nb_transcripts', 'percent_transcripts'])
 
-    df_nmds = pd.DataFrame(data_nmds, columns=['var_id', 'gene_name','gene_id', 'nb_transcripts', 'percent_transcripts'])
+    df_nmds = pd.DataFrame(data_nmds, columns=['var_id', 'locus', 'nb_transcripts', 'percent_transcripts'])
 
     dataframes = {}
     dataframes['df_presence'] = df_presence
@@ -164,12 +162,16 @@ def get_vcf_files(lineage, vcf_files, df_samples, lineage_column):
 # # Process dataframes to include
 def process_dataframes(gff,struc_vars, chrom_names, mapqcov):
     df_gff = pd.read_csv(gff, sep='\t', header = 0, low_memory=False)
-    df_gff['feature_id'] = df_gff['ID'] + '_' + df_gff['lineage']
+    df_gff['feature_id_lineage'] = df_gff['ID'] + '_' + df_gff['lineage']
+    df_gff.rename(columns={'seq_id': 'accession'}, inplace=True)
+    df_gff.rename(columns={'ID' : 'feature_id'}, inplace=True)
+    df_gff.columns = df_gff.columns.str.lower()
 
     df_sv = pd.read_csv(struc_vars, sep='\t')
     df_sv.columns = df_sv.columns.str.lower()
 
     df_mapqcov = pd.read_csv(mapqcov, sep='\t')
+    df_mapqcov.rename(columns={'ID' : 'feature_id'}, inplace=True)
 
     df_chroms = pd.read_csv(chrom_names, names=["lineage", "accession", "chromosome"], dtype = str)
 
@@ -248,6 +250,8 @@ def annotate(metadata, lineage_column, species_name, temp_dir, db_dir,config, ou
     dataframes['df_nmds'] = pd.concat(df_nmds)
 
     extra_dfs = process_dataframes(gff, struc_vars, chrom_names, mapqcov)
+
+    df_samples.rename(columns={lineage_column: 'lineage'}, inplace=True)
 
     # Connect to the database
 

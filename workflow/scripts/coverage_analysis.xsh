@@ -14,7 +14,7 @@ import numpy as np
 @click.option('-rs', '--region_size', help='Region size.', type=int)
 @click.option('-ss', '--smooth_size', help='Size of the smoothing window.', type=int)
 @click.option('-rt', '--repeats_threshold', help='Threshold for filtering out windows with too many repeats.', type=click.types.FloatRange(min=0.0))
-@click.option('-ct', '--change_threshold', help='Threshold to define if region is not Haploid.', type=click.types.FloatRange(min=0.0))
+@click.option('-ct', '--change_threshold', help='Threshold to define if region is not HAPLOID.', type=click.types.FloatRange(min=0.0))
 @click.option('-rct', '--repeat_category_threshold', help='Threshold for defining repeat category.', default=0.5, type=click.types.FloatRange(min=0.0))
 
 def intersect_repeats(bed, repeats, chromosome_table, regions_table, structural_variants, region_size, repeats_threshold, smooth_size, change_threshold, sample_name, repeat_category_threshold):
@@ -73,15 +73,15 @@ def intersect_repeats(bed, repeats, chromosome_table, regions_table, structural_
     structure_windows = pd.DataFrame()
     for accession in regions_norm['Accession'].unique():
         regions_windowed = regions_norm[regions_norm['Accession'] == accession].copy()
-        regions_windowed.loc[:, 'Structure'] = 'Haploid'
+        regions_windowed.loc[:, 'Structure'] = 'HAPLOID'
         regions_windowed = regions_windowed.reset_index(drop=True)
         for i in range(len(regions_windowed)):
             if regions_windowed.loc[i, 'Smooth_Median'] > 1 + change_threshold:
-                regions_windowed.loc[i, 'Structure'] = "Duplication"
+                regions_windowed.loc[i, 'Structure'] = "DUPLICATION"
             elif regions_windowed.loc[i, 'Smooth_Median'] < 1 - change_threshold:
-                regions_windowed.loc[i, 'Structure'] = "Deletion"
+                regions_windowed.loc[i, 'Structure'] = "DELETION"
             else:
-                regions_windowed.loc[i, 'Structure'] = "Haploid"
+                regions_windowed.loc[i, 'Structure'] = "HAPLOID"
 
         regions_windowed.loc[:,'Window_index'] = 1
         for i in range(1, len(regions_windowed)):
@@ -95,8 +95,8 @@ def intersect_repeats(bed, repeats, chromosome_table, regions_table, structural_
         windows = windows.drop(['Window_index'], axis=1)
         structure_windows = pd.concat([structure_windows, windows], ignore_index=True)
     print("Join windows with structure variants of all chromosomes.")
-    structure_windows = structure_windows[structure_windows['Structure'] != 'Haploid']
-    structure_windows['Repeat_Category'] = np.where(structure_windows['Repeat_fraction'] > repeat_category_threshold, 'Repetitive sequence', 'Structural variant')
+    structure_windows = structure_windows[structure_windows['Structure'] != 'HAPLOID']
+    structure_windows['Repeat_Category'] = np.where(structure_windows['Repeat_fraction'] > repeat_category_threshold, 'REPETITIVE REGION', 'STRUCTURAL VARIANT')
     structure_windows = structure_windows.round(2)
     structure_windows['Sample'] = sample_name
     structure_windows.to_csv(structural_variants, sep='\t', index=False, header=True)
