@@ -12,3 +12,4 @@ dependencies:
   - bedtools
   - snpEff
   - python-duckdb=0.10.1
+  - biopython

@@ -75,7 +75,7 @@ rule build_refs_db:
         """
 
 
-rule annotations_db:
+rule complete_db:
     input:
         metadata = SAMPLEFILE,
         chrom_names = CHROM_NAMES,
@@ -87,19 +87,18 @@ rule annotations_db:
         cds = expand(DATASET_OUTDIR / "database" / "{sample}" / "cds.done", sample=SAMPLES),
         prots = expand(DATASET_OUTDIR / "database" / "{sample}" / "prots.done", sample=SAMPLES)
     output:
-        DATASET_OUTDIR / "annotations.db"
+        DATASET_OUTDIR / "database.db"
     params:
         column = 'group',
         sp = config["species_name"],
         temp_dir = DATASET_OUTDIR / 'tmp',
         dir = os.getcwd() / DATASET_OUTDIR / "snpeff_data",
-        config = DATASET_OUTDIR / "snpeff_data" / "snpEff.config",
-        sequences = DATASET_OUTDIR / "sequences.db"
+        config = DATASET_OUTDIR / "snpeff_data" / "snpEff.config"
     conda:
         "../envs/variants.yaml"
     log:
-        "logs/snps/annotations_db.log"
+        "logs/dataset/complete_db.log"
     shell:
-        "xonsh workflow/scripts/build_database.xsh annotate -m {input.metadata} -h {input.chrom_names} -v {input.sv} -q {input.mc} -g {input.gffs} -c {params.column} -s {params.sp} -t {params.temp_dir} -d {params.dir} -n {params.config} -db {params.sequences} -o {output}  {input.vcfs} &> {log}"
+        "xonsh workflow/scripts/build_database.xsh annotate -o {output} -m {input.metadata} -h {input.chrom_names} -v {input.sv} -q {input.mc} -g {input.gffs} -c {params.column} -s {params.sp} -t {params.temp_dir} -d {params.dir} -n {params.config} {input.vcfs} &> {log}"
 
         

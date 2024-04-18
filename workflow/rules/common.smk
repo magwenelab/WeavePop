@@ -79,7 +79,7 @@ def get_final_output():
         final_output.extend(expand(DATASET_OUTDIR / "files" / "{lineage}_unmapped_count.tsv", lineage=LINEAGES))
         final_output.extend(expand(DATASET_OUTDIR / "plots" / "{lineage}_unmapped.svg", lineage=LINEAGES))
     if config["snps"]["activate"]:
-        final_output.append(expand(DATASET_OUTDIR / "annotations.db"))
+        final_output.append(expand(DATASET_OUTDIR / "database.db"))
     return final_output
 
 
