@@ -127,7 +127,7 @@ rule cds2db:
     output:
         touch(DATASET_OUTDIR / "database" / "{sample}" / "cds.done"),
     params:
-        db = DATASET_OUTDIR / "database.db"
+        db = DATASET_OUTDIR / "sequences.db"
     conda:
         "../envs/variants.yaml"
     log:
@@ -142,7 +142,7 @@ rule prots2db:
     output:
         touch(DATASET_OUTDIR / "database" / "{sample}" / "prots.done")
     params:
-        db = DATASET_OUTDIR / "database.db"
+        db = DATASET_OUTDIR / "sequences.db"
     conda:
         "../envs/variants.yaml"
     log:

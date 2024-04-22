@@ -11,7 +11,7 @@ def df_to_seqrecord(df):
     records = []
     for index, row in df.iterrows():
         seq = Seq(row['seq'])
-        record = SeqRecord(seq, id=f"{row['sample_id']}|{row['seq_id']}", description=row['seq_description'])
+        record = SeqRecord(seq, id=f"{row['sample']}|{row['transcript_id']}", description=row['seq_description'])
         records.append(record)
     return records
 
@@ -21,7 +21,7 @@ def get_sequences_of_gene(gene_name,db='database/desjardins.db', seqtype='DNA'):
     query = f"""
         SELECT *
         FROM sequences
-        WHERE seq_id IN (
+        WHERE transcript_id IN (
             SELECT DISTINCT feature_id
             FROM gff
             WHERE parent = '{gene_name}'
@@ -67,9 +67,9 @@ def get_sequences_of_gene_with_variants(gene_name,db='database/desjardins.db',se
     query = f"""
         SELECT *
         FROM sequences
-        WHERE sample_id IN {samples_tuple}
+        WHERE sample IN {samples_tuple}
             AND seq_type = '{seqtype}'
-            AND seq_id IN (
+            AND transcript_id IN (
                 SELECT DISTINCT feature_id
                 FROM gff
                 WHERE parent = '{gene_name}')"""

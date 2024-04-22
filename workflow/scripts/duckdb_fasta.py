@@ -1,6 +1,6 @@
-import duckdb
 import pandas as pd
 import click
+import sqlite3  
 from Bio import SeqIO
 from Bio.SeqRecord import SeqRecord
 from Bio.Seq import Seq
@@ -23,27 +23,25 @@ def fasta_to_df(fasta, sample, seq_type):
     return df_all
 
 def sample_type_not_in_db(con, sample, seq_type):
-    result = con.execute(f"SELECT * FROM sequences WHERE sample = '{sample}' AND seq_type = '{seq_type}'").fetch_df()
-    if result.shape[0] > 0:
-        return False
-    else:
+    result = con.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='sequences'")
+    if result.fetchone() is None:
         return True
+    else:
+        result = pd.read_sql(f"SELECT * FROM sequences WHERE sample = '{sample}' AND seq_type = '{seq_type}'", con)
+        if result.shape[0] > 0:
+            return False
+        else:
+            return True
 
-def populate_fasta_db(db, fasta, sample, seq_type):
+def populate_fasta_db(db, fasta, sample, seq_type, timeout=180):
     print("Creating dataframe")
     seq_type = seq_type.upper()
     df = fasta_to_df(fasta, sample, seq_type)   
-    con = duckdb.connect(db)
-    result = con.execute("SHOW TABLES").fetch_df()
-    if "sequences" not in result["name"].to_list():
-        print("Creating table and populating it with dataframe")
-        con.register("df_sequences", df)
-        con.execute("CREATE TABLE sequences AS SELECT * FROM df_sequences")
-        con.close()
-    elif sample_type_not_in_db(con, sample, seq_type):
-        print("Populating existing table with dataframe")
-        con.register("df_sequences", df)
-        con.execute("INSERT INTO sequences SELECT * FROM df_sequences")
+    print("Connecting to database")
+    con = sqlite3.connect(db, timeout=timeout)
+    if sample_type_not_in_db(con, sample, seq_type):
+        print("Populating database")
+        df.to_sql("sequences", con, if_exists="append", index=False)
         con.close()
     else:
         print(f"Sample {sample} with sequence type {seq_type} already in database")
@@ -55,8 +53,8 @@ def populate_fasta_db(db, fasta, sample, seq_type):
 @click.option("--fasta", "-f", required=True, help="Path to the fasta file")
 @click.option("--sample", "-s", required=True, help="Sample name")
 @click.option("--seq_type", "-t", required=True, help="Sequence type")
-def main(db, fasta, sample, seq_type):
-    populate_fasta_db(db, fasta, sample, seq_type)
+def main(db, fasta, sample, seq_type, timeout=180):
+    populate_fasta_db(db, fasta, sample, seq_type, timeout=timeout)
     
 if __name__ == "__main__":
     main()        

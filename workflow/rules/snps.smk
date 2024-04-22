@@ -93,12 +93,13 @@ rule complete_db:
         sp = config["species_name"],
         temp_dir = DATASET_OUTDIR / 'tmp',
         dir = os.getcwd() / DATASET_OUTDIR / "snpeff_data",
-        config = DATASET_OUTDIR / "snpeff_data" / "snpEff.config"
+        config = DATASET_OUTDIR / "snpeff_data" / "snpEff.config",
+        sequences = DATASET_OUTDIR / "sequences.db"
     conda:
         "../envs/variants.yaml"
     log:
         "logs/dataset/complete_db.log"
     shell:
-        "xonsh workflow/scripts/build_database.xsh annotate -o {output} -m {input.metadata} -h {input.chrom_names} -v {input.sv} -q {input.mc} -g {input.gffs} -c {params.column} -s {params.sp} -t {params.temp_dir} -d {params.dir} -n {params.config} {input.vcfs} &> {log}"
+        "xonsh workflow/scripts/build_database.xsh annotate -o {output} -m {input.metadata} -h {input.chrom_names} -v {input.sv} -q {input.mc} -g {input.gffs} -c {params.column} -s {params.sp} -t {params.temp_dir} -d {params.dir} -n {params.config} {input.vcfs} -e {params.sequences} &> {log}"
 
         

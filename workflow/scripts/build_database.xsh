@@ -202,8 +202,9 @@ def cli():
 @click.option('--chrom_names', '-h', type=click.Path(), help='Path to the chromosome names file')
 @click.option('--mapqcov', '-q', type=click.Path(), help='Path to the mapq coverage file')
 @click.option('--gff', '-g', type=click.Path(), help='Path to the GFF file')
+@click.option('--sequences_db', '-e', type=click.Path(), help='Path to the sequences database')
 @click.argument('vcf_files', nargs=-1, type=click.Path(exists=True))
-def annotate(metadata, lineage_column, species_name, temp_dir, db_dir,config, output, vcf_files, gff, struc_vars, chrom_names, mapqcov):
+def annotate(metadata, lineage_column, species_name, temp_dir, db_dir,config, output, vcf_files, gff, struc_vars, chrom_names, mapqcov, sequences_db):
     print("Using the following parameters:")
     print(f"metadata: {metadata}")
     print(f"lineage_column: {lineage_column}")
@@ -252,7 +253,7 @@ def annotate(metadata, lineage_column, species_name, temp_dir, db_dir,config, ou
 
     df_samples.rename(columns={lineage_column: 'lineage'}, inplace=True)
 
-    # Connect to the database
+    print("Adding dataframes to database")
 
     con = duckdb.connect(database=output)
 
@@ -278,7 +279,15 @@ def annotate(metadata, lineage_column, species_name, temp_dir, db_dir,config, ou
     con.execute("CREATE TABLE IF NOT EXISTS mapq_coverage AS SELECT * FROM df_mapqcov")
     con.execute("CREATE TABLE IF NOT EXISTS chromosome_names AS SELECT * FROM df_chroms")
 
+    print("Adding sequences database")
+    seq_con = sqlite3.connect(sequences_db)
+    df_seqs = pd.read_sql_query("SELECT * FROM sequences", seq_con)
+    seq_con.close()
+    con.register('df_seqs', df_seqs)
+    con.execute("CREATE TABLE IF NOT EXISTS sequences AS SELECT * FROM df_seqs")
+
     con.close()
+    print("Done")
 
 if __name__ == '__main__':
     cli()
