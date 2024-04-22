@@ -133,7 +133,7 @@ rule cds2db:
     log:
         "logs/dataset/cds2db_{sample}.log"
     shell:
-        "python workflow/scripts/duckdb_fasta.py -d {params.db} -f {input.cds} -s {wildcards.sample} -t DNA &> {log}"
+        "python workflow/scripts/build_sequences_db.py -d {params.db} -f {input.cds} -s {wildcards.sample} -t DNA &> {log}"
 
 # Make SQL database with proteins of all samples
 rule prots2db:
@@ -148,4 +148,4 @@ rule prots2db:
     log:
         "logs/dataset/prots2db_{sample}.log"
     shell:
-        "python workflow/scripts/duckdb_fasta.py -d {params.db} -f {input.prots} -s {wildcards.sample} -t PROTEIN &> {log}"
+        "python workflow/scripts/build_sequences_db.py -d {params.db} -f {input.prots} -s {wildcards.sample} -t PROTEIN &> {log}"
