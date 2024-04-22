@@ -75,10 +75,23 @@ rule liftoff:
         "{input.refgenome} &>> {log}"
 
 # Extract the nucleotide sequence of each isoform of each gene of a sample
+rule agat_config:
+    output:
+        "config/agat_config.yaml"
+    conda:
+        "../envs/agat.yaml"
+    log:
+        "logs/agat_config.log"
+    shell:
+        "agat config --expose 2> {log} && "
+        "mv agat_config.yaml {output} 2> {log} && "
+        "sed -i 's/log: true/log: false/g' {output} &>> {log} "
+
 rule agat_cds:
     input:
         gff = rules.liftoff.output.polished,
-        fa = rules.snippy.output.fa
+        fa = rules.snippy.output.fa,
+        config = rules.agat_config.output
     output:
         cds = OUTDIR / "agat" / "{sample}" / "cds.fa",
     conda:
@@ -92,6 +105,7 @@ rule agat_cds:
         "-g {input.gff} " 
         "-f {input.fa} "
         "-o {output.cds} "
+        "-c {input.config} "
         "{params.extra} "
         "&> {log} "
 
@@ -99,7 +113,8 @@ rule agat_cds:
 rule agat_prots:
     input:
         gff = rules.liftoff.output.polished,
-        fa = rules.snippy.output.fa
+        fa = rules.snippy.output.fa,
+        config = rules.agat_config.output
     output:
         prots = OUTDIR / "agat" / "{sample}" / "proteins.fa"
     conda:
@@ -113,12 +128,11 @@ rule agat_prots:
         "-g {input.gff} " 
         "-f {input.fa} "
         "-o {output.prots} "
-        "-p  &> {log} "
-        "{params.extra} " 
+        "-p "
+        "-c config/agat_config.yaml "
+        "{params.extra} &> {log} " 
         "&& "
         "sed -i 's/type=cds//g' {output} &>> {log} "
-        "&& "
-        "rm lifted.agat.log &>> {log} || true"
 
 # Make SQL database with cds of all samples
 rule cds2db:

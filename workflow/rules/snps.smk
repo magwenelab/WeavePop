@@ -3,17 +3,16 @@ rule join_gffs:
         expand(REFDIR / "{lineage}" / "{lineage}.gff.tsv", lineage=LINEAGES)
     output:
         REFDIR / "all.gff.tsv"
-    params:
-        {lineage: REFDIR / lineage / f"{lineage}.gff.tsv" for lineage in LINEAGES}
     log:
         "logs/references/join_gffs.log"
-    script:
-        "../scripts/join_gffs.py"
+    shell:
+        "python workflow/scripts/join_gffs.py -o {output} {input} &> {log}"
 
 rule extract_ref_seqs:
     input:
         gff = REFDIR / "{lineage}" / "{lineage}.gff",
-        fasta = REFDIR / "{lineage}" / "{lineage}.fasta"
+        fasta = REFDIR / "{lineage}" / "{lineage}.fasta",
+        config = rules.agat_config.output
     output:
         cds = REFDIR / "{lineage}" / "{lineage}.cds.fa",
         prots = REFDIR / "{lineage}" / "{lineage}.prots.fa"
@@ -22,9 +21,9 @@ rule extract_ref_seqs:
     log:
         "logs/references/extract_{lineage}.log"
     shell:
-        "agat_sp_extract_sequences.pl -g {input.gff} -f {input.fasta} -o {output.cds} &> {log} "
+        "agat_sp_extract_sequences.pl -g {input.gff} -f {input.fasta} -o {output.cds} -c {input.config} &> {log} "
         "&& "
-        "agat_sp_extract_sequences.pl -g {input.gff} -f {input.fasta} -o {output.prots} -p &>> {log} "
+        "agat_sp_extract_sequences.pl -g {input.gff} -f {input.fasta} -o {output.prots} -p -c {input.config} &>> {log} "
 
 rule prepare_refs_db:
     input:
