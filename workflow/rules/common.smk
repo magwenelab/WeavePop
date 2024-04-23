@@ -58,10 +58,11 @@ def get_final_output():
         final_output.extend(expand(OUTDIR / "samtools" / "{sample}" / "mapq.bed",sample=SAMPLES))
         final_output.extend(expand(OUTDIR / "samtools" / "{sample}" / "mapq_window.bed",sample=SAMPLES))
         final_output.extend(expand(OUTDIR / "samtools" / "{sample}" / "mapq_cov_window.bed",sample=SAMPLES))
-        final_output.extend(expand(OUTDIR / "samtools" / "{sample}" / "annotation.gff",sample=SAMPLES))
+        final_output.extend(expand(OUTDIR / "samtools" / "{sample}" / "feature_mapq_cov.tsv",sample=SAMPLES))
         final_output.append(DATASET_OUTDIR / "files" / "mapping_stats.tsv")
         final_output.append(DATASET_OUTDIR / "files" / "structural_variants.tsv")
         final_output.append(DATASET_OUTDIR / "files" / "coverage_good.tsv")
+        final_output.append(DATASET_OUTDIR / "files" / "mapqcov.tsv")
     if config["plotting"]["activate"]:
         final_output.extend(expand(OUTDIR / "plots" / "{sample}" / "coverage.svg",sample=SAMPLES))
         final_output.extend(expand(OUTDIR / "plots" / "{sample}" / "cov_distribution.png",sample=SAMPLES))
@@ -78,7 +79,7 @@ def get_final_output():
         final_output.extend(expand(DATASET_OUTDIR / "files" / "{lineage}_unmapped_count.tsv", lineage=LINEAGES))
         final_output.extend(expand(DATASET_OUTDIR / "plots" / "{lineage}_unmapped.svg", lineage=LINEAGES))
     if config["snps"]["activate"]:
-        final_output.append(expand(DATASET_OUTDIR / "annotations.db"))
+        final_output.append(expand(DATASET_OUTDIR / "database.db"))
     return final_output
 
 

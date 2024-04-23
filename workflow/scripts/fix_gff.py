@@ -9,7 +9,8 @@ import pandas as pd
 def fix_gff(input, output_tsv, output_gff):
     df = pd.read_csv(input, sep='\t', header=[0])
     keep_columns = ['seq_id', 'source_tag', 'primary_tag', 'start', 'end', 'score', 'strand', 'frame', 'ID', 'Parent', 'locus', 'Name', 'description']
-    df = df[keep_columns]
+    exisiting_columns = [column for column in keep_columns if column in df.columns]
+    df = df[exisiting_columns]
     df['source_tag'] = 'DiversityPipeline'
     print("Defining feature number and suffix")
     df['feature_number'] = df.groupby(['primary_tag', 'Parent']).cumcount()+ 1
@@ -30,6 +31,7 @@ def fix_gff(input, output_tsv, output_gff):
             
     print("Fixing columns")
     df_fixed = df.copy()
+    df_fixed['old_ID'] = df_fixed['ID']
     df_fixed['ID'] = df_fixed['new_ID']
     df_fixed.drop(['feature_number', 'suffix', 'new_ID'], axis=1, inplace=True)
 
@@ -37,12 +39,13 @@ def fix_gff(input, output_tsv, output_gff):
     df_fixed.to_csv(output_tsv, sep='\t', index=False, header=True, na_rep='')
 
     print("Making GFF")
-    attribute_columns = ['ID', 'Parent', 'locus', 'Name', 'description']
+    attribute_columns = ['ID', 'Parent', 'locus', 'Name', 'description', 'old_ID', 'old_Parent']
+    existing_attributes = [column for column in attribute_columns if column in df_fixed.columns]
     df_gff = df_fixed.copy()
-    for column in attribute_columns:
+    for column in existing_attributes:
         df_gff[column] = df_gff[column].apply(lambda x: column + '=' + x if pd.notnull(x) else x)
-    df_gff['attributes'] = df_gff[attribute_columns].apply(lambda x: ';'.join(x.dropna()), axis=1)
-    df_gff.drop(attribute_columns, axis=1, inplace=True)
+    df_gff['attributes'] = df_gff[existing_attributes].apply(lambda x: ';'.join(x.dropna()), axis=1)
+    df_gff.drop(existing_attributes, axis=1, inplace=True)
     df_gff['strand'] = df_gff['strand'].replace(-1,'-').replace(1,'+')
 
     print("Saving GFF")

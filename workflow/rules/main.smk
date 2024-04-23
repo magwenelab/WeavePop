@@ -121,27 +121,31 @@ rule agat_prots:
         "rm lifted.agat.log &>> {log} || true"
 
 # Make SQL database with cds of all samples
-rule by_cds:
+rule cds2db:
     input: 
         cds = rules.agat_cds.output.cds,
     output:
         touch(DATASET_OUTDIR / "database" / "{sample}" / "cds.done"),
     params:
         db = DATASET_OUTDIR / "sequences.db"
+    conda:
+        "../envs/variants.yaml"
     log:
-        "logs/agat/by_cds_{sample}.log"
+        "logs/dataset/cds2db_{sample}.log"
     shell:
-        "python workflow/scripts/sqlfasta.py populate-db {params.db} {input.cds} {wildcards.sample} -t DNA &> {log}"
+        "python workflow/scripts/build_sequences_db.py -d {params.db} -f {input.cds} -s {wildcards.sample} -t DNA &> {log}"
 
 # Make SQL database with proteins of all samples
-rule by_prots:
+rule prots2db:
     input: 
         prots = rules.agat_prots.output.prots,
     output:
         touch(DATASET_OUTDIR / "database" / "{sample}" / "prots.done")
     params:
         db = DATASET_OUTDIR / "sequences.db"
+    conda:
+        "../envs/variants.yaml"
     log:
-        "logs/agat/by_prots_{sample}.log"
+        "logs/dataset/prots2db_{sample}.log"
     shell:
-        "python workflow/scripts/sqlfasta.py populate-db {params.db} {input.prots} {wildcards.sample} -t Protein &> {log}"
+        "python workflow/scripts/build_sequences_db.py -d {params.db} -f {input.prots} -s {wildcards.sample} -t PROTEIN &> {log}"
