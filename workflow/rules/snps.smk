@@ -55,6 +55,7 @@ rule prepare_refs_db:
         ln -s -r {input.prots} {output.prots} &>> {log} 
         """
 
+# Build snpeff database for the reference genomes
 rule build_refs_db:
     input:
         gff = rules.prepare_refs_db.output.gff,
@@ -76,7 +77,7 @@ rule build_refs_db:
         snpEff build -gff3 -v -dataDir {params.dir} -config {params.config} {params.name} &>> {log}
         """
 
-
+# Create the final database
 rule complete_db:
     input:
         metadata = SAMPLEFILE,
