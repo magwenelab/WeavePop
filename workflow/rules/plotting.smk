@@ -25,7 +25,7 @@ rule coverage_plot_chrom:
         rules.loci.output.locitable,
         CHROM_NAMES
     output:
-        OUTDIR / "plots" / "{sample}" / "coverage.svg"
+        OUTDIR / "plots" / "{sample}" / "coverage.png"
     conda:
         "../envs/r.yaml"
     log:

@@ -92,7 +92,7 @@ c <- ggplot()+
     guides(color = guide_legend(order=3))+
   # geom_point(data = variants, aes(x=Start, y = v_lim),shape = 24 , size = 2)+
   facet_wrap(~Chromosome,strip.position = "right", ncol = 2)+
-  labs(y = "Normalized coverage", title = paste("Lineage:",lineage, "Sample:", sample,  sep = " "))+
+  labs(y = "Normalized coverage", title = paste("Lineage:",lineage, " Sample:", sample,  sep = " "))+
   scale_y_continuous(breaks = c(1, 2)) +
   theme(panel.grid = element_blank(),
         panel.grid.major.x = element_blank(),
@@ -102,4 +102,4 @@ c <- ggplot()+
         panel.background = element_blank(),
         panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 2))
 
-ggsave(snakemake@output[[1]], c, height =9, width = 16)
+ggsave(snakemake@output[[1]], c, height =9, width = 16, dpi = 600)

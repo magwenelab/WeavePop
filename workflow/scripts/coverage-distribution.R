@@ -36,7 +36,7 @@ plot <- ggplot(cov, aes(x=Coverage))+
   scale_x_continuous(name = "Coverage (X) ", labels = comma, n.breaks = 10)+
   scale_fill_manual(name= "Alignment quality", values= color_quality)+
   theme(legend.position="none")+
-  labs(title = paste(lineage, sample,  sep = " "))+
+  labs(title = paste("Lineage:",lineage, " Sample:", sample,  sep = " "))+
   theme_bw()
 
 #ggsave("../../cov_distribution.png", plot = plot, units = "cm", height = 22, width = 22)
@@ -58,7 +58,7 @@ plot <- ggplot(cov_global, aes(x=Coverage))+
   scale_x_continuous(name = "Coverage (X) ", labels = comma, n.breaks = 10)+
   scale_fill_manual(name= "Alignment quality", values= color_quality)+
   theme(legend.position="none")+
-  labs(title = paste(lineage, sample,  sep = " "))+
+  labs(title = paste("Lineage:",lineage, " Sample:", sample,  sep = " "))+
   theme_bw()
 
 ggsave(snakemake@output[[2]], plot = plot,  units = "in", height = 4.5, width = 8, dpi = 600)
