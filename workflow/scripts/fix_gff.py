@@ -12,6 +12,7 @@ def fix_gff(input, output_tsv, output_gff):
     exisiting_columns = [column for column in keep_columns if column in df.columns]
     df = df[exisiting_columns]
     df['source_tag'] = 'DiversityPipeline'
+    df['primary_tag'] = df['primary_tag'].replace('protein_coding_gene', 'gene')
     print("Defining feature number and suffix")
     df['feature_number'] = df.groupby(['primary_tag', 'Parent']).cumcount()+ 1
     df['feature_number'] = df['feature_number'].astype(float).fillna(0).astype(int)

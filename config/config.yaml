@@ -19,7 +19,8 @@ annotate_references:
     extra: ""
 
 coverage_quality: 
-  activate: TRUE
+  activate: True
+
   mosdepth: 
     threads: 12  
     window: 100 # Window size for mosdepth
@@ -40,16 +41,16 @@ snps:
   threads: 12
 
 plotting: 
-  activate: TRUE
-  metadata2color : "strain"
+  activate: True
+  metadata2color : "isolation_source" # Column name in the sample table to color the samples in the plots
   scale : 0.7 # This is a value to adjust the size of the plots with ggsave scale parameter. Use lower values for fewer samples and bigger values for more samples.
 
 snippy:
-  threads: 12
+  threads: 4
   extra: ""
 
 liftoff:
-  threads: 12
+  threads: 4
   extra: ""
 
 agat:

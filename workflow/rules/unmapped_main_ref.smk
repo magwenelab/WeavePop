@@ -29,6 +29,6 @@ rule unmapped_samples_plot:
     params:
         dir = OUTDIR / "liftoff"
     log:
-        "logs/liftoff/unmapped_samples_plot.log"
+        "logs/dataset/plots/unmapped_samples_plot.log"
     script:
         "../scripts/samples_unmapped_main.R"

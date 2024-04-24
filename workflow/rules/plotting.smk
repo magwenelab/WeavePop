@@ -6,7 +6,7 @@ rule loci:
     output:
         locitable = DATASET_OUTDIR / "files"/ "loci_to_plot.tsv"
     log: 
-        "logs/references/loci.log"
+        "logs/dataset/files/loci.log"
     shell:
         "xonsh workflow/scripts/loci.xsh -g {input.loci} -o {output} {input.refs} &> {log}"
 
@@ -25,11 +25,11 @@ rule coverage_plot_chrom:
         rules.loci.output.locitable,
         CHROM_NAMES
     output:
-        OUTDIR / "plots" / "{sample}" / "coverage.svg"
+        OUTDIR / "plots" / "{sample}" / "coverage.png"
     conda:
         "../envs/r.yaml"
     log:
-        "logs/coverage/coverage_plot_chrom_{sample}.log"
+        "logs/samples/plots/coverage_plot_chrom_{sample}.log"
     script:
         "../scripts/chromosome_plot.R"
 
@@ -44,7 +44,7 @@ rule coverage_stats_plot_sample:
     conda:
         "../envs/r.yaml"
     log:
-        "logs/coverage/coverage_stats_plot_{sample}.log"
+        "logs/samples/plots/coverage_stats_plot_{sample}.log"
     script:
         "../scripts/coverage_stats_plots.R"
 
@@ -66,7 +66,7 @@ rule coverage_stats_plots_dataset:
         config["plotting"]["metadata2color"],
         config["plotting"]["scale"]
     log:
-        "logs/coverage/stats_plot.log"    
+        "logs/dataset/plots/coverage_stats_plot.log"    
     script:
         "../scripts/coverage_dataset_plots.R"
 
@@ -81,7 +81,7 @@ rule cov_distribution:
     conda:
         "../envs/r.yaml"
     log:
-        "logs/coverage/cov_distribution_{sample}.log"
+        "logs/samples/plots/cov_distribution_{sample}.log"
     script:
         "../scripts/coverage-distribution.R"
 
@@ -104,7 +104,7 @@ rule mapq_plot:
     conda:
         "../envs/r.yaml"
     log:
-        "logs/mapq/mapq_plot_{sample}.log"
+        "logs/samples/plots/mapq_plot_{sample}.log"
     script:
         "../scripts/mapq.R"
 

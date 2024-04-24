@@ -1,27 +1,31 @@
-import sys
+import click
+import pandas as pd
+from pathlib import Path
 
-# Open the file you want to write to
-with open(snakemake.log[0], 'w') as f:
-    # Redirect standard output and error to the file
-    sys.stdout = f
-    sys.stderr = f
+@click.command()
+@click.option('--output', '-o', required=True, type=click.Path(), help="Path to the output file")
+@click.argument('lineage_tsv', nargs=-1, type=click.Path(exists=True))   
 
-    import pandas as pd
-    from pathlib import Path
-
-
-    lineage_paths = snakemake.params[0]
-
+def join_gff(output, lineage_tsv):
+    print("Create dictionary with lineage and path")
+    paths = {}
+    for path in lineage_tsv:
+        lineage = Path(Path(path).stem).stem
+        paths[lineage] = path    
+    print("Read files and concatenate dataframes into list")
     dfs = []
-    for lineage, path in lineage_paths.items():
+    for lineage, path in paths.items():
         df = pd.read_csv(path, sep='\t', low_memory=False, header=0)
         df['lineage'] = lineage
         dfs.append(df)
-
+    print("Concatenate dataframes into one")
     df = pd.concat(dfs)
     keep_columns = ['seq_id', 'source_tag', 'primary_tag', 'start', 'end', 'score', 'strand', 'frame', 'ID', 'Parent', 'locus', 'Name', 'description', 'old_ID', 'lineage']
     existing_columns = [column for column in keep_columns if column in df.columns]
     df = df[existing_columns]
+    print("Saving")
+    df.to_csv(output, sep='\t', index=False)
 
-    df.to_csv(snakemake.output[0], sep='\t', index=False)
 
+if __name__ == '__main__':
+    join_gff()   

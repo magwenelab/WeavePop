@@ -19,7 +19,6 @@ DATASET_OUTDIR = Path("results/dataset")
 REFDIR = Path("results/references")
 
 # FIX : Add conditional statements to allow for absence of these files
-FEATURE_FILE = "config/features.txt"
 LOCI_FILE = "config/loci.csv"
 CHROM_NAMES = "config/chromosome_names.csv"
 
@@ -64,7 +63,7 @@ def get_final_output():
         final_output.append(DATASET_OUTDIR / "files" / "coverage_good.tsv")
         final_output.append(DATASET_OUTDIR / "files" / "mapqcov.tsv")
     if config["plotting"]["activate"]:
-        final_output.extend(expand(OUTDIR / "plots" / "{sample}" / "coverage.svg",sample=SAMPLES))
+        final_output.extend(expand(OUTDIR / "plots" / "{sample}" / "coverage.png",sample=SAMPLES))
         final_output.extend(expand(OUTDIR / "plots" / "{sample}" / "cov_distribution.png",sample=SAMPLES))
         final_output.extend(expand(OUTDIR / "plots" / "{sample}" / "mapq.png",sample=SAMPLES))
         final_output.extend(expand(OUTDIR / "plots" / "{sample}" / "coverage_stats.png",sample=SAMPLES))

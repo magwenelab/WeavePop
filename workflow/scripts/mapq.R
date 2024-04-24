@@ -61,7 +61,7 @@ plot <- ggplot()+
     new_scale_color()+
   facet_wrap(~Chromosome,ncol = 2,strip.position = "right")+
   scale_x_continuous(name = "Position (bp) ", labels = comma)+
-  labs(title = paste("Lineage: ", lineage,"Sample: ", sample,  sep = " "), y = "Mapping quality (phred score)")+
+  labs(title = paste("Lineage: ", lineage," Sample: ", sample,  sep = " "), y = "Mapping quality (phred score)")+
   theme(panel.grid = element_blank(),
         panel.grid.major.x = element_blank(),
         panel.grid.minor.x = element_blank(),
@@ -81,5 +81,5 @@ if (nrow(loci) != 0){
     scale_color_manual(name = "Loci", values = loci_colors)
 }
 
-ggsave(snakemake@output[[1]], plot = plot, units = "in", height = 9, width = 16)
+ggsave(snakemake@output[[1]], plot = plot, units = "in", height = 9, width = 16, dpi = 600)
 
