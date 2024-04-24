@@ -1,10 +1,10 @@
-sample_table: "config/sample_metadata.csv" # Path to CSV table with columns: sample, group, strain, and more optional metadata.
+sample_table: "config/vni_samples_only_metadata.csv" # Path to CSV table with columns: sample, group, strain, and more optional metadata.
 species_name: "Cryptococcus_neoformans" 
 
 fastqs:
-  directory: "data/samples" # REVIEW # Path to directory with all FASTQ files 
-  fastq_suffix1: "_1.fq.gz" # Everything after the sample name of the forward reads file.
-  fastq_suffix2: "_2.fq.gz" # Everything after the sample name of the reverse reads file.
+  directory: "/FastData/pmagwene/Montoya_Clinical_Isolates/cleaned_reads" # REVIEW # Path to directory with all FASTQ files 
+  fastq_suffix1: "_R1_cleaned.fastq.gz" # Everything after the sample name of the forward reads file.
+  fastq_suffix2: "_R2_cleaned.fastq.gz" # Everything after the sample name of the reverse reads file.
 
 references: 
   directory: "data/references/" # REVIEW # Path to directory with reference genomes fastas (and GFFs if annotate_references activate is not set to True)
@@ -20,13 +20,14 @@ annotate_references:
 
 coverage_quality: 
   activate: True
+
   mosdepth: 
     threads: 12  
-    window: 500 # Window size for mosdepth
+    window: 100 # Window size for mosdepth
     min_mapq: 20 # Minimum mapping quality for mosdepth
     extra: ""
   ploidy:
-    smoothing_size: 15 # Parameter for median filtering smoothing of the coverage
+    smoothing_size: 25 # Parameter for median filtering smoothing of the coverage
     size: 5000 # Minimum size of the window for structural variant calling
     change: 0.6 # Minimum change in coverage for structural variant calling
   repeats:
