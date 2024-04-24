@@ -75,7 +75,7 @@ rule liftoff:
 # Extract the nucleotide sequence of each isoform of each gene of a sample
 rule agat_config:
     output:
-        "config/agat_config.yaml"
+        REFDIR / "agat_config.yaml"
     conda:
         "../envs/agat.yaml"
     log:
