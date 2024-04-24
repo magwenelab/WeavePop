@@ -19,7 +19,7 @@ annotate_references:
     extra: ""
 
 coverage_quality: 
-  activate: True
+  activate: 
   mosdepth: 
     threads: 12  
     window: 500 # Window size for mosdepth
@@ -36,11 +36,11 @@ coverage_quality:
     category_fraction: 0.5 # Fraction of repetitive bases allowed in structural variant windows
 
 snps:
-  activate: True
+  activate: 
   threads: 12
 
 plotting: 
-  activate: True
+  activate: 
   metadata2color : "isolation_source" # Column name in the sample table to color the samples in the plots
   scale : 0.7 # This is a value to adjust the size of the plots with ggsave scale parameter. Use lower values for fewer samples and bigger values for more samples.
 
