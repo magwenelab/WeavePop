@@ -127,7 +127,7 @@ rule agat_prots:
         "-f {input.fa} "
         "-o {output.prots} "
         "-p "
-        "-c config/agat_config.yaml "
+        "-c {input.config}"
         "{params.extra} &> {log} " 
         "&& "
         "sed -i 's/type=cds//g' {output} &>> {log} "
