@@ -1,3 +1,4 @@
+# Join all lineages gffs into one
 rule join_gffs:
     input:
         expand(REFDIR / "{lineage}" / "{lineage}.gff.tsv", lineage=LINEAGES)
@@ -8,6 +9,7 @@ rule join_gffs:
     shell:
         "python workflow/scripts/join_gffs.py -o {output} {input} &> {log}"
 
+# Extract cds and protein sequences from reference genomes
 rule extract_ref_seqs:
     input:
         gff = REFDIR / "{lineage}" / "{lineage}.gff",
@@ -25,6 +27,7 @@ rule extract_ref_seqs:
         "&& "
         "agat_sp_extract_sequences.pl -g {input.gff} -f {input.fasta} -o {output.prots} -p -c {input.config} &>> {log} "
 
+# Make symbolic links in the snpeff_data directory and create config file
 rule prepare_refs_db:
     input:
         gff = rules.extract_ref_seqs.input.gff,
