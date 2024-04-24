@@ -54,8 +54,7 @@ rule ref2ref_liftoff:
     input:
         target_refs = REFDIR / "{lineage}" / "{lineage}.fasta",
         fasta = rules.main_links.output.fasta,
-        gff = rules.main_links.output.gff,
-        features = FEATURE_FILE
+        gff = rules.main_links.output.gff
     output:
         target_gff = REFDIR / "{lineage}" / "{lineage}.gff",
         unmapped = REFDIR / "{lineage}" / "unmapped_features.txt"
@@ -75,7 +74,6 @@ rule ref2ref_liftoff:
         "-dir {params.refdir}/{wildcards.lineage}/intermediate_files "
         "-u {output.unmapped} "
         "-p {threads} "
-        "-f {input.features} "
         "-polish "
         "{params.extra} "
         "{input.target_refs} {input.fasta} "

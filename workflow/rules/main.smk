@@ -24,7 +24,7 @@ rule snippy:
     conda:
         "../envs/snippy.yaml"
     log:
-        "logs/snippy/{sample}.log"
+        "logs/samples/snippy/snippy_{sample}.log"
     shell:
         "snippy --outdir {params.outpath}/{wildcards.sample} "
         "--cpus {threads} "
@@ -44,8 +44,7 @@ def liftoff_input(wildcards):
     }
 rule liftoff:
     input:
-        unpack(liftoff_input),
-        features = FEATURE_FILE
+        unpack(liftoff_input)
     output:
         gff = OUTDIR / "liftoff" / "{sample}" / "lifted.gff",
         polished = OUTDIR / "liftoff" / "{sample}" / "lifted.gff_polished",
@@ -58,13 +57,12 @@ rule liftoff:
     conda:
         "../envs/liftoff.yaml"
     log:
-        "logs/liftoff/{sample}.log" 
+        "logs/samples/liftoff/liftoff_{sample}.log" 
     shell:
         "ln -s -r {input.refgff} {params.outpath}/{wildcards.sample}/ref.gff &> {log} || true "
         "&& "
         "liftoff "
         "-g {params.outpath}/{wildcards.sample}/ref.gff " 
-        "-f {input.features} "
         "-o {output.gff} "
         "-dir {params.outpath}/{wildcards.sample}/intermediate_files "
         "-u {params.outpath}/{wildcards.sample}/unmapped_features.txt "
@@ -99,7 +97,7 @@ rule agat_cds:
     params:
         extra = config["agat"]["extra"]
     log: 
-        "logs/agat/cds_{sample}.log",
+        "logs/samples/agat/agat_cds_{sample}.log",
     shell:
         "agat_sp_extract_sequences.pl "
         "-g {input.gff} " 
@@ -122,7 +120,7 @@ rule agat_prots:
     params:
         extra = config["agat"]["extra"]
     log: 
-        "logs/agat/prots_{sample}.log"
+        "logs/samples/agat/agat_prots_{sample}.log"
     shell:
         "agat_sp_extract_sequences.pl "
         "-g {input.gff} " 

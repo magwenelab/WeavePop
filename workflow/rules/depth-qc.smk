@@ -14,7 +14,7 @@ rule mosdepth:
     threads:
       config["coverage_quality"]["mosdepth"]["threads"]    
     log:
-        "logs/mosdepth/{sample}.log"
+        "logs/samples/mosdepth/mosdepth_{sample}.log"
     shell:
         "mosdepth -n --by {params.window} -t {threads} {params.extra} "
         "{params.outdir}/{wildcards.sample}/coverage {input.bam} "
@@ -37,7 +37,7 @@ rule mosdepth_good:
     threads:
        config["coverage_quality"]["mosdepth"]["threads"]   
     log:
-        "logs/mosdepth/good_{sample}.log"
+        "logs/samples/mosdepth/mosdepth_good_{sample}.log"
     shell:
         "mosdepth -n --by {params.window} --mapq {params.min_mapq} -t {threads} {params.extra} "
         "{params.outdir}/{wildcards.sample}/coverage_good {input.bam} "
@@ -55,7 +55,7 @@ rule bam_good:
     params:
         min_mapq = config["coverage_quality"]["mosdepth"]["min_mapq"]   
     log:
-        "logs/stats/bam_good_{sample}.log"
+        "logs/samples/samtools/bam_good_{sample}.log"
     shell:
         "samtools view -q {params.min_mapq} -b {input} > {output.bam_good} 2> {log} && "
         "samtools index {output.bam_good} -o {output.bai_good} 2>> {log} "
@@ -80,7 +80,7 @@ rule samtools_stats:
     conda: 
         "../envs/samtools.yaml"
     log:
-        "logs/stats/samtools_stats_{sample}.log"
+        "logs/samples/samtools/samtools_stats_{sample}.log"
     shell:
         "xonsh workflow/scripts/samtools-stats.xsh -s {wildcards.sample} -b {input.bam} -g {input.bam_good} -r {input.ref} -cn {input.chrom_names} -c {output.cov} -p {output.mapped} &> {log}"
 
@@ -95,7 +95,7 @@ rule mapq:
     conda:
         "../envs/samtools.yaml"
     log:
-       "logs/mapq/{sample}.log"
+       "logs/samples/samtools/mapq_{sample}.log"
     script:
         "../scripts/pileup_mapq.sh"
 
@@ -111,7 +111,7 @@ rule mapqcov:
     conda:
         "../envs/samtools.yaml"
     log: 
-        "logs/mapq/mapqcov_{sample}.log"
+        "logs/samples/samtools/mapqcov_{sample}.log"
     shell:
         "xonsh workflow/scripts/mapqcov.xsh -m {input.mapqbed} -c {input.covbed} -g {input.gff} -cm {output.covmapq} -s {wildcards.sample} -o {output.tsv} &> {log}"
 
@@ -129,7 +129,7 @@ rule repeat_modeler:
     conda:
         "../envs/repeatmasker.yaml"
     log:
-        "logs/repeats/repeatmodeler_{lineage}.log"
+        "logs/references/repeats/repeatmodeler_{lineage}.log"
     shell:
         "bash workflow/scripts/repeat-modeler.sh {threads} {input} {params.repdir} &> {log}"
 
@@ -147,7 +147,7 @@ rule repeats:
     conda:
         "../envs/repeatmasker.yaml"
     log:
-        "logs/repeats/repeatmasker_{lineage}.log"
+        "logs/references/repeats/repeatmasker_{lineage}.log"
     shell:
         "bash workflow/scripts/repeat-masker.sh {threads} {input.database} {input.fasta} {input.known} {input.unknown} {output} &> {log}"
 
@@ -174,7 +174,7 @@ rule raw_coverage:
     conda:
         "../envs/samtools.yaml"
     log:
-        "logs/coverage/{sample}.log"
+        "logs/samples/mosdepth/raw_coverage{sample}.log"
     shell:
         "xonsh workflow/scripts/coverage_analysis.xsh "
         "-b {input.coverage} "
@@ -213,7 +213,7 @@ rule good_coverage:
     conda:
         "../envs/samtools.yaml"
     log:
-        "logs/coverage/{sample}.log"
+        "logs/samples/mosdepth/good_coverage_{sample}.log"
     shell:
         "xonsh workflow/scripts/coverage_analysis.xsh "
         "-b {input.coverage} "
@@ -244,6 +244,6 @@ rule dataset_metrics:
         allm = DATASET_OUTDIR / "files" / "mapping_stats.tsv",
         allmc = DATASET_OUTDIR / "files" / "mapqcov.tsv"
     log:
-        "logs/coverage/dataset_coverage.log"
+        "logs/dataset/files/dataset_metrics.log"
     script:
         "../scripts/dataset_coverage.sh"

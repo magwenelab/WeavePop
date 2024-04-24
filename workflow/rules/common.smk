@@ -19,7 +19,6 @@ DATASET_OUTDIR = Path("results/dataset")
 REFDIR = Path("results/references")
 
 # FIX : Add conditional statements to allow for absence of these files
-FEATURE_FILE = "config/features.txt"
 LOCI_FILE = "config/loci.csv"
 CHROM_NAMES = "config/chromosome_names.csv"
 

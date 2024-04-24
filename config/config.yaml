@@ -45,11 +45,11 @@ plotting:
   scale : 0.7 # This is a value to adjust the size of the plots with ggsave scale parameter. Use lower values for fewer samples and bigger values for more samples.
 
 snippy:
-  threads: 12
+  threads: 4
   extra: ""
 
 liftoff:
-  threads: 12
+  threads: 4
   extra: ""
 
 agat:

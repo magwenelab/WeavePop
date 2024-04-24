@@ -19,7 +19,7 @@ rule extract_ref_seqs:
     conda:
         "../envs/agat.yaml"
     log:
-        "logs/references/extract_{lineage}.log"
+        "logs/references/extract_ref_seqs_{lineage}.log"
     shell:
         "agat_sp_extract_sequences.pl -g {input.gff} -f {input.fasta} -o {output.cds} -c {input.config} &> {log} "
         "&& "
@@ -32,15 +32,15 @@ rule prepare_refs_db:
         cds = rules.extract_ref_seqs.output.cds,
         prots = rules.extract_ref_seqs.output.prots
     output:
-        gff = DATASET_OUTDIR / "snpeff_data" / str(config["species_name"] + "_{lineage}") / "genes.gff",
-        fasta = DATASET_OUTDIR / "snpeff_data" / str(config["species_name"] + "_{lineage}") / "sequences.fa",
-        cds = DATASET_OUTDIR / "snpeff_data" / str(config["species_name"] + "_{lineage}") / "cds.fa",
-        prots = DATASET_OUTDIR / "snpeff_data" / str(config["species_name"] + "_{lineage}") / "protein.fa"
+        gff = REFDIR / "snpeff_data" / str(config["species_name"] + "_{lineage}") / "genes.gff",
+        fasta = REFDIR / "snpeff_data" / str(config["species_name"] + "_{lineage}") / "sequences.fa",
+        cds = REFDIR / "snpeff_data" / str(config["species_name"] + "_{lineage}") / "cds.fa",
+        prots = REFDIR / "snpeff_data" / str(config["species_name"] + "_{lineage}") / "protein.fa"
     conda:
         "../envs/variants.yaml"
     params:
         name = config["species_name"] + "_{lineage}",
-        config = DATASET_OUTDIR / "snpeff_data" / "snpEff.config",
+        config = REFDIR / "snpeff_data" / "snpEff.config",
     log:
         "logs/references/prepare_dbs_{lineage}.log"
     shell:
@@ -59,12 +59,12 @@ rule build_refs_db:
         cds = rules.prepare_refs_db.output.cds,
         prots = rules.prepare_refs_db.output.prots
     output:
-        touch(DATASET_OUTDIR / "snpeff_data" / "{lineage}.done")
+        touch(REFDIR / "snpeff_data" / "{lineage}.done")
     conda:
         "../envs/variants.yaml"
     params:
-        config = DATASET_OUTDIR / "snpeff_data" / "snpEff.config",
-        dir = os.getcwd() / DATASET_OUTDIR / "snpeff_data",
+        config = REFDIR/ "snpeff_data" / "snpEff.config",
+        dir = os.getcwd() / REFDIR / "snpeff_data",
         name = config["species_name"] + "_{lineage}"
     log:
         "logs/references/build_dbs_{lineage}.log"
@@ -91,8 +91,8 @@ rule complete_db:
         column = 'group',
         sp = config["species_name"],
         temp_dir = DATASET_OUTDIR / 'tmp',
-        dir = os.getcwd() / DATASET_OUTDIR / "snpeff_data",
-        config = DATASET_OUTDIR / "snpeff_data" / "snpEff.config",
+        dir = os.getcwd() / REFDIR/ "snpeff_data",
+        config = REFDIR / "snpeff_data" / "snpEff.config",
         sequences = DATASET_OUTDIR / "sequences.db"
     conda:
         "../envs/variants.yaml"
