@@ -170,24 +170,22 @@ rule raw_coverage:
         smooth = config["coverage_quality"]["ploidy"]["smoothing_size"],
         repeats_threshold = config["coverage_quality"]["repeats"]["repeats_fraction"],
         change_threshold = config["coverage_quality"]["ploidy"]["change"],
-        repeat_category_threshold = config["coverage_quality"]["repeats"]["category_fraction"]
     conda:
         "../envs/samtools.yaml"
     log:
         "logs/samples/mosdepth/raw_coverage{sample}.log"
     shell:
         "xonsh workflow/scripts/coverage_analysis.xsh "
-        "-b {input.coverage} "
-        "-rp {input.repeats} "
-        "-ch {output.chromosome} "
-        "-rg {output.regions} "
-        "-sv {output.structure} "
-        "-sn {wildcards.sample} "
-        "-rs {params.region} "
-        "-ss {params.smooth} "
-        "-rt {params.repeats_threshold} "
-        "-ct {params.change_threshold} "
-        "-rct {params.repeat_category_threshold} "
+        "-ci {input.coverage} "
+        "-ri {input.repeats} "
+        "-co {output.chromosome} "
+        "-ro {output.regions} "
+        "-so {output.structure} "
+        "-np {wildcards.sample} "
+        "-rp {params.region} "
+        "-sp {params.smooth} "
+        "-tp {params.repeats_threshold} "
+        "-cp {params.change_threshold} "
         "&> {log}"
 
 # Get coverage stats for each window and each chromosome for the good quality mappings
@@ -209,24 +207,22 @@ rule good_coverage:
         smooth = config["coverage_quality"]["ploidy"]["smoothing_size"],
         repeats_threshold = config["coverage_quality"]["repeats"]["repeats_fraction"],
         change_threshold = config["coverage_quality"]["ploidy"]["change"],
-        repeat_category_threshold = config["coverage_quality"]["repeats"]["category_fraction"]
     conda:
         "../envs/samtools.yaml"
     log:
         "logs/samples/mosdepth/good_coverage_{sample}.log"
     shell:
         "xonsh workflow/scripts/coverage_analysis.xsh "
-        "-b {input.coverage} "
-        "-rp {input.repeats} "
-        "-ch {output.chromosome} "
-        "-rg {output.regions} "
-        "-sv {output.structure} "
-        "-sn {wildcards.sample} "
-        "-rs {params.region} "
-        "-ss {params.smooth} "
-        "-rt {params.repeats_threshold} "
-        "-ct {params.change_threshold} "
-        "-rct {params.repeat_category_threshold} "
+        "-ci {input.coverage} "
+        "-ri {input.repeats} "
+        "-co {output.chromosome} "
+        "-ro {output.regions} "
+        "-so {output.structure} "
+        "-np {wildcards.sample} "
+        "-rp {params.region} "
+        "-sp {params.smooth} "
+        "-tp {params.repeats_threshold} "
+        "-cp {params.change_threshold} "
         "&> {log}"
         
 # Get the coverage stats of all samples
