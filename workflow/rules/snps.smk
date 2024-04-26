@@ -105,4 +105,23 @@ rule complete_db:
     shell:
         "xonsh workflow/scripts/build_database.xsh annotate -o {output} -m {input.metadata} -h {input.chrom_names} -v {input.sv} -q {input.mc} -g {input.gffs} -c {params.column} -s {params.sp} -t {params.temp_dir} -d {params.dir} -n {params.config} {input.vcfs} -e {params.sequences} &> {log}"
 
-        
+def intersect_vcfs_input(wildcards):
+    l = SAMPLE_REFERENCE.loc[wildcards.lineage,]
+    return {
+        vcfs = expand(rules.snippy.output.vcf, sample=l["sample"])
+    }
+    return 
+rule intersect_vcfs:
+    input:
+        unpack(intersect_input)
+    output:
+        vcf = DATASET_OUTDIR / "snps" / "{lineage}_intersection.vcf",
+        tsv = DATASET_OUTDIR / "snps" / "{lineage}_presence.tsv"
+    params:
+        tmp_dir = DATASET_OUTDIR / 'tmp'
+    conda:
+        "../envs/variants.yaml"
+    log:
+        "logs/dataset/snps/intersect_vcfs_{lineage}.log"
+    shell:
+        "xonsh workflow/scripts/intersect_vcfs.xsh -v {output.vcf} -p {output.tsv} -l {wildcards.lineage} -t {params.tmp_dir} {input.vcfs} &> {log}"

@@ -52,6 +52,7 @@ def get_dataframes(lineage, db_name, temp_dir, vcf_files, db_dir, config):
     presence_melt = presence_matrix.melt(id_vars='var_id', var_name='sample', value_name='value')
     df_presence = presence_melt[presence_melt['value'] == '1'].copy()
     df_presence.drop(columns='value', inplace=True)
+    
     # Run SnpEFF command
     print("Running SnpEff command:")
     snpeff_command = f"snpEff ann -v -classic -s {snpeff_html_path} {db_name} {sites_vcf_path} 1> {ann_vcf_path} 2> {snpeff_log_path}"
