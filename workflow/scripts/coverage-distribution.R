@@ -67,7 +67,7 @@ plot <- ggplot()+
   scale_x_continuous(name = "Coverage (X) ", labels = comma, n.breaks = 10)+
   scale_fill_manual(name= "Alignment quality", values= color_quality)+
   theme(legend.position="none")+
-  scale_color_manual(values = c("Global_Median" = "darkblue", "Global_Mean" = "darkgreen"),
+  scale_color_manual(values = c("Global_Median" = "darkblue", "Global_Mean" = "#bfb82a"),
                      labels = c("Global_Median" = "Median", "Global_Mean" = "Mean"),
                      name = "Good quality global coverage")+
   labs(title = paste("Lineage:",lineage, " Sample:", sample,  sep = " "))+

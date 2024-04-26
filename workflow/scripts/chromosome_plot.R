@@ -9,19 +9,27 @@ suppressPackageStartupMessages(library(RColorBrewer))
 
 
 coverage_regions <- read.delim(snakemake@input[[1]], sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
-# coverage_regions <- read.delim("results/samples/mosdepth/SRS8318899/good_regions_coverage.tsv", sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
 struc_vars <- read.delim(snakemake@input[[2]], sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
-# struc_vars <- read.delim("results/samples/mosdepth/SRS8318899/good_structural_variants.tsv", sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
 repeats_table <- read.delim(snakemake@input[[3]], sep= "\t", header = FALSE, col.names = c("Accession", "Start", "End", "Repeat_type"), stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
-# repeats_table <- read.delim("results/references/VNI/repeats/VNI_repeats.bed", sep= "\t", header = FALSE, col.names = c("Accession", "Start", "End", "Repeat_type"), stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
 loci_table <- read.delim(snakemake@input[[4]], header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
-# loci_table <- read.delim("results/dataset/files/loci_to_plot.tsv", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
 chrom_names <- read.csv(snakemake@input[[5]], sep = ",", header = FALSE, col.names = c("Lineage", "Accession", "Chromosome"), stringsAsFactors = TRUE, na = c("", "N/A"))
-# chrom_names <- read.csv("config/chromosome_names.csv", header = FALSE, col.names = c("Lineage", "Accession", "Chromosome"), stringsAsFactors = TRUE, na = c("", "N/A"))
-# sample <- "SRS8318899"
-
-chrom_names['Accession_Chromosome'] <- paste(chrom_names$Accession, chrom_names$Chromosome, sep = "_")
 sample <- snakemake@wildcards$sample
+
+# coverage_regions <- read.delim("results/samples/mosdepth/PMY3493/good_regions_coverage.tsv", sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
+# struc_vars <- read.delim("results/samples/mosdepth/PMY3493/good_structural_variants.tsv", sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
+# repeats_table <- read.delim("results/references/VNI_VNIV/repeats/VNI_VNIV_repeats.bed", sep= "\t", header = FALSE, col.names = c("Accession", "Start", "End", "Repeat_type"), stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
+# loci_table <- read.delim("results/dataset/files/loci_to_plot.tsv", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
+# chrom_names <- read.csv("config/chromosome_names.csv", header = FALSE, col.names = c("Lineage", "Accession", "Chromosome"), stringsAsFactors = TRUE, na = c("", "N/A"))
+# sample <- "PMY3493"
+
+chrom_names <- chrom_names %>%
+  filter(Accession %in% unique(struc_vars$Accession) )
+
+chrom_names['Accession_Chromosome'] <- paste(chrom_names$Chromosome, chrom_names$Accession, sep = "xxx")
+unique_levels <- unique(chrom_names$Accession_Chromosome)
+new_order <- c(rbind(matrix(unique_levels, nrow = 2, byrow = TRUE)))
+chrom_names$Accession_Chromosome <- factor(chrom_names$Accession_Chromosome, levels = new_order)
+
 loci_sample <- loci_table %>% 
     select(Accession = seq_id, Start = start, End = end,Loci)%>%
     filter(Accession %in% coverage_regions$Accession)%>%
@@ -74,13 +82,12 @@ lineage <- unique(coverage_regions$Lineage)
 #   droplevels()
 # variants <- left_join(variants, chrom_names, by = "Accession")
 # v_lim <- topCov + 3
+
 my_labeller <- function(value){
-  new_value <- sapply(strsplit(as.character(value), "_"), tail, 1)
+  new_value <- sapply(strsplit(as.character(value), "xxx"), head, 1)
   return(new_value)
 }
 
-print(chrom_names$Accession_Chromosome)
-my_labeller(chrom_names$Accession_Chromosome)
 # Coverage plot
 c <- ggplot()+
   coord_cartesian(ylim= c(0,r_lim +1), xlim = c(0, max(coverage$End)))+
@@ -112,3 +119,4 @@ c <- ggplot()+
         panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 2))
 
 ggsave(snakemake@output[[1]], c, height =9, width = 16, dpi = 600)
+
