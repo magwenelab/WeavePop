@@ -1,59 +1,111 @@
-seq_id	source_tag	primary_tag	start	end	score	strand	frame	copy_num_ID	coverage	description	ebi_biotype	extra_copy_number	gene_ebi_biotype	gene_id	ID	low_identity	matches_ref_protein	missing_start_codon	missing_stop_codon	Name	Note	Parent	partial_mapping	protein_source_id	sequence_ID	valid_ORF	valid_ORFs	Loci	locus_tag
-VNI_CP003828.1	Liftoff	protein_coding_gene	800105	801829	.	1	.	CNAG_04417_0	1.0	alpha-ketoglutarate-dependent 2,4- dichlorophenoxyacetate dioxygenase	protein_coding	0			CNAG_04417										1.0		1.0	Centromeres	CNAG_04417
-VNI_CP003828.1	Liftoff	protein_coding_gene	840436	852361	.	-1	.	CNAG_07769_0	1.0	E3 ubiquitin-protein ligase HUWE1	protein_coding	0			CNAG_07769					TOM1					1.0		1.0	Centromeres	CNAG_07769
-VNI_CP003827.1	Liftoff	protein_coding_gene	449604	451161	.	1	.	CNAG_03251_0	1.0	ADP-ribosylation factor	protein_coding	0			CNAG_03251					ARF2					1.0		1.0	Centromeres	CNAG_03251
-VNI_CP003827.1	Liftoff	protein_coding_gene	505242	508279	.	-1	.	CNAG_03258_0	1.0	AGC protein kinase, variant 2	protein_coding	0			CNAG_03258					TPK202a					1.0		3.0	Centromeres	CNAG_03258
-VNI_CP003820.1	Liftoff	protein_coding_gene	967715	970168	.	1	.	CNAG_00378_0	1.0	hypothetical protein	protein_coding	0			CNAG_00378										1.0		1.0	Centromeres	CNAG_00378
-VNI_CP003820.1	Liftoff	protein_coding_gene	1006714	1012296	.	1	.	CNAG_00383_0	1.0	Aminophospholipid translocase, putative	protein_coding	0			CNAG_00383					APT3					1.0		1.0	Centromeres	CNAG_00383
-VNI_CP003829.1	Liftoff	protein_coding_gene	196927	199433	.	-1	.	CNAG_04857_0	1.0	hypothetical protein	protein_coding	0			CNAG_04857										1.0		1.0	Centromeres	CNAG_04857
-VNI_CP003829.1	Liftoff	protein_coding_gene	230150	232591	.	-1	.	CNAG_04855_0	1.0	hypothetical protein	protein_coding	0			CNAG_04855										1.0		1.0	Centromeres	CNAG_04855
-VNI_CP003825.1	Liftoff	protein_coding_gene	777584	780648	.	1	.	CNAG_02254_0	1.0	quinate permease	protein_coding	0			CNAG_02254					LPI12					1.0		1.0	Centromeres	CNAG_02254
-VNI_CP003825.1	Liftoff	protein_coding_gene	821763	825175	.	-1	.	CNAG_02240_0	1.0	cytoplasmic protein	protein_coding	0			CNAG_02240										1.0		1.0	Centromeres	CNAG_02240
-VNI_CP003830.1	Liftoff	protein_coding_gene	866340	868823	.	1	.	CNAG_01780_0	1.0	cytoplasmic protein	protein_coding	0			CNAG_01780										1.0		1.0	Centromeres	CNAG_01780
-VNI_CP003830.1	Liftoff	protein_coding_gene	933659	935499	.	-1	.	CNAG_01788_0	1.0	tRNA(His) guanylyltransferase	protein_coding	0			CNAG_01788										1.0		1.0	Centromeres	CNAG_01788
-VNI_CP003823.1	Liftoff	protein_coding_gene	706505	708803	.	1	.	CNAG_05202_0	1.0	SET domain-containing protein 6	protein_coding	0			CNAG_05202										1.0		1.0	Centromeres	CNAG_05202
-VNI_CP003823.1	Liftoff	protein_coding_gene	752927	754862	.	-1	.	CNAG_05215_0	1.0	hypothetical protein	protein_coding	0			CNAG_05215										1.0		1.0	Centromeres	CNAG_05215
-VNI_CP003826.1	Liftoff	protein_coding_gene	523551	525713	.	1	.	CNAG_06699_0	1.0	glyceraldehyde-3-phosphate dehydrogenase	protein_coding	0			CNAG_06699					GPD1					1.0		1.0	Centromeres	CNAG_06699
-VNI_CP003826.1	Liftoff	protein_coding_gene	570803	572979	.	-1	.	CNAG_05671_0	1.0	oxidation resistance protein 1	protein_coding	0			CNAG_05671										1.0		1.0	Centromeres	CNAG_05671
-VNI_CP003832.1	Liftoff	protein_coding_gene	576241	579771	.	1	.	CNAG_06475_0	1.0	hypothetical protein	protein_coding	0			CNAG_06475										1.0		1.0	Centromeres	CNAG_06475
-VNI_CP003832.1	Liftoff	protein_coding_gene	632168	634487	.	-1	.	CNAG_06482_0	1.0	Amidase	protein_coding	0			CNAG_06482										1.0		1.0	Centromeres	CNAG_06482
-VNI_CP003831.1	Liftoff	protein_coding_gene	136640	139632	.	1	.	CNAG_06036_0	1.0	hypothetical protein	protein_coding	0			CNAG_06036										1.0		1.0	Centromeres	CNAG_06036
-VNI_CP003831.1	Liftoff	protein_coding_gene	170630	171956	.	-1	.	CNAG_06048_0	1.0	hypothetical protein	protein_coding	0			CNAG_06048										1.0		1.0	Centromeres	CNAG_06048
-VNI_CP003822.1	Liftoff	protein_coding_gene	1371530	1378287	.	1	.	CNAG_07972_0	1.0	hypothetical protein	protein_coding	0			CNAG_07972										1.0		1.0	Centromeres	CNAG_07972
-VNI_CP003822.1	Liftoff	protein_coding_gene	1409633	1410891	.	-1	.	CNAG_06879_0	1.0	hypothetical protein	protein_coding	0			CNAG_06879										1.0		1.0	Centromeres	CNAG_06879
-VNI_CP003824.1	Liftoff	protein_coding_gene	185700	188859	.	1	.	CNAG_06814_0	1.0	Alpha cell-type homeodomain transcription factor	protein_coding	0			CNAG_06814					SXI1alpha					1.0		1.0	MAT	CNAG_06814
-VNI_CP003824.1	Liftoff	protein_coding_gene	189560	192241	.	-1	.	CNAG_06813_0	1.0	O-glucosyltransferase, putative	protein_coding	0			CNAG_06813					CAP1alpha					1.0		1.0	MAT	CNAG_06813
-VNI_CP003824.1	Liftoff	protein_coding_gene	193324	200779	.	-1	.	CNAG_06812_0	1.0	phospholipase D, variant	protein_coding	0			CNAG_06812					SPO14alpha					1.0		2.0	MAT	CNAG_06812
-VNI_CP003824.1	Liftoff	protein_coding_gene	200909	202001	.	1	.	CNAG_06811_0	1.0	large subunit ribosomal protein L22e	protein_coding	0			CNAG_06811					RPL22alpha					1.0		1.0	MAT	CNAG_06811
-VNI_CP003824.1	Liftoff	protein_coding_gene	202602	204039	.	1	.	CNAG_06810_0	1.0	hypothetical protein	protein_coding	0			CNAG_06810										1.0		1.0	MAT	CNAG_06810
-VNI_CP003824.1	Liftoff	protein_coding_gene	204044	207447	.	-1	.	CNAG_06809_0	1.0	IKS protein kinase	protein_coding	0			CNAG_06809					IKS1					1.0		1.0	MAT	CNAG_06809
-VNI_CP003824.1	Liftoff	protein_coding_gene	208236	209840	.	-1	.	CNAG_06808_0	1.0	pheromone a factor receptor	protein_coding	0			CNAG_06808					STE3alpha					1.0		1.0	MAT	CNAG_06808
-VNI_CP003824.1	Liftoff	protein_coding_gene	210557	211580	.	-1	.	CNAG_06807_0	1.0	hypothetical protein	protein_coding	0			CNAG_06807										1.0		1.0	MAT	CNAG_06807
-VNI_CP003824.1	Liftoff	protein_coding_gene	212068	213909	.	1	.	CNAG_06806_0	1.0	electron transfer flavoprotein alpha subunit	protein_coding	0			CNAG_06806					ETF1alpha					1.0		1.0	MAT	CNAG_06806
-VNI_CP003824.1	Liftoff	protein_coding_gene	214530	215070	.	1	.	CNAG_06805_0	1.0	hypothetical protein	protein_coding	0			CNAG_06805										1.0		1.0	MAT	CNAG_06805
-VNI_CP003824.1	Liftoff	protein_coding_gene	215850	219594	.	-1	.	CNAG_06804_0	1.0	BTP/PZ domain-containing protein	protein_coding	0			CNAG_06804					BSP3					1.0		2.0	MAT	CNAG_06804
-VNI_CP003824.1	Liftoff	protein_coding_gene	222288	222701	.	-1	.	CNAG_07406_0	1.0	pheromone alpha	protein_coding	0			CNAG_07406										1.0		1.0	MAT	CNAG_07406
-VNI_CP003824.1	Liftoff	protein_coding_gene	222704	223314	.	1	.	CNAG_07407_0	1.0	fungal mating-type pheromone	protein_coding	0			CNAG_07407					MFalpha3					1.0		1.0	MAT	CNAG_07407
-VNI_CP003824.1	Liftoff	protein_coding_gene	223846	230310	.	1	.	CNAG_06971_0	1.0	myosin class v heavy chain	protein_coding	0			CNAG_06971					MYO2alpha					1.0		1.0	MAT	CNAG_06971
-VNI_CP003824.1	Liftoff	protein_coding_gene	230211	233167	.	-1	.	CNAG_07408_0	1.0	STE/STE20/PAKA protein kinase, variant	protein_coding	0			CNAG_07408					STE20alpha					1.0		2.0	MAT	CNAG_07408
-VNI_CP003824.1	Liftoff	protein_coding_gene	233496	238299	.	1	.	CNAG_06980_0	1.0	STE/STE11 protein kinase	protein_coding	0			CNAG_06980					STE11alpha					1.0		1.0	MAT	CNAG_06980
-VNI_CP003824.1	Liftoff	protein_coding_gene	238263	242729	.	-1	.	CNAG_07409_0	1.0	DNA-directed RNA polymerase, mitochondrial	protein_coding	0			CNAG_07409					RPO41alpha					1.0		1.0	MAT	CNAG_07409
-VNI_CP003824.1	Liftoff	protein_coding_gene	242901	246213	.	1	.	CNAG_07005_0	1.0	Armadillo/beta-catenin repeat protein	protein_coding	0			CNAG_07005					BSP2					1.0		1.0	MAT	CNAG_07005
-VNI_CP003824.1	Liftoff	protein_coding_gene	244073	247927	.	-1	.	CNAG_07004_0	1.0	dihydrolipoyl dehydrogenase	protein_coding	0			CNAG_07004					LPD1alpha					1.0		1.0	MAT	CNAG_07004
-VNI_CP003824.1	Liftoff	protein_coding_gene	248015	251440	.	-1	.	CNAG_07410_0	1.0	CID1-family polyA polymerase	protein_coding	0			CNAG_07410					CID1alpha					1.0		2.0	MAT	CNAG_07410
-VNI_CP003824.1	Liftoff	protein_coding_gene	251935	255597	.	-1	.	CNAG_07015_0	1.0	hypothetical protein	protein_coding	0			CNAG_07015										1.0		2.0	MAT	CNAG_07015
-VNI_CP003824.1	Liftoff	protein_coding_gene	256515	263236	.	1	.	CNAG_07411_0	1.0	histone demethylase JARID1	protein_coding	0			CNAG_07411					RUM1alpha					1.0		1.0	MAT	CNAG_07411
-VNI_CP003824.1	Liftoff	protein_coding_gene	263567	266561	.	1	.	CNAG_01457_0	1.0	hypothetical protein	protein_coding	0			CNAG_01457					BSP1					1.0		1.0	MAT	CNAG_01457
-VNI_CP003824.1	Liftoff	protein_coding_gene	267859	269211	.	1	.	CNAG_01456_0	1.0	hypothetical protein, variant	protein_coding	0			CNAG_01456										1.0		2.0	MAT	CNAG_01456
-VNI_CP003824.1	Liftoff	protein_coding_gene	270518	271941	.	1	.	CNAG_01455_0	1.0	large subunit ribosomal protein L39	protein_coding	0			CNAG_01455					RPL39alpha					1.0		1.0	MAT	CNAG_01455
-VNI_CP003824.1	Liftoff	protein_coding_gene	271944	275730	.	-1	.	CNAG_01454_0	1.0	transcription factor STE12	protein_coding	0			CNAG_01454					STE12alpha					1.0		1.0	MAT	CNAG_01454
-VNI_CP003824.1	Liftoff	protein_coding_gene	1555262	1559982	.	1	.	CNAG_00960_0	1.0	ATP-dependent RNA helicase DHX8/PRP22	protein_coding	0			CNAG_00960										1.0		1.0	Centromeres	CNAG_00960
-VNI_CP003824.1	Liftoff	protein_coding_gene	1580221	1580739	.	-1	.	CNAG_00941_0	1.0	hypothetical protein	protein_coding	0			CNAG_00941										1.0		1.0	Centromeres	CNAG_00941
-VNI_CP003821.1	Liftoff	ncRNA_gene	273146	276115	.	-1	.	CNAG_10500_0	1.0	unspecified product	rRNA	0			CNAG_10500										1.0			rRNA	CNAG_10500
-VNI_CP003821.1	Liftoff	ncRNA_gene	276333	276482	.	-1	.	CNAG_10501_0	1.0	unspecified product	rRNA	0			CNAG_10501										1.0			rRNA	CNAG_10501
-VNI_CP003821.1	Liftoff	ncRNA_gene	276609	278409	.	-1	.	CNAG_10502_0	1.0	unspecified product	rRNA	0			CNAG_10502										1.0			rRNA	CNAG_10502
-VNI_CP003821.1	Liftoff	ncRNA_gene	279497	279607	.	-1	.	CNAG_10503_0	1.0	unspecified product	rRNA	0			CNAG_10503										1.0			rRNA	CNAG_10503
-VNI_CP003821.1	Liftoff	protein_coding_gene	832161	835383	.	1	.	CNAG_03796_0	1.0	NAK protein kinase	protein_coding	0			CNAG_03796					ENV7					1.0		1.0	Centromeres	CNAG_03796
-VNI_CP003821.1	Liftoff	protein_coding_gene	892714	894965	.	-1	.	CNAG_03805_0	1.0	calcium/proton exchanger	protein_coding	0			CNAG_03805										1.0		1.0	Centromeres	CNAG_03805
-VNI_CP003833.2	Liftoff	protein_coding_gene	437784	441844	.	1	.	CNAG_05486_0	1.0	hypothetical protein	protein_coding	0			CNAG_05486										1.0		1.0	Centromeres	CNAG_05486
-VNI_CP003833.2	Liftoff	protein_coding_gene	477987	480641	.	-1	.	CNAG_05496_0	1.0	2-isopropylmalate synthase	protein_coding	0			CNAG_05496										1.0		1.0	Centromeres	CNAG_05496
+seq_id	source_tag	primary_tag	start	end	score	strand	frame	ID	Parent	locus	Name	description	old_ID	Loci	locus_tag
+CP003827.1	DiversityPipeline	gene	449604	451161	.	1	.	CNAG_03251		CNAG_03251	ARF2	ADP-ribosylation factor	CNAG_03251	Centromeres	CNAG_03251
+CP003827.1	DiversityPipeline	gene	505242	508279	.	-1	.	CNAG_03258		CNAG_03258	TPK202a	AGC protein kinase, variant 2	CNAG_03258	Centromeres	CNAG_03258
+AE017342.1	DiversityPipeline	gene	262313	266702	.	1	.	CNB00940		CNB00940		conserved hypothetical protein	CNB00940	rRNA	CNB00940
+AE017342.1	DiversityPipeline	gene	291129	294121	.	-1	.	CNB00970		CNB00970		hypothetical protein	CNB00970	rRNA	CNB00970
+AE017342.1	DiversityPipeline	gene	853852	855449	.	1	.	CNB02900		CNB02900		serine/threonine-protein kinase, putative	CNB02900	Centromeres	CNB02900
+AE017342.1	DiversityPipeline	gene	905038	907266	.	-1	.	CNB02980		CNB02980		calcium:hydrogen antiporter, putative	CNB02980	Centromeres	CNB02980
+CP003822.1	DiversityPipeline	gene	1371530	1378287	.	1	.	CNAG_07972		CNAG_07972		hypothetical protein	CNAG_07972	Centromeres	CNAG_07972
+CP003822.1	DiversityPipeline	gene	1409633	1410891	.	-1	.	CNAG_06879		CNAG_06879		hypothetical protein	CNAG_06879	Centromeres	CNAG_06879
+AE017347.1	DiversityPipeline	gene	879781	883050	.	1	.	CNG03180		CNG03180		cAMP-dependent protein kinase, putative	CNG03180	Centromeres	CNG03180
+AE017347.1	DiversityPipeline	gene	911994	913179	.	-1	.	CNG03220		CNG03220	ARF2	ARF small monomeric GTPase, putative	CNG03220	Centromeres	CNG03220
+CP003828.1	DiversityPipeline	gene	800105	801829	.	1	.	CNAG_04417		CNAG_04417		alpha-ketoglutarate-dependent 2,4- dichlorophenoxyacetate dioxygenase	CNAG_04417	Centromeres	CNAG_04417
+CP003828.1	DiversityPipeline	gene	840436	852361	.	-1	.	CNAG_07769		CNAG_07769	TOM1	E3 ubiquitin-protein ligase HUWE1	CNAG_07769	Centromeres	CNAG_07769
+AE017352.1	DiversityPipeline	gene	127562	129600	.	1	.	CNL04140		CNL04140		expressed protein	CNL04140	Centromeres	CNL04140
+AE017352.1	DiversityPipeline	gene	176065	178418	.	-1	.	CNL04230		CNL04230		nucleus protein, putative	CNL04230	Centromeres	CNL04230
+CP003832.1	DiversityPipeline	gene	576241	579771	.	1	.	CNAG_06475		CNAG_06475		hypothetical protein	CNAG_06475	Centromeres	CNAG_06475
+CP003832.1	DiversityPipeline	gene	632168	634487	.	-1	.	CNAG_06482		CNAG_06482		Amidase	CNAG_06482	Centromeres	CNAG_06482
+AE017348.1	DiversityPipeline	gene	703642	706110	.	1	.	CNH01520		CNH01520		2-isopropylmalate synthase, putative	CNH01520	Centromeres	CNH01520
+AE017348.1	DiversityPipeline	gene	760912	765093	.	-1	.	CNH01440		CNH01440		MMS2, putative	CNH01440	Centromeres	CNH01440
+AE017353.1	DiversityPipeline	gene	119293	122411	.	1	.	CNM00480		CNM00480		conserved hypothetical protein	CNM00480	Centromeres	CNM00480
+AE017353.1	DiversityPipeline	gene	181516	183489	.	-1	.	CNM00580		CNM00580		conserved hypothetical protein	CNM00580	Centromeres	CNM00580
+AE017346.1	DiversityPipeline	gene	861842	864013	.	1	.	CNF03020		CNF03020	OXR1	expressed protein	CNF03020	Centromeres	CNF03020
+AE017346.1	DiversityPipeline	gene	938913	940785	.	-1	.	CNF03160		CNF03160	GPD	glyceraldehyde-3-phosphate dehydrogenase	CNF03160	Centromeres	CNF03160
+AE017349.1	DiversityPipeline	gene	311954	323986	.	1	.	CNI01260		CNI01260	TOM1	ubiquitin-protein ligase, putative	CNI01260	Centromeres	CNI01260
+AE017349.1	DiversityPipeline	gene	388527	390163	.	-1	.	CNI01300		CNI01300		2,4-dichlorophenoxyacetate alpha-ketoglutarate dioxygenase, putative	CNI01300	Centromeres	CNI01300
+CP003825.1	DiversityPipeline	gene	777584	780648	.	1	.	CNAG_02254		CNAG_02254	LPI12	quinate permease	CNAG_02254	Centromeres	CNAG_02254
+CP003825.1	DiversityPipeline	gene	821763	825175	.	-1	.	CNAG_02240		CNAG_02240		cytoplasmic protein	CNAG_02240	Centromeres	CNAG_02240
+CP003826.1	DiversityPipeline	gene	523551	525713	.	1	.	CNAG_06699		CNAG_06699	GPD1	glyceraldehyde-3-phosphate dehydrogenase	CNAG_06699	Centromeres	CNAG_06699
+CP003826.1	DiversityPipeline	gene	570803	572979	.	-1	.	CNAG_05671		CNAG_05671		oxidation resistance protein 1	CNAG_05671	Centromeres	CNAG_05671
+CP003820.1	DiversityPipeline	gene	123979	126449	.	1	.	CNAG_00040		CNAG_00040	ERG11	cytochrome P450, family 51 (sterol 14- demethylase)	CNAG_00040	ERG11	CNAG_00040
+CP003820.1	DiversityPipeline	gene	967715	970168	.	1	.	CNAG_00378		CNAG_00378		hypothetical protein	CNAG_00378	Centromeres	CNAG_00378
+CP003820.1	DiversityPipeline	gene	1006714	1012296	.	1	.	CNAG_00383		CNAG_00383	APT3	Aminophospholipid translocase, putative	CNAG_00383	Centromeres	CNAG_00383
+CP003820.1	DiversityPipeline	gene	1900719	1907783	.	1	.	CNAG_00730		CNAG_00730	AFR1	ATP-binding cassette transporter	CNAG_00730	AFR1	CNAG_00730
+CP003820.1	DiversityPipeline	gene	2258547	2260085	.	-1	.	CNAG_00854		CNAG_00854	ERG2	C-8 sterol isomerase	CNAG_00854	ERG2	CNAG_00854
+CP003829.1	DiversityPipeline	gene	196927	199433	.	-1	.	CNAG_04857		CNAG_04857		hypothetical protein	CNAG_04857	Centromeres	CNAG_04857
+CP003829.1	DiversityPipeline	gene	230150	232591	.	-1	.	CNAG_04855		CNAG_04855		hypothetical protein	CNAG_04855	Centromeres	CNAG_04855
+AE017345.1	DiversityPipeline	gene	772977	775697	.	1	.	CNE02910		CNE02910		hexose transport-related protein, putative	CNE02910	Centromeres	CNE02910
+AE017345.1	DiversityPipeline	gene	854321	857601	.	-1	.	CNE03010		CNE03010		cytoplasm protein, putative	CNE03010	Centromeres	CNE03010
+AE017351.1	DiversityPipeline	gene	140113	141656	.	1	.	CNK00480		CNK00480		hypothetical protein	CNK00480	Centromeres	CNK00480
+AE017351.1	DiversityPipeline	gene	178522	180709	.	-1	.	CNK00540		CNK00540		hypothetical protein	CNK00540	Centromeres	CNK00540
+CP003831.1	DiversityPipeline	gene	136640	139632	.	1	.	CNAG_06036		CNAG_06036		hypothetical protein	CNAG_06036	Centromeres	CNAG_06036
+CP003831.1	DiversityPipeline	gene	170630	171956	.	-1	.	CNAG_06048		CNAG_06048		hypothetical protein	CNAG_06048	Centromeres	CNAG_06048
+CP003824.1	DiversityPipeline	gene	185700	188859	.	1	.	CNAG_06814		CNAG_06814	SXI1alpha	Alpha cell-type homeodomain transcription factor	CNAG_06814	MAT	CNAG_06814
+CP003824.1	DiversityPipeline	gene	189560	192241	.	-1	.	CNAG_06813		CNAG_06813	CAP1alpha	O-glucosyltransferase, putative	CNAG_06813	MAT	CNAG_06813
+CP003824.1	DiversityPipeline	gene	193324	200779	.	-1	.	CNAG_06812		CNAG_06812	SPO14alpha	phospholipase D, variant	CNAG_06812	MAT	CNAG_06812
+CP003824.1	DiversityPipeline	gene	200909	202001	.	1	.	CNAG_06811		CNAG_06811	RPL22alpha	large subunit ribosomal protein L22e	CNAG_06811	MAT	CNAG_06811
+CP003824.1	DiversityPipeline	gene	202602	204039	.	1	.	CNAG_06810		CNAG_06810		hypothetical protein	CNAG_06810	MAT	CNAG_06810
+CP003824.1	DiversityPipeline	gene	204044	207447	.	-1	.	CNAG_06809		CNAG_06809	IKS1	IKS protein kinase	CNAG_06809	MAT	CNAG_06809
+CP003824.1	DiversityPipeline	gene	208236	209840	.	-1	.	CNAG_06808		CNAG_06808	STE3alpha	pheromone a factor receptor	CNAG_06808	MAT	CNAG_06808
+CP003824.1	DiversityPipeline	gene	210557	211580	.	-1	.	CNAG_06807		CNAG_06807		hypothetical protein	CNAG_06807	MAT	CNAG_06807
+CP003824.1	DiversityPipeline	gene	212068	213909	.	1	.	CNAG_06806		CNAG_06806	ETF1alpha	electron transfer flavoprotein alpha subunit	CNAG_06806	MAT	CNAG_06806
+CP003824.1	DiversityPipeline	gene	214530	215070	.	1	.	CNAG_06805		CNAG_06805		hypothetical protein	CNAG_06805	MAT	CNAG_06805
+CP003824.1	DiversityPipeline	gene	215850	219594	.	-1	.	CNAG_06804		CNAG_06804	BSP3	BTP/PZ domain-containing protein	CNAG_06804	MAT	CNAG_06804
+CP003824.1	DiversityPipeline	gene	222288	222701	.	-1	.	CNAG_07406		CNAG_07406		pheromone alpha	CNAG_07406	MAT	CNAG_07406
+CP003824.1	DiversityPipeline	gene	222704	223314	.	1	.	CNAG_07407		CNAG_07407	MFalpha3	fungal mating-type pheromone	CNAG_07407	MAT	CNAG_07407
+CP003824.1	DiversityPipeline	gene	223846	230310	.	1	.	CNAG_06971		CNAG_06971	MYO2alpha	myosin class v heavy chain	CNAG_06971	MAT	CNAG_06971
+CP003824.1	DiversityPipeline	gene	230211	233167	.	-1	.	CNAG_07408		CNAG_07408	STE20alpha	STE/STE20/PAKA protein kinase, variant	CNAG_07408	MAT	CNAG_07408
+CP003824.1	DiversityPipeline	gene	233496	238299	.	1	.	CNAG_06980		CNAG_06980	STE11alpha	STE/STE11 protein kinase	CNAG_06980	MAT	CNAG_06980
+CP003824.1	DiversityPipeline	gene	238263	242729	.	-1	.	CNAG_07409		CNAG_07409	RPO41alpha	DNA-directed RNA polymerase, mitochondrial	CNAG_07409	MAT	CNAG_07409
+CP003824.1	DiversityPipeline	gene	242901	246213	.	1	.	CNAG_07005		CNAG_07005	BSP2	Armadillo/beta-catenin repeat protein	CNAG_07005	MAT	CNAG_07005
+CP003824.1	DiversityPipeline	gene	244073	247927	.	-1	.	CNAG_07004		CNAG_07004	LPD1alpha	dihydrolipoyl dehydrogenase	CNAG_07004	MAT	CNAG_07004
+CP003824.1	DiversityPipeline	gene	248015	251440	.	-1	.	CNAG_07410		CNAG_07410	CID1alpha	CID1-family polyA polymerase	CNAG_07410	MAT	CNAG_07410
+CP003824.1	DiversityPipeline	gene	251935	255597	.	-1	.	CNAG_07015		CNAG_07015		hypothetical protein	CNAG_07015	MAT	CNAG_07015
+CP003824.1	DiversityPipeline	gene	256515	263236	.	1	.	CNAG_07411		CNAG_07411	RUM1alpha	histone demethylase JARID1	CNAG_07411	MAT	CNAG_07411
+CP003824.1	DiversityPipeline	gene	263567	266561	.	1	.	CNAG_01457		CNAG_01457	BSP1	hypothetical protein	CNAG_01457	MAT	CNAG_01457
+CP003824.1	DiversityPipeline	gene	267859	269211	.	1	.	CNAG_01456		CNAG_01456		hypothetical protein, variant	CNAG_01456	MAT	CNAG_01456
+CP003824.1	DiversityPipeline	gene	270518	271941	.	1	.	CNAG_01455		CNAG_01455	RPL39alpha	large subunit ribosomal protein L39	CNAG_01455	MAT	CNAG_01455
+CP003824.1	DiversityPipeline	gene	271944	275730	.	-1	.	CNAG_01454		CNAG_01454	STE12alpha	transcription factor STE12	CNAG_01454	MAT	CNAG_01454
+CP003824.1	DiversityPipeline	gene	1555262	1559982	.	1	.	CNAG_00960		CNAG_00960		ATP-dependent RNA helicase DHX8/PRP22	CNAG_00960	Centromeres	CNAG_00960
+CP003824.1	DiversityPipeline	gene	1580221	1580739	.	-1	.	CNAG_00941		CNAG_00941		hypothetical protein	CNAG_00941	Centromeres	CNAG_00941
+AE017341.1	DiversityPipeline	gene	99512	101925	.	1	.	CNA00300		CNA00300	ERG11	sterol 14-demethylase, putative	CNA00300	ERG11	CNA00300
+AE017341.1	DiversityPipeline	gene	932373	937544	.	-1	.	CNA03600		CNA03600		DNA topoisomerase II, putative	CNA03600	Centromeres	CNA03600
+AE017341.1	DiversityPipeline	gene	998056	1003420	.	1	.	CNA03720		CNA03720	APT3	Aminophospholipid translocase, putative	CNA03720	Centromeres	CNA03720
+AE017341.1	DiversityPipeline	gene	1924447	1930885	.	1	.	CNA07090		CNA07090	AFR1	ATP-binding cassette transporter	CNA07090	AFR1	CNA07090
+AE017341.1	DiversityPipeline	gene	2279708	2281067	.	-1	.	CNA08290		CNA08290	ERG2	C-8 sterol isomerase, putative	CNA08290	ERG2	CNA08290
+CP003823.1	DiversityPipeline	gene	706505	708803	.	1	.	CNAG_05202		CNAG_05202		SET domain-containing protein 6	CNAG_05202	Centromeres	CNAG_05202
+CP003823.1	DiversityPipeline	gene	752927	754862	.	-1	.	CNAG_05215		CNAG_05215		hypothetical protein	CNAG_05215	Centromeres	CNAG_05215
+AE017344.1	DiversityPipeline	gene	213354	217000	.	-1	.	CND00800		CND00800	RRP44	exosome complex exonuclease	CND00800	Centromeres	CND00800
+AE017344.1	DiversityPipeline	gene	278992	283664	.	-1	.	CND00900		CND00900		pre-mRNA splicing factor, putative	CND00900	Centromeres	CND00900
+AE017344.1	DiversityPipeline	gene	1525690	1528817	.	1	.	CND05660		CND05660	IKS1	serine/threonine-protein kinase	CND05660	MAT	CND05660
+AE017344.1	DiversityPipeline	gene	1540279	1541624	.	1	.	CND05700		CND05700	RPL39alpha	large subunit ribosomal protein L39	CND05700	MAT	CND05700
+AE017344.1	DiversityPipeline	gene	1548195	1551071	.	-1	.	CND05740		CND05740	PRT1	conserved hypothetical protein	CND05740	MAT	CND05740
+AE017344.1	DiversityPipeline	gene	1556920	1561412	.	-1	.	CND05760		CND05760	STE11alpha	mapkk kinase, ste/ste11 protein kinase	CND05760	MAT	CND05760
+AE017344.1	DiversityPipeline	gene	1562072	1563736	.	-1	.	CND05770		CND05770	ETF1alpha	electron transfer flavoprotein alpha subunit	CND05770	MAT	CND05770
+AE017344.1	DiversityPipeline	gene	1564625	1570904	.	1	.	CND05780		CND05780	MYO2alpha	myosin class v heavy chain	CND05780	MAT	CND05780
+AE017344.1	DiversityPipeline	gene	1577361	1578873	.	1	.	CND05800		CND05800	STE3alpha	mating-type a-factor pheromone receptor, putative	CND05800	MAT	CND05800
+AE017344.1	DiversityPipeline	gene	1579482	1583736	.	1	.	CND05810		CND05810	STE12alpha	ste-like transcription factor	CND05810	MAT	CND05810
+AE017344.1	DiversityPipeline	gene	1584694	1589127	.	-1	.	CND05820		CND05820	RPO41alpha	conserved hypothetical protein	CND05820	MAT	CND05820
+AE017344.1	DiversityPipeline	gene	1589282	1592251	.	1	.	CND05830		CND05830	BSP2	Armadillo/beta-catenin repeat protein	CND05830	MAT	CND05830
+AE017344.1	DiversityPipeline	gene	1592467	1595103	.	-1	.	CND05840		CND05840	LPD1alpha	putative dihydrolipoyl dehydrogenase	CND05840	MAT	CND05840
+AE017344.1	DiversityPipeline	gene	1595246	1598617	.	-1	.	CND05850		CND05850	CID1alpha	CID1-family polyA polymerase	CND05850	MAT	CND05850
+AE017344.1	DiversityPipeline	gene	1599025	1602637	.	-1	.	CND05860		CND05860		hypothetical protein	CND05860	MAT	CND05860
+AE017344.1	DiversityPipeline	gene	1602838	1609303	.	-1	.	CND05870		CND05870	RUM1alpha	phd transcription factor	CND05870	MAT	CND05870
+AE017344.1	DiversityPipeline	pseudogene	1614806	1618125	.	1	.	CND05900		CND05900	BSP1	protein of unknown function	CND05900	MAT	CND05900
+AE017344.1	DiversityPipeline	gene	1620941	1621957	.	-1	.	CND05910		CND05910	RPL22alpha	large subunit ribosomal protein L22e	CND05910	MAT	CND05910
+CP003821.1	DiversityPipeline	ncRNA_gene	273146	276115	.	-1	.	CNAG_10500		CNAG_10500		unspecified product	CNAG_10500	rRNA	CNAG_10500
+CP003821.1	DiversityPipeline	ncRNA_gene	276333	276482	.	-1	.	CNAG_10501		CNAG_10501		unspecified product	CNAG_10501	rRNA	CNAG_10501
+CP003821.1	DiversityPipeline	ncRNA_gene	276609	278409	.	-1	.	CNAG_10502		CNAG_10502		unspecified product	CNAG_10502	rRNA	CNAG_10502
+CP003821.1	DiversityPipeline	ncRNA_gene	279497	279607	.	-1	.	CNAG_10503		CNAG_10503		unspecified product	CNAG_10503	rRNA	CNAG_10503
+CP003821.1	DiversityPipeline	gene	832161	835383	.	1	.	CNAG_03796		CNAG_03796	ENV7	NAK protein kinase	CNAG_03796	Centromeres	CNAG_03796
+CP003821.1	DiversityPipeline	gene	892714	894965	.	-1	.	CNAG_03805		CNAG_03805		calcium/proton exchanger	CNAG_03805	Centromeres	CNAG_03805
+CP003830.1	DiversityPipeline	gene	866340	868823	.	1	.	CNAG_01780		CNAG_01780		cytoplasmic protein	CNAG_01780	Centromeres	CNAG_01780
+CP003830.1	DiversityPipeline	gene	933659	935499	.	-1	.	CNAG_01788		CNAG_01788		tRNA(His) guanylyltransferase	CNAG_01788	Centromeres	CNAG_01788
+AE017350.1	DiversityPipeline	gene	800455	802373	.	1	.	CNJ02770		CNJ02770		expressed protein	CNJ02770	Centromeres	CNJ02770
+AE017350.1	DiversityPipeline	gene	882157	884510	.	1	.	CNJ02870		CNJ02870		hypothetical protein	CNJ02870	Centromeres	CNJ02870
+AE017343.1	DiversityPipeline	gene	799522	801551	.	1	.	CNC02790		CNC02790		cytoplasm protein, putative	CNC02790	Centromeres	CNC02790
+AE017343.1	DiversityPipeline	gene	911800	913265	.	-1	.	CNC02800		CNC02800		tRNA guanylyltransferase, putative	CNC02800	Centromeres	CNC02800
+AE017356.1	DiversityPipeline	gene	564674	568029	.	1	.	CNN01950		CNN01950		hypothetical protein	CNN01950	Centromeres	CNN01950
+AE017356.1	DiversityPipeline	gene	644012	646678	.	-1	.	CNN02060		CNN02060		amidase, putative	CNN02060	Centromeres	CNN02060
+CP003833.2	DiversityPipeline	gene	437784	441844	.	1	.	CNAG_05486		CNAG_05486		hypothetical protein	CNAG_05486	Centromeres	CNAG_05486
+CP003833.2	DiversityPipeline	gene	477987	480641	.	-1	.	CNAG_05496		CNAG_05496		2-isopropylmalate synthase	CNAG_05496	Centromeres	CNAG_05496

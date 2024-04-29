@@ -8,7 +8,11 @@ results/dataset/sequences.db
 results/dataset/annotations.db
 srafiles/
 analysis*
-results/samples/
+results/samples/agat
+results/samples/liftoff
+results/samples/mosdepth
+results/samples/samtools
+results/samples/snippy
 results/dataset/tmp/
 files/SraRunTable.txt
 backup*
@@ -25,3 +29,6 @@ data
 *temp*
 config/RepBase.fasta
 misc_logs/
+results/dataset/database/
+results/dataset/files/mapqcov.tsv
+results/dataset/files/coverage_raw.tsv
