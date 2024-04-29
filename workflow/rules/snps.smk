@@ -90,7 +90,7 @@ rule intersect_vcfs:
         vcf = DATASET_OUTDIR / "snps" / "{lineage}_intersection.vcf",
         tsv = DATASET_OUTDIR / "snps" / "{lineage}_presence.tsv"
     params:
-        tmp_dir = DATASET_OUTDIR / 'tmp_{lineage}'
+        tmp_dir = "{lineage}"
     conda:
         "../envs/variants.yaml"
     log:
