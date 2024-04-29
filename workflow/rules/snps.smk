@@ -150,7 +150,7 @@ rule join_dataframes:
         lofs = pd.concat([pd.read_csv(f, sep="\t") for f in input.lofs])
         nmds = pd.concat([pd.read_csv(f, sep="\t") for f in input.nmds])
         presence = pd.concat([pd.read_csv(f, sep="\t") for f in input.presence])
-        effects.to_csv(output.effects, sep="\t", index=False)
+        effects.to_csv(output.effects, sep = "\t", index=False)
         variants.to_csv(output.variants, sep="\t", index=False)
         lofs.to_csv(output.lofs, sep="\t", index=False)
         nmds.to_csv(output.nmds, sep="\t", index=False)

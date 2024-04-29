@@ -88,10 +88,10 @@ def extract_annotation(vcf_path, effects_out, variants_out, lofs_out, nmds_out, 
     df_nmds['lineage'] = lineage
 
     print("Saving dataframes to CSV files")
-    df_variants.to_csv(variants_out, index=False)
-    df_effects.to_csv(effects_out, index=False)
-    df_lofs.to_csv(lofs_out, index=False)
-    df_nmds.to_csv(nmds_out, index=False)
+    df_variants.to_csv(variants_out, sep = "\t",  index=False)
+    df_effects.to_csv(effects_out, sep = "\t", index=False)
+    df_lofs.to_csv(lofs_out, sep = "\t", index=False)
+    df_nmds.to_csv(nmds_out, sep = "\t",index=False)
 
 if __name__ == '__main__':
     extract_annotation()
