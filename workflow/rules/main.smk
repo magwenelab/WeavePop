@@ -79,7 +79,7 @@ rule agat_config:
     conda:
         "../envs/agat.yaml"
     log:
-        "logs/agat_config.log"
+        "logs/references/agat_config.log"
     shell:
         "agat config --expose 2> {log} && "
         "mv agat_config.yaml {output} 2> {log} && "
@@ -143,7 +143,7 @@ rule cds2db:
     conda:
         "../envs/variants.yaml"
     log:
-        "logs/dataset/cds2db_{sample}.log"
+        "logs/dataset/sequences/cds2db_{sample}.log"
     shell:
         "python workflow/scripts/build_sequences_db.py -d {params.db} -f {input.cds} -s {wildcards.sample} -t DNA &> {log}"
 
@@ -158,6 +158,6 @@ rule prots2db:
     conda:
         "../envs/variants.yaml"
     log:
-        "logs/dataset/prots2db_{sample}.log"
+        "logs/dataset/sequences/prots2db_{sample}.log"
     shell:
         "python workflow/scripts/build_sequences_db.py -d {params.db} -f {input.prots} -s {wildcards.sample} -t PROTEIN &> {log}"
