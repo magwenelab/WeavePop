@@ -3,12 +3,12 @@ sink(log, type = "output")
 sink(log, type = "message")
 
 suppressPackageStartupMessages(library(tidyverse))
-library(RColorBrewer)
+suppressPackageStartupMessages(library(RColorBrewer))
 suppressPackageStartupMessages(library(scales))
 
 print("Reading files and joining data with chromosome names")
 # setwd("./results/samples/samtools/SRS8318899")
-# cov<- read.csv("distrib_cov.csv", header = TRUE, stringsAsFactors = TRUE)
+# cov<- read.delim("distrib_cov.tsv", header = TRUE, stringsAsFactors = TRUE)
 # chrom_names <- read.csv("../../../../config/chromosome_names.csv", header = FALSE, col.names = c("Lineage", "Accession", "Chromosome"))
 # sample <- "/mnt/FastData/czirion/DiversityPipeline/results/samples/samtools/SRS8318899/distrib_cov.csv"
 sample <- snakemake@input[[1]]
@@ -21,6 +21,14 @@ chrom_names <- read.csv(snakemake@input[[2]], header = FALSE, col.names = c("Lin
 cov <-cov %>%
   rename(Accession = Chromosome)
 cov <- left_join(cov, chrom_names, by = "Accession")
+
+# stats <- read.delim("../../mosdepth/SRS8318899/good_chromosome_coverage.tsv", header = TRUE, stringsAsFactors = TRUE)
+stats <- read.delim(snakemake@input[[3]], header = TRUE, stringsAsFactors = TRUE)
+stats_global <- stats %>%
+  select(Global_Median, Global_Mean)%>%
+  slice(1) %>%
+  pivot_longer(everything(), names_to = "Measurement", values_to = "Value")
+
 
 print("Plotting Coverage distribution")
 raw_color = "#B3B3B3"
@@ -51,13 +59,17 @@ cov_global <- cov %>%
   summarize(Count_Good_Global = sum(Count_Good), Count_Raw_Global = sum(Count_Raw))%>%
   ungroup()
 
-plot <- ggplot(cov_global, aes(x=Coverage))+
-  geom_col(aes(y = Count_Raw_Global, fill= "All alignments"))+ 
-  geom_col(aes(y = Count_Good_Global, fill= "Good quality alignments"))+ 
+plot <- ggplot()+
+  geom_col(data = cov_global, aes(x=Coverage, y = Count_Raw_Global, fill= "All alignments"))+ 
+  geom_col(data = cov_global, aes(x=Coverage,y = Count_Good_Global, fill= "Good quality alignments"))+ 
+  geom_vline(data = stats_global, aes(xintercept = Value, color = Measurement))+
   scale_y_log10(name = "Number of Sites", labels = comma)+
   scale_x_continuous(name = "Coverage (X) ", labels = comma, n.breaks = 10)+
   scale_fill_manual(name= "Alignment quality", values= color_quality)+
   theme(legend.position="none")+
+  scale_color_manual(values = c("Global_Median" = "darkblue", "Global_Mean" = "#bfb82a"),
+                     labels = c("Global_Median" = "Median", "Global_Mean" = "Mean"),
+                     name = "Good quality global coverage")+
   labs(title = paste("Lineage:",lineage, " Sample:", sample,  sep = " "))+
   theme_bw()
 
