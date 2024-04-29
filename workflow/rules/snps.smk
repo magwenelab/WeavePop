@@ -87,8 +87,8 @@ rule intersect_vcfs:
     input:
         unpack(intersect_vcfs_input)
     output:
-        vcf = temp(DATASET_OUTDIR / "snps" / "{lineage}_intersection.vcf"),
-        tsv = temp(DATASET_OUTDIR / "snps" / "{lineage}_presence.tsv")
+        vcf = DATASET_OUTDIR / "snps" / "{lineage}_intersection.vcf",
+        tsv = DATASET_OUTDIR / "snps" / "{lineage}_presence.tsv"
     params:
         tmp_dir = DATASET_OUTDIR / 'tmp_{lineage}'
     conda:
@@ -144,8 +144,6 @@ rule join_dataframes:
         lofs = temp(DATASET_OUTDIR / "snps" / "all_lofs.tsv"),
         nmds = temp(DATASET_OUTDIR / "snps" / "all_nmds.tsv"),
         presence = temp(DATASET_OUTDIR / "snps" / "all_presence.tsv")
-    log:
-        "logs/dataset/snps/join_dataframes.log"
     run:
         effects = pd.concat([pd.read_csv(f, sep="\t") for f in input.effects])
         variants = pd.concat([pd.read_csv(f, sep="\t") for f in input.variants])
