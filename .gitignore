@@ -32,3 +32,9 @@ misc_logs/
 results/dataset/database/
 results/dataset/files/mapqcov.tsv
 results/dataset/files/coverage_raw.tsv
+results/dataset/snps/VNI_VNIV_intersection.vcf
+results/dataset/snps/VNI_VNIV_presence.tsv
+results/dataset/snps/VNI_VNIV_snpeff.genes.txt
+results/dataset/snps/VNI_VNIV_snpeff.html
+results/dataset/snps/VNI_VNIV_snpeff.vcf
+results/dataset/database.db
