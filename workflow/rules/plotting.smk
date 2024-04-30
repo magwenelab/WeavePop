@@ -74,7 +74,8 @@ rule coverage_stats_plots_dataset:
 rule cov_distribution:
     input:
         rules.samtools_stats.output.cov,
-        CHROM_NAMES
+        CHROM_NAMES,
+        rules.good_coverage.output.chromosome
     output:
         OUTDIR / "plots" / "{sample}" / "cov_distribution.png",
         OUTDIR / "plots" / "{sample}" / "cov_global_distribution.png"

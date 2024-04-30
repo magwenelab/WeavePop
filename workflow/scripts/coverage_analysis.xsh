@@ -5,21 +5,20 @@ from scipy import ndimage
 import numpy as np
 
 @click.command()
-@click.option('-b', '--bed', help='Path to BED file with coverage of each region.', type=click.Path(exists=True))
-@click.option('-rp', '--repeats', help='Path to BED file with coordinates of repetititve sequences of reference genome.', type=click.Path(exists=True))
-@click.option('-ch', '--chromosome_table', help='Path to output table of stats by chromosome.', type=click.Path(exists=False))
-@click.option('-rg', '--regions_table', help='Path to output table of stats by region.', type=click.Path())
-@click.option('-sv', '--structural_variants', help='Path to output table of structural variants.', type=click.Path())
-@click.option('-sn', '--sample_name', help='Sample name as a string.', type=str)
-@click.option('-rs', '--region_size', help='Region size.', type=int)
-@click.option('-ss', '--smooth_size', help='Size of the smoothing window.', type=int)
-@click.option('-rt', '--repeats_threshold', help='Threshold for filtering out windows with too many repeats.', type=click.types.FloatRange(min=0.0))
-@click.option('-ct', '--change_threshold', help='Threshold to define if region is not HAPLOID.', type=click.types.FloatRange(min=0.0))
-@click.option('-rct', '--repeat_category_threshold', help='Threshold for defining repeat category.', default=0.5, type=click.types.FloatRange(min=0.0))
+@click.option('-ci', '--coverage_input', help='Path to BED file with coverage of each region.', type=click.Path(exists=True))
+@click.option('-ri', '--repeats_input', help='Path to BED file with coordinates of repetititve sequences of reference genome.', type=click.Path(exists=True))
+@click.option('-co', '--chromosome_output', help='Path to output table of stats by chromosome.', type=click.Path())
+@click.option('-ro', '--regions_output', help='Path to output table of stats by region.', type=click.Path())
+@click.option('-so', '--structural_variants_output', help='Path to output table of structural variants.', type=click.Path())
+@click.option('-np', '--sample_name', help='Sample name as a string.', type=str)
+@click.option('-rp', '--region_size', help='Size of regions in the coverage BED file.', type=int)
+@click.option('-sp', '--smooth_size', help='Size parameter for the smoothing function.', type=int)
+@click.option('-tp', '--repeats_threshold', help='Threshold for filtering out windows with too many repeats.', type=click.types.FloatRange(min=0.0))
+@click.option('-cp', '--change_threshold', help='Threshold to define if region is not HAPLOID.', type=click.types.FloatRange(min=0.0))
 
-def intersect_repeats(bed, repeats, chromosome_table, regions_table, structural_variants, region_size, repeats_threshold, smooth_size, change_threshold, sample_name, repeat_category_threshold):
+def intersect_repeats(coverage_input, repeats_input, chromosome_output, regions_output, structural_variants_output, sample_name, region_size, smooth_size, repeats_threshold,  change_threshold):
     print("Merge overlapping regions in repeats and intersect with regions.")
-    intersect = $(bedtools merge -i @(repeats) -c 4 -o collapse | bedtools intersect -a @(bed) -b stdin -wao)
+    intersect = $(bedtools merge -i @(repeats_input) -c 4 -o collapse | bedtools intersect -a @(coverage_input) -b stdin -wao)
 
     print("Reorganize intersection.")
     df = pd.read_csv(io.StringIO(intersect), sep='\t', header=None)
@@ -50,7 +49,7 @@ def intersect_repeats(bed, repeats, chromosome_table, regions_table, structural_
     chrom_stats['Global_Median'] = Global_Median
     chrom_stats['Sample'] = sample_name
     chrom_stats = chrom_stats.round(2)
-    chrom_stats.to_csv(chromosome_table, sep='\t', index=False, header=True)
+    chrom_stats.to_csv(chromosome_output, sep='\t', index=False, header=True)
 
     print("Normalize coverage.")
     regions_norm = regions_repeats[['Accession', 'Start', 'End', 'Coverage', 'Overlap_bp','Repeat_fraction']].copy()
@@ -67,7 +66,7 @@ def intersect_repeats(bed, repeats, chromosome_table, regions_table, structural_
     regions_norm.loc[:,'Smooth_Median']=pd.Series(smoothed_array)
     regions_norm = regions_norm.round(2)
     regions_norm['Sample'] = sample_name
-    regions_norm.to_csv(regions_table, sep='\t', index=False, header=True)
+    regions_norm.to_csv(regions_output, sep='\t', index=False, header=True)
 
     print("Define structure of regions.")
     structure_windows = pd.DataFrame()
@@ -96,10 +95,9 @@ def intersect_repeats(bed, repeats, chromosome_table, regions_table, structural_
         structure_windows = pd.concat([structure_windows, windows], ignore_index=True)
     print("Join windows with structure variants of all chromosomes.")
     structure_windows = structure_windows[structure_windows['Structure'] != 'HAPLOID']
-    structure_windows['Repeat_Category'] = np.where(structure_windows['Repeat_fraction'] > repeat_category_threshold, 'REPETITIVE REGION', 'STRUCTURAL VARIANT')
     structure_windows = structure_windows.round(2)
     structure_windows['Sample'] = sample_name
-    structure_windows.to_csv(structural_variants, sep='\t', index=False, header=True)
+    structure_windows.to_csv(structural_variants_output, sep='\t', index=False, header=True)
     
 if __name__ == '__main__':
     intersect_repeats()

@@ -75,11 +75,11 @@ rule liftoff:
 # Extract the nucleotide sequence of each isoform of each gene of a sample
 rule agat_config:
     output:
-        "config/agat_config.yaml"
+        REFDIR / "agat_config.yaml"
     conda:
         "../envs/agat.yaml"
     log:
-        "logs/agat_config.log"
+        "logs/references/agat_config.log"
     shell:
         "agat config --expose 2> {log} && "
         "mv agat_config.yaml {output} 2> {log} && "
@@ -127,7 +127,7 @@ rule agat_prots:
         "-f {input.fa} "
         "-o {output.prots} "
         "-p "
-        "-c config/agat_config.yaml "
+        "-c {input.config}"
         "{params.extra} &> {log} " 
         "&& "
         "sed -i 's/type=cds//g' {output} &>> {log} "
@@ -143,7 +143,7 @@ rule cds2db:
     conda:
         "../envs/variants.yaml"
     log:
-        "logs/dataset/cds2db_{sample}.log"
+        "logs/dataset/sequences/cds2db_{sample}.log"
     shell:
         "python workflow/scripts/build_sequences_db.py -d {params.db} -f {input.cds} -s {wildcards.sample} -t DNA &> {log}"
 
@@ -158,6 +158,6 @@ rule prots2db:
     conda:
         "../envs/variants.yaml"
     log:
-        "logs/dataset/prots2db_{sample}.log"
+        "logs/dataset/sequences/prots2db_{sample}.log"
     shell:
         "python workflow/scripts/build_sequences_db.py -d {params.db} -f {input.prots} -s {wildcards.sample} -t PROTEIN &> {log}"

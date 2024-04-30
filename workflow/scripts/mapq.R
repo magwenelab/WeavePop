@@ -6,36 +6,43 @@ suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(RColorBrewer))
 suppressPackageStartupMessages(library(scales))
 suppressPackageStartupMessages(library(ggnewscale))
-print("Reading files")
 
-
-sample <- snakemake@input[[1]]
-Split <- str_split(sample, "/")
-sample <- Split[[1]][length(Split[[1]])-1]
 # sample <- "SRS8318899"
 # raw<- read.delim("results/samples/samtools/SRS8318899/mapq_window.bed", header = FALSE, col.names = c("Accession", "Start", "End", "MAPQ"), stringsAsFactors = TRUE)
-raw<- read.delim(snakemake@input[[1]], header = FALSE, col.names = c("Accession", "Start", "End", "MAPQ"), stringsAsFactors = TRUE)
 # chrom_names <- read.csv("config/chromosome_names.csv", header = FALSE, col.names = c("Lineage", "Accession", "Chromosome"))
-chrom_names <- read.csv(snakemake@input[[4]], header = FALSE, col.names = c("Lineage", "Accession", "Chromosome"))
-raw <- left_join(raw, chrom_names, by = "Accession")
 # loci <- read.delim("results/dataset/files/loci_to_plot.tsv", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
+# struc_vars <- read.delim("results/samples/mosdepth/SRS8318899/good_structural_variants.tsv", sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
+# repeats_table <- read.delim("/FastData/czirion/DiversityPipeline/results/references/VNI/repeats/VNI_repeats.bed", sep= "\t", header = FALSE, col.names = c("Accession", "Start", "End", "Repeat_type"), stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
+
+print("Reading files")
+raw<- read.delim(snakemake@input[[1]], header = FALSE, col.names = c("Accession", "Start", "End", "MAPQ"), stringsAsFactors = TRUE)
+struc_vars <- read.delim(snakemake@input[[2]], sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
+repeats_table <- read.delim(snakemake@input[[3]], sep= "\t", header = FALSE, col.names = c("Accession", "Start", "End", "Repeat_type"), stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
+chrom_names <- read.csv(snakemake@input[[4]], header = FALSE, col.names = c("Lineage", "Accession", "Chromosome"))
 loci <- read.delim(snakemake@input[[5]], header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
+
+sample <- snakemake@wildcards$sample
+
+chrom_names <- chrom_names %>%
+  filter(Accession %in% unique(raw$Accession) )
+chrom_names['Accession_Chromosome'] <- paste(chrom_names$Chromosome, chrom_names$Accession, sep = "xxx")
+unique_levels <- unique(chrom_names$Accession_Chromosome)
+new_order <- c(rbind(matrix(unique_levels, nrow = 2, byrow = TRUE)))
+chrom_names$Accession_Chromosome <- factor(chrom_names$Accession_Chromosome, levels = new_order)
+
+raw <- left_join(raw, chrom_names, by = "Accession")
 loci <- loci %>% rename(Accession = seq_id)
 lineage <- levels(as.factor(raw$Lineage))
 
-struc_vars <- read.delim(snakemake@input[[2]], sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
-# struc_vars <- read.delim("results/samples/mosdepth/SRS8318899/good_structural_variants.tsv", sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
 struc_vars <- left_join(struc_vars, chrom_names, by = "Accession")
 structure <- struc_vars %>%
-  select(Chromosome, Start, End, Structure)
+  select(Accession_Chromosome, Chromosome, Start, End, Structure)
 s_lim <- max(raw$MAPQ) + 40
 set2 <- rev(brewer.pal(8, "Set2")[1:6])
 s_colors <- set2[1:nlevels(structure$Structure)]
 
-repeats_table <- read.delim(snakemake@input[[3]], sep= "\t", header = FALSE, col.names = c("Accession", "Start", "End", "Repeat_type"), stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
-# repeats_table <- read.delim("/FastData/czirion/DiversityPipeline/results/references/VNI/repeats/VNI_repeats.bed", sep= "\t", header = FALSE, col.names = c("Accession", "Start", "End", "Repeat_type"), stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
 repeats<- left_join(repeats_table, chrom_names, by = "Accession")%>%
-  select(Chromosome, Start, End, Repeat_type)
+  select(Accession_Chromosome, Chromosome, Start, End, Repeat_type)
 
 repeats$Repeat_type <- ifelse(repeats$Repeat_type == "Simple_repeat", "Simple repeat", "Others")
 repeats$Repeat_type <- factor(repeats$Repeat_type, levels = c("Simple repeat", "Others"))
@@ -46,6 +53,12 @@ raw_color <- "black"
 palette1 <- brewer.pal(n = 7, name = "Dark2")
 palette2 <- brewer.pal(n = 7, name = "Set2")
 combined_palette <- c(palette1, palette2)
+
+
+my_labeller <- function(value){
+  new_value <- sapply(strsplit(as.character(value), "xxx"), head, 1)
+  return(new_value)
+}
 
 print("Plotting chromosome MAPQ")
 plot <- ggplot()+
@@ -59,7 +72,7 @@ plot <- ggplot()+
     scale_color_manual(name = "Structural variant", values = s_colors)+
     guides(color = guide_legend(order=2))+
     new_scale_color()+
-  facet_wrap(~Chromosome,ncol = 2,strip.position = "right")+
+  facet_wrap(~Accession_Chromosome, strip.position = "right", ncol = 2, labeller = as_labeller(my_labeller)) +
   scale_x_continuous(name = "Position (bp) ", labels = comma)+
   labs(title = paste("Lineage: ", lineage," Sample: ", sample,  sep = " "), y = "Mapping quality (phred score)")+
   theme(panel.grid = element_blank(),

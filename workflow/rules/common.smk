@@ -36,7 +36,7 @@ d={'sample': SAMPLETABLE["sample"],
     'refgff': REFDIR / SAMPLETABLE["group"] / (SAMPLETABLE["group"] + ".gff")}
 
 SAMPLE_REFERENCE = pd.DataFrame(data=d).set_index("sample", drop=False)
-
+LINEAGE_REFERENCE = pd.DataFrame(data=d).set_index("group", drop=False)
 
 #### Defining which final output files are being requested ####
 def get_final_output():
@@ -44,8 +44,6 @@ def get_final_output():
     final_output.extend(expand(OUTDIR / "snippy" / "{sample}" / "snps.bam",sample=SAMPLES))
     final_output.extend(expand(OUTDIR / "liftoff" / "{sample}" / "lifted.gff_polished",sample=SAMPLES))
     final_output.extend(expand(OUTDIR / "liftoff" / "{sample}" / "unmapped_features.txt",sample=SAMPLES))
-    final_output.append(expand(DATASET_OUTDIR / "database" / "{sample}" / "cds.done", sample=SAMPLES))
-    final_output.append(expand(DATASET_OUTDIR / "database" / "{sample}" / "prots.done", sample=SAMPLES))
     if config["annotate_references"]["activate"]:
         final_output.extend(expand(REFDIR / "{lineage}" / "{lineage}.gff",lineage=LINEAGES))
         final_output.append(REFDIR / str(MAIN_NAME + ".tsv"))
