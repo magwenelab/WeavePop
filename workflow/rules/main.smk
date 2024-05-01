@@ -46,26 +46,30 @@ rule liftoff:
     input:
         unpack(liftoff_input)
     output:
+        ref_gff = OUTDIR / "liftoff" / "{sample}" / "ref.gff",
         gff = OUTDIR / "liftoff" / "{sample}" / "lifted.gff",
         polished = OUTDIR / "liftoff" / "{sample}" / "lifted.gff_polished",
-        unmapped = OUTDIR / "liftoff" / "{sample}" / "unmapped_features.txt" 
+        unmapped = OUTDIR / "liftoff" / "{sample}" / "unmapped_features.txt",
+        intermediate = directory(OUTDIR / "liftoff" / "{sample}" / "intermediate_files"),
+        fai = OUTDIR / "snippy" / "{sample}" / "snps.consensus.fa.fai",
+        mmi = OUTDIR / "snippy" / "{sample}" / "snps.consensus.fa.mmi"
     threads: 
         config["liftoff"]["threads"]
     params:
         extra = config["liftoff"]["extra"],
-        outpath =  OUTDIR / "liftoff",
+        outpath =  OUTDIR / "liftoff" / "{sample}"
     conda:
         "../envs/liftoff.yaml"
     log:
         "logs/samples/liftoff/liftoff_{sample}.log" 
     shell:
-        "ln -s -r {input.refgff} {params.outpath}/{wildcards.sample}/ref.gff &> {log} || true "
+        "ln -s -r -f {input.refgff} {output.ref_gff} &> {log} || true "
         "&& "
         "liftoff "
-        "-g {params.outpath}/{wildcards.sample}/ref.gff " 
+        "-g {output.ref_gff} " 
         "-o {output.gff} "
-        "-dir {params.outpath}/{wildcards.sample}/intermediate_files "
-        "-u {params.outpath}/{wildcards.sample}/unmapped_features.txt "
+        "-dir {output.intermediate} "
+        "-u {output.unmapped} "
         "-p {threads} "
         "-polish "
         "{params.extra} "
@@ -81,8 +85,8 @@ rule agat_config:
     log:
         "logs/references/agat_config.log"
     shell:
-        "agat config --expose 2> {log} && "
-        "mv agat_config.yaml {output} 2> {log} && "
+        "agat config --expose &> {log} && "
+        "mv agat_config.yaml {output} &> {log} && "
         "sed -i 's/log: true/log: false/g' {output} &>> {log} "
 
 rule agat_cds:

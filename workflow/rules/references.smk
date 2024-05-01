@@ -57,7 +57,11 @@ rule ref2ref_liftoff:
         gff = rules.main_links.output.gff
     output:
         target_gff = REFDIR / "{lineage}" / "{lineage}.gff",
-        unmapped = REFDIR / "{lineage}" / "unmapped_features.txt"
+        unmapped = REFDIR / "{lineage}" / "unmapped_features.txt",
+        intermediate = directory(REFDIR / "{lineage}" / "intermediate_files"),
+        fai_main = REFDIR / "{lineage}" / str(MAIN_NAME + ".fasta.fai"),
+        fai = REFDIR / "{lineage}" / "{lineage}.fasta.fai",
+        mmi = REFDIR / "{lineage}" / "{lineage}.fasta.mmi"
     threads: 
         config["annotate_references"]["liftoff"]["threads"]
     conda:
@@ -71,7 +75,7 @@ rule ref2ref_liftoff:
         "liftoff "
         "-g {input.gff} "
         "-o {params.refdir}/{wildcards.lineage}/liftoff.gff "
-        "-dir {params.refdir}/{wildcards.lineage}/intermediate_files "
+        "-dir {output.intermediate} "
         "-u {output.unmapped} "
         "-p {threads} "
         "-polish "
@@ -84,7 +88,8 @@ rule ref2ref_liftoff:
 # Convert GFF file to TSV format
 rule gff2tsv:
     input:
-        rules.ref2ref_liftoff.output.target_gff
+        target = rules.ref2ref_liftoff.output.target_gff,
+        config = rules.agat_config.output
     output:
         REFDIR / "{lineage}" / "{lineage}.gff.tsv"
     conda:
@@ -92,6 +97,4 @@ rule gff2tsv:
     log:
         "logs/references/gff2tsv_{lineage}.log"
     shell:
-        "agat_convert_sp_gff2tsv.pl -gff {input} -o {output} "
-        "&> {log} && "
-        "rm {wildcards.lineage}.agat.log &>> {log} || true"
+        "agat_convert_sp_gff2tsv.pl -gff {input.target} -c {input.config} -o {output} &> {log} "
