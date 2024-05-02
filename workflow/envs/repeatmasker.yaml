@@ -4,7 +4,7 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - repeatmasker=4.1.2-p1
-  - repeatmodeler=2.0.1
+  - repeatmasker
+  - repeatmodeler
   - seqkit
   - bedtools

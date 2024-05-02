@@ -31,7 +31,7 @@ coverage_quality:
     change: 0.6 # Minimum change in coverage for structural variant calling
   repeats:
     repeats_database: "config/RepBase.fasta"
-    repeats_threads: 36
+    repeats_threads: 20
     repeats_fraction: 0.5 # Fraction of repetitive bases allowed for calculating global coverage
 
 snps:
@@ -44,11 +44,11 @@ plotting:
   scale : 0.7 # This is a value to adjust the size of the plots with ggsave scale parameter. Use lower values for fewer samples and bigger values for more samples.
 
 snippy:
-  threads: 4
+  threads: 12
   extra: ""
 
 liftoff:
-  threads: 4
+  threads: 12
   extra: ""
 
 agat:

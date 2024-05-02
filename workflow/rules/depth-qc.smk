@@ -134,7 +134,7 @@ rule repeat_modeler:
         "bash workflow/scripts/repeat-modeler.sh {threads} {input} {params.repdir} &> {log}"
 
 # Run RepeatMasker for each reference genome. Obtain a BED file with the location of the reapeat sequences
-rule repeats:
+rule repeat_masker:
     input:
         database = config["coverage_quality"]["repeats"]["repeats_database"],
         fasta = rules.links.output,
