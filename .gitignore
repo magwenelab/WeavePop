@@ -38,3 +38,8 @@ results/dataset/snps/VNI_VNIV_snpeff.genes.txt
 results/dataset/snps/VNI_VNIV_snpeff.html
 results/dataset/snps/VNI_VNIV_snpeff.vcf
 results/dataset/database.db
+results/dataset/snps/VNI_intersection.vcf
+results/dataset/snps/VNI_presence.tsv
+results/dataset/snps/VNI_snpeff.genes.txt
+results/dataset/snps/VNI_snpeff.html
+results/dataset/snps/VNI_snpeff.vcf

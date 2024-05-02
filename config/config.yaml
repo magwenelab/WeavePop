@@ -1,4 +1,4 @@
-sample_table: "config/hybrids_metadata.csv" # Path to CSV table with columns: sample, group, strain, and more optional metadata.
+sample_table: "config/subsample_vni_metadata.csv" # Path to CSV table with columns: sample, group, strain, and more optional metadata.
 species_name: "Cryptococcus_neoformans" 
 
 fastqs:
@@ -12,8 +12,8 @@ references:
 annotate_references:
   activate:
   directory: "data/main_reference" # REVIEW # Path to directory with main reference genome and annotation
-  gff: "VNI_VNIV.gff" # Main reference gff. 
-  fasta: "VNI_VNIV.fasta" # Main reference fasta.
+  gff: "VNI_VNIV_reoriented.gff" # Main reference gff. 
+  fasta: "VNI_VNIV_reoriented.fasta" # Main reference fasta.
   liftoff:
     threads: 12
     extra: ""
