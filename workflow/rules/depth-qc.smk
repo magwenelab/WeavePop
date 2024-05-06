@@ -48,8 +48,8 @@ rule bam_good:
     input:
         bam = rules.snippy.output.bam
     output:
-        bam_good = OUTDIR / "samtools" / "{sample}" / "snps_good.bam",
-        bai_good = OUTDIR / "samtools" / "{sample}" / "snps_good.bam.bai"
+        bam_good = temp(OUTDIR / "samtools" / "{sample}" / "snps_good.bam"),
+        bai_good = temp(OUTDIR / "samtools" / "{sample}" / "snps_good.bam.bai")
     conda:
         "../envs/samtools.yaml"
     params:
