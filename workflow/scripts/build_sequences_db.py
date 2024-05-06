@@ -33,7 +33,7 @@ def sample_type_not_in_db(con, sample, seq_type):
         else:
             return True
 
-def populate_fasta_db(db, fasta, sample, seq_type, timeout=180):
+def populate_fasta_db(db, fasta, sample, seq_type, timeout=600):
     print("Creating dataframe")
     seq_type = seq_type.upper()
     df = fasta_to_df(fasta, sample, seq_type)   
@@ -53,7 +53,7 @@ def populate_fasta_db(db, fasta, sample, seq_type, timeout=180):
 @click.option("--fasta", "-f", required=True, help="Path to the fasta file")
 @click.option("--sample", "-s", required=True, help="Sample name")
 @click.option("--seq_type", "-t", required=True, help="Sequence type")
-def main(db, fasta, sample, seq_type, timeout=180):
+def main(db, fasta, sample, seq_type, timeout=600):
     populate_fasta_db(db, fasta, sample, seq_type, timeout=timeout)
     
 if __name__ == "__main__":
