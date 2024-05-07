@@ -19,6 +19,8 @@ def fasta_to_df(fasta, sample, seq_type):
         new_description = sample + "|" + transcript_id + " " + locus + " " + accession
         seq = str(record.seq)
         df = pd.DataFrame({"sample":sample, "transcript_id":transcript_id, "seq":seq, "seq_type":seq_type,  "seq_description":new_description}, index=[0])
+        if df.isnull().values.any() or (df == '').any().any():
+            raise ValueError("Empty or NaN value found in data for sample " + sample + " and transcript " + transcript_id + ". Check fasta file.")
         df_all = pd.concat([df_all, df])
     return df_all
 
@@ -50,9 +52,9 @@ def populate_fasta_db(db, fasta, sample, seq_type, timeout=600):
 
 @click.command()
 @click.option("--db", "-d", required=True, help="Path to the database file")
-@click.option("--fasta", "-f", required=True, help="Path to the fasta file")
-@click.option("--sample", "-s", required=True, help="Sample name")
-@click.option("--seq_type", "-t", required=True, help="Sequence type")
+@click.option("--fasta", "-f", required=True, type=click.Path(), help="Path to the fasta file")
+@click.option("--sample", "-s", required=True,type=str, help="Sample name")
+@click.option("--seq_type", "-t", required=True, type=str, help="Sequence type")
 def main(db, fasta, sample, seq_type, timeout=600):
     populate_fasta_db(db, fasta, sample, seq_type, timeout=timeout)
     
