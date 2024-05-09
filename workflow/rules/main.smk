@@ -116,7 +116,8 @@ rule agat_prots:
     input:
         gff = rules.liftoff.output.polished,
         fa = rules.snippy.output.fa,
-        config = rules.agat_config.output
+        config = rules.agat_config.output,
+        cds = rules.agat_cds.output.cds
     output:
         prots = OUTDIR / "agat" / "{sample}" / "proteins.fa"
     conda:
