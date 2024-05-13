@@ -1,0 +1,4 @@
+group,strain,sample,plate,date,town,county,state,doi,tissue,mixed
+VNI_VNIV,NC 112,PMY3493,MCM 024,2018,Durham,Durham County,North Carolina,0,Blood,
+VNI_VNIV,NC 114,PMY3496,MCM 026 - A,2018,Raleigh,Wake County,North Carolina,0,Blood,
+VNI_VNIV,NC 114,PMY3497,MCM 026 - B,2018,Raleigh,Wake County,North Carolina,0,Blood,

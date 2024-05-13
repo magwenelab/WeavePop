@@ -1,38 +1,40 @@
-sample_table: "config/sample_metadata.csv" # Path to CSV table with columns: sample, group, strain, and more optional metadata.
+sample_table: "config/subsample_vni_metadata.csv" # Path to CSV table with columns: sample, group, strain, and more optional metadata.
 species_name: "Cryptococcus_neoformans" 
 
 fastqs:
-  directory: "data/samples" # REVIEW # Path to directory with all FASTQ files 
-  fastq_suffix1: "_1.fq.gz" # Everything after the sample name of the forward reads file.
-  fastq_suffix2: "_2.fq.gz" # Everything after the sample name of the reverse reads file.
+  directory: "/FastData/pmagwene/Montoya_Clinical_Isolates/cleaned_reads" # REVIEW # Path to directory with all FASTQ files 
+  fastq_suffix1: "_R1_cleaned.fastq.gz" # Everything after the sample name of the forward reads file.
+  fastq_suffix2: "_R2_cleaned.fastq.gz" # Everything after the sample name of the reverse reads file.
 
 references: 
   directory: "data/references/" # REVIEW # Path to directory with reference genomes fastas (and GFFs if annotate_references activate is not set to True)
 
 annotate_references:
-  activate: True
+  activate:
   directory: "data/main_reference" # REVIEW # Path to directory with main reference genome and annotation
-  gff: "FungiDB-65_CneoformansH99.gff" # Main reference gff. 
-  fasta: "FungiDB-65_CneoformansH99_Genome.fasta" # Main reference fasta.
+  gff: "VNI_VNIV_reoriented.gff" # Main reference gff. 
+  fasta: "VNI_VNIV_reoriented.fasta" # Main reference fasta.
   liftoff:
     threads: 12
     extra: ""
 
 coverage_quality: 
   activate: True
+
   mosdepth: 
     threads: 12  
-    window: 500 # Window size for mosdepth
+    window: 100 # Window size for mosdepth
     min_mapq: 20 # Minimum mapping quality for mosdepth
     extra: ""
   ploidy:
-    smoothing_size: 15 # Parameter for median filtering smoothing of the coverage
+    smoothing_size: 25 # Parameter for median filtering smoothing of the coverage
     size: 5000 # Minimum size of the window for structural variant calling
     change: 0.6 # Minimum change in coverage for structural variant calling
   repeats:
     repeats_database: "config/RepBase.fasta"
     repeats_threads: 20
     repeats_fraction: 0.5 # Fraction of repetitive bases allowed for calculating global coverage
+    category_fraction: 0.5 # Fraction of repetitive bases allowed in structural variant windows
 
 snps:
   activate: True
@@ -40,7 +42,7 @@ snps:
 
 plotting: 
   activate: True
-  metadata2color : "isolation_source" # Column name in the sample table to color the samples in the plots
+  metadata2color : "county" # Column name in the sample table to color the samples in the plots
   scale : 0.7 # This is a value to adjust the size of the plots with ggsave scale parameter. Use lower values for fewer samples and bigger values for more samples.
 
 snippy:
