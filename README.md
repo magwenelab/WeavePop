@@ -62,7 +62,7 @@ The environments for particular software used in Snakemake rules are installed b
   * Reference genomes: FASTA files for each reference genome. The names of the files must be the ones in the `group` column of the metadata, e.g. `VNI.fasta`. If you will use a main reference to annotate the reference genomes provide the FASTA and GFF for the main reference. Otherwise provide the GFF file for the reference genomes. Specify the path for all, and the name of the main reference files in the `config/config.yaml`.
 
   * `config/loci.csv`: CSV with first column with the gene IDs and second column with the name of the locus/pathway the gene belongs to if you want genes to be plotted to coverage and MAPQ plots.  No column names.[Example](https://github.com/magwenelab/DiversityPipeline/blob/workflow-style/config/loci.csv)
-  * `config/chromosome_names.csv`: CSV with colums group, chromosome ID (the sequence ID in the FASTA and GFF of the references), chromosome name (typically a number). No column names. [Example](https://github.com/magwenelab/DiversityPipeline/blob/workflow-style/config/chromosome_names.csv).
+  * `config/chromosome_names.csv`: CSV with colums group, chromosome ID (the sequence ID in the FASTA and GFF of the references. Make sure each chromosome ID is not repeated in this file.), chromosome name (e.g. chr01, 1, VNI_chr1).  No column names. [Example](https://github.com/magwenelab/DiversityPipeline/blob/workflow-style/config/chromosome_names.csv).
   * `config/RepBase.fasta`: Database of repetitive sequences to use for RepeatModeler and RepeatMasker in FASTA format.
 
 
