@@ -50,4 +50,3 @@ RepeatModeler -pa ${threads} -engine ncbi -database ${repeats_dir}/${lineage}_db
 echo "Separating known and unknown families"
 cat ${repeats_dir}/${lineage}_db/${lineage}-families.fa | seqkit fx2tab | grep -v "Unknown" | seqkit tab2fx > ${repeats_dir}/${lineage}_known.fa
 cat ${repeats_dir}/${lineage}_db/${lineage}-families.fa | seqkit fx2tab | grep "Unknown" | seqkit tab2fx > ${repeats_dir}/${lineage}_unknown.fa
-
