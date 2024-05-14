@@ -1,5 +1,5 @@
 
-# Reference-based mapping, variant calling and assembly / Annotation liftover / Mapping quality and coverage
+# Diversity Pipeline
 
 ## Description
 
