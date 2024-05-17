@@ -23,9 +23,9 @@ chrom_names$Accession_Chromosome <- factor(chrom_names$Accession_Chromosome, lev
 good_stats_chroms <- left_join(good_stats_chroms, chrom_names, by = "Accession")
 raw_stats_chroms <- left_join(raw_stats_chroms, chrom_names, by = "Accession")
 good_stats_long <- good_stats_chroms %>%
-  pivot_longer(c(Chrom_Mean, Chrom_Median), names_to = "Measurement", values_to = "Value")
+  pivot_longer(c(Chrom_Mean, Chrom_Median, Chrom_Mode), names_to = "Measurement", values_to = "Value")
 raw_stats_long <- raw_stats_chroms %>%
-  pivot_longer(c(Chrom_Mean, Chrom_Median), names_to = "Measurement", values_to = "Value")
+  pivot_longer(c(Chrom_Mean, Chrom_Median, Chrom_Mode), names_to = "Measurement", values_to = "Value")
 toplim <- max(raw_stats_long$Value) + max(raw_stats_long$Value)/10
 
 lineage <- unique(good_stats_chroms$Lineage)

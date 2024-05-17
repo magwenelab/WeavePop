@@ -24,8 +24,8 @@ good_stats <- left_join(good_stats, metadata, by = "sample")
 good_stats <- left_join(good_stats, chrom_names, by = "Accession")
 good_stats <- good_stats %>%
                 group_by(Accession, sample) %>%
-                mutate(Norm_Mean = round(Chrom_Mean / Global_Mean, 2)) %>%
-                mutate(Norm_Median = round(Chrom_Median / Global_Median, 2)) %>%
+                mutate(Norm_Mean = round(Chrom_Mean / Global_Good_Mode, 2)) %>%
+                mutate(Norm_Median = round(Chrom_Median / Global_Good_Mode, 2)) %>%
                 ungroup() %>%
                 as.data.frame()
 
@@ -37,8 +37,8 @@ raw_stats <- left_join(raw_stats, chrom_names, by = "Accession")
 
 raw_stats <- raw_stats %>%
                 group_by(Accession, sample) %>%
-                mutate(Norm_Mean = round(Chrom_Mean / Global_Mean, 2)) %>%
-                mutate(Norm_Median = round(Chrom_Median / Global_Median, 2)) %>%
+                mutate(Norm_Mean = round(Chrom_Mean / Global_Good_Mode, 2)) %>%
+                mutate(Norm_Median = round(Chrom_Median / Global_Good_Mode, 2)) %>%
                 ungroup() %>%
                 as.data.frame()
 
@@ -47,7 +47,7 @@ toplim <- ceiling(max(good_stats$Norm_Median))
 values <- seq(0, toplim, by = 1)
 ylabel <- "Normalized coverage"
 
-medianplot <- ggplot(good_stats, aes(x = reorder(name, -Global_Mean, sum), y = Norm_Median)) +
+medianplot <- ggplot(good_stats, aes(x = reorder(name, -Global_Good_Mode, sum), y = Norm_Median)) +
     geom_point(aes(color = get(snakemake@params[[1]]))) +
     ylim(0, toplim) +
     facet_grid(scale = "free_x", space = "free_x", rows = vars(Chromosome), cols = vars(group)) +
@@ -58,7 +58,7 @@ medianplot <- ggplot(good_stats, aes(x = reorder(name, -Global_Mean, sum), y = N
           strip.background = element_blank(),
           panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 1),
           axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 5))+
-    labs(title = "Normalized median coverage of chromosomes",
+    labs(title = "Coverage of chromosomes normalized with the mode",
          x = "Sample",
          y = ylabel)
 
@@ -86,107 +86,109 @@ meanplot <- ggplot(good_stats, aes(x = reorder(name, -Global_Mean, sum), y = Nor
 
 ggsave(snakemake@output[[2]], plot = meanplot, units = "in", height = 9, width = 16, scale = gscale)
 
-# Global
-topylim <- max(good_stats$Global_Mean) + max(good_stats$Global_Mean / 10)
-raw_color = "#B3B3B3"
-good_color = "#666666" 
-color_quality = c("Good quality mappings" = good_color, "All mappings" = raw_color)
-shape_stat <- c("Mean" = 16, "Median" = 15)
+# # Global
+# topylim <- max(good_stats$Global_Mean) + max(good_stats$Global_Mean / 10)
+# raw_color = "#B3B3B3"
+# good_color = "#666666" 
+# color_quality = c("Good quality mappings" = good_color, "All mappings" = raw_color)
+# shape_stat <- c("Mean" = 16, "Median" = 15, "Mode" = 17)
 
-all <- bind_rows(good_stats %>% mutate(Quality = "Good quality mappings"), raw_stats %>% mutate(Quality = "All mappings"))
-all$name <- reorder(all$name, -all$Global_Mean, sum)
-all <- all %>%
-        select(sample, name, Mean = Global_Mean, Median = Global_Median, Quality, group)%>%
-        pivot_longer(cols = c(Mean, Median), names_to = "Measurement", values_to = "Value")%>%
-        as.data.frame()
+# all <- bind_rows(good_stats %>% mutate(Quality = "Good quality mappings"), raw_stats %>% mutate(Quality = "All mappings"))
+# all$name <- reorder(all$name, -all$Global_Mean, sum)
+# all <- all %>%
+#         select(sample, name, Mean = Global_Mean, Median = Global_Median,Mode= Global_Good_Mode, Quality, group)%>%
+#         pivot_longer(cols = c(Mean, Median, Mode), names_to = "Measurement", values_to = "Value")%>%
+#         as.data.frame()
+# all$Quality <- factor(all$Quality, levels = c("Good quality mappings", "All mappings"))
+# all$Measurement <- factor(all$Measurement, levels = c("Mean", "Median", "Mode"))
+# summary(all)
 
+# topylim <- max(all$Value) + max(all$Value) / 10
+# g <- ggplot(all) +
+#     geom_point(aes(x = name, y = Value, shape = Measurement, color = Quality)) +
+#     ylim(0, topylim) +
+#     facet_grid(~group, scale = "free_x", space = "free_x") +
+#     scale_color_manual(name= "", values= color_quality)+
+#     scale_shape_manual(values = c(16,15), name = NULL, labels = c("Mean", "Median", "Mode"))+
+#     theme_bw() +
+#     theme(panel.background = element_blank(), 
+#           panel.grid.minor = element_blank(),
+#           strip.background = element_blank(),
+#           panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 1),
+#           axis.text.x = element_blank(),
+#           axis.ticks.x = element_blank())+
+#     labs(title = "Genome-wide coverage",
+#          y = "Coverage (X)",
+#          x = "")
+# g
+# # # Mapping stats and MAPQ
+# # map_stats <- read.table("results/dataset/files/mapping_stats.tsv",header = TRUE, stringsAsFactors = TRUE, sep = "\t")
+# map_stats <- read.table(snakemake@input[[5]], header = TRUE, stringsAsFactors = TRUE, sep = "\t")
 
-topylim <- max(all$Value) + max(all$Value) / 10
-g <- ggplot(all) +
-    geom_point(aes(x = name, y = Value, shape = Measurement, color = Quality)) +
-    ylim(0, topylim) +
-    facet_grid(~group, scale = "free_x", space = "free_x") +
-    scale_color_manual(name= "", values= color_quality)+
-    scale_shape_manual(values = c(16,15), name = NULL, labels = c("Mean", "Median"))+
-    theme_bw() +
-    theme(panel.background = element_blank(), 
-          panel.grid.minor = element_blank(),
-          strip.background = element_blank(),
-          panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 1),
-          axis.text.x = element_blank(),
-          axis.ticks.x = element_blank())+
-    labs(title = "Genome-wide coverage",
-         y = "Coverage (X)",
-         x = "")
+# metadata <- metadata %>%
+#     select(sample, strain, group)
+# stats_metad <- merge(map_stats, metadata, by = "sample")
+# stats_metad <- stats_metad %>%
+#     mutate(name = paste(strain,sample, sep = " "),
+#         reads_unmapped = raw_total_sequences - reads_mapped,
+#         percent_unmapped = (reads_unmapped/raw_total_sequences)*100,
+#         reads_only_mapped = reads_mapped - reads_properly_paired,
+#         percent_only_mapped = (reads_only_mapped/raw_total_sequences)*100,
+#         percent_properly_paired = (reads_properly_paired/raw_total_sequences)*100,
+#         percent_20 = (MAPQ_20/reads_mapped)*100,
+#         percent_20_59 = (MAPQ_20_59/reads_mapped)*100,
+#         percent_60 = (MAPQ_60/reads_mapped)*100)
 
-# Mapping stats and MAPQ
-# map_stats <- read.table("results/dataset/files/mapping_stats.tsv",header = TRUE, stringsAsFactors = TRUE, sep = "\t")
-map_stats <- read.table(snakemake@input[[5]], header = TRUE, stringsAsFactors = TRUE, sep = "\t")
+# stats_long <- stats_metad %>%
+#     pivot_longer(cols = -c(sample, name, group, strain), names_to = "Metric", values_to = "Value")
+# stats_reads <- stats_long %>%
+#     filter(Metric %in% c("percent_only_mapped", "percent_unmapped", "percent_properly_paired"))
+# stats_reads$Metric <- factor(stats_reads$Metric, levels = c("percent_unmapped", "percent_only_mapped", "percent_properly_paired"),
+#                               labels = c("Unmapped", "Mapped", "Mapped and properly paired"))
 
-metadata <- metadata %>%
-    select(sample, strain, group)
-stats_metad <- merge(map_stats, metadata, by = "sample")
-stats_metad <- stats_metad %>%
-    mutate(name = paste(strain,sample, sep = " "),
-        reads_unmapped = raw_total_sequences - reads_mapped,
-        percent_unmapped = (reads_unmapped/raw_total_sequences)*100,
-        reads_only_mapped = reads_mapped - reads_properly_paired,
-        percent_only_mapped = (reads_only_mapped/raw_total_sequences)*100,
-        percent_properly_paired = (reads_properly_paired/raw_total_sequences)*100,
-        percent_20 = (MAPQ_20/reads_mapped)*100,
-        percent_20_59 = (MAPQ_20_59/reads_mapped)*100,
-        percent_60 = (MAPQ_60/reads_mapped)*100)
+# name_order <- all %>%
+#     select(name)%>%
+#     distinct()%>%
+#     droplevels()
+# stats_reads$name <- factor(stats_reads$name, levels = levels(name_order$name))
 
-stats_long <- stats_metad %>%
-    pivot_longer(cols = -c(sample, name, group, strain), names_to = "Metric", values_to = "Value")
-stats_reads <- stats_long %>%
-    filter(Metric %in% c("percent_only_mapped", "percent_unmapped", "percent_properly_paired"))
-stats_reads$Metric <- factor(stats_reads$Metric, levels = c("percent_unmapped", "percent_only_mapped", "percent_properly_paired"),
-                              labels = c("Unmapped", "Mapped", "Mapped and properly paired"))
+# stats_qualit <- stats_long %>%
+#     filter(Metric %in% c("percent_20", "percent_20_59", "percent_60"))
+# stats_qualit$Metric <- factor(stats_qualit$Metric, levels = c("percent_20","percent_20_59","percent_60"),
+#                               labels = c("MAPQ < 20", "MAPQ 20 - 59", "MAPQ 60"))
 
-name_order <- all %>%
-    select(name)%>%
-    distinct()%>%
-    droplevels()
-stats_reads$name <- factor(stats_reads$name, levels = levels(name_order$name))
+# stats_qualit$name <- factor(stats_qualit$name, levels = levels(name_order$name))
 
-stats_qualit <- stats_long %>%
-    filter(Metric %in% c("percent_20", "percent_20_59", "percent_60"))
-stats_qualit$Metric <- factor(stats_qualit$Metric, levels = c("percent_20","percent_20_59","percent_60"),
-                              labels = c("MAPQ < 20", "MAPQ 20 - 59", "MAPQ 60"))
+# palette_reads <- brewer.pal(n = length(unique(stats_reads$Metric)), name = "BuPu")
+# palette_qualit <- brewer.pal(n = length(unique(stats_qualit$Metric)), name = "BuGn")
 
-stats_qualit$name <- factor(stats_qualit$name, levels = levels(name_order$name))
+# reads <- ggplot()+
+#     geom_bar(data = stats_reads, aes(x = name, y = Value, fill = Metric), stat = "identity")+
+#     facet_grid(~ group, scales = "free", space = "free_x")+
+#     theme(panel.background = element_blank(), 
+#           panel.grid.major = element_blank(),
+#           panel.grid.minor = element_blank(),
+#           strip.background = element_blank(),
+#           strip.text = element_blank(),
+#           panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 1),
+#           axis.text.x = element_blank(),
+#           axis.ticks.x = element_blank())+
+#     labs(x = "", y = "Percentage of reads", fill = "Metric", title = "Percentage of reads by mapping status")+
+#     scale_fill_manual(values = palette_reads, name = "")
 
-palette_reads <- brewer.pal(n = length(unique(stats_reads$Metric)), name = "BuPu")
-palette_qualit <- brewer.pal(n = length(unique(stats_qualit$Metric)), name = "BuGn")
+# mapq <- ggplot()+
+#     geom_bar(data = stats_qualit, aes(x = name, y = Value, fill = Metric), stat = "identity")+
+#     facet_grid(~ group, scales = "free", space = "free_x")+
+#     theme(panel.background = element_blank(), 
+#           panel.grid.major = element_blank(),
+#           panel.grid.minor = element_blank(),
+#           strip.background = element_blank(),
+#           strip.text = element_blank(),
+#           panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 1),
+#           axis.text.x = element_text(angle = 90, hjust = 1, vjust=0.5, size = 5))+
+#     labs(x = "Sample", y = "Percentage of reads", fill = "Metric", title = "Percentage of mapped reads by mapping quality")+
+#     scale_fill_manual(values = palette_qualit, name = "")
 
-reads <- ggplot()+
-    geom_bar(data = stats_reads, aes(x = name, y = Value, fill = Metric), stat = "identity")+
-    facet_grid(~ group, scales = "free", space = "free_x")+
-    theme(panel.background = element_blank(), 
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank(),
-          strip.background = element_blank(),
-          strip.text = element_blank(),
-          panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 1),
-          axis.text.x = element_blank(),
-          axis.ticks.x = element_blank())+
-    labs(x = "", y = "Percentage of reads", fill = "Metric", title = "Percentage of reads by mapping status")+
-    scale_fill_manual(values = palette_reads, name = "")
-
-mapq <- ggplot()+
-    geom_bar(data = stats_qualit, aes(x = name, y = Value, fill = Metric), stat = "identity")+
-    facet_grid(~ group, scales = "free", space = "free_x")+
-    theme(panel.background = element_blank(), 
-          panel.grid.major = element_blank(),
-          panel.grid.minor = element_blank(),
-          strip.background = element_blank(),
-          strip.text = element_blank(),
-          panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 1),
-          axis.text.x = element_text(angle = 90, hjust = 1, vjust=0.5, size = 5))+
-    labs(x = "Sample", y = "Percentage of reads", fill = "Metric", title = "Percentage of mapped reads by mapping quality")+
-    scale_fill_manual(values = palette_qualit, name = "")
-
-plot <- g/reads/mapq
-ggsave(snakemake@output[[3]], plot = plot, units = "in", height = 9, width = 16, scale = gscale)
+# plot <- g/reads/mapq
+# ggsave(snakemake@output[[3]], plot = plot, units = "in", height = 9, width = 16, scale = gscale)
 

@@ -18,18 +18,16 @@ sample <- Split[[1]][length(Split[[1]])-1]
 cov<- read.table(snakemake@input[[1]], header = TRUE, stringsAsFactors = TRUE, sep = "\t")
 cov[is.na(cov)] <- 0
 chrom_names <- read.csv(snakemake@input[[2]], header = FALSE, col.names = c("Lineage", "Accession", "Chromosome"))
-cov <-cov %>%
-  rename(Accession = Chromosome)
 cov <- left_join(cov, chrom_names, by = "Accession")
 
 # stats <- read.delim("../../mosdepth/SRS8318899/good_chromosome_coverage.tsv", header = TRUE, stringsAsFactors = TRUE)
 stats <- read.delim(snakemake@input[[3]], header = TRUE, stringsAsFactors = TRUE)
 stats_global <- stats %>%
-  select(Global_Median, Global_Mean)%>%
+  select(Global_Median, Global_Mean, Global_Good_Mode)%>%
   slice(1) %>%
   pivot_longer(everything(), names_to = "Measurement", values_to = "Value")
 
-
+print(stats_global)
 print("Plotting Coverage distribution")
 raw_color = "#B3B3B3"
 good_color = "#666666" 
@@ -67,7 +65,7 @@ plot <- ggplot()+
   scale_x_continuous(name = "Coverage (X) ", labels = comma, n.breaks = 10)+
   scale_fill_manual(name= "Alignment quality", values= color_quality)+
   theme(legend.position="none")+
-  scale_color_manual(values = c("Global_Median" = "darkblue", "Global_Mean" = "#bfb82a"),
+  scale_color_manual(values = c("Global_Median" = "darkblue", "Global_Mean" = "#bfb82a", "Global_Good_Mode" = "red"),
                      labels = c("Global_Median" = "Median", "Global_Mean" = "Mean"),
                      name = "Good quality global coverage")+
   labs(title = paste("Lineage:",lineage, " Sample:", sample,  sep = " "))+

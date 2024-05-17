@@ -59,7 +59,7 @@ rule coverage_stats_plots_dataset:
     output:
         DATASET_OUTDIR / "plots" / "cov_median_good.svg",
         DATASET_OUTDIR / "plots" / "cov_mean_good.svg",
-        DATASET_OUTDIR / "plots" / "global.svg"
+        # DATASET_OUTDIR / "plots" / "global.svg"
     conda:
         "../envs/r.yaml"
     params:

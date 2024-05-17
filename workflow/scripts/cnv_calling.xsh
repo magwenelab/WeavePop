@@ -7,6 +7,7 @@ import numpy as np
 @click.command()
 @click.option('-ci', '--coverage_input', help='Path to BED file with coverage of each region.', type=click.Path(exists=True))
 @click.option('-ri', '--repeats_input', help='Path to BED file with coordinates of repetititve sequences of reference genome.', type=click.Path(exists=True))
+@click.option('-chi', '--chromosome_input', help='Path to TSV file with chromosome and global modes.', type=click.Path(exists=True))
 @click.option('-co', '--chromosome_output', help='Path to output table of stats by chromosome.', type=click.Path())
 @click.option('-ro', '--regions_output', help='Path to output table of stats by region.', type=click.Path())
 @click.option('-so', '--structural_variants_output', help='Path to output table of structural variants.', type=click.Path())
@@ -16,7 +17,7 @@ import numpy as np
 @click.option('-tp', '--repeats_threshold', help='Threshold for filtering out windows with too many repeats.', type=click.types.FloatRange(min=0.0))
 @click.option('-cp', '--change_threshold', help='Threshold to define if region is not HAPLOID.', type=click.types.FloatRange(min=0.0))
 
-def intersect_repeats(coverage_input, repeats_input, chromosome_output, regions_output, structural_variants_output, sample_name, region_size, smooth_size, repeats_threshold,  change_threshold):
+def intersect_repeats(coverage_input, repeats_input, chromosome_input, chromosome_output, regions_output, structural_variants_output, sample_name, region_size, smooth_size, repeats_threshold,  change_threshold):
     print("Merge overlapping regions in repeats and intersect with regions.")
     intersect = $(bedtools merge -i @(repeats_input) -c 4 -o collapse | bedtools intersect -a @(coverage_input) -b stdin -wao)
 
@@ -37,9 +38,10 @@ def intersect_repeats(coverage_input, repeats_input, chromosome_output, regions_
     regions_repeats['Repeat_fraction'] = (regions_repeats['Overlap_bp'] / region_size).round(2)
     regions_repeats.columns = regions_repeats.columns.str.replace('bed_', '')
 
-    print("Filter out regions with to many repeats, calculate genome-wide mean and median, and chromosome mean and median.")
+    print("Filter out regions with to many repeats.")
     regions_filtered = regions_repeats[regions_repeats['Repeat_fraction'] < repeats_threshold]
     regions_filtered = regions_filtered[['Accession', 'Start', 'End', 'Coverage']]
+    print("Calculate genome-wide mean and median, and chromosome mean and median")
     Global_Mean = regions_filtered['Coverage'].mean().round(2)
     Global_Median = regions_filtered['Coverage'].median().round(2)
     Chrom_Mean = regions_filtered.groupby('Accession').agg(Chrom_Mean=('Coverage', 'mean')).reset_index()
@@ -49,12 +51,19 @@ def intersect_repeats(coverage_input, repeats_input, chromosome_output, regions_
     chrom_stats['Global_Median'] = Global_Median
     chrom_stats['Sample'] = sample_name
     chrom_stats = chrom_stats.round(2)
+
+    chrom_mode = pd.read_csv(chromosome_input, sep='\t')
+    chrom_stats = pd.merge(chrom_stats, chrom_mode, on=['Accession', 'Sample'], how="outer")
+    Global_Good_Mode = chrom_stats['Global_Good_Mode'][0]
+    Global_Raw_Mode = chrom_stats['Global_Raw_Mode'][0]
     chrom_stats.to_csv(chromosome_output, sep='\t', index=False, header=True)
+
 
     print("Normalize coverage.")
     regions_norm = regions_repeats[['Accession', 'Start', 'End', 'Coverage', 'Overlap_bp','Repeat_fraction']].copy()
     regions_norm.loc[:,'Norm_Mean'] = regions_norm['Coverage'] / Global_Mean
     regions_norm.loc[:,'Norm_Median'] = regions_norm['Coverage'] / Global_Median
+    regions_norm.loc[:,'Norm_Mode'] = regions_norm['Coverage'] / Global_Good_Mode
     print(regions_norm.head(12))
     print("Smooth coverage.")
     cov_array = np.array(regions_norm["Norm_Mean"])
@@ -64,6 +73,11 @@ def intersect_repeats(coverage_input, repeats_input, chromosome_output, regions_
     cov_array = np.array(regions_norm["Norm_Median"])
     smoothed_array = ndimage.median_filter(cov_array, size=smooth_size)
     regions_norm.loc[:,'Smooth_Median']=pd.Series(smoothed_array)
+
+    cov_array = np.array(regions_norm["Norm_Mode"])
+    smoothed_array = ndimage.median_filter(cov_array, size=smooth_size)
+    regions_norm.loc[:,'Smooth_Mode']=pd.Series(smoothed_array)
+
     regions_norm = regions_norm.round(2)
     regions_norm['Sample'] = sample_name
     regions_norm.to_csv(regions_output, sep='\t', index=False, header=True)
@@ -75,9 +89,9 @@ def intersect_repeats(coverage_input, repeats_input, chromosome_output, regions_
         regions_windowed.loc[:, 'Structure'] = 'HAPLOID'
         regions_windowed = regions_windowed.reset_index(drop=True)
         for i in range(len(regions_windowed)):
-            if regions_windowed.loc[i, 'Smooth_Median'] > 1 + change_threshold:
+            if regions_windowed.loc[i, 'Smooth_Mode'] > 1 + change_threshold:
                 regions_windowed.loc[i, 'Structure'] = "DUPLICATION"
-            elif regions_windowed.loc[i, 'Smooth_Median'] < 1 - change_threshold:
+            elif regions_windowed.loc[i, 'Smooth_Mode'] < 1 - change_threshold:
                 regions_windowed.loc[i, 'Structure'] = "DELETION"
             else:
                 regions_windowed.loc[i, 'Structure'] = "HAPLOID"
@@ -88,7 +102,7 @@ def intersect_repeats(coverage_input, repeats_input, chromosome_output, regions_
                 regions_windowed.loc[i, 'Window_index'] = regions_windowed.loc[i - 1, 'Window_index']
             else:
                 regions_windowed.loc[i, 'Window_index'] = regions_windowed.loc[i - 1, 'Window_index'] + 1
-        windows = regions_windowed.groupby('Window_index').agg(Accession = ('Accession', 'first'),Start=('Start', 'first'), End=('End', 'last'), Coverage = ('Coverage', 'mean'),Norm_Median=('Norm_Median', 'mean'), Smooth_Median=('Smooth_Median', 'mean'), Structure=('Structure', 'first'), Overlap_bp=('Overlap_bp', 'sum')).reset_index()
+        windows = regions_windowed.groupby('Window_index').agg(Accession = ('Accession', 'first'),Start=('Start', 'first'), End=('End', 'last'), Coverage = ('Coverage', 'mean'),Norm_Median=('Norm_Median', 'mean'), Smooth_Mode=('Smooth_Mode', 'mean'), Structure=('Structure', 'first'), Overlap_bp=('Overlap_bp', 'sum')).reset_index()
         windows['Window_Size'] = windows['End'] - windows['Start']
         windows['Repeat_fraction'] = (windows['Overlap_bp'] / windows['Window_Size']).round(2)
         windows = windows.drop(['Window_index'], axis=1)

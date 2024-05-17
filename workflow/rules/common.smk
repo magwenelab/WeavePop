@@ -65,7 +65,7 @@ def get_final_output():
         final_output.extend(expand(OUTDIR / "plots" / "{sample}" / "cov_distribution.png",sample=SAMPLES))
         final_output.extend(expand(OUTDIR / "plots" / "{sample}" / "mapq.png",sample=SAMPLES))
         final_output.extend(expand(OUTDIR / "plots" / "{sample}" / "coverage_stats.png",sample=SAMPLES))
-        final_output.append(DATASET_OUTDIR / "plots" / "global.svg")
+        # final_output.append(DATASET_OUTDIR / "plots" / "global.svg")
         final_output.append(DATASET_OUTDIR / "plots" / "cov_median_good.svg")
     if config["annotate_references"]["activate"] and config["plotting"]["activate"]:
         final_output.append(REFDIR / "unmapped_count.tsv")

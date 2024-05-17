@@ -1,3 +1,40 @@
+
+# Run RepeatModeler for each reference genome
+rule repeat_modeler:
+    input:
+        rules.links.output
+    output:
+        known = REFDIR / "{lineage}" / "repeats" / "{lineage}_known.fa",
+        unknown = REFDIR / "{lineage}" / "repeats" / "{lineage}_unknown.fa"
+    params:
+        repdir = "repeats"
+    threads:
+        config["coverage_quality"]["repeats"]["repeats_threads"]
+    conda:
+        "../envs/repeatmasker.yaml"
+    log:
+        "logs/references/repeats/repeatmodeler_{lineage}.log"
+    shell:
+        "bash workflow/scripts/repeat-modeler.sh {threads} {input} {params.repdir} &> {log}"
+
+# Run RepeatMasker for each reference genome. Obtain a BED file with the location of the reapeat sequences
+rule repeat_masker:
+    input:
+        database = config["coverage_quality"]["repeats"]["repeats_database"],
+        fasta = rules.links.output,
+        known = rules.repeat_modeler.output.known,
+        unknown = rules.repeat_modeler.output.unknown
+    output:
+        REFDIR / "{lineage}" / "repeats" / "{lineage}_repeats.bed"
+    threads:
+        config["coverage_quality"]["repeats"]["repeats_threads"]
+    conda:
+        "../envs/repeatmasker.yaml"
+    log:
+        "logs/references/repeats/repeatmasker_{lineage}.log"
+    shell:
+        "bash workflow/scripts/repeat-masker.sh {threads} {input.database} {input.fasta} {input.known} {input.unknown} {output} &> {log}"
+
 # Get the coverage of all the mapped reads per window along all chromosomes
 rule mosdepth:
     input:
@@ -61,28 +98,54 @@ rule bam_good:
         "samtools index {output.bam_good} -o {output.bai_good} 2>> {log} "
 
 # Get distribution of MAPQ and Coverage values in all alignments and only good alignments
-def samtools_input(wildcards):
+def cov_distribution_input(wildcards):
     s = SAMPLE_REFERENCE.loc[wildcards.sample,]
     return {
         "bam": OUTDIR / "snippy" / s["sample"] / "snps.bam" ,
         "bai": OUTDIR / "snippy" / s["sample"] / "snps.bam.bai",
         "bam_good": OUTDIR / "samtools" / s["sample"] / "snps_good.bam",
-        "bai_good": OUTDIR / "samtools" / s["sample"] / "snps_good.bam.bai",
-        "ref": REFDIR / s["group"]  / (s["group"] + ".fasta"),
-        "chrom_names" : CHROM_NAMES
+        "bai_good": OUTDIR / "samtools" / s["sample"] / "snps_good.bam.bai"
         }
-rule samtools_stats:
+rule cov_distribution:
     input:
-        unpack(samtools_input)
+        unpack(cov_distribution_input)
     output:
-        cov = OUTDIR / "samtools" / "{sample}" / "distrib_cov.tsv",
-        mapped = OUTDIR / "samtools" / "{sample}" / "mapped.tsv",
+        distrib = OUTDIR / "samtools" / "{sample}" / "distrib_cov.tsv",
+        global_mode = OUTDIR / "samtools" / "{sample}" / "global_mode.tsv"
     conda: 
         "../envs/samtools.yaml"
     log:
         "logs/samples/samtools/samtools_stats_{sample}.log"
     shell:
-        "xonsh workflow/scripts/samtools-stats.xsh -s {wildcards.sample} -b {input.bam} -g {input.bam_good} -r {input.ref} -cn {input.chrom_names} -c {output.cov} -p {output.mapped} &> {log}"
+        "xonsh workflow/scripts/cov_distribution.xsh -s {wildcards.sample} -b {input.bam} -g {input.bam_good} -do {output.distrib} -go {output.global_mode} &> {log}"
+
+rule mapping_stats:
+    input:
+        bam = rules.snippy.output.bam,
+        bai = rules.snippy.output.bai
+    output:
+        OUTDIR / "samtools" / "{sample}" / "mapping_stats.tsv"
+    conda:
+        "../envs/samtools.yaml"
+    log:
+        "logs/samples/samtools/mapping_stats_{sample}.log"
+    shell:
+        "xonsh workflow/scripts/mapping-stats.xsh -b {input.bam} -s {wildcards.sample} -o {output.stats} &> {log}"
+
+rule chromosome_coverage:
+    input:
+        bam = rules.snippy.output.bam,
+        bai = rules.snippy.output.bai,
+        global_mode = rules.cov_distribution.output.global_mode
+    output:
+        OUTDIR / "samtools" / "{sample}" / "chrom_cov.tsv"
+    conda:
+        "../envs/samtools.yaml"
+    log:
+        "logs/samples/samtools/chrom_cov_{sample}.log"
+    shell:
+        "xonsh workflow/scripts/chromosome_coverage.xsh -b {input.bam} -g {input.global_mode} -s {wildcards.sample} -o {output} &> {log}"
+
 
 # Get the MAPQ per position and per window
 rule mapq:
@@ -115,48 +178,13 @@ rule mapqcov:
     shell:
         "xonsh workflow/scripts/mapqcov.xsh -m {input.mapqbed} -c {input.covbed} -g {input.gff} -cm {output.covmapq} -s {wildcards.sample} -o {output.tsv} &> {log}"
 
-# Run RepeatModeler for each reference genome
-rule repeat_modeler:
-    input:
-        rules.links.output
-    output:
-        known = REFDIR / "{lineage}" / "repeats" / "{lineage}_known.fa",
-        unknown = REFDIR / "{lineage}" / "repeats" / "{lineage}_unknown.fa"
-    params:
-        repdir = "repeats"
-    threads:
-        config["coverage_quality"]["repeats"]["repeats_threads"]
-    conda:
-        "../envs/repeatmasker.yaml"
-    log:
-        "logs/references/repeats/repeatmodeler_{lineage}.log"
-    shell:
-        "bash workflow/scripts/repeat-modeler.sh {threads} {input} {params.repdir} &> {log}"
-
-# Run RepeatMasker for each reference genome. Obtain a BED file with the location of the reapeat sequences
-rule repeat_masker:
-    input:
-        database = config["coverage_quality"]["repeats"]["repeats_database"],
-        fasta = rules.links.output,
-        known = rules.repeat_modeler.output.known,
-        unknown = rules.repeat_modeler.output.unknown
-    output:
-        REFDIR / "{lineage}" / "repeats" / "{lineage}_repeats.bed"
-    threads:
-        config["coverage_quality"]["repeats"]["repeats_threads"]
-    conda:
-        "../envs/repeatmasker.yaml"
-    log:
-        "logs/references/repeats/repeatmasker_{lineage}.log"
-    shell:
-        "bash workflow/scripts/repeat-masker.sh {threads} {input.database} {input.fasta} {input.known} {input.unknown} {output} &> {log}"
-
 # Get coverage stats for each window and each chromosome
 def raw_coverage_input(wildcards):
     s = SAMPLE_REFERENCE.loc[wildcards.sample,]
     return {
         "coverage": OUTDIR / "mosdepth" / s["sample"] / "coverage.regions.bed.gz" ,
-        "repeats": REFDIR / s["group"]  / "repeats" / (s["group"] + "_repeats.bed")
+        "repeats": REFDIR / s["group"]  / "repeats" / (s["group"] + "_repeats.bed"),
+        "chrom_cov": OUTDIR / "samtools" / s["sample"] / "chrom_cov.tsv"
     }
 rule raw_coverage:
     input:
@@ -178,6 +206,7 @@ rule raw_coverage:
         "xonsh workflow/scripts/coverage_analysis.xsh "
         "-ci {input.coverage} "
         "-ri {input.repeats} "
+        "-chi {input.chrom_cov} "
         "-co {output.chromosome} "
         "-ro {output.regions} "
         "-so {output.structure} "
@@ -193,7 +222,8 @@ def good_coverage_input(wildcards):
     s = SAMPLE_REFERENCE.loc[wildcards.sample,]
     return {
         "coverage": OUTDIR / "mosdepth" / s["sample"] / "coverage_good.regions.bed.gz" ,
-        "repeats": REFDIR / s["group"]  / "repeats" / (s["group"] + "_repeats.bed")
+        "repeats": REFDIR / s["group"]  / "repeats" / (s["group"] + "_repeats.bed"),
+        "chrom_cov": OUTDIR / "samtools" / s["sample"] / "chrom_cov.tsv"
     }
 rule good_coverage:
     input:
@@ -215,6 +245,7 @@ rule good_coverage:
         "xonsh workflow/scripts/coverage_analysis.xsh "
         "-ci {input.coverage} "
         "-ri {input.repeats} "
+        "-chi {input.chrom_cov} "
         "-co {output.chromosome} "
         "-ro {output.regions} "
         "-so {output.structure} "
@@ -224,14 +255,31 @@ rule good_coverage:
         "-tp {params.repeats_threshold} "
         "-cp {params.change_threshold} "
         "&> {log}"
-        
+
+# rule merge_chrom_coverage:
+#     input:
+#         rules.samtools_stats.output.chrom_cov,
+#         rules.raw_coverage.output.chromosome,
+#         rules.good_coverage.output.chromosome
+#     output:
+#         good = OUTDIR / "mosdepth" / "{sample}"/ "good_stats_coverage.tsv",
+#         raw = OUTDIR / "mosdepth" / "{sample}"/ "raw_stats_coverage.tsv"
+#     run:
+#         modes = pd.read_csv(input[0], sep="\t")
+#         raw = pd.read_csv(input[1], sep="\t")
+#         good = pd.read_csv(input[2], sep="\t")
+#         good = good.merge(modes, on=["Accession","Sample"], how="left")
+#         raw = raw.merge(modes, on=["Accession","Sample"], how="left")
+#         good.to_csv(output[0], sep="\t", index=False)
+#         raw.to_csv(output[1], sep="\t", index=False)
+
 # Get the coverage stats of all samples
 rule dataset_metrics:
     input:
         g = expand(rules.good_coverage.output.chromosome,sample=SAMPLES),
         r = expand(rules.raw_coverage.output.chromosome,sample=SAMPLES),
         sv = expand(rules.good_coverage.output.structure,sample=SAMPLES),
-        m = expand(rules.samtools_stats.output.mapped,sample=SAMPLES),
+        m = expand(rules.mapping_stats.output,sample=SAMPLES),
         mc = expand(rules.mapqcov.output.tsv,sample=SAMPLES)
     output:
         allg = DATASET_OUTDIR / "files" / "coverage_good.tsv",

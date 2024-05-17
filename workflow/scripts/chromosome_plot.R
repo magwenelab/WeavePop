@@ -42,7 +42,7 @@ l_colors <- dark2[1:nlevels(loci$Loci)]
 
 coverage_regions <- left_join(coverage_regions, chrom_names, by = "Accession")
 coverage <- coverage_regions %>%
-  select(Accession_Chromosome, Chromosome, Start, End, Coverage = Norm_Median)%>%
+  select(Accession_Chromosome, Chromosome, Start, End, Coverage = Norm_Mode)%>%
   mutate(Track = "Coverage", .after = Chromosome)
 topCov <- quantile(coverage$Coverage, 0.75) * 3
 coverage$Coverage<- ifelse(coverage$Coverage >= topCov, topCov, coverage$Coverage)
