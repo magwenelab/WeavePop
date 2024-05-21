@@ -71,9 +71,9 @@ rule coverage_stats_plots_dataset:
         "../scripts/coverage_dataset_plots.R"
 
 # Generate coverage distribution plots
-rule cov_distribution:
+rule cov_distribution_plot:
     input:
-        rules.samtools_stats.output.cov,
+        rules.cov_distribution.output.distrib,
         CHROM_NAMES,
         rules.good_coverage.output.chromosome
     output:
