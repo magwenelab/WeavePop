@@ -118,8 +118,8 @@ rule depth_by_chrom_normalized:
 rule depth_by_regions:
     input:
         depth = rules.mosdepth_good.output.bed,
-        global_mode = rules.depth_distribution.output.global_mode
-        CHROM_NAMES
+        global_mode = rules.depth_distribution.output.global_mode,
+        chrom_names = CHROM_NAMES
     output:
         OUTDIR / "mosdepth" / "{sample}" / "depth_by_regions.tsv"
     conda:
@@ -127,7 +127,7 @@ rule depth_by_regions:
     log:
         "logs/samples/mosdepth/depth_by_regions_{sample}.log"
     shell:
-        "xonsh workflow/scripts/depth_by_regions.xsh -d {input.depth} -g {input.global_mode} -o {output} -s {wildcards.sample} -c {input.CHROM_NAMES} &> {log}"
+        "xonsh workflow/scripts/depth_by_regions.xsh -d {input.depth} -g {input.global_mode} -o {output} -s {wildcards.sample} -c {input.chrom_names} &> {log}"
 
 rule repeat_modeler:
     input:
@@ -163,10 +163,15 @@ rule repeat_masker:
     shell:
         "bash workflow/scripts/repeat-masker.sh {threads} {input.database} {input.fasta} {input.known} {input.unknown} {output} &> {log}"
 
+def cnv_calling_input(wildcards):
+    s = SAMPLE_REFERENCE.loc[wildcards.sample,]
+    return {
+        "depth": OUTDIR / "mosdepth" / s["sample"] / "depth_by_regions.tsv",
+        "repeats": REFDIR / s["group"]  / "repeats" / (s["group"] + "_repeats.bed")
+        }
 rule cnv_calling:
     input:
-        depth = rules.depth_by_regions.output,
-        repeats = rules.repeat_masker.output
+        unpack(cnv_calling_input)
     output:
         OUTDIR / "cnv" / "{sample}" / "cnv_calls.tsv"
     conda:
@@ -187,7 +192,7 @@ rule mapping_stats:
     log:
         "logs/samples/samtools/mapping_stats_{sample}.log"
     shell:
-        "xonsh workflow/scripts/mapping-stats.xsh -b {input.bam} -s {wildcards.sample} -o {output.stats} &> {log}"
+        "xonsh workflow/scripts/mapping-stats.xsh -b {input.bam} -s {wildcards.sample} -o {output} &> {log}"
 
 rule mapq:
     input:
@@ -209,7 +214,7 @@ rule dataset_metrics:
         g = expand(rules.depth_by_chrom_good.output,sample=SAMPLES),
         n = expand(rules.depth_by_chrom_normalized.output,sample=SAMPLES),
         c = expand(rules.cnv_calling.output,sample=SAMPLES),
-        m = expand(rules.mapping_stats.output,sample=SAMPLES),
+        m = expand(rules.mapping_stats.output,sample=SAMPLES)
     output:
         allr = DATASET_OUTDIR / "files" / "depth_by_chrom_raw.tsv",
         allg = DATASET_OUTDIR / "files" / "depth_by_chrom_good.tsv",

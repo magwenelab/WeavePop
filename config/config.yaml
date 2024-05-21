@@ -35,7 +35,7 @@ coverage_quality:
     repeats_fraction: 0.5 # Fraction of repetitive bases allowed for calculating global coverage
 
 snps:
-  activate: True
+  activate: False
   threads: 12
 
 plotting: 

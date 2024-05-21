@@ -1,7 +1,7 @@
 rule loci:
     input:
         refs = expand(REFDIR / "{lineage}" / "{lineage}.gff.tsv", lineage=LINEAGES),
-        loci=LOCI_FILE
+        loci = LOCI_FILE
     output:
         locitable = DATASET_OUTDIR / "files"/ "loci_to_plot.tsv"
     log: 
@@ -48,8 +48,8 @@ def depth_by_regions_plots_input(wildcards):
 rule depth_by_regions_plots:
     input:
         unpack(depth_by_regions_plots_input),
-        CHROM_NAMES,
-        rules.loci.output.locitable
+        chrom_names = CHROM_NAMES,
+        loci = rules.loci.output.locitable
     output:
         OUTDIR / "plots" / "{sample}" / "depth_by_regions.png"
     conda:
@@ -61,7 +61,7 @@ rule depth_by_regions_plots:
 
 rule dataset_depth_by_chrom_plot:
     input:
-        rules.dataset_metrics.output.alln
+        rules.dataset_metrics.output.alln,
         CHROM_NAMES
     output:
         DATASET_OUTDIR / "plots" / "dataset_depth_by_chrom.png"
@@ -98,8 +98,8 @@ def mapq_plot_input(wildcards):
 rule mapq_plot:
     input:
         unpack(mapq_plot_input),
-        CHROM_NAMES,
-        rules.loci.output.locitable
+        chrom_names = CHROM_NAMES,
+        loci = rules.loci.output.locitable
     output:
         OUTDIR / "plots" / "{sample}" / "mapq.png"
     conda:
