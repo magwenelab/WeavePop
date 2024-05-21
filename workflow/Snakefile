@@ -10,8 +10,8 @@ configfile: "config/config.yaml"
 
 include: "rules/common.smk"
 include: "rules/main.smk"
-include: "rules/depth-qc.smk"
-include: "rules/plotting.smk"
+include: "rules/depth.smk"
+include: "rules/plots.smk"
 include: "rules/snps.smk"
 
 if config["annotate_references"]["activate"]:
@@ -30,5 +30,4 @@ if config["plotting"]["activate"] and not config["annotate_references"]["activat
 
 rule all:
     input:
-        get_final_output(),
-        # get_ids
+        get_final_output()

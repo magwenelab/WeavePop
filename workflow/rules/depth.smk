@@ -51,7 +51,7 @@ rule depth_by_chrom_raw:
     log:
         "logs/samples/mosdepth/depth_by_chrom_raw_{sample}.log"
     shell:
-        "xonsh workflow/scripts/depth_by_chrom.sh -b {input} -o {output} -s {wildcards.sample} &> {log}"
+        "xonsh workflow/scripts/depth_by_chrom.xsh -b {input} -o {output} -s {wildcards.sample} &> {log}"
 
 rule depth_by_chrom_good:
     input:
@@ -63,7 +63,7 @@ rule depth_by_chrom_good:
     log:
         "logs/samples/mosdepth/depth_by_chrom_good_{sample}.log"
     shell:
-        "xonsh workflow/scripts/depth_by_chrom.sh -b {input} -o {output} -s {wildcards.sample} &> {log}"
+        "xonsh workflow/scripts/depth_by_chrom.xsh -b {input} -o {output} -s {wildcards.sample} &> {log}"
 
 rule bam_good:
     input:
@@ -102,7 +102,7 @@ rule depth_distribution:
     shell:
         "xonsh workflow/scripts/depth_distribution.xsh -s {wildcards.sample} -b {input.bam} -g {input.bam_good} -do {output.distrib} -go {output.global_mode} &> {log}"
 
-rule normalize_chrom_depth:
+rule depth_by_chrom_normalized:
     input:
         depth = rules.depth_by_chrom_good.output,
         global_mode = rules.depth_distribution.output.global_mode
@@ -113,7 +113,7 @@ rule normalize_chrom_depth:
     log:
         "logs/samples/mosdepth/depth_by_chrom_good_normalized_{sample}.log"
     shell:
-        "xonsh workflow/scripts/normalize_chrom_depth.xsh -d {input.depth} -g {input.global_mode} -o {output} -s {wildcards.sample} &> {log}"
+        "xonsh workflow/scripts/depth_by_chrom_normalized.xsh -d {input.depth} -g {input.global_mode} -o {output} -s {wildcards.sample} &> {log}"
 
 rule depth_by_regions:
     input:
@@ -128,7 +128,6 @@ rule depth_by_regions:
         "logs/samples/mosdepth/depth_by_regions_{sample}.log"
     shell:
         "xonsh workflow/scripts/depth_by_regions.xsh -d {input.depth} -g {input.global_mode} -o {output} -s {wildcards.sample} -c {input.CHROM_NAMES} &> {log}"
-
 
 rule repeat_modeler:
     input:
@@ -177,18 +176,47 @@ rule cnv_calling:
     shell:
         "xonsh workflow/scripts/cnv_calling.xsh -d {input.depth} -r {input.repeats} -o {output} -s {wildcards.sample} &> {log}"
 
+rule mapping_stats:
+    input:
+        bam = rules.snippy.output.bam,
+        bai = rules.snippy.output.bai
+    output:
+        OUTDIR / "samtools" / "{sample}" / "mapping_stats.tsv"
+    conda:
+        "../envs/samtools.yaml"
+    log:
+        "logs/samples/samtools/mapping_stats_{sample}.log"
+    shell:
+        "xonsh workflow/scripts/mapping-stats.xsh -b {input.bam} -s {wildcards.sample} -o {output.stats} &> {log}"
+
+rule mapq:
+    input:
+       rules.snippy.output.bam,
+       rules.mosdepth.output.bed
+    output:
+        bed = OUTDIR / "samtools" / "{sample}" / "mapq.bed",
+        winbed = OUTDIR / "samtools" / "{sample}" / "mapq_window.bed" 
+    conda:
+        "../envs/samtools.yaml"
+    log:
+       "logs/samples/samtools/mapq_{sample}.log"
+    script:
+        "../scripts/pileup_mapq.sh"
+
 rule dataset_metrics:
     input:
         r = expand(rules.depth_by_chrom_raw.output,sample=SAMPLES),
         g = expand(rules.depth_by_chrom_good.output,sample=SAMPLES),
-        n = expand(rules.normalize_chrom_depth.output,sample=SAMPLES),
-        c = expand(rules.cnv_calling.output,sample=SAMPLES)
+        n = expand(rules.depth_by_chrom_normalized.output,sample=SAMPLES),
+        c = expand(rules.cnv_calling.output,sample=SAMPLES),
+        m = expand(rules.mapping_stats.output,sample=SAMPLES),
     output:
         allr = DATASET_OUTDIR / "files" / "depth_by_chrom_raw.tsv",
         allg = DATASET_OUTDIR / "files" / "depth_by_chrom_good.tsv",
         alln = DATASET_OUTDIR / "files" / "depth_by_chrom_good_normalized.tsv",
-        allc = DATASET_OUTDIR / "files" / "cnv_calls.tsv"
+        allc = DATASET_OUTDIR / "files" / "cnv_calls.tsv",
+        allm = DATASET_OUTDIR / "files" / "mapping_stats.tsv"
     log:
         "logs/dataset/files/dataset_metrics.log"
     script:
-        "../scripts/dataset_coverage.sh"
+        "../scripts/dataset_metrics.sh"
