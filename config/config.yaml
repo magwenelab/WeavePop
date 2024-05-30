@@ -25,10 +25,9 @@ coverage_quality:
     window: 500 # Window size for mosdepth
     min_mapq: 20 # Minimum mapping quality for mosdepth
     extra: ""
-  ploidy:
+  cnv:
     smoothing_size: 15 # Parameter for median filtering smoothing of the coverage
-    size: 5000 # Minimum size of the window for structural variant calling
-    change: 0.6 # Minimum change in coverage for structural variant calling
+    depth_threshold: 0.6 # Minimum change in coverage for cnv calling
   repeats:
     repeats_database: "config/RepBase.fasta"
     repeats_threads: 20

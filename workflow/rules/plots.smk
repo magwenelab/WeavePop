@@ -48,8 +48,8 @@ def depth_by_regions_plots_input(wildcards):
 rule depth_by_regions_plots:
     input:
         unpack(depth_by_regions_plots_input),
-        chrom_names = CHROM_NAMES,
-        loci = rules.loci.output.locitable
+        loci = rules.loci.output.locitable,
+        chrom_names = CHROM_NAMES
     output:
         OUTDIR / "plots" / "{sample}" / "depth_by_regions.png"
     conda:
@@ -61,12 +61,16 @@ rule depth_by_regions_plots:
 
 rule dataset_depth_by_chrom_plot:
     input:
+        SAMPLEFILE,
+        CHROM_NAMES,
         rules.dataset_metrics.output.alln,
-        CHROM_NAMES
     output:
         DATASET_OUTDIR / "plots" / "dataset_depth_by_chrom.png"
     conda:
         "../envs/r.yaml"
+    params:
+        column = config["plotting"]["metadata2color"],
+        scale = config["plotting"]["scale"]
     log:
         "logs/dataset/plots/dataset_depth_by_chrom.log"
     script:
@@ -83,6 +87,8 @@ rule dataset_summary_plot:
         DATASET_OUTDIR / "plots" / "dataset_summary.png"
     conda:
         "../envs/r.yaml"
+    params:
+        config["plotting"]["scale"]
     log:
         "logs/dataset/plots/dataset_summary.log"
     script:

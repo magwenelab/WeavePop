@@ -47,7 +47,7 @@ rule depth_by_chrom_raw:
     output:
         OUTDIR / "mosdepth" / "{sample}" / "depth_by_chrom_raw.tsv"
     conda: 
-        "../envs/depth.yaml"
+        "../envs/samtools.yaml"
     log:
         "logs/samples/mosdepth/depth_by_chrom_raw_{sample}.log"
     shell:
@@ -59,7 +59,7 @@ rule depth_by_chrom_good:
     output:
         OUTDIR / "mosdepth" / "{sample}" / "depth_by_chrom_good.tsv"
     conda: 
-        "../envs/depth.yaml"
+        "../envs/samtools.yaml"
     log:
         "logs/samples/mosdepth/depth_by_chrom_good_{sample}.log"
     shell:
@@ -109,25 +109,26 @@ rule depth_by_chrom_normalized:
     output:
         OUTDIR / "mosdepth" / "{sample}" / "depth_by_chrom_good_normalized.tsv"
     conda: 
-        "../envs/depth.yaml"
+        "../envs/samtools.yaml"
     log:
         "logs/samples/mosdepth/depth_by_chrom_good_normalized_{sample}.log"
     shell:
-        "xonsh workflow/scripts/depth_by_chrom_normalized.xsh -d {input.depth} -g {input.global_mode} -o {output} -s {wildcards.sample} &> {log}"
+        "xonsh workflow/scripts/depth_by_chrom_normalized.xsh -d {input.depth} -g {input.global_mode} -o {output} &> {log}"
 
 rule depth_by_regions:
     input:
         depth = rules.mosdepth_good.output.bed,
-        global_mode = rules.depth_distribution.output.global_mode,
-        chrom_names = CHROM_NAMES
+        global_mode = rules.depth_distribution.output.global_mode
     output:
         OUTDIR / "mosdepth" / "{sample}" / "depth_by_regions.tsv"
     conda:
-        "../envs/depth.yaml"
+        "../envs/samtools.yaml"
+    params:
+        smoothing_size = config["coverage_quality"]["cnv"]["smoothing_size"]
     log:
         "logs/samples/mosdepth/depth_by_regions_{sample}.log"
     shell:
-        "xonsh workflow/scripts/depth_by_regions.xsh -d {input.depth} -g {input.global_mode} -o {output} -s {wildcards.sample} -c {input.chrom_names} &> {log}"
+        "xonsh workflow/scripts/depth_by_regions.xsh -di {input.depth} -gi {input.global_mode} -do {output} -s {params.smoothing_size} &> {log}"
 
 rule repeat_modeler:
     input:
@@ -176,10 +177,13 @@ rule cnv_calling:
         OUTDIR / "cnv" / "{sample}" / "cnv_calls.tsv"
     conda:
         "../envs/samtools.yaml"
+    params:
+        region_size = config["coverage_quality"]["mosdepth"]["window"],
+        depth_threshold = config["coverage_quality"]["cnv"]["depth_threshold"]
     log:
         "logs/samples/cnv/cnv_calling_{sample}.log"
     shell:
-        "xonsh workflow/scripts/cnv_calling.xsh -d {input.depth} -r {input.repeats} -o {output} -s {wildcards.sample} &> {log}"
+        "xonsh workflow/scripts/cnv_calling.xsh -di {input.depth} -ri {input.repeats} -co {output} -sp {wildcards.sample} -rp {params.region_size} -dp {params.depth_threshold} &> {log}"
 
 rule mapping_stats:
     input:
@@ -192,7 +196,7 @@ rule mapping_stats:
     log:
         "logs/samples/samtools/mapping_stats_{sample}.log"
     shell:
-        "xonsh workflow/scripts/mapping-stats.xsh -b {input.bam} -s {wildcards.sample} -o {output} &> {log}"
+        "xonsh workflow/scripts/mapping_stats.xsh -b {input.bam} -s {wildcards.sample} -o {output} &> {log}"
 
 rule mapq:
     input:
