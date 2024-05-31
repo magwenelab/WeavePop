@@ -212,19 +212,37 @@ rule mapq:
     script:
         "../scripts/pileup_mapq.sh"
 
+rule mapq_depth:
+    input:
+        mapqbed = rules.mapq.output.winbed,
+        covbed = rules.mosdepth.output.bed,
+        gff = rules.liftoff.output.polished
+    output:
+        covmapq = OUTDIR / "samtools" / "{sample}" / "mapq_cov_window.bed",
+        tsv = OUTDIR / "samtools" / "{sample}" / "feature_mapq_depth.tsv"
+    conda:
+        "../envs/samtools.yaml"
+    log: 
+        "logs/samples/samtools/mapq_depth_{sample}.log"
+    shell:
+        "xonsh workflow/scripts/mapq_depth.xsh -m {input.mapqbed} -c {input.covbed} -g {input.gff} -cm {output.covmapq} -s {wildcards.sample} -o {output.tsv} &> {log}"
+
+
 rule dataset_metrics:
     input:
         r = expand(rules.depth_by_chrom_raw.output,sample=SAMPLES),
         g = expand(rules.depth_by_chrom_good.output,sample=SAMPLES),
         n = expand(rules.depth_by_chrom_normalized.output,sample=SAMPLES),
         c = expand(rules.cnv_calling.output,sample=SAMPLES),
-        m = expand(rules.mapping_stats.output,sample=SAMPLES)
+        m = expand(rules.mapping_stats.output,sample=SAMPLES),
+        md = expand(rules.mapq_depth.output.tsv,sample=SAMPLES)
     output:
         allr = DATASET_OUTDIR / "files" / "depth_by_chrom_raw.tsv",
         allg = DATASET_OUTDIR / "files" / "depth_by_chrom_good.tsv",
         alln = DATASET_OUTDIR / "files" / "depth_by_chrom_good_normalized.tsv",
         allc = DATASET_OUTDIR / "files" / "cnv_calls.tsv",
-        allm = DATASET_OUTDIR / "files" / "mapping_stats.tsv"
+        allm = DATASET_OUTDIR / "files" / "mapping_stats.tsv",
+        allmd = DATASET_OUTDIR / "files" / "feature_mapq_depth.tsv"
     log:
         "logs/dataset/files/dataset_metrics.log"
     script:

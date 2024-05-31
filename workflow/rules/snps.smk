@@ -162,7 +162,7 @@ rule complete_db:
         metadata = SAMPLEFILE,
         chrom_names = CHROM_NAMES,
         sv = rules.dataset_metrics.output.allc,
-        # mc = rules.dataset_metrics.output.allmc,
+        md = rules.dataset_metrics.output.allmd,
         gffs = rules.join_gffs.output,
         effects = rules.join_dataframes.output.effects,
         variants = rules.join_dataframes.output.variants,
@@ -185,7 +185,7 @@ rule complete_db:
         "-m {input.metadata} "
         "-ch {input.chrom_names} "
         "-sv {input.sv} "
-        # "-mc {input.mc} "
+        "-md {input.md} "
         "-g {input.gffs} "
         "-e {input.effects} "
         "-v {input.variants} "
