@@ -63,7 +63,7 @@ rule dataset_depth_by_chrom_plot:
     input:
         SAMPLEFILE,
         CHROM_NAMES,
-        rules.dataset_metrics.output.alln,
+        rules.join_depth_by_chrom_normalized.output
     output:
         DATASET_OUTDIR / "plots" / "dataset_depth_by_chrom.png"
     conda:
@@ -80,9 +80,9 @@ rule dataset_summary_plot:
     input:
         SAMPLEFILE,
         CHROM_NAMES,
-        rules.dataset_metrics.output.allg,
-        rules.dataset_metrics.output.allr,
-        rules.dataset_metrics.output.allm
+        rules.join_depth_by_chrom_good.output,
+        rules.join_depth_by_chrom_raw.output,
+        rules.join_mapping_stats.output
     output:
         DATASET_OUTDIR / "plots" / "dataset_summary.png"
     conda:

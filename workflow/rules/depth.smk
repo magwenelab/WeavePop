@@ -227,23 +227,80 @@ rule mapq_depth:
     shell:
         "xonsh workflow/scripts/mapq_depth.xsh -m {input.mapqbed} -c {input.covbed} -g {input.gff} -cm {output.covmapq} -s {wildcards.sample} -o {output.tsv} &> {log}"
 
-
-rule dataset_metrics:
+rule join_depth_by_chrom_raw:
     input:
-        r = expand(rules.depth_by_chrom_raw.output,sample=SAMPLES),
-        g = expand(rules.depth_by_chrom_good.output,sample=SAMPLES),
-        n = expand(rules.depth_by_chrom_normalized.output,sample=SAMPLES),
-        c = expand(rules.cnv_calling.output,sample=SAMPLES),
-        m = expand(rules.mapping_stats.output,sample=SAMPLES),
-        md = expand(rules.mapq_depth.output.tsv,sample=SAMPLES)
+        expand(rules.depth_by_chrom_raw.output,sample=SAMPLES),
     output:
-        allr = DATASET_OUTDIR / "files" / "depth_by_chrom_raw.tsv",
-        allg = DATASET_OUTDIR / "files" / "depth_by_chrom_good.tsv",
-        alln = DATASET_OUTDIR / "files" / "depth_by_chrom_good_normalized.tsv",
-        allc = DATASET_OUTDIR / "files" / "cnv_calls.tsv",
-        allm = DATASET_OUTDIR / "files" / "mapping_stats.tsv",
-        allmd = DATASET_OUTDIR / "files" / "feature_mapq_depth.tsv"
+        DATASET_OUTDIR / "files" / "depth_by_chrom_raw.tsv",
     log:
-        "logs/dataset/files/dataset_metrics.log"
-    script:
-        "../scripts/dataset_metrics.sh"
+        "logs/dataset/files/join_depth_by_chrom_raw.log"
+    shell:
+        """
+        cat {input}| head -n 1 1> {output} 2> {log}
+        tail -q -n +2 {input}  1>> {output} 2>> {log}
+        """
+
+rule join_depth_by_chrom_good:
+    input:
+        expand(rules.depth_by_chrom_good.output,sample=SAMPLES),
+    output:
+        DATASET_OUTDIR / "files" / "depth_by_chrom_good.tsv",
+    log:
+        "logs/dataset/files/join_depth_by_chrom_good.log"
+    shell:
+        """
+        cat {input}| head -n 1 1> {output} 2> {log}
+        tail -q -n +2 {input}  1>> {output} 2>> {log}
+        """
+
+rule  join_depth_by_chrom_normalized:
+    input:
+        expand(rules.depth_by_chrom_normalized.output,sample=SAMPLES),
+    output:
+        DATASET_OUTDIR / "files" / "depth_by_chrom_good_normalized.tsv",
+    log:
+        "logs/dataset/files/join_depth_by_chrom_good_normalized.log"
+    shell:
+        """
+        cat {input}| head -n 1 1> {output} 2> {log}
+        tail -q -n +2 {input}  1>> {output} 2>> {log}
+        """
+
+rule join_cnv_calling:
+    input:
+        expand(rules.cnv_calling.output,sample=SAMPLES),
+    output:
+        DATASET_OUTDIR / "files" / "cnv_calls.tsv",
+    log:
+        "logs/dataset/files/join_cnv_calls.log"
+    shell:
+        """
+        cat {input}| head -n 1 1> {output} 2> {log}
+        tail -q -n +2 {input}  1>> {output} 2>> {log}
+        """
+
+rule join_mapping_stats:
+    input:
+        expand(rules.mapping_stats.output,sample=SAMPLES),
+    output:
+        DATASET_OUTDIR / "files" / "mapping_stats.tsv",
+    log:
+        "logs/dataset/files/join_mapping_stats.log"
+    shell:
+        """
+        cat {input}| head -n 1 1> {output} 2> {log}
+        tail -q -n +2 {input}  1>> {output} 2>> {log}
+        """
+
+rule join_mapq_depth:
+    input:
+        expand(rules.mapq_depth.output.tsv,sample=SAMPLES),
+    output:
+        DATASET_OUTDIR / "files" / "feature_mapq_depth.tsv",
+    log:
+        "logs/dataset/files/join_mapq_depth.log"
+    shell:
+        """
+        cat {input}| head -n 1 1> {output} 2> {log}
+        tail -q -n +2 {input}  1>> {output} 2>> {log}
+        """

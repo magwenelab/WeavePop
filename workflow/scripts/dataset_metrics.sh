@@ -1,10 +1,5 @@
 
-echo "Concatenate depth_by_chrom_good"
-cat ${snakemake_input[g]} | head -n 1 1> ${snakemake_output[allg]} 2> ${snakemake_log[0]}
-tail -q -n +2 ${snakemake_input[g]}  1>> ${snakemake_output[allg]} 2>> ${snakemake_log[0]}
-echo "Concatenate depth_by_chrom_raw"
-cat ${snakemake_input[r]}  | head -n 1 1> ${snakemake_output[allr]} 2>> ${snakemake_log[0]}
-tail -q -n +2 ${snakemake_input[r]} 1>> ${snakemake_output[allr]} 2>> ${snakemake_log[0]}
+
 echo "Concatenate copy number variants table"
 cat ${snakemake_input[c]} | head -n 1 1> ${snakemake_output[allc]} 2> ${snakemake_log[0]}
 tail -q -n +2 ${snakemake_input[c]}  1>> ${snakemake_output[allc]} 2>> ${snakemake_log[0]}

@@ -1,3 +1,33 @@
+# Make SQL database with cds of all samples
+rule cds2db:
+    input: 
+        cds = rules.agat_cds.output.cds,
+    output:
+        touch(DATASET_OUTDIR / "database" / "{sample}" / "cds.done"),
+    params:
+        db = DATASET_OUTDIR / "sequences.db"
+    conda:
+        "../envs/variants.yaml"
+    log:
+        "logs/dataset/sequences/cds2db_{sample}.log"
+    shell:
+        "python workflow/scripts/build_sequences_db.py -d {params.db} -f {input.cds} -s {wildcards.sample} -t DNA &> {log}"
+
+# Make SQL database with proteins of all samples
+rule prots2db:
+    input: 
+        prots = rules.agat_prots.output.prots,
+    output:
+        touch(DATASET_OUTDIR / "database" / "{sample}" / "prots.done")
+    params:
+        db = DATASET_OUTDIR / "sequences.db"
+    conda:
+        "../envs/variants.yaml"
+    log:
+        "logs/dataset/sequences/prots2db_{sample}.log"
+    shell:
+        "python workflow/scripts/build_sequences_db.py -d {params.db} -f {input.prots} -s {wildcards.sample} -t PROTEIN &> {log}"
+        
 # Join all lineages gffs into one
 rule join_gffs:
     input:
@@ -161,8 +191,8 @@ rule complete_db:
     input:
         metadata = SAMPLEFILE,
         chrom_names = CHROM_NAMES,
-        sv = rules.dataset_metrics.output.allc,
-        md = rules.dataset_metrics.output.allmd,
+        sv = rules.join_cnv_calling.output,
+        md = rules.join_mapq_depth.output,
         gffs = rules.join_gffs.output,
         effects = rules.join_dataframes.output.effects,
         variants = rules.join_dataframes.output.variants,
