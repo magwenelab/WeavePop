@@ -150,10 +150,10 @@ rule extract_vcf_annotation:
     input:
         vcf = rules.snpeff.output.vcf
     output:
-        effects = temp(DATASET_OUTDIR / "snps" / "{lineage}_effects.tsv"),
-        variants = temp(DATASET_OUTDIR / "snps" / "{lineage}_variants.tsv"),
-        lofs = temp(DATASET_OUTDIR / "snps" / "{lineage}_lofs.tsv"),
-        nmds = temp(DATASET_OUTDIR / "snps" / "{lineage}_nmds.tsv")
+        effects = DATASET_OUTDIR / "snps" / "{lineage}_effects.tsv",
+        variants = DATASET_OUTDIR / "snps" / "{lineage}_variants.tsv",
+        lofs = DATASET_OUTDIR / "snps" / "{lineage}_lofs.tsv",
+        nmds = DATASET_OUTDIR / "snps" / "{lineage}_nmds.tsv"
     conda:
         "../envs/variants.yaml"
     log:
@@ -169,11 +169,11 @@ rule join_dataframes:
         nmds = expand(DATASET_OUTDIR / "snps" / "{lineage}_nmds.tsv", lineage=LINEAGES),
         presence = expand(DATASET_OUTDIR / "snps" / "{lineage}_presence.tsv", lineage=LINEAGES)
     output:
-        effects = temp(DATASET_OUTDIR / "snps" / "all_effects.tsv"),
-        variants = temp(DATASET_OUTDIR / "snps" / "all_variants.tsv"),
-        lofs = temp(DATASET_OUTDIR / "snps" / "all_lofs.tsv"),
-        nmds = temp(DATASET_OUTDIR / "snps" / "all_nmds.tsv"),
-        presence = temp(DATASET_OUTDIR / "snps" / "all_presence.tsv")
+        effects = DATASET_OUTDIR / "snps" / "all_effects.tsv",
+        variants = DATASET_OUTDIR / "snps" / "all_variants.tsv",
+        lofs = DATASET_OUTDIR / "snps" / "all_lofs.tsv",
+        nmds = DATASET_OUTDIR / "snps" / "all_nmds.tsv",
+        presence = DATASET_OUTDIR / "snps" / "all_presence.tsv"
     run:
         effects = pd.concat([pd.read_csv(f, sep="\t") for f in input.effects])
         variants = pd.concat([pd.read_csv(f, sep="\t") for f in input.variants])
