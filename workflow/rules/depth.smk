@@ -236,8 +236,10 @@ rule join_depth_by_chrom_raw:
         "logs/dataset/files/join_depth_by_chrom_raw.log"
     shell:
         """
-        cat {input}| head -n 1 1> {output} 2> {log}
-        tail -q -n +2 {input}  1>> {output} 2>> {log}
+        head -q -n 1 {input} 1> {output}.temp 2>> {log}
+        head -n 1 {output}.temp 1> {output} 2>> {log}
+        tail -q -n +2 {input} 1>> {output} 2>> {log}
+        rm {output}.temp
         """
 
 rule join_depth_by_chrom_good:
@@ -249,8 +251,10 @@ rule join_depth_by_chrom_good:
         "logs/dataset/files/join_depth_by_chrom_good.log"
     shell:
         """
-        cat {input}| head -n 1 1> {output} 2> {log}
-        tail -q -n +2 {input}  1>> {output} 2>> {log}
+        head -q -n 1 {input} 1> {output}.temp 2>> {log}
+        head -n 1 {output}.temp 1> {output} 2>> {log}
+        tail -q -n +2 {input} 1>> {output} 2>> {log}
+        rm {output}.temp
         """
 
 rule  join_depth_by_chrom_normalized:
@@ -262,8 +266,10 @@ rule  join_depth_by_chrom_normalized:
         "logs/dataset/files/join_depth_by_chrom_good_normalized.log"
     shell:
         """
-        cat {input}| head -n 1 1> {output} 2> {log}
-        tail -q -n +2 {input}  1>> {output} 2>> {log}
+        head -q -n 1 {input} 1> {output}.temp 2>> {log}
+        head -n 1 {output}.temp 1> {output} 2>> {log}
+        tail -q -n +2 {input} 1>> {output} 2>> {log}
+        rm {output}.temp
         """
 
 rule join_cnv_calling:
@@ -275,8 +281,10 @@ rule join_cnv_calling:
         "logs/dataset/files/join_cnv_calls.log"
     shell:
         """
-        cat {input}| head -n 1 1> {output} 2> {log}
-        tail -q -n +2 {input}  1>> {output} 2>> {log}
+        head -q -n 1 {input} 1> {output}.temp 2>> {log}
+        head -n 1 {output}.temp 1> {output} 2>> {log}
+        tail -q -n +2 {input} 1>> {output} 2>> {log}
+        rm {output}.temp
         """
 
 rule join_mapping_stats:
@@ -288,19 +296,23 @@ rule join_mapping_stats:
         "logs/dataset/files/join_mapping_stats.log"
     shell:
         """
-        cat {input}| head -n 1 1> {output} 2> {log}
-        tail -q -n +2 {input}  1>> {output} 2>> {log}
+        head -q -n 1 {input} 1> {output}.temp 2>> {log}
+        head -n 1 {output}.temp 1> {output} 2>> {log}
+        tail -q -n +2 {input} 1>> {output} 2>> {log}
+        rm {output}.temp
         """
 
 rule join_mapq_depth:
     input:
-        expand(rules.mapq_depth.output.tsv,sample=SAMPLES),
+        expand(rules.mapq_depth.output.tsv,sample=SAMPLES)
     output:
-        DATASET_OUTDIR / "files" / "feature_mapq_depth.tsv",
+        DATASET_OUTDIR / "files" / "feature_mapq_depth.tsv"
     log:
         "logs/dataset/files/join_mapq_depth.log"
     shell:
         """
-        cat {input}| head -n 1 1> {output} 2> {log}
-        tail -q -n +2 {input}  1>> {output} 2>> {log}
+        head -q -n 1 {input} 1> {output}.temp 2>> {log}
+        head -n 1 {output}.temp 1> {output} 2>> {log}
+        tail -q -n +2 {input} 1>> {output} 2>> {log}
+        rm {output}.temp
         """
