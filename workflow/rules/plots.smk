@@ -51,8 +51,7 @@ rule depth_by_regions_plots:
         loci = rules.loci.output.locitable,
         chrom_names = CHROM_NAMES
     output:
-        OUTDIR / "plots" / "{sample}" / "depth_by_regions.png",
-        OUTDIR / "plots" / "{sample}" / "depth_by_regions_abs.png"
+        OUTDIR / "plots" / "{sample}" / "depth_by_regions.png"
     conda:
         "../envs/r.yaml"
     log:

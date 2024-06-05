@@ -42,10 +42,10 @@ l_colors <- dark2[1:nlevels(loci$Loci)]
 
 coverage_regions <- left_join(coverage_regions, chrom_names, by = "Accession")
 coverage <- coverage_regions %>%
-  select(Accession_Chromosome, Chromosome, Start, End, Depth, Norm_Depth)%>%
+  select(Accession_Chromosome, Chromosome, Start, End, Coverage = Norm_Depth)%>%
   mutate(Track = "Coverage", .after = Chromosome)
-topCov <- quantile(coverage$Norm_Depth, 0.75) * 3
-coverage$Norm_Depth<- ifelse(coverage$Norm_Depth >= topCov, topCov, coverage$Norm_Depth)
+topCov <- quantile(coverage$Coverage, 0.75) * 3
+coverage$Coverage<- ifelse(coverage$Coverage >= topCov, topCov, coverage$Coverage)
 l_lim <- topCov 
 
 smooth <- coverage_regions %>%
@@ -87,14 +87,13 @@ my_labeller <- function(value){
   new_value <- sapply(strsplit(as.character(value), "xxx"), head, 1)
   return(new_value)
 }
-head(coverage)
 
-print("Plot normalized depth")
+# Coverage plot
 c <- ggplot()+
   coord_cartesian(ylim= c(0,r_lim +1), xlim = c(0, max(coverage$End)))+
   geom_hline(yintercept = 1, color = "darkgray", linetype = 2)+
   geom_hline(yintercept = 2, color = "darkgray", linetype = 2)+
-  geom_col(data = coverage, aes(x=Start, y = Norm_Depth), color = "black")+
+  geom_col(data = coverage, aes(x=Start, y = Coverage), color = "black")+
     scale_x_continuous(name = "Position (bp) ", labels = comma)+
   geom_segment(data = repeats, aes(x = Start, xend = End, y = r_lim, yend = r_lim, color = Repeat_type), linewidth = 2)+
     scale_color_manual(name = "Type of repetitive sequence", values = r_colors)+
@@ -121,19 +120,3 @@ c <- ggplot()+
 
 ggsave(snakemake@output[[1]], c, height =9, width = 16, dpi = 600)
 
-print("Plot depth absolute values")
-up_lim <- mean(coverage$Depth) * 4 
-c <- ggplot()+
-  coord_cartesian(ylim= c(0,up_lim), xlim = c(0, max(coverage$End)))+
-  geom_col(data = coverage, aes(x=Start, y = Depth), color = "black")+
-    scale_x_continuous(name = "Position (bp) ", labels = comma)+
-  geom_point(data = loci, aes(x=Start, y = up_lim - 10, color = Loci))+  
-    scale_color_manual(name = "Features", values = l_colors)+
-    guides(color = guide_legend(order=3))+
-  facet_wrap(~Accession_Chromosome, strip.position = "right", ncol = 2, labeller = as_labeller(my_labeller)) +
-  labs(y = "Absoulte depth", title = paste("Lineage:", lineage, " Sample:", sample, sep = " "))+
-  theme(panel.grid.major.x = element_blank(),
-        panel.grid.minor.x = element_blank(),
-        panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 2))
-
-ggsave(snakemake@output[[2]], c, height =9, width = 16, dpi = 600)
