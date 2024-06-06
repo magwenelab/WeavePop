@@ -11,67 +11,55 @@ print("Reading files and joining data with chromosome names")
 # cov<- read.delim("distrib_cov.tsv", header = TRUE, stringsAsFactors = TRUE)
 # chrom_names <- read.csv("../../../../config/chromosome_names.csv", header = FALSE, col.names = c("Lineage", "Accession", "Chromosome"))
 # sample <- "/mnt/FastData/czirion/DiversityPipeline/results/samples/samtools/SRS8318899/distrib_cov.csv"
-sample <- snakemake@input[[1]]
-Split <- str_split(sample, "/")
-sample <- Split[[1]][length(Split[[1]])-1]
-
+sample <- snakemake@wildcards$sample
 cov<- read.table(snakemake@input[[1]], header = TRUE, stringsAsFactors = TRUE, sep = "\t")
+global_mode <- read.delim(snakemake@input[[2]], header = TRUE, stringsAsFactors = TRUE)
+print(global_mode)
+chrom_names <- read.csv(snakemake@input[[3]], header = FALSE, col.names = c("Lineage", "Accession", "Chromosome"))
+
 cov[is.na(cov)] <- 0
-chrom_names <- read.csv(snakemake@input[[2]], header = FALSE, col.names = c("Lineage", "Accession", "Chromosome"))
-cov <-cov %>%
-  rename(Accession = Chromosome)
 cov <- left_join(cov, chrom_names, by = "Accession")
 
-# stats <- read.delim("../../mosdepth/SRS8318899/good_chromosome_coverage.tsv", header = TRUE, stringsAsFactors = TRUE)
-stats <- read.delim(snakemake@input[[3]], header = TRUE, stringsAsFactors = TRUE)
-stats_global <- stats %>%
-  select(Global_Median, Global_Mean)%>%
-  slice(1) %>%
-  pivot_longer(everything(), names_to = "Measurement", values_to = "Value")
 
-
-print("Plotting Coverage distribution")
+print("Plotting depth distribution by chromosome")
 raw_color = "#B3B3B3"
 good_color = "#666666" 
 color_quality = c("Good quality alignments" = good_color, "All alignments" = raw_color)
 lineage <- levels(as.factor(cov$Lineage))
 
-plot <- ggplot(cov, aes(x=Coverage))+
+plot_chrom <- ggplot(cov, aes(x=Depth))+
   geom_col(aes(y = Count_Raw, fill= "All alignments"))+ 
   geom_col(aes(y = Count_Good, fill= "Good quality alignments"))+ 
   facet_wrap(~Chromosome,ncol = 2)+
   scale_y_log10(name = "Number of Sites", labels = comma)+
-  scale_x_continuous(name = "Coverage (X) ", labels = comma, n.breaks = 10)+
+  scale_x_continuous(name = "Depth (X) ", labels = comma, n.breaks = 10)+
   scale_fill_manual(name= "Alignment quality", values= color_quality)+
   theme(legend.position="none")+
   labs(title = paste("Lineage:",lineage, " Sample:", sample,  sep = " "))+
   theme_bw()
-
-#ggsave("../../cov_distribution.png", plot = plot, units = "cm", height = 22, width = 22)
 
 pheight <- 0.5 + length(unique((cov$Chromosome)))/2
 pwidth <- pheight * 1.78
-ggsave(snakemake@output[[1]], plot = plot, units = "in", height = pheight, width = pwidth, dpi = 600)
 
 cov_global <- cov %>%
-  select(Coverage, Count_Good, Count_Raw)%>%
-  group_by(Coverage)%>%
+  select(Depth, Count_Good, Count_Raw)%>%
+  group_by(Depth)%>%
   summarize(Count_Good_Global = sum(Count_Good), Count_Raw_Global = sum(Count_Raw))%>%
   ungroup()
 
-plot <- ggplot()+
-  geom_col(data = cov_global, aes(x=Coverage, y = Count_Raw_Global, fill= "All alignments"))+ 
-  geom_col(data = cov_global, aes(x=Coverage,y = Count_Good_Global, fill= "Good quality alignments"))+ 
-  geom_vline(data = stats_global, aes(xintercept = Value, color = Measurement))+
+print("Plotting genome-wide depth distribution")
+plot_global <- ggplot()+
+  geom_col(data = cov_global, aes(x=Depth, y = Count_Raw_Global, fill= "All alignments"))+ 
+  geom_col(data = cov_global, aes(x=Depth,y = Count_Good_Global, fill= "Good quality alignments"))+ 
+  geom_vline(data = global_mode, aes(xintercept = Global_Mode), color ="red")+
   scale_y_log10(name = "Number of Sites", labels = comma)+
-  scale_x_continuous(name = "Coverage (X) ", labels = comma, n.breaks = 10)+
+  scale_x_continuous(name = "Depth (X) ", labels = comma, n.breaks = 10)+
   scale_fill_manual(name= "Alignment quality", values= color_quality)+
   theme(legend.position="none")+
-  scale_color_manual(values = c("Global_Median" = "darkblue", "Global_Mean" = "#bfb82a"),
-                     labels = c("Global_Median" = "Median", "Global_Mean" = "Mean"),
-                     name = "Good quality global coverage")+
   labs(title = paste("Lineage:",lineage, " Sample:", sample,  sep = " "))+
   theme_bw()
 
-ggsave(snakemake@output[[2]], plot = plot,  units = "in", height = 4.5, width = 8, dpi = 600)
+print("Saving plots")
+ggsave(snakemake@output[[1]], plot = plot_chrom, units = "in", height = pheight, width = pwidth, dpi = 600)
+ggsave(snakemake@output[[2]], plot = plot_global,  units = "in", height = 4.5, width = 8, dpi = 600)
 print("Done!")

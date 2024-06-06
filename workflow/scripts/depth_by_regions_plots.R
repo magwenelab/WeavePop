@@ -7,8 +7,8 @@ suppressPackageStartupMessages(library(scales))
 suppressPackageStartupMessages(library(ggnewscale))
 suppressPackageStartupMessages(library(RColorBrewer))
 
-
-coverage_regions <- read.delim(snakemake@input[[1]], sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
+print("Reading files")
+coverage_regions <- read.delim(snakemake@input[[1]], sep= "\t", col.names = c("Accession", "Start", "End", "Depth", "Norm_Depth", "Smooth_Depth"), stringsAsFactors = TRUE, na = c("", "N/A"))
 struc_vars <- read.delim(snakemake@input[[2]], sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
 repeats_table <- read.delim(snakemake@input[[3]], sep= "\t", header = FALSE, col.names = c("Accession", "Start", "End", "Repeat_type"), stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
 loci_table <- read.delim(snakemake@input[[4]], header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
@@ -21,15 +21,15 @@ sample <- snakemake@wildcards$sample
 # loci_table <- read.delim("results/dataset/files/loci_to_plot.tsv", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
 # chrom_names <- read.csv("config/chromosome_names.csv", header = FALSE, col.names = c("Lineage", "Accession", "Chromosome"), stringsAsFactors = TRUE, na = c("", "N/A"))
 # sample <- "PMY3493"
-
+print("Get chromosome names")
 chrom_names <- chrom_names %>%
   filter(Accession %in% unique(struc_vars$Accession) )
-
 chrom_names['Accession_Chromosome'] <- paste(chrom_names$Chromosome, chrom_names$Accession, sep = "xxx")
 unique_levels <- unique(chrom_names$Accession_Chromosome)
 new_order <- c(rbind(matrix(unique_levels, nrow = 2, byrow = TRUE)))
 chrom_names$Accession_Chromosome <- factor(chrom_names$Accession_Chromosome, levels = new_order)
 
+print("Rearrange loci data")
 loci_sample <- loci_table %>% 
     select(Accession = seq_id, Start = start, End = end,Loci)%>%
     filter(Accession %in% coverage_regions$Accession)%>%
@@ -42,21 +42,21 @@ l_colors <- dark2[1:nlevels(loci$Loci)]
 
 coverage_regions <- left_join(coverage_regions, chrom_names, by = "Accession")
 coverage <- coverage_regions %>%
-  select(Accession_Chromosome, Chromosome, Start, End, Coverage = Norm_Median)%>%
+  select(Accession_Chromosome, Chromosome, Start, End, Coverage = Norm_Depth)%>%
   mutate(Track = "Coverage", .after = Chromosome)
 topCov <- quantile(coverage$Coverage, 0.75) * 3
 coverage$Coverage<- ifelse(coverage$Coverage >= topCov, topCov, coverage$Coverage)
 l_lim <- topCov 
 
 smooth <- coverage_regions %>%
-  select(Accession_Chromosome, Chromosome, Start, End, Smooth = Smooth_Median)%>%
+  select(Accession_Chromosome, Chromosome, Start, End, Smooth = Smooth_Depth)%>%
   mutate(Track = "Smooth", .after = Chromosome)
 
 
 struc_vars <- left_join(struc_vars, chrom_names, by = "Accession")
 structure <- struc_vars %>%
   select(Accession_Chromosome, Chromosome, Start, End, Structure)%>%
-  mutate(Track = "Structural_Variants")
+  mutate(Track = "Copy_Number_Variants")
 s_lim <- topCov + 1
 set2 <- rev(brewer.pal(8, "Set2")[1:6])
 s_colors <- set2[1:nlevels(structure$Structure)]
@@ -100,11 +100,11 @@ c <- ggplot()+
     guides(color = guide_legend(order=1))+
     new_scale_color()+
   geom_segment(data = structure, aes(x = Start, xend = End, y = s_lim, yend = s_lim, color = Structure), linewidth = 2)+
-    scale_color_manual(name = "Structural variant", values = s_colors)+
+    scale_color_manual(name = "Copy number variants", values = s_colors)+
     guides(color = guide_legend(order=2))+
     new_scale_color()+
   geom_point(data = loci, aes(x=Start, y = l_lim, color = Loci))+  
-    scale_color_manual(name = "Loci", values = l_colors)+
+    scale_color_manual(name = "Features", values = l_colors)+
     guides(color = guide_legend(order=3))+
   # geom_point(data = variants, aes(x=Start, y = v_lim),shape = 24 , size = 2)+
   facet_wrap(~Accession_Chromosome, strip.position = "right", ncol = 2, labeller = as_labeller(my_labeller)) +

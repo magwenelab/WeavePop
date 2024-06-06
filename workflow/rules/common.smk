@@ -44,29 +44,19 @@ def get_final_output():
     final_output.extend(expand(OUTDIR / "snippy" / "{sample}" / "snps.bam",sample=SAMPLES))
     final_output.extend(expand(OUTDIR / "liftoff" / "{sample}" / "lifted.gff_polished",sample=SAMPLES))
     final_output.extend(expand(OUTDIR / "liftoff" / "{sample}" / "unmapped_features.txt",sample=SAMPLES))
-    if config["annotate_references"]["activate"]:
-        final_output.extend(expand(REFDIR / "{lineage}" / "{lineage}.gff",lineage=LINEAGES))
-        final_output.append(REFDIR / str(MAIN_NAME + ".tsv"))
     if config["coverage_quality"]["activate"]:
-        final_output.extend(expand(OUTDIR / "mosdepth" / "{sample}" / "coverage.regions.bed.gz",sample=SAMPLES))
-        final_output.extend(expand(OUTDIR / "mosdepth" / "{sample}" / "coverage_good.regions.bed.gz",sample=SAMPLES))
-        final_output.extend(expand(OUTDIR / "mosdepth" / "{sample}" / "good_structural_variants.tsv",sample=SAMPLES))
-        final_output.extend(expand(OUTDIR / "samtools" / "{sample}" / "distrib_cov.tsv",sample=SAMPLES))
-        final_output.extend(expand(OUTDIR / "samtools" / "{sample}" / "mapq.bed",sample=SAMPLES))
-        final_output.extend(expand(OUTDIR / "samtools" / "{sample}" / "mapq_window.bed",sample=SAMPLES))
-        final_output.extend(expand(OUTDIR / "samtools" / "{sample}" / "mapq_cov_window.bed",sample=SAMPLES))
-        final_output.extend(expand(OUTDIR / "samtools" / "{sample}" / "feature_mapq_cov.tsv",sample=SAMPLES))
         final_output.append(DATASET_OUTDIR / "files" / "mapping_stats.tsv")
-        final_output.append(DATASET_OUTDIR / "files" / "structural_variants.tsv")
-        final_output.append(DATASET_OUTDIR / "files" / "coverage_good.tsv")
-        final_output.append(DATASET_OUTDIR / "files" / "mapqcov.tsv")
+        final_output.append(DATASET_OUTDIR / "files" / "cnv_calls.tsv")
+        final_output.append(DATASET_OUTDIR / "files" / "depth_by_chrom_good.tsv")
+        final_output.append(DATASET_OUTDIR / "files" / "feature_mapq_depth.tsv")
     if config["plotting"]["activate"]:
-        final_output.extend(expand(OUTDIR / "plots" / "{sample}" / "coverage.png",sample=SAMPLES))
-        final_output.extend(expand(OUTDIR / "plots" / "{sample}" / "cov_distribution.png",sample=SAMPLES))
+        final_output.extend(expand(OUTDIR / "plots" / "{sample}" / "depth_chrom_distribution.png",sample=SAMPLES))
+        final_output.extend(expand(OUTDIR / "plots" / "{sample}" / "depth_global_distribution.png",sample=SAMPLES))
+        final_output.extend(expand(OUTDIR / "plots" / "{sample}" / "depth_by_chrom.png",sample=SAMPLES))
+        final_output.extend(expand(OUTDIR / "plots" / "{sample}" / "depth_by_regions.png",sample=SAMPLES))
         final_output.extend(expand(OUTDIR / "plots" / "{sample}" / "mapq.png",sample=SAMPLES))
-        final_output.extend(expand(OUTDIR / "plots" / "{sample}" / "coverage_stats.png",sample=SAMPLES))
-        final_output.append(DATASET_OUTDIR / "plots" / "global.svg")
-        final_output.append(DATASET_OUTDIR / "plots" / "cov_median_good.svg")
+        final_output.append(DATASET_OUTDIR / "plots" / "dataset_depth_by_chrom.png")
+        final_output.append(DATASET_OUTDIR / "plots" / "dataset_summary.png")
     if config["annotate_references"]["activate"] and config["plotting"]["activate"]:
         final_output.append(REFDIR / "unmapped_count.tsv")
         final_output.append(REFDIR / "unmapped.svg")
@@ -80,7 +70,7 @@ def get_final_output():
     return final_output
 
 
-#### Creating softlinks to have the reference genomes in the REFDIR ####
+#### Create softlinks to have the reference genomes in the REFDIR ####
 rule links:
     input:
         REF_DATA / "{lineage}.fasta"
@@ -88,3 +78,16 @@ rule links:
         REFDIR / "{lineage}" / "{lineage}.fasta"
     shell:
         "ln -s -r {input} {output}"
+
+# Edit agat config file to avoid creating log files
+rule agat_config:
+    output:
+        REFDIR / "agat_config.yaml"
+    conda:
+        "../envs/agat.yaml"
+    log:
+        "logs/references/agat_config.log"
+    shell:
+        "agat config --expose &> {log} && "
+        "mv agat_config.yaml {output} &> {log} && "
+        "sed -i 's/log: true/log: false/g' {output} &>> {log} "

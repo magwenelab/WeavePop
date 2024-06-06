@@ -1,3 +1,33 @@
+# Make SQL database with cds of all samples
+rule cds2db:
+    input: 
+        cds = rules.agat_cds.output.cds,
+    output:
+        touch(DATASET_OUTDIR / "database" / "{sample}" / "cds.done"),
+    params:
+        db = DATASET_OUTDIR / "sequences.db"
+    conda:
+        "../envs/variants.yaml"
+    log:
+        "logs/dataset/sequences/cds2db_{sample}.log"
+    shell:
+        "python workflow/scripts/build_sequences_db.py -d {params.db} -f {input.cds} -s {wildcards.sample} -t DNA &> {log}"
+
+# Make SQL database with proteins of all samples
+rule prots2db:
+    input: 
+        prots = rules.agat_prots.output.prots,
+    output:
+        touch(DATASET_OUTDIR / "database" / "{sample}" / "prots.done")
+    params:
+        db = DATASET_OUTDIR / "sequences.db"
+    conda:
+        "../envs/variants.yaml"
+    log:
+        "logs/dataset/sequences/prots2db_{sample}.log"
+    shell:
+        "python workflow/scripts/build_sequences_db.py -d {params.db} -f {input.prots} -s {wildcards.sample} -t PROTEIN &> {log}"
+        
 # Join all lineages gffs into one
 rule join_gffs:
     input:
@@ -120,10 +150,10 @@ rule extract_vcf_annotation:
     input:
         vcf = rules.snpeff.output.vcf
     output:
-        effects = temp(DATASET_OUTDIR / "snps" / "{lineage}_effects.tsv"),
-        variants = temp(DATASET_OUTDIR / "snps" / "{lineage}_variants.tsv"),
-        lofs = temp(DATASET_OUTDIR / "snps" / "{lineage}_lofs.tsv"),
-        nmds = temp(DATASET_OUTDIR / "snps" / "{lineage}_nmds.tsv")
+        effects = DATASET_OUTDIR / "snps" / "{lineage}_effects.tsv",
+        variants = DATASET_OUTDIR / "snps" / "{lineage}_variants.tsv",
+        lofs = DATASET_OUTDIR / "snps" / "{lineage}_lofs.tsv",
+        nmds = DATASET_OUTDIR / "snps" / "{lineage}_nmds.tsv"
     conda:
         "../envs/variants.yaml"
     log:
@@ -139,11 +169,11 @@ rule join_dataframes:
         nmds = expand(DATASET_OUTDIR / "snps" / "{lineage}_nmds.tsv", lineage=LINEAGES),
         presence = expand(DATASET_OUTDIR / "snps" / "{lineage}_presence.tsv", lineage=LINEAGES)
     output:
-        effects = temp(DATASET_OUTDIR / "snps" / "all_effects.tsv"),
-        variants = temp(DATASET_OUTDIR / "snps" / "all_variants.tsv"),
-        lofs = temp(DATASET_OUTDIR / "snps" / "all_lofs.tsv"),
-        nmds = temp(DATASET_OUTDIR / "snps" / "all_nmds.tsv"),
-        presence = temp(DATASET_OUTDIR / "snps" / "all_presence.tsv")
+        effects = DATASET_OUTDIR / "snps" / "all_effects.tsv",
+        variants = DATASET_OUTDIR / "snps" / "all_variants.tsv",
+        lofs = DATASET_OUTDIR / "snps" / "all_lofs.tsv",
+        nmds = DATASET_OUTDIR / "snps" / "all_nmds.tsv",
+        presence = DATASET_OUTDIR / "snps" / "all_presence.tsv"
     run:
         effects = pd.concat([pd.read_csv(f, sep="\t") for f in input.effects])
         variants = pd.concat([pd.read_csv(f, sep="\t") for f in input.variants])
@@ -161,8 +191,8 @@ rule complete_db:
     input:
         metadata = SAMPLEFILE,
         chrom_names = CHROM_NAMES,
-        sv = rules.dataset_metrics.output.allsv,
-        mc = rules.dataset_metrics.output.allmc,
+        sv = rules.join_cnv_calling.output,
+        md = rules.join_mapq_depth.output,
         gffs = rules.join_gffs.output,
         effects = rules.join_dataframes.output.effects,
         variants = rules.join_dataframes.output.variants,
@@ -185,7 +215,7 @@ rule complete_db:
         "-m {input.metadata} "
         "-ch {input.chrom_names} "
         "-sv {input.sv} "
-        "-mc {input.mc} "
+        "-md {input.md} "
         "-g {input.gffs} "
         "-e {input.effects} "
         "-v {input.variants} "

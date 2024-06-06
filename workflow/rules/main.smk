@@ -76,19 +76,6 @@ rule liftoff:
         "{input.target} "
         "{input.refgenome} &>> {log}"
 
-# Extract the nucleotide sequence of each isoform of each gene of a sample
-rule agat_config:
-    output:
-        REFDIR / "agat_config.yaml"
-    conda:
-        "../envs/agat.yaml"
-    log:
-        "logs/references/agat_config.log"
-    shell:
-        "agat config --expose &> {log} && "
-        "mv agat_config.yaml {output} &> {log} && "
-        "sed -i 's/log: true/log: false/g' {output} &>> {log} "
-
 rule agat_cds:
     input:
         gff = rules.liftoff.output.polished,
@@ -136,33 +123,3 @@ rule agat_prots:
         "{params.extra} &> {log} " 
         "&& "
         "sed -i 's/type=cds//g' {output} &>> {log} "
-
-# Make SQL database with cds of all samples
-rule cds2db:
-    input: 
-        cds = rules.agat_cds.output.cds,
-    output:
-        touch(DATASET_OUTDIR / "database" / "{sample}" / "cds.done"),
-    params:
-        db = DATASET_OUTDIR / "sequences.db"
-    conda:
-        "../envs/variants.yaml"
-    log:
-        "logs/dataset/sequences/cds2db_{sample}.log"
-    shell:
-        "python workflow/scripts/build_sequences_db.py -d {params.db} -f {input.cds} -s {wildcards.sample} -t DNA &> {log}"
-
-# Make SQL database with proteins of all samples
-rule prots2db:
-    input: 
-        prots = rules.agat_prots.output.prots,
-    output:
-        touch(DATASET_OUTDIR / "database" / "{sample}" / "prots.done")
-    params:
-        db = DATASET_OUTDIR / "sequences.db"
-    conda:
-        "../envs/variants.yaml"
-    log:
-        "logs/dataset/sequences/prots2db_{sample}.log"
-    shell:
-        "python workflow/scripts/build_sequences_db.py -d {params.db} -f {input.prots} -s {wildcards.sample} -t PROTEIN &> {log}"
