@@ -216,7 +216,8 @@ rule mapq_depth:
     input:
         mapqbed = rules.mapq.output.winbed,
         covbed = rules.mosdepth.output.bed,
-        gff = rules.liftoff.output.polished
+        gff = rules.liftoff.output.polished,
+        mode = rules.depth_distribution.output.global_mode
     output:
         covmapq = OUTDIR / "samtools" / "{sample}" / "mapq_cov_window.bed",
         tsv = OUTDIR / "samtools" / "{sample}" / "feature_mapq_depth.tsv"
@@ -225,7 +226,7 @@ rule mapq_depth:
     log: 
         "logs/samples/samtools/mapq_depth_{sample}.log"
     shell:
-        "xonsh workflow/scripts/mapq_depth.xsh -m {input.mapqbed} -c {input.covbed} -g {input.gff} -cm {output.covmapq} -s {wildcards.sample} -o {output.tsv} &> {log}"
+        "xonsh workflow/scripts/mapq_depth.xsh -m {input.mapqbed} -c {input.covbed} -g {input.gff} -cm {output.covmapq} -gm {input.mode} -s {wildcards.sample} -o {output.tsv} &> {log}"
 
 rule join_depth_by_chrom_raw:
     input:
