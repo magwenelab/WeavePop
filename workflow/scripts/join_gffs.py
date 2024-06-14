@@ -23,6 +23,8 @@ def join_gff(output, lineage_tsv):
     keep_columns = ['seq_id', 'source_tag', 'primary_tag', 'start', 'end', 'score', 'strand', 'frame', 'ID', 'Parent', 'locus', 'Name', 'description', 'old_ID', 'lineage']
     existing_columns = [column for column in keep_columns if column in df.columns]
     df = df[existing_columns]
+    print("Renaming columns")
+    df = df.rename(columns={'seq_id': 'accession', 'ID': 'feature_id', 'Name': 'gene_name', 'locus': 'gene_id', 'old_ID': 'old_feature_id'})
     print("Saving")
     df.to_csv(output, sep='\t', index=False)
 

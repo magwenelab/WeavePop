@@ -48,38 +48,40 @@ def extract_annotation(vcf_path, effects_out, variants_out, lofs_out, nmds_out, 
                 codon_change = effect_info_parts[2]
                 aa_change = effect_info_parts[3]
                 aa_length = effect_info_parts[4]
-                locus = effect_info_parts[5]
+                gene_name = effect_info_parts[5]
                 biotype = effect_info_parts[6]
                 coding = effect_info_parts[7]
                 transcript_id = effect_info_parts[8]
                 exon_rank = effect_info_parts[9]
-                data_effects.append([var_id,  effect_type, impact, effect, codon_change, aa_change, aa_length, locus, biotype, coding, transcript_id, exon_rank])
+                data_effects.append([var_id,  effect_type, impact, effect, codon_change, aa_change, aa_length, gene_name, biotype, coding, transcript_id, exon_rank])
             # Iterate over all lofs
             for lof in lofs:
                 lof_parts = lof.split('|')
                 first = lof_parts[0]
-                locus = first.replace('(', '')
+                gene_name = first.replace('(', '')
                 nb_transcripts = lof_parts[2]
                 last = lof_parts[3]
                 percent_transcripts = last.replace(')', '')
-                data_lofs.append([var_id, locus, nb_transcripts, percent_transcripts])
+                data_lofs.append([var_id, gene_name, nb_transcripts, percent_transcripts])
             # Iterate over all nmds
             for nmd in nmds:
                 nmd_parts = nmd.split('|')
                 first = nmd_parts[0]
-                locus = first.replace('(', '')
+                gene_name = first.replace('(', '')
                 nb_transcripts = nmd_parts[2]
                 last = nmd_parts[3]
                 percent_transcripts = last.replace(')', '')
-                data_nmds.append([var_id, locus, nb_transcripts, percent_transcripts])
+                data_nmds.append([var_id, gene_name, nb_transcripts, percent_transcripts])
 
     print("Creating dataframes")
     df_variants = pd.DataFrame(data_variants, columns=['var_id', 'accession', 'pos', 'ref', 'alt'])
-    df_effects = pd.DataFrame(data_effects, columns=['var_id', 'effect_type', 'impact','effect', 'codon_change', 'amino_acid_change', 'amino_acid_length', 'locus', 'transcript_biotype', 'gene_coding', 'transcript_id', 'exon_rank'])
+    df_variants['alt'] = df_variants['alt'].astype(str)
+    df_variants['alt'] = df_variants['alt'].str.replace('[', '').str.replace(']', '')
+    df_effects = pd.DataFrame(data_effects, columns=['var_id', 'effect_type', 'impact','effect', 'codon_change', 'amino_acid_change', 'amino_acid_length', 'gene_name', 'transcript_biotype', 'gene_coding', 'transcript_id', 'exon_rank'])
     df_effects['effect_id'] = 'eff_' + lineage + '_' + (df_effects.index + 1).astype(str)
     df_effects.insert(0, 'effect_id', df_effects.pop('effect_id'))
-    df_lofs = pd.DataFrame(data_lofs, columns=['var_id', 'locus', 'nb_transcripts', 'percent_transcripts'])
-    df_nmds = pd.DataFrame(data_nmds, columns=['var_id', 'locus', 'nb_transcripts', 'percent_transcripts'])
+    df_lofs = pd.DataFrame(data_lofs, columns=['var_id', 'gene_name', 'nb_transcripts', 'percent_transcripts'])
+    df_nmds = pd.DataFrame(data_nmds, columns=['var_id', 'gene_name', 'nb_transcripts', 'percent_transcripts'])
 
     print("Adding lineage to dataframes")
     df_variants['lineage'] = lineage

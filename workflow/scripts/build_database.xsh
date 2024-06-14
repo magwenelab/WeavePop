@@ -57,13 +57,15 @@ def build_db(metadata, chrom_names, struc_vars, mapq_depth, gff, effects, varian
     print("Chromosome names table done!")
 
     df_gff = pd.read_csv(gff, sep='\t', header = 0, low_memory=False)
-    df_gff['feature_id_lineage'] = df_gff['ID'] + '_' + df_gff['lineage']
-    df_gff.rename(columns={'seq_id': 'accession'}, inplace=True)
-    df_gff.rename(columns={'ID' : 'feature_id'}, inplace=True)
+    df_gff['feature_id_lineage'] = df_gff['feature_id'] + '_' + df_gff['lineage']
     df_gff.columns = df_gff.columns.str.lower()
     print("GFF table done!")
-
+    gff_ids = df_gff[['feature_id','gene_id']].copy()
+    gff_ids.rename(columns={'feature_id': 'transcript_id'}, inplace=True)
+    gff_ids.drop_duplicates(subset='transcript_id', keep='first', inplace=True)
+    print("Effects table joined with GFF IDs!")
     df_effects = pd.read_csv(effects, header = 0, sep='\t')
+    df_effects = df_effects.merge(gff_ids, how='left', on='transcript_id')
     print("Effects table done!")
 
     df_variants = pd.read_csv(variants, header = 0, sep='\t')
