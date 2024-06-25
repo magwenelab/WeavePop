@@ -11,7 +11,7 @@ import sqlite3
 @click.option('--metadata', '-m', type=click.Path(exists=True), help='Path to the sample metadata CSV file.')
 @click.option('--chrom_names', '-ch', type=click.Path(), help='Path to the chromosome names file.')
 @click.option('--struc_vars', '-sv', type=click.Path(), help='Path to the structural variants file.')
-@click.option('--mapq_depth', '-md', type=click.Path(), help='Path to the mapq coverage file.')
+@click.option('--mapq_depth', '-md', type=click.Path(), help='Path to the mapq and depth of features file.')
 @click.option('--gff', '-g', type=click.Path(), help='Path to the GFF file.')
 @click.option('--effects', '-e', type=click.Path(), help='Path to the effects file of all lineages.')
 @click.option('--variants', '-v', type=click.Path(), help='Path to the variants file of all lineages.')
@@ -51,7 +51,7 @@ def build_db(metadata, chrom_names, struc_vars, mapq_depth, gff, effects, varian
 
     df_mapq_depth = pd.read_csv(mapq_depth, sep='\t')
     df_mapq_depth.rename(columns={'ID' : 'feature_id'}, inplace=True)
-    print("MapQ coverage table done!")
+    print("MapQ Depth table done!")
 
     df_chroms = pd.read_csv(chrom_names, names=["lineage", "accession", "chromosome"], dtype = str)
     print("Chromosome names table done!")
@@ -99,7 +99,7 @@ def build_db(metadata, chrom_names, struc_vars, mapq_depth, gff, effects, varian
     print("Adding dataframes to database")
     con.execute("CREATE TABLE IF NOT EXISTS samples AS SELECT * FROM df_samples")   
     con.execute("CREATE TABLE IF NOT EXISTS structural_variants AS SELECT * FROM df_sv")
-    con.execute("CREATE TABLE IF NOT EXISTS mapq_coverage AS SELECT * FROM df_mapq_depth")
+    con.execute("CREATE TABLE IF NOT EXISTS mapq_depth AS SELECT * FROM df_mapq_depth")
     con.execute("CREATE TABLE IF NOT EXISTS chromosome_names AS SELECT * FROM df_chroms")
     con.execute("CREATE TABLE IF NOT EXISTS gff AS SELECT * FROM df_gff")
     con.execute("CREATE TABLE IF NOT EXISTS presence AS SELECT * FROM df_presence")

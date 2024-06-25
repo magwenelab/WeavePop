@@ -59,19 +59,19 @@ def extract_annotation(vcf_path, effects_out, variants_out, lofs_out, nmds_out, 
                 lof_parts = lof.split('|')
                 first = lof_parts[0]
                 gene_name = first.replace('(', '')
-                nb_transcripts = lof_parts[2]
+                num_transcripts = lof_parts[2]
                 last = lof_parts[3]
-                percent_transcripts = last.replace(')', '')
-                data_lofs.append([var_id, gene_name, nb_transcripts, percent_transcripts])
+                percent_affected = last.replace(')', '')
+                data_lofs.append([var_id, gene_name, num_transcripts, percent_affected])
             # Iterate over all nmds
             for nmd in nmds:
                 nmd_parts = nmd.split('|')
                 first = nmd_parts[0]
                 gene_name = first.replace('(', '')
-                nb_transcripts = nmd_parts[2]
+                num_transcripts = nmd_parts[2]
                 last = nmd_parts[3]
-                percent_transcripts = last.replace(')', '')
-                data_nmds.append([var_id, gene_name, nb_transcripts, percent_transcripts])
+                percent_affected = last.replace(')', '')
+                data_nmds.append([var_id, gene_name, num_transcripts, percent_affected])
 
     print("Creating dataframes")
     df_variants = pd.DataFrame(data_variants, columns=['var_id', 'accession', 'pos', 'ref', 'alt'])
@@ -80,8 +80,8 @@ def extract_annotation(vcf_path, effects_out, variants_out, lofs_out, nmds_out, 
     df_effects = pd.DataFrame(data_effects, columns=['var_id', 'effect_type', 'impact','effect', 'codon_change', 'amino_acid_change', 'amino_acid_length', 'gene_name', 'transcript_biotype', 'gene_coding', 'transcript_id', 'exon_rank'])
     df_effects['effect_id'] = 'eff_' + lineage + '_' + (df_effects.index + 1).astype(str)
     df_effects.insert(0, 'effect_id', df_effects.pop('effect_id'))
-    df_lofs = pd.DataFrame(data_lofs, columns=['var_id', 'gene_name', 'nb_transcripts', 'percent_transcripts'])
-    df_nmds = pd.DataFrame(data_nmds, columns=['var_id', 'gene_name', 'nb_transcripts', 'percent_transcripts'])
+    df_lofs = pd.DataFrame(data_lofs, columns=['var_id', 'gene_name', 'num_transcripts', 'percent_affected'])
+    df_nmds = pd.DataFrame(data_nmds, columns=['var_id', 'gene_name', 'num_transcripts', 'percent_affected'])
 
     print("Adding lineage to dataframes")
     df_variants['lineage'] = lineage
