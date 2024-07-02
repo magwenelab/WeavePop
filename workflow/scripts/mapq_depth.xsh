@@ -42,8 +42,8 @@ def mapqdepth2gff(mapqbed, depthbed, gff, depthmapq, global_mode, sample, output
     print("Normalize mean_depth")
     global_df = pd.read_csv(global_mode, sep = "\t", header = 0)
     global_depth = global_df.at[0, 'Global_Mode']
-    tsv['mean_depth_norm'] = tsv['mean_depth'].astype(float) / global_depth
-    tsv['mean_depth_norm'] = tsv['mean_depth_norm'].round(2)
+    tsv['mean_depth_normalized'] = tsv['mean_depth'].astype(float) / global_depth
+    tsv['mean_depth_normalized'] = tsv['mean_depth_normalized'].round(2)
     
     print("Add sample name")
     tsv['sample'] = sample
