@@ -60,12 +60,42 @@ def build_db(metadata, chrom_names, struc_vars, mapq_depth, gff, effects, varian
     df_gff['feature_id_lineage'] = df_gff['feature_id'] + '_' + df_gff['lineage']
     df_gff.columns = df_gff.columns.str.lower()
     print("GFF table done!")
-    gff_ids = df_gff[['feature_id','gene_id']].copy()
-    gff_ids.rename(columns={'feature_id': 'transcript_id'}, inplace=True)
-    gff_ids.drop_duplicates(subset='transcript_id', keep='first', inplace=True)
-    print("Effects table joined with GFF IDs!")
-    df_effects = pd.read_csv(effects, header = 0, sep='\t')
-    df_effects = df_effects.merge(gff_ids, how='left', on='transcript_id')
+    print("Formatting effects table")
+    print("Getting gene IDs from GFF file")
+    gff_ids = df_gff[['gene_id', 'gene_name', 'feature_id']].copy()
+    print(gff_ids.head())
+    gff_ids.drop_duplicates(inplace=True)
+    print("Defining function to replace gene names with gene IDs")
+    def replace_with_gene_id(part):
+        if part in gff_ids['gene_id'].values:
+            return part
+        elif part in gff_ids['gene_name'].values:
+            return gff_ids.loc[gff_ids['gene_name'] == part, 'gene_id'].values[0]
+        return part
+    print("Reading effects table")
+    effects_pre = pd.read_csv(effects, header = 0, sep='\t')
+    print("Subsetting effects table")
+    df_gene_transcript = effects_pre[(effects_pre['gene_name'].notnull()) & (effects_pre['transcript_id'].notnull())].copy()
+    df_gene_no_transcript = effects_pre[(effects_pre['gene_name'].notnull()) & (effects_pre['transcript_id'].isnull())].copy()
+    df_no_gene_no_transcript = effects_pre[(effects_pre['gene_name'].isnull()) & (effects_pre['transcript_id'].isnull())].copy()
+    print("Separating fused gene names")
+    df_gene_no_transcript[['part1', 'part2']] = df_gene_no_transcript['gene_name'].str.split('+', expand=True)
+    print("Replacing gene names with gene IDs in part1")
+    df_gene_no_transcript['gene_tag_id1'] = df_gene_no_transcript['part1'].apply(replace_with_gene_id)
+    print("Replacing gene names with gene IDs in part2")
+    df_gene_no_transcript.loc[df_gene_no_transcript['part2'].notnull(), 'gene_tag_id2'] = df_gene_no_transcript.loc[df_gene_no_transcript['part2'].notnull(), 'part2'].apply(replace_with_gene_id)
+    print("Joining part1 with part2")
+    df_gene_no_transcript['gene_id'] = df_gene_no_transcript.apply(lambda row: row['gene_tag_id1'] + '+' + row['gene_tag_id2'] if pd.notnull(row['part2']) else row['gene_tag_id1'], axis=1)
+    print("Removing unnecessary columns")
+    df_gene_no_transcript.drop(['part1', 'part2', 'gene_tag_id1', 'gene_tag_id2'], axis=1, inplace=True)
+    print("Getting unique gene IDs from GFF")
+    gff_ids_unique = gff_ids.drop_duplicates(subset='feature_id', keep='first')
+    print("Creating dictionary to map feature IDs to gene IDs")
+    feature_to_gene = gff_ids_unique.set_index('feature_id')['gene_id']
+    print("Mapping transcript IDs to gene IDs")
+    df_gene_transcript['gene_id'] = df_gene_transcript['transcript_id'].map(feature_to_gene)
+    print("Concatenating dataframes")
+    df_effects = pd.concat([df_gene_transcript, df_gene_no_transcript, df_no_gene_no_transcript])
     print("Effects table done!")
 
     df_variants = pd.read_csv(variants, header = 0, sep='\t')
