@@ -1,4 +1,7 @@
-# Map reads to corresponding reference genome
+# =================================================================================================
+# Per sample: Run Snippy to map reads to reference genome, get assembly and call SNPs
+# =================================================================================================
+
 def snippy_input(wildcards):
     s = SAMPLE_REFERENCE.loc[wildcards.sample,]
     return {
@@ -34,7 +37,10 @@ rule snippy:
         "--force "
         "{params.extra} &> {log}"
 
-# Lift over annotation from corresponding reference genome to sample assembly
+# =================================================================================================
+# Per sample: Run Liftoff to annotate the assembly with the coresponding reference genome
+# =================================================================================================
+
 def liftoff_input(wildcards):
     s = SAMPLE_REFERENCE.loc[wildcards.sample,]
     return {
@@ -76,6 +82,10 @@ rule liftoff:
         "{input.target} "
         "{input.refgenome} &>> {log}"
 
+# =================================================================================================
+# Per sample: Run AGAT to extract CDS and protein sequences
+# =================================================================================================
+
 rule agat_cds:
     input:
         gff = rules.liftoff.output.polished,
@@ -98,7 +108,6 @@ rule agat_cds:
         "{params.extra} "
         "&> {log} "
 
-# Extract the amino acid sequence of each isoform of each gene of a sample
 rule agat_prots:
     input:
         gff = rules.liftoff.output.polished,

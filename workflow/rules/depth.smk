@@ -1,3 +1,7 @@
+# =================================================================================================
+#   Per sample: Run Mosdepth to get depth per region of all (raw) and good quality reads
+# =================================================================================================
+
 rule mosdepth:
     input:
         bam = rules.snippy.output.bam,
@@ -41,6 +45,10 @@ rule mosdepth_good:
         "{params.outdir}/{wildcards.sample}/coverage_good {input.bam} "
         "&> {log}"
 
+# =================================================================================================
+#   Per sample: Get depth by chromosome raw and good
+# =================================================================================================
+
 rule depth_by_chrom_raw:
     input:
         rules.mosdepth.output.bed
@@ -64,6 +72,10 @@ rule depth_by_chrom_good:
         "logs/samples/mosdepth/depth_by_chrom_good_{sample}.log"
     shell:
         "xonsh workflow/scripts/depth_by_chrom.xsh -b {input} -o {output} -s {wildcards.sample} &> {log}"
+
+# =================================================================================================
+#   Per sample: Get distribution and global mode fo depth (genome-wide depth to normalize)
+# =================================================================================================
 
 rule bam_good:
     input:
@@ -102,6 +114,10 @@ rule depth_distribution:
     shell:
         "xonsh workflow/scripts/depth_distribution.xsh -s {wildcards.sample} -b {input.bam} -g {input.bam_good} -do {output.distrib} -go {output.global_mode} &> {log}"
 
+# =================================================================================================
+#   Per sample: Normalize depth by chromosome and by region
+# =================================================================================================
+
 rule depth_by_chrom_normalized:
     input:
         depth = rules.depth_by_chrom_good.output,
@@ -129,6 +145,10 @@ rule depth_by_regions:
         "logs/samples/mosdepth/depth_by_regions_{sample}.log"
     shell:
         "xonsh workflow/scripts/depth_by_regions.xsh -di {input.depth} -gi {input.global_mode} -do {output} -s {params.smoothing_size} &> {log}"
+
+# =================================================================================================
+#   Per lineage: Run RepeatModeler and RepeatMasker
+# =================================================================================================
 
 rule repeat_modeler:
     input:
@@ -164,6 +184,10 @@ rule repeat_masker:
     shell:
         "bash workflow/scripts/repeat-masker.sh {threads} {input.database} {input.fasta} {input.known} {input.unknown} {output} &> {log}"
 
+# =================================================================================================
+#   Per sample: Intercept depth by regions with repeats and call CNVs
+# =================================================================================================
+
 def cnv_calling_input(wildcards):
     s = SAMPLE_REFERENCE.loc[wildcards.sample,]
     return {
@@ -185,6 +209,10 @@ rule cnv_calling:
     shell:
         "xonsh workflow/scripts/cnv_calling.xsh -di {input.depth} -ri {input.repeats} -co {output} -sp {wildcards.sample} -rp {params.region_size} -dp {params.depth_threshold} &> {log}"
 
+# =================================================================================================
+#   Per sample: Get mapping stats
+# =================================================================================================
+
 rule mapping_stats:
     input:
         bam = rules.snippy.output.bam,
@@ -198,12 +226,16 @@ rule mapping_stats:
     shell:
         "xonsh workflow/scripts/mapping_stats.xsh -b {input.bam} -s {wildcards.sample} -o {output} &> {log}"
 
+# =================================================================================================
+#   Per sample: Get mean MAPQ by region, join it with depth by region and intersect it with GFF
+# =================================================================================================
+
 rule mapq:
     input:
        rules.snippy.output.bam,
        rules.mosdepth.output.bed
     output:
-        bed = OUTDIR / "samtools" / "{sample}" / "mapq.bed",
+        bed = temp(OUTDIR / "samtools" / "{sample}" / "mapq.bed"),
         winbed = OUTDIR / "samtools" / "{sample}" / "mapq_window.bed" 
     conda:
         "../envs/samtools.yaml"
@@ -227,6 +259,10 @@ rule mapq_depth:
         "logs/samples/samtools/mapq_depth_{sample}.log"
     shell:
         "xonsh workflow/scripts/mapq_depth.xsh -m {input.mapqbed} -c {input.depthbed} -g {input.gff} -cm {output.depthmapq} -gm {input.mode} -s {wildcards.sample} -o {output.tsv} &> {log}"
+
+# =================================================================================================
+#   Per dataset: Join all depth results
+# =================================================================================================
 
 rule join_depth_by_chrom_raw:
     input:
@@ -258,7 +294,7 @@ rule join_depth_by_chrom_good:
         rm {output}.temp
         """
 
-rule  join_depth_by_chrom_normalized:
+rule join_depth_by_chrom_normalized:
     input:
         expand(rules.depth_by_chrom_normalized.output,sample=SAMPLES),
     output:
@@ -272,6 +308,10 @@ rule  join_depth_by_chrom_normalized:
         tail -q -n +2 {input} 1>> {output} 2>> {log}
         rm {output}.temp
         """
+
+# =================================================================================================
+#   Per dataset: Join CNV calls
+# =================================================================================================
 
 rule join_cnv_calling:
     input:
@@ -288,6 +328,10 @@ rule join_cnv_calling:
         rm {output}.temp
         """
 
+# =================================================================================================
+#   Per dataset: Join mapping stats
+# =================================================================================================
+
 rule join_mapping_stats:
     input:
         expand(rules.mapping_stats.output,sample=SAMPLES),
@@ -302,6 +346,10 @@ rule join_mapping_stats:
         tail -q -n +2 {input} 1>> {output} 2>> {log}
         rm {output}.temp
         """
+
+# =================================================================================================
+#   Per dataset: Join feature MAPQ and Depth
+# =================================================================================================
 
 rule join_mapq_depth:
     input:
