@@ -1,12 +1,66 @@
+# =================================================================================================
+#   Load modules
+# =================================================================================================
+
 from snakemake.utils import min_version
-
-##### set minimum snakemake version #####
 min_version("8.2.1")
+# =================================================================================================
+#   Setup config file
+# =================================================================================================
 
-##### set configfile #####
 configfile: "config/config.yaml"
 
-##### load rules #####
+# =================================================================================================
+#   Onstart checks
+# =================================================================================================
+
+onstart:
+    print("Checking input files...", flush=True)
+    try:
+        sample_table = pd.read_csv(config["sample_table"])
+        required_columns = ["sample", "strain", "group", "isolation_source"]
+        missing_columns = set(required_columns) - set(sample_table.columns)
+        if missing_columns:
+            raise ValueError(f"Bad: Missing columns in sample table: {', '.join(missing_columns)}")
+        else:
+            print("Good: Sample table has all required columns.", flush=True)
+        
+        chrom_names = pd.read_csv("config/chromosome_names.csv",
+                                    names=["group","accession","chromosome"])
+        if chrom_names.isnull().values.any():
+            raise ValueError("Bad: Chromosome names file has missing values.")
+        if set(sample_table['group'].unique()) == set(chrom_names['group'].unique()):
+            print("Good: All lineages are in the chromosome names file.", flush=True)
+        else:
+            raise ValueError("Bad: Lineages in metadata and chromosome names file do not match.")
+        
+        chromosome_ids = []
+        reference_dir = config["references"]["directory"]
+
+        for group in chrom_names['group'].unique():
+            ref_file = Path(reference_dir) / f"{group}.fasta"
+            if ref_file.exists():
+                for chrom in chrom_names[chrom_names['group'] == group]['accession']:
+                    with open(ref_file) as f:
+                        seq_ids = [line.strip().split()[0][1:] for line in f if line.startswith(">")]
+                        if chrom not in seq_ids:
+                            raise ValueError(f"Bad: Chromosome {chrom} not found in reference file {ref_file}")
+                        else:
+                            print(f"Good: Chromosome {chrom} found in reference file {ref_file}", flush=True)
+            else:
+                raise ValueError(f"Bad: Reference file {ref_file} not found")
+
+    except Exception as e:
+        print("Error in input files:", flush=True)
+        print(e)
+        print("Exiting...", flush=True)
+        exit(1)
+    else:
+        print("Input files are good!", flush=True)
+
+# =================================================================================================
+#   Load rules
+# =================================================================================================
 
 include: "rules/common.smk"
 include: "rules/main.smk"
@@ -26,7 +80,9 @@ if config["plotting"]["activate"] and config["annotate_references"]["activate"]:
 if config["plotting"]["activate"] and not config["annotate_references"]["activate"]:
     include: "rules/unmapped_per_lineage.smk"
 
-##### target rules #####
+# =================================================================================================
+#   Define final output
+# =================================================================================================
 
 rule all:
     input:

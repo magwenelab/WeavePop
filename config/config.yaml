@@ -1,22 +1,34 @@
-sample_table: "config/sample_metadata.csv" # Path to CSV table with columns: sample, group, strain, and more optional metadata.
+# =================================================================================================
+#   Input
+# =================================================================================================
+
+sample_table: "config/sample_metadata.csv" # Relative path to metadata CSV table.
 species_name: "Cryptococcus_neoformans" 
 
 fastqs:
-  directory: "data/samples" # REVIEW # Path to directory with all FASTQ files 
+  directory: "data/samples" # Relative path to directory with all FASTQ files 
   fastq_suffix1: "_1.fq.gz" # Everything after the sample name of the forward reads file.
   fastq_suffix2: "_2.fq.gz" # Everything after the sample name of the reverse reads file.
 
 references: 
-  directory: "data/references/" # REVIEW # Path to directory with reference genomes fastas (and GFFs if annotate_references activate is not set to True)
+  directory: "data/references/" # Path to directory with reference genomes.
+
+# =================================================================================================
+#   Module: Annotate reference genomes with main reference
+# =================================================================================================
 
 annotate_references:
   activate: True
-  directory: "data/main_reference" # REVIEW # Path to directory with main reference genome and annotation
-  gff: "FungiDB-65_CneoformansH99.gff" # Main reference gff. 
+  directory: "data/main_reference" # Relative path to directory with main reference files.
   fasta: "FungiDB-65_CneoformansH99_Genome.fasta" # Main reference fasta.
+  gff: "FungiDB-65_CneoformansH99.gff" # Main reference GFF. 
   liftoff:
     threads: 12
     extra: ""
+
+# =================================================================================================
+#   Module: Depth of coverage and quality analyses
+# =================================================================================================
 
 coverage_quality: 
   activate: True
@@ -33,14 +45,26 @@ coverage_quality:
     repeats_threads: 20
     repeats_fraction: 0.5 # Fraction of repetitive bases allowed for calculating global coverage
 
+# =================================================================================================
+#   Module: Variant analyses
+# =================================================================================================
+
 snps:
   activate: True
   threads: 12
+
+# =================================================================================================
+#   Module: Plotting
+# =================================================================================================
 
 plotting: 
   activate: True
   metadata2color : "isolation_source" # Column name in the sample table to color the samples in the plots
   scale : 0.7 # This is a value to adjust the size of the plots with ggsave scale parameter. Use lower values for fewer samples and bigger values for more samples.
+
+# =================================================================================================
+#   Specification of parameters for individual tools
+# =================================================================================================
 
 snippy:
   threads: 12
