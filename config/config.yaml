@@ -4,6 +4,8 @@
 
 sample_table: "config/sample_metadata.csv" # Relative path to metadata CSV table.
 species_name: "Cryptococcus_neoformans" 
+chromosome_names: "config/chromosome_names.csv"
+loci: "config/loci.csv" 
 
 fastqs:
   directory: "data/samples" # Relative path to directory with all FASTQ files 
@@ -14,7 +16,13 @@ references:
   directory: "data/references/" # Path to directory with reference genomes.
 
 # =================================================================================================
-#   Module: Annotate reference genomes with main reference
+#   Output
+# =================================================================================================
+
+output_directory: "results" # Name for the output directory
+
+# =================================================================================================
+#   Module: Reference genomes annotation
 # =================================================================================================
 
 annotate_references:

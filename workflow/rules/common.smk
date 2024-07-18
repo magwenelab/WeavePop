@@ -1,9 +1,15 @@
+# =================================================================================================
+#   Load modules
+# =================================================================================================
 import pandas as pd
 import os.path
 import glob
 from pathlib import Path
 
-#### Defining global variables ####
+# =================================================================================================
+#   Global variables
+# =================================================================================================
+
 SAMPLEFILE=config["sample_table"]
 SAMPLETABLE=(pd.read_csv(config["sample_table"], sep=","))
 SAMPLES=list(set(SAMPLETABLE["sample"]))
@@ -14,22 +20,28 @@ FQ_DATA = Path(config["fastqs"]["directory"])
 FQ1 = config["fastqs"]["fastq_suffix1"]
 FQ2 = config["fastqs"]["fastq_suffix2"]
 
-OUTDIR= Path("results/samples")
-DATASET_OUTDIR = Path("results/dataset")
-REFDIR = Path("results/references")
+GENERAL_OUTPUT = Path(config["output_directory"])
+OUTDIR= GENERAL_OUTPUT / "samples"
+DATASET_OUTDIR = GENERAL_OUTPUT / "dataset"
+REFDIR = GENERAL_OUTPUT / "references"
 
-# FIX : Add conditional statements to allow for absence of these files
-LOCI_FILE = "config/loci.csv"
-CHROM_NAMES = "config/chromosome_names.csv"
+CHROM_NAMES = config["chromosome_names"]
+LOCI_FILE = config["loci"]
 
-#### Defining variables for the reference annotation module(references.smk) ####
+# =================================================================================================
+#   Variables for the Module: Reference genomes annotation
+# =================================================================================================
+
 if config["annotate_references"]["activate"]:
     MAIN_DIR = Path(config["annotate_references"]["directory"])
     MAIN_FASTA = MAIN_DIR / config["annotate_references"]["fasta"]
     MAIN_GFF = MAIN_DIR / config["annotate_references"]["gff"]
     MAIN_NAME, _ = os.path.splitext(os.path.basename(MAIN_GFF))
 
-#### Defining table for sample-dependent input files ####
+# =================================================================================================
+#   Tables for sample-dependent input files 
+# =================================================================================================
+
 d={'sample': SAMPLETABLE["sample"],
     'group': SAMPLETABLE["group"],
     'refgenome': REFDIR / SAMPLETABLE["group"] / (SAMPLETABLE["group"] + ".fasta"),
@@ -38,7 +50,10 @@ d={'sample': SAMPLETABLE["sample"],
 SAMPLE_REFERENCE = pd.DataFrame(data=d).set_index("sample", drop=False)
 LINEAGE_REFERENCE = pd.DataFrame(data=d).set_index("group", drop=False)
 
-#### Defining which final output files are being requested ####
+# =================================================================================================
+#   Final output definition function
+# =================================================================================================
+
 def get_final_output():
     final_output = expand(OUTDIR / "snippy" / "{sample}" / "snps.consensus.fa",sample=SAMPLES)
     final_output.extend(expand(OUTDIR / "snippy" / "{sample}" / "snps.bam",sample=SAMPLES))
@@ -69,8 +84,11 @@ def get_final_output():
         final_output.append(expand(DATASET_OUTDIR / "database.db"))
     return final_output
 
+# =================================================================================================
+#   Setup rules
+# =================================================================================================
 
-#### Create softlinks to have the reference genomes in the REFDIR ####
+# Create softlinks to have the reference genomes in the REFDIR
 rule links:
     input:
         REF_DATA / "{lineage}.fasta"
@@ -79,7 +97,7 @@ rule links:
     shell:
         "ln -s -r {input} {output}"
 
-# Edit agat config file to avoid creating log files
+# Edit the agat config file to avoid creating log files
 rule agat_config:
     output:
         REFDIR / "agat_config.yaml"
