@@ -28,9 +28,9 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="pt"
-     inkscape:zoom="0.16"
-     inkscape:cx="2090.625"
-     inkscape:cy="3193.75"
+     inkscape:zoom="1.28"
+     inkscape:cx="6247.6563"
+     inkscape:cy="-27.34375"
      inkscape:window-width="1920"
      inkscape:window-height="962"
      inkscape:window-x="1920"
@@ -46,10 +46,10 @@
     <polygon
        fill="#ffffff"
        stroke="none"
-       points="4551.03,-4263 4551.03,4 -4,4 -4,-4263 "
+       points="-4,4 -4,-4263 4551.03,-4263 4551.03,4 "
        id="polygon1"
        style="stroke:#ffffff;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1"
-       transform="matrix(1.0001181,0,0,0.79624613,-0.68290511,-868.0437)" />
+       transform="matrix(0.99856178,0,0,0.79579188,3.1136843,-867.62716)" />
     <!-- 0 -->
     <g
        id="node1"
@@ -1614,135 +1614,8 @@
          id="polygon190" />
     </g>
     <!-- 2 -->
-    <g
-       id="node3"
-       class="node">
-      <title
-         id="title190">2</title>
-      <text
-         text-anchor="start"
-         x="3309.6499"
-         y="-3621.8999"
-         font-family="sans"
-         font-weight="bold"
-         font-size="18px"
-         id="text190">links</text>
-      <text
-         text-anchor="start"
-         x="3199.03"
-         y="-3593.2"
-         font-family="sans"
-         font-size="10px"
-         id="text191" />
-      <text
-         text-anchor="start"
-         x="3201.28"
-         y="-3593.2"
-         font-family="sans"
-         font-weight="bold"
-         font-size="14px"
-         id="text192">↪ input</text>
-      <text
-         text-anchor="start"
-         x="3254.53"
-         y="-3593.2"
-         font-family="sans"
-         font-size="10px"
-         id="text193" />
-      <text
-         text-anchor="start"
-         x="3199.03"
-         y="-3569.5"
-         font-family="monospace"
-         font-size="10px"
-         id="text194">data/references/{lineage}.fasta</text>
-      <text
-         text-anchor="start"
-         x="3394.78"
-         y="-3545.45"
-         font-family="sans"
-         font-size="10px"
-         id="text195" />
-      <text
-         text-anchor="start"
-         x="3397.03"
-         y="-3545.45"
-         font-family="sans"
-         font-weight="bold"
-         font-size="14px"
-         id="text196">output →</text>
-      <text
-         text-anchor="start"
-         x="3460.78"
-         y="-3545.45"
-         font-family="sans"
-         font-size="10px"
-         id="text197" />
-      <text
-         text-anchor="start"
-         x="3199.03"
-         y="-3521.75"
-         font-family="monospace"
-         font-size="10px"
-         id="text198">results/references/{lineage}/{lineage}.fasta</text>
-      <polygon
-         fill="#576bd9"
-         stroke="#576bd9"
-         points="3470.03,-3609.5 3193.03,-3609.5 "
-         id="polygon198"
-         style="stroke:#9b8923;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
-      <polygon
-         fill="#576bd9"
-         stroke="#576bd9"
-         points="3470.03,-3561.75 3193.03,-3561.75 "
-         id="polygon199"
-         style="stroke:#9b8923;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
-      <polygon
-         fill="none"
-         stroke="#576bd9"
-         stroke-width="2"
-         points="3469.03,-3511 3193.03,-3511 3193.03,-3644 3469.03,-3644 "
-         id="polygon200"
-         style="stroke:#9b8923;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
-    </g>
     <!-- 2&#45;&gt;1 -->
-    <g
-       id="edge16"
-       class="edge">
-      <title
-         id="title200">2-&gt;1</title>
-      <path
-         fill="none"
-         stroke="#808080"
-         stroke-width="2"
-         d="m 3192.36,-3525.46 c -52.36,20.71 -111.92,46.05 -164.33,72.71 -187.77,95.52 -391.65,224.79 -529.51,316.34"
-         id="path200" />
-      <polygon
-         fill="#808080"
-         stroke="#808080"
-         stroke-width="2"
-         points="2500.66,-3133.63 2490.4,-3131.01 2496.79,-3139.46 "
-         id="polygon201" />
-    </g>
     <!-- 2&#45;&gt;3 -->
-    <g
-       id="edge17"
-       class="edge">
-      <title
-         id="title201">2-&gt;3</title>
-      <path
-         fill="none"
-         stroke="#808080"
-         stroke-width="2"
-         d="m 3192.18,-3523.24 c -31.02,18 -60.74,41.19 -81.15,70.49 -116.48,167.16 -130.05,410.19 -124.79,563.09"
-         id="path201" />
-      <polygon
-         fill="#808080"
-         stroke="#808080"
-         stroke-width="2"
-         points="2989.72,-2890.14 2986.61,-2880.01 2982.73,-2889.87 "
-         id="polygon202" />
-    </g>
     <!-- 4 -->
     <g
        id="node5"
@@ -1885,24 +1758,6 @@
          style="stroke:#577fd9;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
     </g>
     <!-- 2&#45;&gt;4 -->
-    <g
-       id="edge20"
-       class="edge">
-      <title
-         id="title219">2-&gt;4</title>
-      <path
-         fill="none"
-         stroke="#808080"
-         stroke-width="2"
-         d="m 3469.75,-3511.97 c 38.85,18.61 80.93,39.29 119.28,59.22 13.46,7 27.27,14.32 41.15,21.79"
-         id="path219" />
-      <polygon
-         fill="#808080"
-         stroke="#808080"
-         stroke-width="2"
-         points="3631.52,-3434.21 3638.65,-3426.37 3628.19,-3428.05 "
-         id="polygon220" />
-    </g>
     <!-- 17 -->
     <g
        id="node18"
@@ -2017,28 +1872,11 @@
          style="stroke:#5ddbd8;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
     </g>
     <!-- 2&#45;&gt;17 -->
-    <g
-       id="edge36"
-       class="edge">
-      <title
-         id="title233">2-&gt;17</title>
-      <path
-         fill="none"
-         stroke="#808080"
-         stroke-width="2"
-         d="m 3194.54,-3510.22 c -20.31,15.94 -38.44,35.01 -50.51,57.47 -59.7,111.09 -23.71,159.89 0,283.75 26.24,137.15 68.91,160.53 116,292 41.3,115.32 -11.14,185.33 84,262.5 61.06,49.53 295.46,-18.65 352,36 38.9,37.61 24.57,187.8 33,241.25 1.19,7.59 2.47,15.41 3.79,23.29"
-         id="path233" />
-      <polygon
-         fill="#808080"
-         stroke="#808080"
-         stroke-width="2"
-         points="3736.27,-2314.57 3734.49,-2304.12 3729.37,-2313.39 "
-         id="polygon234" />
-    </g>
     <!-- 18 -->
     <g
        id="node19"
-       class="node">
+       class="node"
+       transform="translate(676.85323,813.4556)">
       <title
          id="title234">18</title>
       <text
@@ -2117,42 +1955,24 @@
       <polygon
          fill="#bbd957"
          stroke="#bbd957"
-         points="3509.03,-3353.5 3154.03,-3353.5 "
+         points="3154.03,-3353.5 3509.03,-3353.5 "
          id="polygon243"
          style="stroke:#5ddbd8;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
       <polygon
          fill="#bbd957"
          stroke="#bbd957"
-         points="3509.03,-3305.75 3154.03,-3305.75 "
+         points="3154.03,-3305.75 3509.03,-3305.75 "
          id="polygon244"
          style="stroke:#5ddbd8;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
       <polygon
          fill="none"
          stroke="#bbd957"
          stroke-width="2"
-         points="3508.03,-3233.75 3154.03,-3233.75 3154.03,-3388 3508.03,-3388 "
+         points="3154.03,-3233.75 3154.03,-3388 3508.03,-3388 3508.03,-3233.75 "
          id="polygon245"
          style="stroke:#5ddbd8;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
     </g>
     <!-- 2&#45;&gt;18 -->
-    <g
-       id="edge38"
-       class="edge">
-      <title
-         id="title245">2-&gt;18</title>
-      <path
-         fill="none"
-         stroke="#808080"
-         stroke-width="2"
-         d="m 3331.03,-3510.07 c 0,32.87 0,73.01 0,108.55"
-         id="path245" />
-      <polygon
-         fill="#808080"
-         stroke="#808080"
-         stroke-width="2"
-         points="3334.53,-3401.69 3331.03,-3391.69 3327.53,-3401.69 "
-         id="polygon246" />
-    </g>
     <!-- 46 -->
     <g
        id="node47"
@@ -2288,24 +2108,6 @@
          style="stroke:#f88a00;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
     </g>
     <!-- 2&#45;&gt;46 -->
-    <g
-       id="edge90"
-       class="edge">
-      <title
-         id="title262">2-&gt;46</title>
-      <path
-         fill="none"
-         stroke="#808080"
-         stroke-width="2"
-         d="m 3467.51,-3510.22 c 20.31,15.94 38.44,35.01 50.52,57.47 29.84,55.54 30.21,228.41 0,283.75 -14.18,25.97 -41.83,10.03 -56,36 -46.86,85.82 -42.48,131.93 0,220 4.31,8.96 9.38,17.58 15.03,25.86"
-         id="path262" />
-      <polygon
-         fill="#808080"
-         stroke="#808080"
-         stroke-width="2"
-         points="3479.72,-2889.44 3482.74,-2879.29 3474.04,-2885.34 "
-         id="polygon263" />
-    </g>
     <!-- 47 -->
     <g
        id="node48"
@@ -2420,24 +2222,6 @@
          style="stroke:#f88a00;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
     </g>
     <!-- 2&#45;&gt;47 -->
-    <g
-       id="edge93"
-       class="edge">
-      <title
-         id="title276">2-&gt;47</title>
-      <path
-         fill="none"
-         stroke="#808080"
-         stroke-width="2"
-         d="m 3469.9,-3523.26 c 31.02,18 60.73,41.19 81.13,70.51 4.56,6.57 32.99,193.03 51.61,317.87"
-         id="path276" />
-      <polygon
-         fill="#808080"
-         stroke="#808080"
-         stroke-width="2"
-         points="3606.06,-3135.64 3604.08,-3125.24 3599.14,-3134.61 "
-         id="polygon277" />
-    </g>
     <!-- 3&#45;&gt;0 -->
     <!-- 22 -->
     <g
@@ -3494,762 +3278,20 @@
          id="polygon382" />
     </g>
     <!-- 8 -->
-    <g
-       id="node9"
-       class="node">
-      <title
-         id="title382">8</title>
-      <text
-         text-anchor="start"
-         x="4139.2798"
-         y="-4235.8999"
-         font-family="sans"
-         font-weight="bold"
-         font-size="18px"
-         id="text382">agat_config</text>
-      <text
-         text-anchor="start"
-         x="4086.03"
-         y="-4210"
-         font-family="sans"
-         font-size="10px"
-         id="text383"> </text>
-      <text
-         text-anchor="start"
-         x="4227.7798"
-         y="-4185.9502"
-         font-family="sans"
-         font-size="10px"
-         id="text384" />
-      <text
-         text-anchor="start"
-         x="4230.0298"
-         y="-4185.9502"
-         font-family="sans"
-         font-weight="bold"
-         font-size="14px"
-         id="text385">output →</text>
-      <text
-         text-anchor="start"
-         x="4293.7798"
-         y="-4185.9502"
-         font-family="sans"
-         font-size="10px"
-         id="text386" />
-      <text
-         text-anchor="start"
-         x="4086.03"
-         y="-4162.25"
-         font-family="monospace"
-         font-size="10px"
-         id="text387">results/references/agat_config.yaml</text>
-      <polygon
-         fill="#cfd957"
-         stroke="#cfd957"
-         points="4303.03,-4223.5 4080.03,-4223.5 "
-         id="polygon387"
-         style="stroke:#9b8923;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
-      <polygon
-         fill="#cfd957"
-         stroke="#cfd957"
-         points="4303.03,-4202.25 4080.03,-4202.25 "
-         id="polygon388"
-         style="stroke:#9b8923;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
-      <polygon
-         fill="none"
-         stroke="#cfd957"
-         stroke-width="2"
-         points="4302.03,-4151.5 4080.03,-4151.5 4080.03,-4258 4302.03,-4258 "
-         id="polygon389"
-         style="stroke:#9b8923;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
-    </g>
     <!-- 8&#45;&gt;7 -->
-    <g
-       id="edge24"
-       class="edge">
-      <title
-         id="title389">8-&gt;7</title>
-      <path
-         fill="none"
-         stroke="#808080"
-         stroke-width="2"
-         d="m 4113.58,-4150.62 c -13.25,9.09 -27.47,18.84 -42.04,28.84"
-         id="path389" />
-      <polygon
-         fill="#808080"
-         stroke="#808080"
-         stroke-width="2"
-         points="4073.6,-4118.95 4063.37,-4116.18 4069.64,-4124.72 "
-         id="polygon390" />
-    </g>
     <!-- 8&#45;&gt;30 -->
-    <g
-       id="edge57"
-       class="edge">
-      <title
-         id="title390">8-&gt;30</title>
-      <path
-         fill="none"
-         stroke="#808080"
-         stroke-width="2"
-         d="m 4224.99,-4150.64 c 6.57,11.62 12.97,24.07 18.04,36.14 59.35,141.54 91,179.64 91,333.12 0,0 0,0 0,204.88 0,164.31 29.99,354.07 50.14,463"
-         id="path390" />
-      <polygon
-         fill="#808080"
-         stroke="#808080"
-         stroke-width="2"
-         points="4387.56,-3114.4 4385.95,-3103.93 4380.68,-3113.11 "
-         id="polygon391" />
-    </g>
     <!-- 8&#45;&gt;47 -->
-    <g
-       id="edge92"
-       class="edge">
-      <title
-         id="title391">8-&gt;47</title>
-      <path
-         fill="none"
-         stroke="#808080"
-         stroke-width="2"
-         d="m 4079.05,-4198.05 c -130.78,9.01 -336.27,31.25 -391.02,83.55 -109.75,104.82 -75,181.36 -75,333.12 0,0 0,0 0,204.88 0,152.94 2.32,329.68 4.08,441.26"
-         id="path391" />
-      <polygon
-         fill="#808080"
-         stroke="#808080"
-         stroke-width="2"
-         points="3620.61,-3135.38 3617.27,-3125.33 3613.61,-3135.27 "
-         id="polygon392" />
-    </g>
     <!-- 8&#45;&gt;49 -->
-    <g
-       id="edge96"
-       class="edge">
-      <title
-         id="title392">8-&gt;49</title>
-      <path
-         fill="none"
-         stroke="#808080"
-         stroke-width="2"
-         d="m 4191.03,-4150.74 c 0,80.02 0,236.46 0,369.36 0,0 0,0 0,759.38 0,218 -95.7,280.66 -273,407.5 -65.59,46.92 -147.27,82.19 -219.23,107.19"
-         id="path392" />
-      <polygon
-         fill="#808080"
-         stroke="#808080"
-         stroke-width="2"
-         points="3700.34,-2504.13 3689.74,-2504.21 3698.07,-2510.75 "
-         id="polygon393" />
-    </g>
     <!-- 8&#45;&gt;51 -->
-    <g
-       id="edge100"
-       class="edge">
-      <title
-         id="title393">8-&gt;51</title>
-      <path
-         fill="none"
-         stroke="#808080"
-         stroke-width="2"
-         d="m 4200.12,-4150.52 c 1.82,11.83 3.57,24.33 4.91,36.02 16.84,147.48 24,184.69 24,333.12 0,0 0,0 0,759.38 0,385.66 -182.4,524.08 -533,684.75 -42.75,19.59 -295.78,69.07 -472.7,102.2"
-         id="path393" />
-      <polygon
-         fill="#808080"
-         stroke="#808080"
-         stroke-width="2"
-         points="3224.18,-2231.64 3213.71,-2233.25 3222.89,-2238.52 "
-         id="polygon394" />
-    </g>
     <!-- 9 -->
-    <g
-       id="node10"
-       class="node">
-      <title
-         id="title394">9</title>
-      <text
-         text-anchor="start"
-         x="110.15"
-         y="-2032.78"
-         font-family="sans"
-         font-weight="bold"
-         font-size="18px"
-         id="text394">join_mapping_stats</text>
-      <text
-         text-anchor="start"
-         x="37.029999"
-         y="-2004.08"
-         font-family="sans"
-         font-size="10px"
-         id="text395" />
-      <text
-         text-anchor="start"
-         x="39.279999"
-         y="-2004.08"
-         font-family="sans"
-         font-weight="bold"
-         font-size="14px"
-         id="text396">↪ input</text>
-      <text
-         text-anchor="start"
-         x="92.529999"
-         y="-2004.08"
-         font-family="sans"
-         font-size="10px"
-         id="text397" />
-      <text
-         text-anchor="start"
-         x="37.029999"
-         y="-1980.38"
-         font-family="monospace"
-         font-size="10px"
-         id="text398">results/samples/samtools/SRS8318899/mapping_stats.tsv</text>
-      <text
-         text-anchor="start"
-         x="37.029999"
-         y="-1959.12"
-         font-family="monospace"
-         font-size="10px"
-         id="text399">results/samples/samtools/SRS8318900/mapping_stats.tsv</text>
-      <text
-         text-anchor="start"
-         x="37.029999"
-         y="-1937.88"
-         font-family="monospace"
-         font-size="10px"
-         id="text400">results/samples/samtools/SRS8318901/mapping_stats.tsv</text>
-      <text
-         text-anchor="start"
-         x="286.78"
-         y="-1913.83"
-         font-family="sans"
-         font-size="10px"
-         id="text401" />
-      <text
-         text-anchor="start"
-         x="289.03"
-         y="-1913.83"
-         font-family="sans"
-         font-weight="bold"
-         font-size="14px"
-         id="text402">output →</text>
-      <text
-         text-anchor="start"
-         x="352.78"
-         y="-1913.83"
-         font-family="sans"
-         font-size="10px"
-         id="text403" />
-      <text
-         text-anchor="start"
-         x="37.029999"
-         y="-1890.12"
-         font-family="monospace"
-         font-size="10.00"
-         id="text404"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:13.0001px;font-family:monospace;-inkscape-font-specification:'monospace, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-anchor:start">results/dataset/files/mapping_stats.tsv</text>
-      <polygon
-         fill="#57d9b1"
-         stroke="#57d9b1"
-         points="362.03,-2020.38 31.03,-2020.38 "
-         id="polygon404"
-         style="stroke:#5ddbd8;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
-      <polygon
-         fill="#57d9b1"
-         stroke="#57d9b1"
-         points="362.03,-1930.12 31.03,-1930.12 "
-         id="polygon405"
-         style="stroke:#5ddbd8;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
-      <polygon
-         fill="none"
-         stroke="#57d9b1"
-         stroke-width="2"
-         points="361.03,-1879.38 31.03,-1879.38 31.03,-2054.88 361.03,-2054.88 "
-         id="polygon406"
-         style="stroke:#5ddbd8;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
-    </g>
     <!-- 9&#45;&gt;0 -->
     <!-- 35 -->
-    <g
-       id="node36"
-       class="node">
-      <title
-         id="title407">35</title>
-      <text
-         text-anchor="start"
-         x="717.40002"
-         y="-1713.03"
-         font-family="sans"
-         font-weight="bold"
-         font-size="18px"
-         id="text407">dataset_summary_plot</text>
-      <text
-         text-anchor="start"
-         x="684.03003"
-         y="-1684.33"
-         font-family="sans"
-         font-size="10px"
-         id="text408" />
-      <text
-         text-anchor="start"
-         x="686.28003"
-         y="-1684.33"
-         font-family="sans"
-         font-weight="bold"
-         font-size="14px"
-         id="text409">↪ input</text>
-      <text
-         text-anchor="start"
-         x="739.53003"
-         y="-1684.33"
-         font-family="sans"
-         font-size="10px"
-         id="text410" />
-      <text
-         text-anchor="start"
-         x="684.03003"
-         y="-1660.62"
-         font-family="monospace"
-         font-size="10px"
-         id="text411">config/chromosome_names.csv</text>
-      <text
-         text-anchor="start"
-         x="684.03003"
-         y="-1639.38"
-         font-family="monospace"
-         font-size="10px"
-         id="text412">config/sample_metadata.csv</text>
-      <text
-         text-anchor="start"
-         x="684.03003"
-         y="-1618.12"
-         font-family="monospace"
-         font-size="10px"
-         id="text413">results/dataset/files/depth_by_chrom_good.tsv</text>
-      <text
-         text-anchor="start"
-         x="684.03003"
-         y="-1596.88"
-         font-family="monospace"
-         font-size="10px"
-         id="text414">results/dataset/files/depth_by_chrom_raw.tsv</text>
-      <text
-         text-anchor="start"
-         x="684.03003"
-         y="-1575.62"
-         font-family="monospace"
-         font-size="10px"
-         id="text415">results/dataset/files/mapping_stats.tsv</text>
-      <text
-         text-anchor="start"
-         x="885.78003"
-         y="-1551.58"
-         font-family="sans"
-         font-size="10px"
-         id="text416" />
-      <text
-         text-anchor="start"
-         x="888.03003"
-         y="-1551.58"
-         font-family="sans"
-         font-weight="bold"
-         font-size="14px"
-         id="text417">output →</text>
-      <text
-         text-anchor="start"
-         x="951.78003"
-         y="-1551.58"
-         font-family="sans"
-         font-size="10px"
-         id="text418" />
-      <text
-         text-anchor="start"
-         x="684.03003"
-         y="-1527.88"
-         font-family="monospace"
-         font-size="10.00"
-         id="text419"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:11.0001px;font-family:monospace;-inkscape-font-specification:'monospace, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-anchor:start">results/dataset/plots/dataset_summary.png</text>
-      <polygon
-         fill="#a7d957"
-         stroke="#a7d957"
-         points="961.03,-1700.62 678.03,-1700.62 "
-         id="polygon419"
-         style="stroke:#b557d9;stroke-width:4.00003;stroke-dasharray:none;stroke-opacity:1" />
-      <polygon
-         fill="#a7d957"
-         stroke="#a7d957"
-         points="961.03,-1567.88 678.03,-1567.88 "
-         id="polygon420"
-         style="stroke:#b557d9;stroke-width:4.00003;stroke-dasharray:none;stroke-opacity:1" />
-      <polygon
-         fill="none"
-         stroke="#a7d957"
-         stroke-width="2"
-         points="960.03,-1517.12 678.03,-1517.12 678.03,-1735.12 960.03,-1735.12 "
-         id="polygon421"
-         style="stroke:#b557d9;stroke-width:4.00003;stroke-dasharray:none;stroke-opacity:1" />
-    </g>
     <!-- 9&#45;&gt;35 -->
-    <g
-       id="edge67"
-       class="edge">
-      <title
-         id="title421">9-&gt;35</title>
-      <path
-         fill="none"
-         stroke="#808080"
-         stroke-width="2"
-         d="m 357.27,-1878.38 c 95.19,51.79 214.99,116.98 308.71,167.98"
-         id="path421" />
-      <polygon
-         fill="#808080"
-         stroke="#808080"
-         stroke-width="2"
-         points="667.51,-1713.56 674.62,-1705.7 664.16,-1707.41 "
-         id="polygon422" />
-    </g>
     <!-- 10&#45;&gt;9 -->
-    <g
-       id="edge25"
-       class="edge">
-      <title
-         id="title422">10-&gt;9</title>
-      <path
-         fill="none"
-         stroke="#808080"
-         stroke-width="2"
-         d="m 488.82,-2667.8 c -59.23,141.53 -185.39,443.01 -251.08,599.99"
-         id="path422" />
-      <polygon
-         fill="#808080"
-         stroke="#808080"
-         stroke-width="2"
-         points="240.99,-2066.5 233.9,-2058.63 234.53,-2069.21 "
-         id="polygon423" />
-    </g>
     <!-- 11 -->
-    <g
-       id="node12"
-       class="node">
-      <title
-         id="title423">11</title>
-      <text
-         text-anchor="start"
-         x="3363.6499"
-         y="-1691.78"
-         font-family="sans"
-         font-weight="bold"
-         font-size="18px"
-         id="text423">join_cnv_calling</text>
-      <text
-         text-anchor="start"
-         x="3301.03"
-         y="-1663.08"
-         font-family="sans"
-         font-size="10px"
-         id="text424" />
-      <text
-         text-anchor="start"
-         x="3303.28"
-         y="-1663.08"
-         font-family="sans"
-         font-weight="bold"
-         font-size="14px"
-         id="text425">↪ input</text>
-      <text
-         text-anchor="start"
-         x="3356.53"
-         y="-1663.08"
-         font-family="sans"
-         font-size="10px"
-         id="text426" />
-      <text
-         text-anchor="start"
-         x="3301.03"
-         y="-1639.38"
-         font-family="monospace"
-         font-size="10px"
-         id="text427">results/samples/cnv/SRS8318899/cnv_calls.tsv</text>
-      <text
-         text-anchor="start"
-         x="3301.03"
-         y="-1618.12"
-         font-family="monospace"
-         font-size="10px"
-         id="text428">results/samples/cnv/SRS8318900/cnv_calls.tsv</text>
-      <text
-         text-anchor="start"
-         x="3301.03"
-         y="-1596.88"
-         font-family="monospace"
-         font-size="10px"
-         id="text429">results/samples/cnv/SRS8318901/cnv_calls.tsv</text>
-      <text
-         text-anchor="start"
-         x="3496.78"
-         y="-1572.83"
-         font-family="sans"
-         font-size="10px"
-         id="text430" />
-      <text
-         text-anchor="start"
-         x="3499.03"
-         y="-1572.83"
-         font-family="sans"
-         font-weight="bold"
-         font-size="14px"
-         id="text431">output →</text>
-      <text
-         text-anchor="start"
-         x="3562.78"
-         y="-1572.83"
-         font-family="sans"
-         font-size="10px"
-         id="text432" />
-      <text
-         text-anchor="start"
-         x="3301.03"
-         y="-1549.12"
-         font-family="monospace"
-         font-size="10.00"
-         id="text433"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:12.0001px;font-family:monospace;-inkscape-font-specification:'monospace, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-anchor:start">results/dataset/files/cnv_calls.tsv</text>
-      <polygon
-         fill="#d98957"
-         stroke="#d98957"
-         points="3572.03,-1679.38 3295.03,-1679.38 "
-         id="polygon433"
-         style="stroke:#5ddbd8;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
-      <polygon
-         fill="#d98957"
-         stroke="#d98957"
-         points="3572.03,-1589.12 3295.03,-1589.12 "
-         id="polygon434"
-         style="stroke:#5ddbd8;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
-      <polygon
-         fill="none"
-         stroke="#d98957"
-         stroke-width="2"
-         points="3571.03,-1538.38 3295.03,-1538.38 3295.03,-1713.88 3571.03,-1713.88 "
-         id="polygon435"
-         style="stroke:#5ddbd8;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
-    </g>
     <!-- 11&#45;&gt;0 -->
     <!-- 39 -->
-    <g
-       id="node40"
-       class="node">
-      <title
-         id="title436">39</title>
-      <text
-         text-anchor="start"
-         x="2796.3999"
-         y="-1361.4"
-         font-family="sans"
-         font-weight="bold"
-         font-size="18px"
-         id="text436">complete_db</text>
-      <text
-         text-anchor="start"
-         x="2715.03"
-         y="-1332.7"
-         font-family="sans"
-         font-size="10px"
-         id="text437" />
-      <text
-         text-anchor="start"
-         x="2717.28"
-         y="-1332.7"
-         font-family="sans"
-         font-weight="bold"
-         font-size="14px"
-         id="text438">↪ input</text>
-      <text
-         text-anchor="start"
-         x="2770.53"
-         y="-1332.7"
-         font-family="sans"
-         font-size="10px"
-         id="text439" />
-      <text
-         text-anchor="start"
-         x="2715.03"
-         y="-1309"
-         font-family="monospace"
-         font-size="10px"
-         id="text440">config/chromosome_names.csv</text>
-      <text
-         text-anchor="start"
-         x="2715.03"
-         y="-1287.75"
-         font-family="monospace"
-         font-size="10px"
-         id="text441">config/sample_metadata.csv</text>
-      <text
-         text-anchor="start"
-         x="2715.03"
-         y="-1266.5"
-         font-family="monospace"
-         font-size="10px"
-         id="text442">results/dataset/database/SRS8318899/cds.done</text>
-      <text
-         text-anchor="start"
-         x="2715.03"
-         y="-1245.25"
-         font-family="monospace"
-         font-size="10px"
-         id="text443">results/dataset/database/SRS8318899/prots.done</text>
-      <text
-         text-anchor="start"
-         x="2715.03"
-         y="-1224"
-         font-family="monospace"
-         font-size="10px"
-         id="text444">results/dataset/database/SRS8318900/cds.done</text>
-      <text
-         text-anchor="start"
-         x="2715.03"
-         y="-1202.75"
-         font-family="monospace"
-         font-size="10px"
-         id="text445">results/dataset/database/SRS8318900/prots.done</text>
-      <text
-         text-anchor="start"
-         x="2715.03"
-         y="-1181.5"
-         font-family="monospace"
-         font-size="10px"
-         id="text446">results/dataset/database/SRS8318901/cds.done</text>
-      <text
-         text-anchor="start"
-         x="2715.03"
-         y="-1160.25"
-         font-family="monospace"
-         font-size="10px"
-         id="text447">results/dataset/database/SRS8318901/prots.done</text>
-      <text
-         text-anchor="start"
-         x="2715.03"
-         y="-1139"
-         font-family="monospace"
-         font-size="10px"
-         id="text448">results/dataset/files/cnv_calls.tsv</text>
-      <text
-         text-anchor="start"
-         x="2715.03"
-         y="-1117.75"
-         font-family="monospace"
-         font-size="10px"
-         id="text449">results/dataset/files/feature_mapq_depth.tsv</text>
-      <text
-         text-anchor="start"
-         x="2715.03"
-         y="-1096.5"
-         font-family="monospace"
-         font-size="10px"
-         id="text450">results/dataset/snps/all_effects.tsv</text>
-      <text
-         text-anchor="start"
-         x="2715.03"
-         y="-1075.25"
-         font-family="monospace"
-         font-size="10px"
-         id="text451">results/dataset/snps/all_lofs.tsv</text>
-      <text
-         text-anchor="start"
-         x="2715.03"
-         y="-1054"
-         font-family="monospace"
-         font-size="10px"
-         id="text452">results/dataset/snps/all_nmds.tsv</text>
-      <text
-         text-anchor="start"
-         x="2715.03"
-         y="-1032.75"
-         font-family="monospace"
-         font-size="10px"
-         id="text453">results/dataset/snps/all_presence.tsv</text>
-      <text
-         text-anchor="start"
-         x="2715.03"
-         y="-1011.5"
-         font-family="monospace"
-         font-size="10px"
-         id="text454">results/dataset/snps/all_variants.tsv</text>
-      <text
-         text-anchor="start"
-         x="2715.03"
-         y="-990.25"
-         font-family="monospace"
-         font-size="10px"
-         id="text455">results/references/all.gff.tsv</text>
-      <text
-         text-anchor="start"
-         x="2922.78"
-         y="-966.20001"
-         font-family="sans"
-         font-size="10px"
-         id="text456" />
-      <text
-         text-anchor="start"
-         x="2925.03"
-         y="-966.20001"
-         font-family="sans"
-         font-weight="bold"
-         font-size="14px"
-         id="text457">output →</text>
-      <text
-         text-anchor="start"
-         x="2988.78"
-         y="-966.20001"
-         font-family="sans"
-         font-size="10px"
-         id="text458" />
-      <text
-         text-anchor="start"
-         x="2715.03"
-         y="-942.5"
-         font-family="monospace"
-         font-size="10.00"
-         id="text459"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:16.0001px;font-family:monospace;-inkscape-font-specification:'monospace, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-anchor:start;stroke-width:1.20001;stroke-dasharray:none">results/dataset/database.db</text>
-      <polygon
-         fill="#57d9d9"
-         stroke="#57d9d9"
-         points="2998.03,-1349 2709.03,-1349 "
-         id="polygon459"
-         style="stroke:#f88a00;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
-      <polygon
-         fill="#57d9d9"
-         stroke="#57d9d9"
-         points="2998.03,-982.5 2709.03,-982.5 "
-         id="polygon460"
-         style="stroke:#f88a00;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
-      <polygon
-         fill="none"
-         stroke="#57d9d9"
-         stroke-width="2"
-         points="2997.03,-931.75 2709.03,-931.75 2709.03,-1383.5 2997.03,-1383.5 "
-         id="polygon461"
-         style="stroke:#f88a00;stroke-width:5.00003;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1" />
-    </g>
     <!-- 11&#45;&gt;39 -->
-    <g
-       id="edge78"
-       class="edge">
-      <title
-         id="title461">11-&gt;39</title>
-      <path
-         fill="none"
-         stroke="#808080"
-         stroke-width="2"
-         d="m 3382.67,-1537.54 c -25.61,39.23 -59.42,84 -97.64,117.04 -26.17,22.62 -38.97,18.85 -69,36 -69.01,39.4 -143.79,85.35 -207.44,125.48"
-         id="path461" />
-      <polygon
-         fill="#808080"
-         stroke="#808080"
-         stroke-width="2"
-         points="3010.55,-1256.12 3000.22,-1253.74 3006.81,-1262.04 "
-         id="polygon462" />
-    </g>
     <!-- 12 -->
     <g
        id="node13"
@@ -4343,278 +3385,10 @@
          style="stroke:#5ddbd8;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
     </g>
     <!-- 12&#45;&gt;11 -->
-    <g
-       id="edge27"
-       class="edge">
-      <title
-         id="title472">12-&gt;11</title>
-      <path
-         fill="none"
-         stroke="#808080"
-         stroke-width="2"
-         d="m 3563.41,-1899.96 c -23.6,49.38 -56.24,117.68 -82.96,173.59"
-         id="path472" />
-      <polygon
-         fill="#808080"
-         stroke="#808080"
-         stroke-width="2"
-         points="3483.62,-1724.88 3476.15,-1717.37 3477.3,-1727.9 "
-         id="polygon473" />
-    </g>
     <!-- 28 -->
-    <g
-       id="node29"
-       class="node">
-      <title
-         id="title473">28</title>
-      <text
-         text-anchor="start"
-         x="3664.1499"
-         y="-1691.78"
-         font-family="sans"
-         font-weight="bold"
-         font-size="18px"
-         id="text473">depth_by_regions_plots</text>
-      <text
-         text-anchor="start"
-         x="3597.03"
-         y="-1663.08"
-         font-family="sans"
-         font-size="10px"
-         id="text474" />
-      <text
-         text-anchor="start"
-         x="3599.28"
-         y="-1663.08"
-         font-family="sans"
-         font-weight="bold"
-         font-size="14px"
-         id="text475">↪ input</text>
-      <text
-         text-anchor="start"
-         x="3652.53"
-         y="-1663.08"
-         font-family="sans"
-         font-size="10px"
-         id="text476" />
-      <text
-         text-anchor="start"
-         x="3597.03"
-         y="-1639.38"
-         font-family="monospace"
-         font-size="10px"
-         id="text477">&lt;function depth_by_regions_plots_input at 0x74e077d41e40&gt;</text>
-      <text
-         text-anchor="start"
-         x="3597.03"
-         y="-1618.12"
-         font-family="monospace"
-         font-size="10px"
-         id="text478">config/chromosome_names.csv</text>
-      <text
-         text-anchor="start"
-         x="3597.03"
-         y="-1596.88"
-         font-family="monospace"
-         font-size="10px"
-         id="text479">results/dataset/files/loci_to_plot.tsv</text>
-      <text
-         text-anchor="start"
-         x="3870.78"
-         y="-1572.83"
-         font-family="sans"
-         font-size="10px"
-         id="text480" />
-      <text
-         text-anchor="start"
-         x="3873.03"
-         y="-1572.83"
-         font-family="sans"
-         font-weight="bold"
-         font-size="14px"
-         id="text481">output →</text>
-      <text
-         text-anchor="start"
-         x="3936.78"
-         y="-1572.83"
-         font-family="sans"
-         font-size="10px"
-         id="text482" />
-      <text
-         text-anchor="start"
-         x="3597.03"
-         y="-1549.12"
-         font-family="monospace"
-         font-size="10.00"
-         id="text483"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:11.0001px;font-family:monospace;-inkscape-font-specification:'monospace, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-anchor:start">results/samples/plots/{sample}/depth_by_regions.png</text>
-      <polygon
-         fill="#5793d9"
-         stroke="#5793d9"
-         points="3946.03,-1679.38 3591.03,-1679.38 "
-         id="polygon483"
-         style="stroke:#b557d9;stroke-width:4.00003;stroke-dasharray:none;stroke-opacity:1" />
-      <polygon
-         fill="#5793d9"
-         stroke="#5793d9"
-         points="3946.03,-1589.12 3591.03,-1589.12 "
-         id="polygon484"
-         style="stroke:#b557d9;stroke-width:4.00003;stroke-dasharray:none;stroke-opacity:1" />
-      <polygon
-         fill="none"
-         stroke="#5793d9"
-         stroke-width="2"
-         points="3945.03,-1538.38 3591.03,-1538.38 3591.03,-1713.88 3945.03,-1713.88 "
-         id="polygon485"
-         style="stroke:#b557d9;stroke-width:4.00003;stroke-dasharray:none;stroke-opacity:1" />
-    </g>
     <!-- 12&#45;&gt;28 -->
-    <g
-       id="edge54"
-       class="edge">
-      <title
-         id="title485">12-&gt;28</title>
-      <path
-         fill="none"
-         stroke="#808080"
-         stroke-width="2"
-         d="m 3628.79,-1899.96 c 25.25,49.49 60.2,117.97 88.77,173.94"
-         id="path485" />
-      <polygon
-         fill="#808080"
-         stroke="#808080"
-         stroke-width="2"
-         points="3720.56,-1727.83 3721.99,-1717.33 3714.33,-1724.65 "
-         id="polygon486" />
-    </g>
     <!-- 31 -->
-    <g
-       id="node32"
-       class="node">
-      <title
-         id="title486">31</title>
-      <text
-         text-anchor="start"
-         x="4056.1499"
-         y="-1691.78"
-         font-family="sans"
-         font-weight="bold"
-         font-size="18px"
-         id="text486">mapq_plot</text>
-      <text
-         text-anchor="start"
-         x="3971.03"
-         y="-1663.08"
-         font-family="sans"
-         font-size="10px"
-         id="text487" />
-      <text
-         text-anchor="start"
-         x="3973.28"
-         y="-1663.08"
-         font-family="sans"
-         font-weight="bold"
-         font-size="14px"
-         id="text488">↪ input</text>
-      <text
-         text-anchor="start"
-         x="4026.53"
-         y="-1663.08"
-         font-family="sans"
-         font-size="10px"
-         id="text489" />
-      <text
-         text-anchor="start"
-         x="3971.03"
-         y="-1639.38"
-         font-family="monospace"
-         font-size="10px"
-         id="text490">&lt;function mapq_plot_input at 0x74e077d41c60&gt;</text>
-      <text
-         text-anchor="start"
-         x="3971.03"
-         y="-1618.12"
-         font-family="monospace"
-         font-size="10px"
-         id="text491">config/chromosome_names.csv</text>
-      <text
-         text-anchor="start"
-         x="3971.03"
-         y="-1596.88"
-         font-family="monospace"
-         font-size="10px"
-         id="text492">results/dataset/files/loci_to_plot.tsv</text>
-      <text
-         text-anchor="start"
-         x="4166.7798"
-         y="-1572.83"
-         font-family="sans"
-         font-size="10px"
-         id="text493" />
-      <text
-         text-anchor="start"
-         x="4169.0298"
-         y="-1572.83"
-         font-family="sans"
-         font-weight="bold"
-         font-size="14px"
-         id="text494">output →</text>
-      <text
-         text-anchor="start"
-         x="4232.7798"
-         y="-1572.83"
-         font-family="sans"
-         font-size="10px"
-         id="text495" />
-      <text
-         text-anchor="start"
-         x="3971.03"
-         y="-1549.12"
-         font-family="monospace"
-         font-size="10px"
-         id="text496"
-         style="font-size:10px;font-family:monospace;text-anchor:start"><tspan
-           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:11.0001px;font-family:Sans;-inkscape-font-specification:'Sans, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal"
-           id="tspan1">results/samples/plots/{sample}/mapq.png</tspan></text>
-      <polygon
-         fill="#5761d9"
-         stroke="#5761d9"
-         points="4242.03,-1679.38 3965.03,-1679.38 "
-         id="polygon496"
-         style="stroke:#b557d9;stroke-width:4.00003;stroke-dasharray:none;stroke-opacity:1" />
-      <polygon
-         fill="#5761d9"
-         stroke="#5761d9"
-         points="4242.03,-1589.12 3965.03,-1589.12 "
-         id="polygon497"
-         style="stroke:#b557d9;stroke-width:4.00003;stroke-dasharray:none;stroke-opacity:1" />
-      <polygon
-         fill="none"
-         stroke="#5761d9"
-         stroke-width="2"
-         points="4241.03,-1538.38 3965.03,-1538.38 3965.03,-1713.88 4241.03,-1713.88 "
-         id="polygon498"
-         style="stroke:#b557d9;stroke-width:4.00003;stroke-dasharray:none;stroke-opacity:1" />
-    </g>
     <!-- 12&#45;&gt;31 -->
-    <g
-       id="edge61"
-       class="edge">
-      <title
-         id="title498">12-&gt;31</title>
-      <path
-         fill="none"
-         stroke="#808080"
-         stroke-width="2"
-         d="m 3739.8,-1908.17 c 34.98,13.61 72.33,27.8 107.23,40.42 47.58,17.21 67.21,6.06 108,36 38.12,27.98 70.39,68.71 94.97,106.47"
-         id="path498" />
-      <polygon
-         fill="#808080"
-         stroke="#808080"
-         stroke-width="2"
-         points="4052.68,-1727.58 4055.1,-1717.27 4046.78,-1723.82 "
-         id="polygon499" />
-    </g>
     <!-- 13 -->
     <g
        id="node14"
@@ -4734,24 +3508,6 @@
          id="polygon511" />
     </g>
     <!-- 13&#45;&gt;28 -->
-    <g
-       id="edge55"
-       class="edge">
-      <title
-         id="title511">13-&gt;28</title>
-      <path
-         fill="none"
-         stroke="#808080"
-         stroke-width="2"
-         d="m 1967.27,-2123.8 c 20.86,16.54 40.19,35.67 54.76,57.3 50.47,74.97 -26.67,141.17 43,198.75 64.93,53.67 1439.32,1.11 1516,36 49.97,22.74 92.54,65.85 124.38,106.66"
-         id="path511" />
-      <polygon
-         fill="#808080"
-         stroke="#808080"
-         stroke-width="2"
-         points="3708.15,-1727.26 3711.43,-1717.19 3702.59,-1723.02 "
-         id="polygon512" />
-    </g>
     <!-- 14&#45;&gt;13 -->
     <g
        id="edge31"
@@ -4902,139 +3658,7 @@
          id="polygon525" />
     </g>
     <!-- 25 -->
-    <g
-       id="node26"
-       class="node">
-      <title
-         id="title525">25</title>
-      <text
-         text-anchor="start"
-         x="482.28"
-         y="-1233.9"
-         font-family="sans"
-         font-weight="bold"
-         font-size="18px"
-         id="text525">depth_distribution_plots</text>
-      <text
-         text-anchor="start"
-         x="411.03"
-         y="-1205.2"
-         font-family="sans"
-         font-size="10px"
-         id="text526" />
-      <text
-         text-anchor="start"
-         x="413.28"
-         y="-1205.2"
-         font-family="sans"
-         font-weight="bold"
-         font-size="14px"
-         id="text527">↪ input</text>
-      <text
-         text-anchor="start"
-         x="466.53"
-         y="-1205.2"
-         font-family="sans"
-         font-size="10px"
-         id="text528" />
-      <text
-         text-anchor="start"
-         x="411.03"
-         y="-1181.5"
-         font-family="monospace"
-         font-size="10px"
-         id="text529">config/chromosome_names.csv</text>
-      <text
-         text-anchor="start"
-         x="411.03"
-         y="-1160.25"
-         font-family="monospace"
-         font-size="10px"
-         id="text530">results/samples/samtools/{sample}/depth_distribution.tsv</text>
-      <text
-         text-anchor="start"
-         x="411.03"
-         y="-1139"
-         font-family="monospace"
-         font-size="10px"
-         id="text531">results/samples/samtools/{sample}/global_mode.tsv</text>
-      <text
-         text-anchor="start"
-         x="702.78003"
-         y="-1114.95"
-         font-family="sans"
-         font-size="10px"
-         id="text532" />
-      <text
-         text-anchor="start"
-         x="705.03003"
-         y="-1114.95"
-         font-family="sans"
-         font-weight="bold"
-         font-size="14px"
-         id="text533">output →</text>
-      <text
-         text-anchor="start"
-         x="768.78003"
-         y="-1114.95"
-         font-family="sans"
-         font-size="10px"
-         id="text534" />
-      <text
-         text-anchor="start"
-         x="411.03"
-         y="-1091.25"
-         font-family="monospace"
-         font-size="10.00"
-         id="text535"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10px;font-family:monospace;-inkscape-font-specification:'monospace, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal">results/samples/plots/{sample}/depth_chrom_distribution.png</text>
-      <text
-         text-anchor="start"
-         x="411.03"
-         y="-1070"
-         font-family="monospace"
-         font-size="10.00"
-         id="text536"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10px;font-family:monospace;-inkscape-font-specification:'monospace, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal">results/samples/plots/{sample}/depth_global_distribution.png</text>
-      <polygon
-         fill="#d9c557"
-         stroke="#d9c557"
-         points="778.03,-1221.5 405.03,-1221.5 "
-         id="polygon536"
-         style="stroke:#b557d9;stroke-width:4.00003;stroke-dasharray:none;stroke-opacity:1" />
-      <polygon
-         fill="#d9c557"
-         stroke="#d9c557"
-         points="778.03,-1131.25 405.03,-1131.25 "
-         id="polygon537"
-         style="stroke:#b557d9;stroke-width:4.00003;stroke-dasharray:none;stroke-opacity:1" />
-      <polygon
-         fill="none"
-         stroke="#d9c557"
-         stroke-width="2"
-         points="777.03,-1059.25 405.03,-1059.25 405.03,-1256 777.03,-1256 "
-         id="polygon538"
-         style="stroke:#b557d9;stroke-width:4.00003;stroke-dasharray:none;stroke-opacity:1" />
-    </g>
     <!-- 15&#45;&gt;25 -->
-    <g
-       id="edge48"
-       class="edge">
-      <title
-         id="title538">15-&gt;25</title>
-      <path
-         fill="none"
-         stroke="#808080"
-         stroke-width="2"
-         d="m 837.04,-2397.51 c -143.77,59.14 -337.89,165.31 -428.01,331.01 -74.45,136.88 68.22,587.08 141.87,797.57"
-         id="path538" />
-      <polygon
-         fill="#808080"
-         stroke="#808080"
-         stroke-width="2"
-         points="554.1,-1270.4 554.11,-1259.8 547.49,-1268.08 "
-         id="polygon539" />
-    </g>
     <!-- 34 -->
     <g
        id="node35"
@@ -5192,334 +3816,14 @@
          id="polygon553" />
     </g>
     <!-- 17&#45;&gt;28 -->
-    <g
-       id="edge52"
-       class="edge">
-      <title
-         id="title553">17-&gt;28</title>
-      <path
-         fill="none"
-         stroke="#808080"
-         stroke-width="2"
-         d="m 3755.6,-2102.57 c 2.73,104.67 7.04,269.47 9.8,374.97"
-         id="path553" />
-      <polygon
-         fill="#808080"
-         stroke="#808080"
-         stroke-width="2"
-         points="3768.89,-1727.83 3765.66,-1717.75 3761.9,-1727.65 "
-         id="polygon554" />
-    </g>
     <!-- 17&#45;&gt;31 -->
-    <g
-       id="edge59"
-       class="edge">
-      <title
-         id="title554">17-&gt;31</title>
-      <path
-         fill="none"
-         stroke="#808080"
-         stroke-width="2"
-         d="m 3847.85,-2102.53 c 9.66,11.77 18.93,23.92 27.18,36.03 55.41,81.42 52.8,111.24 98,198.75 24.2,46.86 51.87,98.36 75.45,141.64"
-         id="path554" />
-      <polygon
-         fill="#808080"
-         stroke="#808080"
-         stroke-width="2"
-         points="4051.53,-1727.82 4053.24,-1717.37 4045.38,-1724.47 "
-         id="polygon555" />
-    </g>
     <!-- 18&#45;&gt;17 -->
-    <g
-       id="edge37"
-       class="edge">
-      <title
-         id="title555">18-&gt;17</title>
-      <path
-         fill="none"
-         stroke="#808080"
-         stroke-width="2"
-         d="m 3329.96,-3232.92 c -0.53,162.71 7.98,533.66 94.07,618.42 97.26,95.77 211.1,-63.07 305,36 65.41,69.02 64.21,180.96 50.99,264.71"
-         id="path555" />
-      <polygon
-         fill="#808080"
-         stroke="#808080"
-         stroke-width="2"
-         points="3783.5,-2313.39 3778.4,-2304.11 3776.6,-2314.55 "
-         id="polygon556" />
-    </g>
     <!-- 19 -->
-    <g
-       id="node20"
-       class="node">
-      <title
-         id="title556">19</title>
-      <text
-         text-anchor="start"
-         x="1675.65"
-         y="-2032.78"
-         font-family="sans"
-         font-weight="bold"
-         font-size="18px"
-         id="text556">join_depth_by_chrom_good</text>
-      <text
-         text-anchor="start"
-         x="1619.03"
-         y="-2004.08"
-         font-family="sans"
-         font-size="10px"
-         id="text557" />
-      <text
-         text-anchor="start"
-         x="1621.28"
-         y="-2004.08"
-         font-family="sans"
-         font-weight="bold"
-         font-size="14px"
-         id="text558">↪ input</text>
-      <text
-         text-anchor="start"
-         x="1674.53"
-         y="-2004.08"
-         font-family="sans"
-         font-size="10px"
-         id="text559" />
-      <text
-         text-anchor="start"
-         x="1619.03"
-         y="-1980.38"
-         font-family="monospace"
-         font-size="10px"
-         id="text560">results/samples/mosdepth/SRS8318899/depth_by_chrom_good.tsv</text>
-      <text
-         text-anchor="start"
-         x="1619.03"
-         y="-1959.12"
-         font-family="monospace"
-         font-size="10px"
-         id="text561">results/samples/mosdepth/SRS8318900/depth_by_chrom_good.tsv</text>
-      <text
-         text-anchor="start"
-         x="1619.03"
-         y="-1937.88"
-         font-family="monospace"
-         font-size="10px"
-         id="text562">results/samples/mosdepth/SRS8318901/depth_by_chrom_good.tsv</text>
-      <text
-         text-anchor="start"
-         x="1904.78"
-         y="-1913.83"
-         font-family="sans"
-         font-size="10px"
-         id="text563" />
-      <text
-         text-anchor="start"
-         x="1907.03"
-         y="-1913.83"
-         font-family="sans"
-         font-weight="bold"
-         font-size="14px"
-         id="text564">output →</text>
-      <text
-         text-anchor="start"
-         x="1970.78"
-         y="-1913.83"
-         font-family="sans"
-         font-size="10px"
-         id="text565" />
-      <text
-         text-anchor="start"
-         x="1619.03"
-         y="-1890.12"
-         font-family="monospace"
-         font-size="10.00"
-         id="text566"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:13.0001px;font-family:monospace;-inkscape-font-specification:'monospace, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-anchor:start">results/dataset/files/depth_by_chrom_good.tsv</text>
-      <polygon
-         fill="#89d957"
-         stroke="#89d957"
-         points="1980.03,-2020.38 1613.03,-2020.38 "
-         id="polygon566"
-         style="stroke:#5ddbd8;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
-      <polygon
-         fill="#89d957"
-         stroke="#89d957"
-         points="1980.03,-1930.12 1613.03,-1930.12 "
-         id="polygon567"
-         style="stroke:#5ddbd8;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
-      <polygon
-         fill="none"
-         stroke="#89d957"
-         stroke-width="2"
-         points="1979.03,-1879.38 1613.03,-1879.38 1613.03,-2054.88 1979.03,-2054.88 "
-         id="polygon568"
-         style="stroke:#5ddbd8;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
-    </g>
     <!-- 19&#45;&gt;0 -->
     <!-- 19&#45;&gt;35 -->
-    <g
-       id="edge68"
-       class="edge">
-      <title
-         id="title569">19-&gt;35</title>
-      <path
-         fill="none"
-         stroke="#808080"
-         stroke-width="2"
-         d="m 1635.51,-1878.4 c -10.81,4.06 -21.7,7.67 -32.48,10.65 -230.16,63.51 -314.14,-52.22 -536,36 -49.48,19.67 -96.52,53.09 -136.06,87.29"
-         id="path569" />
-      <polygon
-         fill="#808080"
-         stroke="#808080"
-         stroke-width="2"
-         points="933.43,-1741.97 923.61,-1738 928.81,-1747.23 "
-         id="polygon570" />
-    </g>
     <!-- 20&#45;&gt;19 -->
-    <g
-       id="edge39"
-       class="edge">
-      <title
-         id="title570">20-&gt;19</title>
-      <path
-         fill="none"
-         stroke="#808080"
-         stroke-width="2"
-         d="m 1500.82,-2134.49 c 40.03,22.56 85.55,48.21 128.65,72.5"
-         id="path570" />
-      <polygon
-         fill="#808080"
-         stroke="#808080"
-         stroke-width="2"
-         points="1631.04,-2065.12 1638.03,-2057.17 1627.6,-2059.03 "
-         id="polygon571" />
-    </g>
     <!-- 26 -->
-    <g
-       id="node27"
-       class="node">
-      <title
-         id="title571">26</title>
-      <text
-         text-anchor="start"
-         x="1316.65"
-         y="-2032.78"
-         font-family="sans"
-         font-weight="bold"
-         font-size="18px"
-         id="text571">depth_by_chrom_plots</text>
-      <text
-         text-anchor="start"
-         x="1245.03"
-         y="-2004.08"
-         font-family="sans"
-         font-size="10px"
-         id="text572" />
-      <text
-         text-anchor="start"
-         x="1247.28"
-         y="-2004.08"
-         font-family="sans"
-         font-weight="bold"
-         font-size="14px"
-         id="text573">↪ input</text>
-      <text
-         text-anchor="start"
-         x="1300.53"
-         y="-2004.08"
-         font-family="sans"
-         font-size="10px"
-         id="text574" />
-      <text
-         text-anchor="start"
-         x="1245.03"
-         y="-1980.38"
-         font-family="monospace"
-         font-size="10px"
-         id="text575">config/chromosome_names.csv</text>
-      <text
-         text-anchor="start"
-         x="1245.03"
-         y="-1959.12"
-         font-family="monospace"
-         font-size="10px"
-         id="text576">results/samples/mosdepth/{sample}/depth_by_chrom_good.tsv</text>
-      <text
-         text-anchor="start"
-         x="1245.03"
-         y="-1937.88"
-         font-family="monospace"
-         font-size="10px"
-         id="text577">results/samples/mosdepth/{sample}/depth_by_chrom_raw.tsv</text>
-      <text
-         text-anchor="start"
-         x="1518.78"
-         y="-1913.83"
-         font-family="sans"
-         font-size="10px"
-         id="text578" />
-      <text
-         text-anchor="start"
-         x="1521.03"
-         y="-1913.83"
-         font-family="sans"
-         font-weight="bold"
-         font-size="14px"
-         id="text579">output →</text>
-      <text
-         text-anchor="start"
-         x="1584.78"
-         y="-1913.83"
-         font-family="sans"
-         font-size="10px"
-         id="text580" />
-      <text
-         text-anchor="start"
-         x="1245.03"
-         y="-1890.12"
-         font-family="monospace"
-         font-size="10.00"
-         id="text581"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:11.0001px;font-family:monospace;-inkscape-font-specification:'monospace, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-anchor:start">results/samples/plots/{sample}/depth_by_chrom.png</text>
-      <polygon
-         fill="#d9a757"
-         stroke="#d9a757"
-         points="1594.03,-2020.38 1239.03,-2020.38 "
-         id="polygon581"
-         style="stroke:#b557d9;stroke-width:4.00003;stroke-dasharray:none;stroke-opacity:1" />
-      <polygon
-         fill="#d9a757"
-         stroke="#d9a757"
-         points="1594.03,-1930.12 1239.03,-1930.12 "
-         id="polygon582"
-         style="stroke:#b557d9;stroke-width:4.00003;stroke-dasharray:none;stroke-opacity:1" />
-      <polygon
-         fill="none"
-         stroke="#d9a757"
-         stroke-width="2"
-         points="1593.03,-1879.38 1239.03,-1879.38 1239.03,-2054.88 1593.03,-2054.88 "
-         id="polygon583"
-         style="stroke:#b557d9;stroke-width:4.00003;stroke-dasharray:none;stroke-opacity:1" />
-    </g>
     <!-- 20&#45;&gt;26 -->
-    <g
-       id="edge50"
-       class="edge">
-      <title
-         id="title583">20-&gt;26</title>
-      <path
-         fill="none"
-         stroke="#808080"
-         stroke-width="2"
-         d="m 1392.44,-2134.49 c 2.93,20.65 6.22,43.89 9.4,66.31"
-         id="path583" />
-      <polygon
-         fill="#808080"
-         stroke="#808080"
-         stroke-width="2"
-         points="1405.28,-2068.85 1403.22,-2058.46 1398.35,-2067.87 "
-         id="polygon584" />
-    </g>
     <!-- 20&#45;&gt;34 -->
     <g
        id="edge65"
@@ -5540,151 +3844,9 @@
          id="polygon585" />
     </g>
     <!-- 21 -->
-    <g
-       id="node22"
-       class="node">
-      <title
-         id="title585">21</title>
-      <text
-         text-anchor="start"
-         x="2140.8999"
-         y="-1691.78"
-         font-family="sans"
-         font-weight="bold"
-         font-size="18px"
-         id="text585">join_mapq_depth</text>
-      <text
-         text-anchor="start"
-         x="2043.03"
-         y="-1663.08"
-         font-family="sans"
-         font-size="10px"
-         id="text586" />
-      <text
-         text-anchor="start"
-         x="2045.28"
-         y="-1663.08"
-         font-family="sans"
-         font-weight="bold"
-         font-size="14px"
-         id="text587">↪ input</text>
-      <text
-         text-anchor="start"
-         x="2098.53"
-         y="-1663.08"
-         font-family="sans"
-         font-size="10px"
-         id="text588" />
-      <text
-         text-anchor="start"
-         x="2043.03"
-         y="-1639.38"
-         font-family="monospace"
-         font-size="10px"
-         id="text589">results/samples/samtools/SRS8318899/feature_mapq_depth.tsv</text>
-      <text
-         text-anchor="start"
-         x="2043.03"
-         y="-1618.12"
-         font-family="monospace"
-         font-size="10px"
-         id="text590">results/samples/samtools/SRS8318900/feature_mapq_depth.tsv</text>
-      <text
-         text-anchor="start"
-         x="2043.03"
-         y="-1596.88"
-         font-family="monospace"
-         font-size="10px"
-         id="text591">results/samples/samtools/SRS8318901/feature_mapq_depth.tsv</text>
-      <text
-         text-anchor="start"
-         x="2322.78"
-         y="-1572.83"
-         font-family="sans"
-         font-size="10px"
-         id="text592" />
-      <text
-         text-anchor="start"
-         x="2325.03"
-         y="-1572.83"
-         font-family="sans"
-         font-weight="bold"
-         font-size="14px"
-         id="text593">output →</text>
-      <text
-         text-anchor="start"
-         x="2388.78"
-         y="-1572.83"
-         font-family="sans"
-         font-size="10px"
-         id="text594" />
-      <text
-         text-anchor="start"
-         x="2043.03"
-         y="-1549.12"
-         font-family="monospace"
-         font-size="10.00"
-         id="text595"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:13.0001px;font-family:monospace;-inkscape-font-specification:'monospace, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-anchor:start">results/dataset/files/feature_mapq_depth.tsv</text>
-      <polygon
-         fill="#57d9bb"
-         stroke="#57d9bb"
-         points="2398.03,-1679.38 2037.03,-1679.38 "
-         id="polygon595"
-         style="stroke:#5ddbd8;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
-      <polygon
-         fill="#57d9bb"
-         stroke="#57d9bb"
-         points="2398.03,-1589.12 2037.03,-1589.12 "
-         id="polygon596"
-         style="stroke:#5ddbd8;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
-      <polygon
-         fill="none"
-         stroke="#57d9bb"
-         stroke-width="2"
-         points="2397.03,-1538.38 2037.03,-1538.38 2037.03,-1713.88 2397.03,-1713.88 "
-         id="polygon597"
-         style="stroke:#5ddbd8;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
-    </g>
     <!-- 21&#45;&gt;0 -->
     <!-- 21&#45;&gt;39 -->
-    <g
-       id="edge80"
-       class="edge">
-      <title
-         id="title598">21-&gt;39</title>
-      <path
-         fill="none"
-         stroke="#808080"
-         stroke-width="2"
-         d="m 2307.86,-1537.49 c 40.66,37.6 89.99,81.05 137.17,116.99 80.09,61.02 174.42,122.19 252.19,170.05"
-         id="path598" />
-      <polygon
-         fill="#808080"
-         stroke="#808080"
-         stroke-width="2"
-         points="2698.8,-1253.58 2705.5,-1245.37 2695.14,-1247.62 "
-         id="polygon599" />
-    </g>
     <!-- 22&#45;&gt;21 -->
-    <g
-       id="edge41"
-       class="edge">
-      <title
-         id="title599">22-&gt;21</title>
-      <path
-         fill="none"
-         stroke="#808080"
-         stroke-width="2"
-         d="m 2241.9,-1868.07 c -4.55,44.05 -9.91,95.98 -14.49,140.33"
-         id="path599" />
-      <polygon
-         fill="#808080"
-         stroke="#808080"
-         stroke-width="2"
-         points="2230.9,-1727.45 2226.39,-1717.86 2223.94,-1728.17 "
-         id="polygon600" />
-    </g>
     <!-- 23&#45;&gt;22 -->
     <g
        id="edge43"
@@ -5705,24 +3867,6 @@
          id="polygon601" />
     </g>
     <!-- 23&#45;&gt;31 -->
-    <g
-       id="edge62"
-       class="edge">
-      <title
-         id="title601">23-&gt;31</title>
-      <path
-         fill="none"
-         stroke="#808080"
-         stroke-width="2"
-         d="m 2429.85,-2135.19 c 42.73,13.19 88.62,25.27 132.18,32.69 130.07,22.17 1072.36,-29.34 1187,36 90.86,51.79 46.97,130.23 126,198.75 29.45,25.54 49.77,11.37 80,36 35.96,29.3 67.47,69.34 92.08,106.23"
-         id="path601" />
-      <polygon
-         fill="#808080"
-         stroke="#808080"
-         stroke-width="2"
-         points="4049.98,-1727.52 4052.53,-1717.23 4044.13,-1723.69 "
-         id="polygon602" />
-    </g>
     <!-- 24&#45;&gt;22 -->
     <g
        id="edge44"
@@ -5875,930 +4019,826 @@
     <!-- 25&#45;&gt;0 -->
     <!-- 26&#45;&gt;0 -->
     <!-- 27&#45;&gt;26 -->
-    <g
-       id="edge49"
-       class="edge">
-      <title
-         id="title617">27-&gt;26</title>
-      <path
-         fill="none"
-         stroke="#808080"
-         stroke-width="2"
-         d="m 1114.39,-2134.49 c 40.99,22.61 87.61,48.32 131.73,72.66"
-         id="path617" />
-      <polygon
-         fill="#808080"
-         stroke="#808080"
-         stroke-width="2"
-         points="1247.56,-2065.04 1254.63,-2057.14 1244.18,-2058.91 "
-         id="polygon618" />
-    </g>
     <!-- 36 -->
-    <g
-       id="node37"
-       class="node">
-      <title
-         id="title618">36</title>
-      <text
-         text-anchor="start"
-         x="484.28"
-         y="-2032.78"
-         font-family="sans"
-         font-weight="bold"
-         font-size="18px"
-         id="text618">join_depth_by_chrom_raw</text>
-      <text
-         text-anchor="start"
-         x="425.03"
-         y="-2004.08"
-         font-family="sans"
-         font-size="10px"
-         id="text619" />
-      <text
-         text-anchor="start"
-         x="427.28"
-         y="-2004.08"
-         font-family="sans"
-         font-weight="bold"
-         font-size="14px"
-         id="text620">↪ input</text>
-      <text
-         text-anchor="start"
-         x="480.53"
-         y="-2004.08"
-         font-family="sans"
-         font-size="10px"
-         id="text621" />
-      <text
-         text-anchor="start"
-         x="425.03"
-         y="-1980.38"
-         font-family="monospace"
-         font-size="10px"
-         id="text622">results/samples/mosdepth/SRS8318899/depth_by_chrom_raw.tsv</text>
-      <text
-         text-anchor="start"
-         x="425.03"
-         y="-1959.12"
-         font-family="monospace"
-         font-size="10px"
-         id="text623">results/samples/mosdepth/SRS8318900/depth_by_chrom_raw.tsv</text>
-      <text
-         text-anchor="start"
-         x="425.03"
-         y="-1937.88"
-         font-family="monospace"
-         font-size="10px"
-         id="text624">results/samples/mosdepth/SRS8318901/depth_by_chrom_raw.tsv</text>
-      <text
-         text-anchor="start"
-         x="704.78003"
-         y="-1913.83"
-         font-family="sans"
-         font-size="10px"
-         id="text625" />
-      <text
-         text-anchor="start"
-         x="707.03003"
-         y="-1913.83"
-         font-family="sans"
-         font-weight="bold"
-         font-size="14px"
-         id="text626">output →</text>
-      <text
-         text-anchor="start"
-         x="770.78003"
-         y="-1913.83"
-         font-family="sans"
-         font-size="10px"
-         id="text627" />
-      <text
-         text-anchor="start"
-         x="425.03"
-         y="-1890.12"
-         font-family="monospace"
-         font-size="10px"
-         id="text628">results/dataset/files/depth_by_chrom_raw.tsv</text>
-      <polygon
-         fill="#d9d957"
-         stroke="#d9d957"
-         points="780.03,-2020.38 419.03,-2020.38 "
-         id="polygon628"
-         style="stroke:#5ddbd8;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
-      <polygon
-         fill="#d9d957"
-         stroke="#d9d957"
-         points="780.03,-1930.12 419.03,-1930.12 "
-         id="polygon629"
-         style="stroke:#5ddbd8;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
-      <polygon
-         fill="none"
-         stroke="#d9d957"
-         stroke-width="2"
-         points="779.03,-1879.38 419.03,-1879.38 419.03,-2054.88 779.03,-2054.88 "
-         id="polygon630"
-         style="stroke:#5ddbd8;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
-    </g>
     <!-- 27&#45;&gt;36 -->
-    <g
-       id="edge70"
-       class="edge">
-      <title
-         id="title630">27-&gt;36</title>
-      <path
-         fill="none"
-         stroke="#808080"
-         stroke-width="2"
-         d="m 881.36,-2134.49 c -38.2,22.51 -81.63,48.1 -122.78,72.35"
-         id="path630" />
-      <polygon
-         fill="#808080"
-         stroke="#808080"
-         stroke-width="2"
-         points="760.61,-2059.28 750.22,-2057.22 757.06,-2065.31 "
-         id="polygon631" />
-    </g>
     <!-- 28&#45;&gt;0 -->
     <!-- 29 -->
-    <g
-       id="node30"
-       class="node">
-      <title
-         id="title632">29</title>
-      <text
-         text-anchor="start"
-         x="4087.6499"
-         y="-2032.78"
-         font-family="sans"
-         font-weight="bold"
-         font-size="18px"
-         id="text632">loci</text>
-      <text
-         text-anchor="start"
-         x="3989.03"
-         y="-2004.08"
-         font-family="sans"
-         font-size="10px"
-         id="text633" />
-      <text
-         text-anchor="start"
-         x="3991.28"
-         y="-2004.08"
-         font-family="sans"
-         font-weight="bold"
-         font-size="14px"
-         id="text634">↪ input</text>
-      <text
-         text-anchor="start"
-         x="4044.53"
-         y="-2004.08"
-         font-family="sans"
-         font-size="10px"
-         id="text635" />
-      <text
-         text-anchor="start"
-         x="3989.03"
-         y="-1980.38"
-         font-family="monospace"
-         font-size="10px"
-         id="text636">config/loci.csv</text>
-      <text
-         text-anchor="start"
-         x="3989.03"
-         y="-1959.12"
-         font-family="monospace"
-         font-size="10px"
-         id="text637">results/references/VNBI/VNBI.gff.tsv</text>
-      <text
-         text-anchor="start"
-         x="3989.03"
-         y="-1937.88"
-         font-family="monospace"
-         font-size="10px"
-         id="text638">results/references/VNI/VNI.gff.tsv</text>
-      <text
-         text-anchor="start"
-         x="4148.7798"
-         y="-1913.83"
-         font-family="sans"
-         font-size="10px"
-         id="text639" />
-      <text
-         text-anchor="start"
-         x="4151.0298"
-         y="-1913.83"
-         font-family="sans"
-         font-weight="bold"
-         font-size="14px"
-         id="text640">output →</text>
-      <text
-         text-anchor="start"
-         x="4214.7798"
-         y="-1913.83"
-         font-family="sans"
-         font-size="10px"
-         id="text641" />
-      <text
-         text-anchor="start"
-         x="3989.03"
-         y="-1890.12"
-         font-family="monospace"
-         font-size="10px"
-         id="text642">results/dataset/files/loci_to_plot.tsv</text>
-      <polygon
-         fill="#d99d57"
-         stroke="#d99d57"
-         points="4224.03,-2020.38 3983.03,-2020.38 "
-         id="polygon642"
-         style="stroke:#b557d9;stroke-width:4.00003;stroke-dasharray:none;stroke-opacity:1" />
-      <polygon
-         fill="#d99d57"
-         stroke="#d99d57"
-         points="4224.03,-1930.12 3983.03,-1930.12 "
-         id="polygon643"
-         style="stroke:#b557d9;stroke-width:4.00003;stroke-dasharray:none;stroke-opacity:1" />
-      <polygon
-         fill="none"
-         stroke="#d99d57"
-         stroke-width="2"
-         points="4223.03,-1879.38 3983.03,-1879.38 3983.03,-2054.88 4223.03,-2054.88 "
-         id="polygon644"
-         style="stroke:#b557d9;stroke-width:4.00003;stroke-dasharray:none;stroke-opacity:1" />
-    </g>
     <!-- 29&#45;&gt;28 -->
-    <g
-       id="edge53"
-       class="edge">
-      <title
-         id="title644">29-&gt;28</title>
-      <path
-         fill="none"
-         stroke="#808080"
-         stroke-width="2"
-         d="m 4003.91,-1878.48 c -16.57,15.32 -33.4,31.29 -48.88,46.73 -34.2,34.08 -70.31,72.88 -101.58,107.45"
-         id="path644" />
-      <polygon
-         fill="#808080"
-         stroke="#808080"
-         stroke-width="2"
-         points="3856.08,-1721.99 3846.79,-1716.91 3850.88,-1726.68 "
-         id="polygon645" />
-    </g>
     <!-- 29&#45;&gt;31 -->
-    <g
-       id="edge60"
-       class="edge">
-      <title
-         id="title645">29-&gt;31</title>
-      <path
-         fill="none"
-         stroke="#808080"
-         stroke-width="2"
-         d="m 4103.03,-1878.38 c 0,46.09 0,102.79 0,150.66"
-         id="path645" />
-      <polygon
-         fill="#808080"
-         stroke="#808080"
-         stroke-width="2"
-         points="4106.53,-1727.82 4103.03,-1717.82 4099.53,-1727.82 "
-         id="polygon646" />
-    </g>
     <!-- 30&#45;&gt;29 -->
-    <g
-       id="edge56"
-       class="edge">
-      <title
-         id="title646">30-&gt;29</title>
-      <path
-         fill="none"
-         stroke="#808080"
-         stroke-width="2"
-         d="m 4328.17,-2944.91 c -16.24,20.68 -31.69,43.98 -42.14,67.91 -12.14,27.79 -74.71,510.09 -81,539.75 -19.6,92.25 -48.8,195.61 -70.94,269.43"
-         id="path646" />
-      <polygon
-         fill="#808080"
-         stroke="#808080"
-         stroke-width="2"
-         points="4137.57,-2067.23 4131.34,-2058.67 4130.87,-2069.25 "
-         id="polygon647" />
-    </g>
     <!-- 40 -->
-    <g
-       id="node41"
-       class="node">
-      <title
-         id="title647">40</title>
-      <text
-         text-anchor="start"
-         x="4372.1499"
-         y="-2800.78"
-         font-family="sans"
-         font-weight="bold"
-         font-size="18px"
-         id="text647">join_gffs</text>
-      <text
-         text-anchor="start"
-         x="4302.0298"
-         y="-2772.0701"
-         font-family="sans"
-         font-size="10px"
-         id="text648" />
-      <text
-         text-anchor="start"
-         x="4304.2798"
-         y="-2772.0701"
-         font-family="sans"
-         font-weight="bold"
-         font-size="14px"
-         id="text649">↪ input</text>
-      <text
-         text-anchor="start"
-         x="4357.5298"
-         y="-2772.0701"
-         font-family="sans"
-         font-size="10px"
-         id="text650" />
-      <text
-         text-anchor="start"
-         x="4302.0298"
-         y="-2748.3799"
-         font-family="monospace"
-         font-size="10px"
-         id="text651">results/references/VNBI/VNBI.gff.tsv</text>
-      <text
-         text-anchor="start"
-         x="4302.0298"
-         y="-2727.1201"
-         font-family="monospace"
-         font-size="10px"
-         id="text652">results/references/VNI/VNI.gff.tsv</text>
-      <text
-         text-anchor="start"
-         x="4449.7798"
-         y="-2703.0701"
-         font-family="sans"
-         font-size="10px"
-         id="text653" />
-      <text
-         text-anchor="start"
-         x="4452.0298"
-         y="-2703.0701"
-         font-family="sans"
-         font-weight="bold"
-         font-size="14px"
-         id="text654">output →</text>
-      <text
-         text-anchor="start"
-         x="4515.7798"
-         y="-2703.0701"
-         font-family="sans"
-         font-size="10px"
-         id="text655" />
-      <text
-         text-anchor="start"
-         x="4302.0298"
-         y="-2679.3799"
-         font-family="monospace"
-         font-size="10px"
-         id="text656">results/references/all.gff.tsv</text>
-      <polygon
-         fill="#57d975"
-         stroke="#57d975"
-         points="4525.03,-2788.38 4296.03,-2788.38 "
-         id="polygon656"
-         style="stroke:#f88a00;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
-      <polygon
-         fill="#57d975"
-         stroke="#57d975"
-         points="4525.03,-2719.38 4296.03,-2719.38 "
-         id="polygon657"
-         style="stroke:#f88a00;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
-      <polygon
-         fill="none"
-         stroke="#57d975"
-         stroke-width="2"
-         points="4524.03,-2668.62 4296.03,-2668.62 4296.03,-2822.88 4524.03,-2822.88 "
-         id="polygon658"
-         style="stroke:#f88a00;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
-    </g>
     <!-- 30&#45;&gt;40 -->
-    <g
-       id="edge81"
-       class="edge">
-      <title
-         id="title658">30-&gt;40</title>
-      <path
-         fill="none"
-         stroke="#808080"
-         stroke-width="2"
-         d="m 4404.26,-2944.96 c 0.98,33.71 2.14,73.48 3.16,108.52"
-         id="path658" />
-      <polygon
-         fill="#808080"
-         stroke="#808080"
-         stroke-width="2"
-         points="4410.91,-2836.89 4407.7,-2826.8 4403.91,-2836.69 "
-         id="polygon659" />
-    </g>
     <!-- 31&#45;&gt;0 -->
     <!-- 32 -->
-    <g
-       id="node33"
-       class="node">
-      <title
-         id="title660">32</title>
-      <text
-         text-anchor="start"
-         x="1182.03"
-         y="-1223.28"
-         font-family="sans"
-         font-weight="bold"
-         font-size="18px"
-         id="text660">dataset_depth_by_chrom_plot</text>
-      <text
-         text-anchor="start"
-         x="1146.03"
-         y="-1194.58"
-         font-family="sans"
-         font-size="10px"
-         id="text661" />
-      <text
-         text-anchor="start"
-         x="1148.28"
-         y="-1194.58"
-         font-family="sans"
-         font-weight="bold"
-         font-size="14px"
-         id="text662">↪ input</text>
-      <text
-         text-anchor="start"
-         x="1201.53"
-         y="-1194.58"
-         font-family="sans"
-         font-size="10px"
-         id="text663" />
-      <text
-         text-anchor="start"
-         x="1146.03"
-         y="-1170.88"
-         font-family="monospace"
-         font-size="10px"
-         id="text664">config/chromosome_names.csv</text>
-      <text
-         text-anchor="start"
-         x="1146.03"
-         y="-1149.62"
-         font-family="monospace"
-         font-size="10px"
-         id="text665">config/sample_metadata.csv</text>
-      <text
-         text-anchor="start"
-         x="1146.03"
-         y="-1128.38"
-         font-family="monospace"
-         font-size="10px"
-         id="text666">results/dataset/files/depth_by_chrom_good_normalized.tsv</text>
-      <text
-         text-anchor="start"
-         x="1413.78"
-         y="-1104.33"
-         font-family="sans"
-         font-size="10px"
-         id="text667" />
-      <text
-         text-anchor="start"
-         x="1416.03"
-         y="-1104.33"
-         font-family="sans"
-         font-weight="bold"
-         font-size="14px"
-         id="text668">output →</text>
-      <text
-         text-anchor="start"
-         x="1479.78"
-         y="-1104.33"
-         font-family="sans"
-         font-size="10px"
-         id="text669" />
-      <text
-         text-anchor="start"
-         x="1146.03"
-         y="-1080.62"
-         font-family="monospace"
-         font-size="10px"
-         id="text670"
-         style="font-size:10px;font-family:monospace;text-anchor:start"><tspan
-           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:12.0001px;font-family:Sans;-inkscape-font-specification:'Sans, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal"
-           id="tspan2">results/dataset/plots/dataset_depth_by_chrom.png</tspan></text>
-      <polygon
-         fill="#c5d957"
-         stroke="#c5d957"
-         points="1489.03,-1210.88 1140.03,-1210.88 "
-         id="polygon670"
-         style="stroke:#b557d9;stroke-width:4.00003;stroke-dasharray:none;stroke-opacity:1" />
-      <polygon
-         fill="#c5d957"
-         stroke="#c5d957"
-         points="1489.03,-1120.62 1140.03,-1120.62 "
-         id="polygon671"
-         style="stroke:#b557d9;stroke-width:4.00003;stroke-dasharray:none;stroke-opacity:1" />
-      <polygon
-         fill="none"
-         stroke="#c5d957"
-         stroke-width="2"
-         points="1488.03,-1069.88 1140.03,-1069.88 1140.03,-1245.38 1488.03,-1245.38 "
-         id="polygon672"
-         style="stroke:#b557d9;stroke-width:4.00003;stroke-dasharray:none;stroke-opacity:1" />
-    </g>
     <!-- 32&#45;&gt;0 -->
     <!-- 33 -->
-    <g
-       id="node34"
-       class="node">
-      <title
-         id="title673">33</title>
-      <text
-         text-anchor="start"
-         x="1144.53"
-         y="-1691.78"
-         font-family="sans"
-         font-weight="bold"
-         font-size="18px"
-         id="text673">join_depth_by_chrom_normalized</text>
-      <text
-         text-anchor="start"
-         x="1083.03"
-         y="-1663.08"
-         font-family="sans"
-         font-size="10px"
-         id="text674" />
-      <text
-         text-anchor="start"
-         x="1085.28"
-         y="-1663.08"
-         font-family="sans"
-         font-weight="bold"
-         font-size="14px"
-         id="text675">↪ input</text>
-      <text
-         text-anchor="start"
-         x="1138.53"
-         y="-1663.08"
-         font-family="sans"
-         font-size="10px"
-         id="text676" />
-      <text
-         text-anchor="start"
-         x="1083.03"
-         y="-1639.38"
-         font-family="monospace"
-         font-size="10px"
-         id="text677">results/samples/mosdepth/SRS8318899/depth_by_chrom_good_normalized.tsv</text>
-      <text
-         text-anchor="start"
-         x="1083.03"
-         y="-1618.12"
-         font-family="monospace"
-         font-size="10px"
-         id="text678">results/samples/mosdepth/SRS8318900/depth_by_chrom_good_normalized.tsv</text>
-      <text
-         text-anchor="start"
-         x="1083.03"
-         y="-1596.88"
-         font-family="monospace"
-         font-size="10px"
-         id="text679">results/samples/mosdepth/SRS8318901/depth_by_chrom_good_normalized.tsv</text>
-      <text
-         text-anchor="start"
-         x="1434.78"
-         y="-1572.83"
-         font-family="sans"
-         font-size="10px"
-         id="text680" />
-      <text
-         text-anchor="start"
-         x="1437.03"
-         y="-1572.83"
-         font-family="sans"
-         font-weight="bold"
-         font-size="14px"
-         id="text681">output →</text>
-      <text
-         text-anchor="start"
-         x="1500.78"
-         y="-1572.83"
-         font-family="sans"
-         font-size="10px"
-         id="text682" />
-      <text
-         text-anchor="start"
-         x="1083.03"
-         y="-1549.12"
-         font-family="monospace"
-         font-size="10px"
-         id="text683">results/dataset/files/depth_by_chrom_good_normalized.tsv</text>
-      <polygon
-         fill="#57bbd9"
-         stroke="#57bbd9"
-         points="1510.03,-1679.38 1077.03,-1679.38 "
-         id="polygon683"
-         style="stroke:#5ddbd8;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
-      <polygon
-         fill="#57bbd9"
-         stroke="#57bbd9"
-         points="1510.03,-1589.12 1077.03,-1589.12 "
-         id="polygon684"
-         style="stroke:#5ddbd8;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
-      <polygon
-         fill="none"
-         stroke="#57bbd9"
-         stroke-width="2"
-         points="1509.03,-1538.38 1077.03,-1538.38 1077.03,-1713.88 1509.03,-1713.88 "
-         id="polygon685"
-         style="stroke:#5ddbd8;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
-    </g>
     <!-- 33&#45;&gt;32 -->
-    <g
-       id="edge63"
-       class="edge">
-      <title
-         id="title685">33-&gt;32</title>
-      <path
-         fill="none"
-         stroke="#808080"
-         stroke-width="2"
-         d="m 1296.98,-1537.38 c 3.55,79.04 8.78,195.2 12.51,278.01"
-         id="path685" />
-      <polygon
-         fill="#808080"
-         stroke="#808080"
-         stroke-width="2"
-         points="1312.99,-1259.54 1309.94,-1249.4 1305.99,-1259.23 "
-         id="polygon686" />
-    </g>
     <!-- 34&#45;&gt;33 -->
-    <g
-       id="edge64"
-       class="edge">
-      <title
-         id="title686">34-&gt;33</title>
-      <path
-         fill="none"
-         stroke="#808080"
-         stroke-width="2"
-         d="m 1073.47,-1889.2 c 40.82,48.72 93.97,112.17 137.76,164.44"
-         id="path686" />
-      <polygon
-         fill="#808080"
-         stroke="#808080"
-         stroke-width="2"
-         points="1213.89,-1727.04 1217.63,-1717.13 1208.52,-1722.54 "
-         id="polygon687" />
-    </g>
     <!-- 35&#45;&gt;0 -->
     <!-- 36&#45;&gt;35 -->
     <g
-       id="edge69"
-       class="edge">
-      <title
-         id="title688">36-&gt;35</title>
-      <path
-         fill="none"
-         stroke="#808080"
-         stroke-width="2"
-         d="m 655.97,-1878.38 c 25.99,40.06 57.19,88.13 85.3,131.45"
-         id="path688" />
-      <polygon
-         fill="#808080"
-         stroke="#808080"
-         stroke-width="2"
-         points="744.19,-1748.86 746.7,-1738.57 738.32,-1745.05 "
-         id="polygon689" />
+       id="g4">
+      <g
+         id="node10"
+         class="node">
+        <title
+           id="title394">9</title>
+        <text
+           text-anchor="start"
+           x="110.15"
+           y="-2032.78"
+           font-family="sans"
+           font-weight="bold"
+           font-size="18px"
+           id="text394">join_mapping_stats</text>
+        <text
+           text-anchor="start"
+           x="37.029999"
+           y="-2004.08"
+           font-family="sans"
+           font-size="10px"
+           id="text395" />
+        <text
+           text-anchor="start"
+           x="39.279999"
+           y="-2004.08"
+           font-family="sans"
+           font-weight="bold"
+           font-size="14px"
+           id="text396">↪ input</text>
+        <text
+           text-anchor="start"
+           x="92.529999"
+           y="-2004.08"
+           font-family="sans"
+           font-size="10px"
+           id="text397" />
+        <text
+           text-anchor="start"
+           x="37.029999"
+           y="-1980.38"
+           font-family="monospace"
+           font-size="10px"
+           id="text398">results/samples/samtools/SRS8318899/mapping_stats.tsv</text>
+        <text
+           text-anchor="start"
+           x="37.029999"
+           y="-1959.12"
+           font-family="monospace"
+           font-size="10px"
+           id="text399">results/samples/samtools/SRS8318900/mapping_stats.tsv</text>
+        <text
+           text-anchor="start"
+           x="37.029999"
+           y="-1937.88"
+           font-family="monospace"
+           font-size="10px"
+           id="text400">results/samples/samtools/SRS8318901/mapping_stats.tsv</text>
+        <text
+           text-anchor="start"
+           x="286.78"
+           y="-1913.83"
+           font-family="sans"
+           font-size="10px"
+           id="text401" />
+        <text
+           text-anchor="start"
+           x="289.03"
+           y="-1913.83"
+           font-family="sans"
+           font-weight="bold"
+           font-size="14px"
+           id="text402">output →</text>
+        <text
+           text-anchor="start"
+           x="352.78"
+           y="-1913.83"
+           font-family="sans"
+           font-size="10px"
+           id="text403" />
+        <text
+           text-anchor="start"
+           x="37.029999"
+           y="-1890.12"
+           font-family="monospace"
+           font-size="10.00"
+           id="text404"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:13.0001px;font-family:monospace;-inkscape-font-specification:'monospace, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-anchor:start">results/dataset/files/mapping_stats.tsv</text>
+        <polygon
+           fill="#57d9b1"
+           stroke="#57d9b1"
+           points="362.03,-2020.38 31.03,-2020.38 "
+           id="polygon404"
+           style="stroke:#d95784;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
+        <polygon
+           fill="#57d9b1"
+           stroke="#57d9b1"
+           points="362.03,-1930.12 31.03,-1930.12 "
+           id="polygon405"
+           style="stroke:#d95784;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
+        <polygon
+           fill="none"
+           stroke="#57d9b1"
+           stroke-width="2"
+           points="361.03,-1879.38 31.03,-1879.38 31.03,-2054.88 361.03,-2054.88 "
+           id="polygon406"
+           style="stroke:#d95784;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
+      </g>
+      <g
+         id="node36"
+         class="node">
+        <title
+           id="title407">35</title>
+        <text
+           text-anchor="start"
+           x="717.40002"
+           y="-1713.03"
+           font-family="sans"
+           font-weight="bold"
+           font-size="18px"
+           id="text407">dataset_summary_plot</text>
+        <text
+           text-anchor="start"
+           x="684.03003"
+           y="-1684.33"
+           font-family="sans"
+           font-size="10px"
+           id="text408" />
+        <text
+           text-anchor="start"
+           x="686.28003"
+           y="-1684.33"
+           font-family="sans"
+           font-weight="bold"
+           font-size="14px"
+           id="text409">↪ input</text>
+        <text
+           text-anchor="start"
+           x="739.53003"
+           y="-1684.33"
+           font-family="sans"
+           font-size="10px"
+           id="text410" />
+        <text
+           text-anchor="start"
+           x="684.03003"
+           y="-1660.62"
+           font-family="monospace"
+           font-size="10px"
+           id="text411">config/chromosome_names.csv</text>
+        <text
+           text-anchor="start"
+           x="684.03003"
+           y="-1639.38"
+           font-family="monospace"
+           font-size="10px"
+           id="text412">config/sample_metadata.csv</text>
+        <text
+           text-anchor="start"
+           x="684.03003"
+           y="-1618.12"
+           font-family="monospace"
+           font-size="10px"
+           id="text413">results/dataset/files/depth_by_chrom_good.tsv</text>
+        <text
+           text-anchor="start"
+           x="684.03003"
+           y="-1596.88"
+           font-family="monospace"
+           font-size="10px"
+           id="text414">results/dataset/files/depth_by_chrom_raw.tsv</text>
+        <text
+           text-anchor="start"
+           x="684.03003"
+           y="-1575.62"
+           font-family="monospace"
+           font-size="10px"
+           id="text415">results/dataset/files/mapping_stats.tsv</text>
+        <text
+           text-anchor="start"
+           x="885.78003"
+           y="-1551.58"
+           font-family="sans"
+           font-size="10px"
+           id="text416" />
+        <text
+           text-anchor="start"
+           x="888.03003"
+           y="-1551.58"
+           font-family="sans"
+           font-weight="bold"
+           font-size="14px"
+           id="text417">output →</text>
+        <text
+           text-anchor="start"
+           x="951.78003"
+           y="-1551.58"
+           font-family="sans"
+           font-size="10px"
+           id="text418" />
+        <text
+           text-anchor="start"
+           x="684.03003"
+           y="-1527.88"
+           font-family="monospace"
+           font-size="10.00"
+           id="text419"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:11.0001px;font-family:monospace;-inkscape-font-specification:'monospace, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-anchor:start">results/dataset/plots/dataset_summary.png</text>
+        <polygon
+           fill="#a7d957"
+           stroke="#a7d957"
+           points="961.03,-1700.62 678.03,-1700.62 "
+           id="polygon419"
+           style="stroke:#d95784;stroke-width:4.00003;stroke-dasharray:none;stroke-opacity:1" />
+        <polygon
+           fill="#a7d957"
+           stroke="#a7d957"
+           points="961.03,-1567.88 678.03,-1567.88 "
+           id="polygon420"
+           style="stroke:#d95784;stroke-width:4.00003;stroke-dasharray:none;stroke-opacity:1" />
+        <polygon
+           fill="none"
+           stroke="#a7d957"
+           stroke-width="2"
+           points="960.03,-1517.12 678.03,-1517.12 678.03,-1735.12 960.03,-1735.12 "
+           id="polygon421"
+           style="stroke:#d95784;stroke-width:4.00003;stroke-dasharray:none;stroke-opacity:1" />
+      </g>
+      <g
+         id="edge67"
+         class="edge">
+        <title
+           id="title421">9-&gt;35</title>
+        <path
+           fill="none"
+           stroke="#808080"
+           stroke-width="2"
+           d="m 357.27,-1878.38 c 95.19,51.79 214.99,116.98 308.71,167.98"
+           id="path421" />
+        <polygon
+           fill="#808080"
+           stroke="#808080"
+           stroke-width="2"
+           points="667.51,-1713.56 674.62,-1705.7 664.16,-1707.41 "
+           id="polygon422" />
+      </g>
+      <g
+         id="edge25"
+         class="edge">
+        <title
+           id="title422">10-&gt;9</title>
+        <path
+           fill="none"
+           stroke="#808080"
+           stroke-width="2"
+           d="m 488.82,-2667.8 c -59.23,141.53 -185.39,443.01 -251.08,599.99"
+           id="path422" />
+        <polygon
+           fill="#808080"
+           stroke="#808080"
+           stroke-width="2"
+           points="240.99,-2066.5 233.9,-2058.63 234.53,-2069.21 "
+           id="polygon423" />
+      </g>
+      <g
+         id="node20"
+         class="node">
+        <title
+           id="title556">19</title>
+        <text
+           text-anchor="start"
+           x="1675.65"
+           y="-2032.78"
+           font-family="sans"
+           font-weight="bold"
+           font-size="18px"
+           id="text556">join_depth_by_chrom_good</text>
+        <text
+           text-anchor="start"
+           x="1619.03"
+           y="-2004.08"
+           font-family="sans"
+           font-size="10px"
+           id="text557" />
+        <text
+           text-anchor="start"
+           x="1621.28"
+           y="-2004.08"
+           font-family="sans"
+           font-weight="bold"
+           font-size="14px"
+           id="text558">↪ input</text>
+        <text
+           text-anchor="start"
+           x="1674.53"
+           y="-2004.08"
+           font-family="sans"
+           font-size="10px"
+           id="text559" />
+        <text
+           text-anchor="start"
+           x="1619.03"
+           y="-1980.38"
+           font-family="monospace"
+           font-size="10px"
+           id="text560">results/samples/mosdepth/SRS8318899/depth_by_chrom_good.tsv</text>
+        <text
+           text-anchor="start"
+           x="1619.03"
+           y="-1959.12"
+           font-family="monospace"
+           font-size="10px"
+           id="text561">results/samples/mosdepth/SRS8318900/depth_by_chrom_good.tsv</text>
+        <text
+           text-anchor="start"
+           x="1619.03"
+           y="-1937.88"
+           font-family="monospace"
+           font-size="10px"
+           id="text562">results/samples/mosdepth/SRS8318901/depth_by_chrom_good.tsv</text>
+        <text
+           text-anchor="start"
+           x="1904.78"
+           y="-1913.83"
+           font-family="sans"
+           font-size="10px"
+           id="text563" />
+        <text
+           text-anchor="start"
+           x="1907.03"
+           y="-1913.83"
+           font-family="sans"
+           font-weight="bold"
+           font-size="14px"
+           id="text564">output →</text>
+        <text
+           text-anchor="start"
+           x="1970.78"
+           y="-1913.83"
+           font-family="sans"
+           font-size="10px"
+           id="text565" />
+        <text
+           text-anchor="start"
+           x="1619.03"
+           y="-1890.12"
+           font-family="monospace"
+           font-size="10.00"
+           id="text566"
+           style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:13.0001px;font-family:monospace;-inkscape-font-specification:'monospace, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-anchor:start">results/dataset/files/depth_by_chrom_good.tsv</text>
+        <polygon
+           fill="#89d957"
+           stroke="#89d957"
+           points="1980.03,-2020.38 1613.03,-2020.38 "
+           id="polygon566"
+           style="stroke:#d95784;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
+        <polygon
+           fill="#89d957"
+           stroke="#89d957"
+           points="1980.03,-1930.12 1613.03,-1930.12 "
+           id="polygon567"
+           style="stroke:#d95784;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
+        <polygon
+           fill="none"
+           stroke="#89d957"
+           stroke-width="2"
+           points="1979.03,-1879.38 1613.03,-1879.38 1613.03,-2054.88 1979.03,-2054.88 "
+           id="polygon568"
+           style="stroke:#d95784;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
+      </g>
+      <g
+         id="edge68"
+         class="edge">
+        <title
+           id="title569">19-&gt;35</title>
+        <path
+           fill="none"
+           stroke="#808080"
+           stroke-width="2"
+           d="m 1635.51,-1878.4 c -10.81,4.06 -21.7,7.67 -32.48,10.65 -230.16,63.51 -314.14,-52.22 -536,36 -49.48,19.67 -96.52,53.09 -136.06,87.29"
+           id="path569" />
+        <polygon
+           fill="#808080"
+           stroke="#808080"
+           stroke-width="2"
+           points="933.43,-1741.97 923.61,-1738 928.81,-1747.23 "
+           id="polygon570" />
+      </g>
+      <g
+         id="edge39"
+         class="edge">
+        <title
+           id="title570">20-&gt;19</title>
+        <path
+           fill="none"
+           stroke="#808080"
+           stroke-width="2"
+           d="m 1500.82,-2134.49 c 40.03,22.56 85.55,48.21 128.65,72.5"
+           id="path570" />
+        <polygon
+           fill="#808080"
+           stroke="#808080"
+           stroke-width="2"
+           points="1631.04,-2065.12 1638.03,-2057.17 1627.6,-2059.03 "
+           id="polygon571" />
+      </g>
+      <g
+         id="node37"
+         class="node">
+        <title
+           id="title618">36</title>
+        <text
+           text-anchor="start"
+           x="484.28"
+           y="-2032.78"
+           font-family="sans"
+           font-weight="bold"
+           font-size="18px"
+           id="text618">join_depth_by_chrom_raw</text>
+        <text
+           text-anchor="start"
+           x="425.03"
+           y="-2004.08"
+           font-family="sans"
+           font-size="10px"
+           id="text619" />
+        <text
+           text-anchor="start"
+           x="427.28"
+           y="-2004.08"
+           font-family="sans"
+           font-weight="bold"
+           font-size="14px"
+           id="text620">↪ input</text>
+        <text
+           text-anchor="start"
+           x="480.53"
+           y="-2004.08"
+           font-family="sans"
+           font-size="10px"
+           id="text621" />
+        <text
+           text-anchor="start"
+           x="425.03"
+           y="-1980.38"
+           font-family="monospace"
+           font-size="10px"
+           id="text622">results/samples/mosdepth/SRS8318899/depth_by_chrom_raw.tsv</text>
+        <text
+           text-anchor="start"
+           x="425.03"
+           y="-1959.12"
+           font-family="monospace"
+           font-size="10px"
+           id="text623">results/samples/mosdepth/SRS8318900/depth_by_chrom_raw.tsv</text>
+        <text
+           text-anchor="start"
+           x="425.03"
+           y="-1937.88"
+           font-family="monospace"
+           font-size="10px"
+           id="text624">results/samples/mosdepth/SRS8318901/depth_by_chrom_raw.tsv</text>
+        <text
+           text-anchor="start"
+           x="704.78003"
+           y="-1913.83"
+           font-family="sans"
+           font-size="10px"
+           id="text625" />
+        <text
+           text-anchor="start"
+           x="707.03003"
+           y="-1913.83"
+           font-family="sans"
+           font-weight="bold"
+           font-size="14px"
+           id="text626">output →</text>
+        <text
+           text-anchor="start"
+           x="770.78003"
+           y="-1913.83"
+           font-family="sans"
+           font-size="10px"
+           id="text627" />
+        <text
+           text-anchor="start"
+           x="425.03"
+           y="-1890.12"
+           font-family="monospace"
+           font-size="10px"
+           id="text628">results/dataset/files/depth_by_chrom_raw.tsv</text>
+        <polygon
+           fill="#d9d957"
+           stroke="#d9d957"
+           points="780.03,-2020.38 419.03,-2020.38 "
+           id="polygon628"
+           style="stroke:#d95784;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
+        <polygon
+           fill="#d9d957"
+           stroke="#d9d957"
+           points="780.03,-1930.12 419.03,-1930.12 "
+           id="polygon629"
+           style="stroke:#d95784;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
+        <polygon
+           fill="none"
+           stroke="#d9d957"
+           stroke-width="2"
+           points="779.03,-1879.38 419.03,-1879.38 419.03,-2054.88 779.03,-2054.88 "
+           id="polygon630"
+           style="stroke:#d95784;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
+      </g>
+      <g
+         id="edge70"
+         class="edge">
+        <title
+           id="title630">27-&gt;36</title>
+        <path
+           fill="none"
+           stroke="#808080"
+           stroke-width="2"
+           d="m 881.36,-2134.49 c -38.2,22.51 -81.63,48.1 -122.78,72.35"
+           id="path630" />
+        <polygon
+           fill="#808080"
+           stroke="#808080"
+           stroke-width="2"
+           points="760.61,-2059.28 750.22,-2057.22 757.06,-2065.31 "
+           id="polygon631" />
+      </g>
+      <g
+         id="node33"
+         class="node">
+        <title
+           id="title660">32</title>
+        <text
+           text-anchor="start"
+           x="1182.03"
+           y="-1223.28"
+           font-family="sans"
+           font-weight="bold"
+           font-size="18px"
+           id="text660">dataset_depth_by_chrom_plot</text>
+        <text
+           text-anchor="start"
+           x="1146.03"
+           y="-1194.58"
+           font-family="sans"
+           font-size="10px"
+           id="text661" />
+        <text
+           text-anchor="start"
+           x="1148.28"
+           y="-1194.58"
+           font-family="sans"
+           font-weight="bold"
+           font-size="14px"
+           id="text662">↪ input</text>
+        <text
+           text-anchor="start"
+           x="1201.53"
+           y="-1194.58"
+           font-family="sans"
+           font-size="10px"
+           id="text663" />
+        <text
+           text-anchor="start"
+           x="1146.03"
+           y="-1170.88"
+           font-family="monospace"
+           font-size="10px"
+           id="text664">config/chromosome_names.csv</text>
+        <text
+           text-anchor="start"
+           x="1146.03"
+           y="-1149.62"
+           font-family="monospace"
+           font-size="10px"
+           id="text665">config/sample_metadata.csv</text>
+        <text
+           text-anchor="start"
+           x="1146.03"
+           y="-1128.38"
+           font-family="monospace"
+           font-size="10px"
+           id="text666">results/dataset/files/depth_by_chrom_good_normalized.tsv</text>
+        <text
+           text-anchor="start"
+           x="1413.78"
+           y="-1104.33"
+           font-family="sans"
+           font-size="10px"
+           id="text667" />
+        <text
+           text-anchor="start"
+           x="1416.03"
+           y="-1104.33"
+           font-family="sans"
+           font-weight="bold"
+           font-size="14px"
+           id="text668">output →</text>
+        <text
+           text-anchor="start"
+           x="1479.78"
+           y="-1104.33"
+           font-family="sans"
+           font-size="10px"
+           id="text669" />
+        <text
+           text-anchor="start"
+           x="1146.03"
+           y="-1080.62"
+           font-family="monospace"
+           font-size="10px"
+           id="text670"
+           style="font-size:10px;font-family:monospace;text-anchor:start"><tspan
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:12.0001px;font-family:Sans;-inkscape-font-specification:'Sans, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal"
+             id="tspan2">results/dataset/plots/dataset_depth_by_chrom.png</tspan></text>
+        <polygon
+           fill="#c5d957"
+           stroke="#c5d957"
+           points="1489.03,-1210.88 1140.03,-1210.88 "
+           id="polygon670"
+           style="stroke:#d95784;stroke-width:4.00003;stroke-dasharray:none;stroke-opacity:1" />
+        <polygon
+           fill="#c5d957"
+           stroke="#c5d957"
+           points="1489.03,-1120.62 1140.03,-1120.62 "
+           id="polygon671"
+           style="stroke:#d95784;stroke-width:4.00003;stroke-dasharray:none;stroke-opacity:1" />
+        <polygon
+           fill="none"
+           stroke="#c5d957"
+           stroke-width="2"
+           points="1488.03,-1069.88 1140.03,-1069.88 1140.03,-1245.38 1488.03,-1245.38 "
+           id="polygon672"
+           style="stroke:#d95784;stroke-width:4.00003;stroke-dasharray:none;stroke-opacity:1" />
+      </g>
+      <g
+         id="node34"
+         class="node">
+        <title
+           id="title673">33</title>
+        <text
+           text-anchor="start"
+           x="1144.53"
+           y="-1691.78"
+           font-family="sans"
+           font-weight="bold"
+           font-size="18px"
+           id="text673">join_depth_by_chrom_normalized</text>
+        <text
+           text-anchor="start"
+           x="1083.03"
+           y="-1663.08"
+           font-family="sans"
+           font-size="10px"
+           id="text674" />
+        <text
+           text-anchor="start"
+           x="1085.28"
+           y="-1663.08"
+           font-family="sans"
+           font-weight="bold"
+           font-size="14px"
+           id="text675">↪ input</text>
+        <text
+           text-anchor="start"
+           x="1138.53"
+           y="-1663.08"
+           font-family="sans"
+           font-size="10px"
+           id="text676" />
+        <text
+           text-anchor="start"
+           x="1083.03"
+           y="-1639.38"
+           font-family="monospace"
+           font-size="10px"
+           id="text677">results/samples/mosdepth/SRS8318899/depth_by_chrom_good_normalized.tsv</text>
+        <text
+           text-anchor="start"
+           x="1083.03"
+           y="-1618.12"
+           font-family="monospace"
+           font-size="10px"
+           id="text678">results/samples/mosdepth/SRS8318900/depth_by_chrom_good_normalized.tsv</text>
+        <text
+           text-anchor="start"
+           x="1083.03"
+           y="-1596.88"
+           font-family="monospace"
+           font-size="10px"
+           id="text679">results/samples/mosdepth/SRS8318901/depth_by_chrom_good_normalized.tsv</text>
+        <text
+           text-anchor="start"
+           x="1434.78"
+           y="-1572.83"
+           font-family="sans"
+           font-size="10px"
+           id="text680" />
+        <text
+           text-anchor="start"
+           x="1437.03"
+           y="-1572.83"
+           font-family="sans"
+           font-weight="bold"
+           font-size="14px"
+           id="text681">output →</text>
+        <text
+           text-anchor="start"
+           x="1500.78"
+           y="-1572.83"
+           font-family="sans"
+           font-size="10px"
+           id="text682" />
+        <text
+           text-anchor="start"
+           x="1083.03"
+           y="-1549.12"
+           font-family="monospace"
+           font-size="10px"
+           id="text683">results/dataset/files/depth_by_chrom_good_normalized.tsv</text>
+        <polygon
+           fill="#57bbd9"
+           stroke="#57bbd9"
+           points="1510.03,-1679.38 1077.03,-1679.38 "
+           id="polygon683"
+           style="stroke:#d95784;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
+        <polygon
+           fill="#57bbd9"
+           stroke="#57bbd9"
+           points="1510.03,-1589.12 1077.03,-1589.12 "
+           id="polygon684"
+           style="stroke:#d95784;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
+        <polygon
+           fill="none"
+           stroke="#57bbd9"
+           stroke-width="2"
+           points="1509.03,-1538.38 1077.03,-1538.38 1077.03,-1713.88 1509.03,-1713.88 "
+           id="polygon685"
+           style="stroke:#d95784;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
+      </g>
+      <g
+         id="edge63"
+         class="edge">
+        <title
+           id="title685">33-&gt;32</title>
+        <path
+           fill="none"
+           stroke="#808080"
+           stroke-width="2"
+           d="m 1296.98,-1537.38 c 3.55,79.04 8.78,195.2 12.51,278.01"
+           id="path685" />
+        <polygon
+           fill="#808080"
+           stroke="#808080"
+           stroke-width="2"
+           points="1312.99,-1259.54 1309.94,-1249.4 1305.99,-1259.23 "
+           id="polygon686" />
+      </g>
+      <g
+         id="edge64"
+         class="edge">
+        <title
+           id="title686">34-&gt;33</title>
+        <path
+           fill="none"
+           stroke="#808080"
+           stroke-width="2"
+           d="m 1073.47,-1889.2 c 40.82,48.72 93.97,112.17 137.76,164.44"
+           id="path686" />
+        <polygon
+           fill="#808080"
+           stroke="#808080"
+           stroke-width="2"
+           points="1213.89,-1727.04 1217.63,-1717.13 1208.52,-1722.54 "
+           id="polygon687" />
+      </g>
+      <g
+         id="edge69"
+         class="edge">
+        <title
+           id="title688">36-&gt;35</title>
+        <path
+           fill="none"
+           stroke="#808080"
+           stroke-width="2"
+           d="m 655.97,-1878.38 c 25.99,40.06 57.19,88.13 85.3,131.45"
+           id="path688" />
+        <polygon
+           fill="#808080"
+           stroke="#808080"
+           stroke-width="2"
+           points="744.19,-1748.86 746.7,-1738.57 738.32,-1745.05 "
+           id="polygon689" />
+      </g>
     </g>
     <!-- 37&#45;&gt;0 -->
     <!-- 38&#45;&gt;0 -->
     <!-- 39&#45;&gt;0 -->
     <!-- 40&#45;&gt;39 -->
-    <g
-       id="edge76"
-       class="edge">
-      <title
-         id="title692">40-&gt;39</title>
-      <path
-         fill="none"
-         stroke="#808080"
-         stroke-width="2"
-         d="m 4394.02,-2667.97 c -20.38,104.66 -52.99,298.19 -52.99,465.09 0,0 0,0 0,236.76 0,245.77 81.89,369.95 -90,545.62 -170.75,174.49 -911.77,235.66 -1240.24,254.47"
-         id="path692" />
-      <polygon
-         fill="#808080"
-         stroke="#808080"
-         stroke-width="2"
-         points="3011.05,-1162.54 3000.87,-1165.47 3010.65,-1169.53 "
-         id="polygon693" />
-    </g>
     <!-- 41 -->
-    <g
-       id="node42"
-       class="node">
-      <title
-         id="title693">41</title>
-      <text
-         text-anchor="start"
-         x="2503.3999"
-         y="-1808.65"
-         font-family="sans"
-         font-weight="bold"
-         font-size="18px"
-         id="text693">join_dataframes</text>
-      <text
-         text-anchor="start"
-         x="2461.03"
-         y="-1779.95"
-         font-family="sans"
-         font-size="10px"
-         id="text694" />
-      <text
-         text-anchor="start"
-         x="2463.28"
-         y="-1779.95"
-         font-family="sans"
-         font-weight="bold"
-         font-size="14px"
-         id="text695">↪ input</text>
-      <text
-         text-anchor="start"
-         x="2516.53"
-         y="-1779.95"
-         font-family="sans"
-         font-size="10px"
-         id="text696" />
-      <text
-         text-anchor="start"
-         x="2461.03"
-         y="-1756.25"
-         font-family="monospace"
-         font-size="10px"
-         id="text697">results/dataset/snps/VNBI_effects.tsv</text>
-      <text
-         text-anchor="start"
-         x="2461.03"
-         y="-1735"
-         font-family="monospace"
-         font-size="10px"
-         id="text698">results/dataset/snps/VNBI_lofs.tsv</text>
-      <text
-         text-anchor="start"
-         x="2461.03"
-         y="-1713.75"
-         font-family="monospace"
-         font-size="10px"
-         id="text699">results/dataset/snps/VNBI_nmds.tsv</text>
-      <text
-         text-anchor="start"
-         x="2461.03"
-         y="-1692.5"
-         font-family="monospace"
-         font-size="10px"
-         id="text700">results/dataset/snps/VNBI_presence.tsv</text>
-      <text
-         text-anchor="start"
-         x="2461.03"
-         y="-1671.25"
-         font-family="monospace"
-         font-size="10px"
-         id="text701">results/dataset/snps/VNBI_variants.tsv</text>
-      <text
-         text-anchor="start"
-         x="2461.03"
-         y="-1650"
-         font-family="monospace"
-         font-size="10px"
-         id="text702">results/dataset/snps/VNI_effects.tsv</text>
-      <text
-         text-anchor="start"
-         x="2461.03"
-         y="-1628.75"
-         font-family="monospace"
-         font-size="10px"
-         id="text703">results/dataset/snps/VNI_lofs.tsv</text>
-      <text
-         text-anchor="start"
-         x="2461.03"
-         y="-1607.5"
-         font-family="monospace"
-         font-size="10px"
-         id="text704">results/dataset/snps/VNI_nmds.tsv</text>
-      <text
-         text-anchor="start"
-         x="2461.03"
-         y="-1586.25"
-         font-family="monospace"
-         font-size="10px"
-         id="text705">results/dataset/snps/VNI_presence.tsv</text>
-      <text
-         text-anchor="start"
-         x="2461.03"
-         y="-1565"
-         font-family="monospace"
-         font-size="10px"
-         id="text706">results/dataset/snps/VNI_variants.tsv</text>
-      <text
-         text-anchor="start"
-         x="2620.78"
-         y="-1540.95"
-         font-family="sans"
-         font-size="10px"
-         id="text707" />
-      <text
-         text-anchor="start"
-         x="2623.03"
-         y="-1540.95"
-         font-family="sans"
-         font-weight="bold"
-         font-size="14px"
-         id="text708">output →</text>
-      <text
-         text-anchor="start"
-         x="2686.78"
-         y="-1540.95"
-         font-family="sans"
-         font-size="10px"
-         id="text709" />
-      <text
-         text-anchor="start"
-         x="2461.03"
-         y="-1517.25"
-         font-family="monospace"
-         font-size="10px"
-         id="text710">results/dataset/snps/all_effects.tsv</text>
-      <text
-         text-anchor="start"
-         x="2461.03"
-         y="-1496"
-         font-family="monospace"
-         font-size="10px"
-         id="text711">results/dataset/snps/all_lofs.tsv</text>
-      <text
-         text-anchor="start"
-         x="2461.03"
-         y="-1474.75"
-         font-family="monospace"
-         font-size="10px"
-         id="text712">results/dataset/snps/all_nmds.tsv</text>
-      <text
-         text-anchor="start"
-         x="2461.03"
-         y="-1453.5"
-         font-family="monospace"
-         font-size="10px"
-         id="text713">results/dataset/snps/all_presence.tsv</text>
-      <text
-         text-anchor="start"
-         x="2461.03"
-         y="-1432.25"
-         font-family="monospace"
-         font-size="10px"
-         id="text714">results/dataset/snps/all_variants.tsv</text>
-      <polygon
-         fill="#579dd9"
-         stroke="#579dd9"
-         points="2696.03,-1796.25 2455.03,-1796.25 "
-         id="polygon714"
-         style="stroke:#f88a00;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
-      <polygon
-         fill="#579dd9"
-         stroke="#579dd9"
-         points="2696.03,-1557.25 2455.03,-1557.25 "
-         id="polygon715"
-         style="stroke:#f88a00;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
-      <polygon
-         fill="none"
-         stroke="#579dd9"
-         stroke-width="2"
-         points="2695.03,-1421.5 2455.03,-1421.5 2455.03,-1830.75 2695.03,-1830.75 "
-         id="polygon716"
-         style="stroke:#f88a00;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
-    </g>
     <!-- 41&#45;&gt;39 -->
-    <g
-       id="edge79"
-       class="edge">
-      <title
-         id="title716">41-&gt;39</title>
-      <path
-         fill="none"
-         stroke="#808080"
-         stroke-width="2"
-         d="m 2695.95,-1422.21 c 5.31,8.91 10.65,17.88 16,26.86"
-         id="path716" />
-      <polygon
-         fill="#808080"
-         stroke="#808080"
-         stroke-width="2"
-         points="2714.81,-1397.39 2716.93,-1387.01 2708.8,-1393.8 "
-         id="polygon717" />
-    </g>
     <!-- 42 -->
     <g
        id="node43"
@@ -6913,24 +4953,6 @@
          style="stroke:#f88a00;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
     </g>
     <!-- 42&#45;&gt;41 -->
-    <g
-       id="edge82"
-       class="edge">
-      <title
-         id="title730">42-&gt;41</title>
-      <path
-         fill="none"
-         stroke="#808080"
-         stroke-width="2"
-         d="m 2673.11,-1868.07 c -3.25,7.97 -6.6,16.21 -10.02,24.6"
-         id="path730" />
-      <polygon
-         fill="#808080"
-         stroke="#808080"
-         stroke-width="2"
-         points="2666.37,-1842.23 2659.36,-1834.29 2659.89,-1844.87 "
-         id="polygon731" />
-    </g>
     <!-- 43 -->
     <g
        id="node44"
@@ -7057,24 +5079,6 @@
          id="polygon744" />
     </g>
     <!-- 44&#45;&gt;41 -->
-    <g
-       id="edge83"
-       class="edge">
-      <title
-         id="title744">44-&gt;41</title>
-      <path
-         fill="none"
-         stroke="#808080"
-         stroke-width="2"
-         d="m 2584.81,-2379.99 c -9.31,24.65 -18.11,52.39 -22.78,78.74 -26.79,151.02 -22.75,324.04 -12.43,456.98"
-         id="path744" />
-      <polygon
-         fill="#808080"
-         stroke="#808080"
-         stroke-width="2"
-         points="2553.07,-1844.8 2550.38,-1834.55 2546.1,-1844.24 "
-         id="polygon745" />
-    </g>
     <!-- 44&#45;&gt;43 -->
     <g
        id="edge86"
@@ -7265,135 +5269,8 @@
          id="polygon762" />
     </g>
     <!-- 48 -->
-    <g
-       id="node49"
-       class="node">
-      <title
-         id="title762">48</title>
-      <text
-         text-anchor="start"
-         x="3111.8999"
-         y="-1670.53"
-         font-family="sans"
-         font-weight="bold"
-         font-size="18px"
-         id="text762">cds2db</text>
-      <text
-         text-anchor="start"
-         x="3017.03"
-         y="-1641.83"
-         font-family="sans"
-         font-size="10px"
-         id="text763" />
-      <text
-         text-anchor="start"
-         x="3019.28"
-         y="-1641.83"
-         font-family="sans"
-         font-weight="bold"
-         font-size="14px"
-         id="text764">↪ input</text>
-      <text
-         text-anchor="start"
-         x="3072.53"
-         y="-1641.83"
-         font-family="sans"
-         font-size="10px"
-         id="text765" />
-      <text
-         text-anchor="start"
-         x="3017.03"
-         y="-1618.12"
-         font-family="monospace"
-         font-size="10px"
-         id="text766">results/samples/agat/{sample}/cds.fa</text>
-      <text
-         text-anchor="start"
-         x="3200.78"
-         y="-1594.08"
-         font-family="sans"
-         font-size="10px"
-         id="text767" />
-      <text
-         text-anchor="start"
-         x="3203.03"
-         y="-1594.08"
-         font-family="sans"
-         font-weight="bold"
-         font-size="14px"
-         id="text768">output →</text>
-      <text
-         text-anchor="start"
-         x="3266.78"
-         y="-1594.08"
-         font-family="sans"
-         font-size="10px"
-         id="text769" />
-      <text
-         text-anchor="start"
-         x="3017.03"
-         y="-1570.38"
-         font-family="monospace"
-         font-size="10px"
-         id="text770">results/dataset/database/{sample}/cds.done</text>
-      <polygon
-         fill="#57cfd9"
-         stroke="#57cfd9"
-         points="3276.03,-1658.12 3011.03,-1658.12 "
-         id="polygon770"
-         style="stroke:#f88a00;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
-      <polygon
-         fill="#57cfd9"
-         stroke="#57cfd9"
-         points="3276.03,-1610.38 3011.03,-1610.38 "
-         id="polygon771"
-         style="stroke:#f88a00;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
-      <polygon
-         fill="none"
-         stroke="#57cfd9"
-         stroke-width="2"
-         points="3275.03,-1559.62 3011.03,-1559.62 3011.03,-1692.62 3275.03,-1692.62 "
-         id="polygon772"
-         style="stroke:#f88a00;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
-    </g>
     <!-- 48&#45;&gt;39 -->
-    <g
-       id="edge77"
-       class="edge">
-      <title
-         id="title772">48-&gt;39</title>
-      <path
-         fill="none"
-         stroke="#808080"
-         stroke-width="2"
-         d="m 3101.78,-1558.78 c -27.07,43.54 -64.27,103.38 -101.65,163.53"
-         id="path772" />
-      <polygon
-         fill="#808080"
-         stroke="#808080"
-         stroke-width="2"
-         points="3003.24,-1393.64 2994.99,-1386.99 2997.3,-1397.33 "
-         id="polygon773" />
-    </g>
     <!-- 49&#45;&gt;48 -->
-    <g
-       id="edge95"
-       class="edge">
-      <title
-         id="title773">49-&gt;48</title>
-      <path
-         fill="none"
-         stroke="#808080"
-         stroke-width="2"
-         d="m 3483.79,-2369.25 c -74.71,162.7 -233.74,509.04 -304.96,664.16"
-         id="path773" />
-      <polygon
-         fill="#808080"
-         stroke="#808080"
-         stroke-width="2"
-         points="3182.06,-1703.74 3174.7,-1696.12 3175.7,-1706.67 "
-         id="polygon774" />
-    </g>
     <!-- 49&#45;&gt;51 -->
     <g
        id="edge101"
@@ -7413,135 +5290,1904 @@
          points="3224.3,-2270.12 3213.74,-2269.27 3221.47,-2276.52 "
          id="polygon775" />
     </g>
-    <!-- 50 -->
     <g
-       id="node51"
-       class="node">
+       id="edge101-6"
+       class="edge"
+       transform="translate(544.4286,-33.010979)">
       <title
-         id="title775">50</title>
-      <text
-         text-anchor="start"
-         x="2813.28"
-         y="-1670.53"
-         font-family="sans"
-         font-weight="bold"
-         font-size="18px"
-         id="text775">prots2db</text>
-      <text
-         text-anchor="start"
-         x="2721.03"
-         y="-1641.83"
-         font-family="sans"
-         font-size="10px"
-         id="text776" />
-      <text
-         text-anchor="start"
-         x="2723.28"
-         y="-1641.83"
-         font-family="sans"
-         font-weight="bold"
-         font-size="14px"
-         id="text777">↪ input</text>
-      <text
-         text-anchor="start"
-         x="2776.53"
-         y="-1641.83"
-         font-family="sans"
-         font-size="10px"
-         id="text778" />
-      <text
-         text-anchor="start"
-         x="2721.03"
-         y="-1618.12"
-         font-family="monospace"
-         font-size="10px"
-         id="text779">results/samples/agat/{sample}/proteins.fa</text>
-      <text
-         text-anchor="start"
-         x="2916.78"
-         y="-1594.08"
-         font-family="sans"
-         font-size="10px"
-         id="text780" />
-      <text
-         text-anchor="start"
-         x="2919.03"
-         y="-1594.08"
-         font-family="sans"
-         font-weight="bold"
-         font-size="14px"
-         id="text781">output →</text>
-      <text
-         text-anchor="start"
-         x="2982.78"
-         y="-1594.08"
-         font-family="sans"
-         font-size="10px"
-         id="text782" />
-      <text
-         text-anchor="start"
-         x="2721.03"
-         y="-1570.38"
-         font-family="monospace"
-         font-size="10px"
-         id="text783">results/dataset/database/{sample}/prots.done</text>
-      <polygon
-         fill="#d96157"
-         stroke="#d96157"
-         points="2992.03,-1658.12 2715.03,-1658.12 "
-         id="polygon783"
-         style="stroke:#f88a00;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
-      <polygon
-         fill="#d96157"
-         stroke="#d96157"
-         points="2992.03,-1610.38 2715.03,-1610.38 "
-         id="polygon784"
-         style="stroke:#f88a00;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
-      <polygon
-         fill="none"
-         stroke="#d96157"
-         stroke-width="2"
-         points="2991.03,-1559.62 2715.03,-1559.62 2715.03,-1692.62 2991.03,-1692.62 "
-         id="polygon785"
-         style="stroke:#f88a00;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
-    </g>
-    <!-- 50&#45;&gt;39 -->
-    <g
-       id="edge75"
-       class="edge">
-      <title
-         id="title785">50-&gt;39</title>
+         id="title774-1">49-&gt;51</title>
       <path
          fill="none"
          stroke="#808080"
          stroke-width="2"
-         d="m 2853.03,-1558.78 c 0,43.09 0,102.15 0,161.66"
-         id="path785" />
+         d="m 3404.21,-2369.26 c -17.18,11.3 -34.9,22.3 -52.18,32.01 -40.79,22.92 -86.22,44.79 -129.28,63.99"
+         id="path774-8" />
       <polygon
          fill="#808080"
          stroke="#808080"
          stroke-width="2"
-         points="2856.53,-1397.45 2853.03,-1387.45 2849.53,-1397.45 "
-         id="polygon786" />
+         points="3213.74,-2269.27 3221.47,-2276.52 3224.3,-2270.12 "
+         id="polygon775-7" />
     </g>
+    <!-- 50 -->
+    <!-- 50&#45;&gt;39 -->
     <!-- 51&#45;&gt;50 -->
     <g
-       id="edge99"
-       class="edge">
-      <title
-         id="title786">51-&gt;50</title>
-      <path
-         fill="none"
-         stroke="#808080"
-         stroke-width="2"
-         d="m 3014.61,-2102.57 c -38.17,112.32 -99.87,293.87 -134.95,397.09"
-         id="path786" />
-      <polygon
-         fill="#808080"
-         stroke="#808080"
-         stroke-width="2"
-         points="2883.02,-1704.5 2876.49,-1696.16 2876.39,-1706.75 "
-         id="polygon787" />
+       id="g3">
+      <g
+         id="edge79"
+         class="edge">
+        <title
+           id="title716">41-&gt;39</title>
+        <path
+           fill="none"
+           stroke="#808080"
+           stroke-width="2"
+           d="m 2695.95,-1422.21 c 5.31,8.91 10.65,17.88 16,26.86"
+           id="path716" />
+        <polygon
+           fill="#808080"
+           stroke="#808080"
+           stroke-width="2"
+           points="2714.81,-1397.39 2716.93,-1387.01 2708.8,-1393.8 "
+           id="polygon717" />
+      </g>
+      <g
+         id="g2">
+        <g
+           id="edge27"
+           class="edge">
+          <title
+             id="title472">12-&gt;11</title>
+          <path
+             fill="none"
+             stroke="#808080"
+             stroke-width="2"
+             d="m 3563.41,-1899.96 c -23.6,49.38 -56.24,117.68 -82.96,173.59"
+             id="path472" />
+          <polygon
+             fill="#808080"
+             stroke="#808080"
+             stroke-width="2"
+             points="3483.62,-1724.88 3476.15,-1717.37 3477.3,-1727.9 "
+             id="polygon473" />
+        </g>
+        <g
+           id="g1">
+          <g
+             id="node12"
+             class="node">
+            <title
+               id="title423">11</title>
+            <text
+               text-anchor="start"
+               x="3363.6499"
+               y="-1691.78"
+               font-family="sans"
+               font-weight="bold"
+               font-size="18px"
+               id="text423">join_cnv_calling</text>
+            <text
+               text-anchor="start"
+               x="3301.03"
+               y="-1663.08"
+               font-family="sans"
+               font-size="10px"
+               id="text424" />
+            <text
+               text-anchor="start"
+               x="3303.28"
+               y="-1663.08"
+               font-family="sans"
+               font-weight="bold"
+               font-size="14px"
+               id="text425">↪ input</text>
+            <text
+               text-anchor="start"
+               x="3356.53"
+               y="-1663.08"
+               font-family="sans"
+               font-size="10px"
+               id="text426" />
+            <text
+               text-anchor="start"
+               x="3301.03"
+               y="-1639.38"
+               font-family="monospace"
+               font-size="10px"
+               id="text427">results/samples/cnv/SRS8318899/cnv_calls.tsv</text>
+            <text
+               text-anchor="start"
+               x="3301.03"
+               y="-1618.12"
+               font-family="monospace"
+               font-size="10px"
+               id="text428">results/samples/cnv/SRS8318900/cnv_calls.tsv</text>
+            <text
+               text-anchor="start"
+               x="3301.03"
+               y="-1596.88"
+               font-family="monospace"
+               font-size="10px"
+               id="text429">results/samples/cnv/SRS8318901/cnv_calls.tsv</text>
+            <text
+               text-anchor="start"
+               x="3496.78"
+               y="-1572.83"
+               font-family="sans"
+               font-size="10px"
+               id="text430" />
+            <text
+               text-anchor="start"
+               x="3499.03"
+               y="-1572.83"
+               font-family="sans"
+               font-weight="bold"
+               font-size="14px"
+               id="text431">output →</text>
+            <text
+               text-anchor="start"
+               x="3562.78"
+               y="-1572.83"
+               font-family="sans"
+               font-size="10px"
+               id="text432" />
+            <text
+               text-anchor="start"
+               x="3301.03"
+               y="-1549.12"
+               font-family="monospace"
+               font-size="10.00"
+               id="text433"
+               style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:12.0001px;font-family:monospace;-inkscape-font-specification:'monospace, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-anchor:start">results/dataset/files/cnv_calls.tsv</text>
+            <polygon
+               fill="#d98957"
+               stroke="#d98957"
+               points="3572.03,-1679.38 3295.03,-1679.38 "
+               id="polygon433"
+               style="stroke:#754c18;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
+            <polygon
+               fill="#d98957"
+               stroke="#d98957"
+               points="3572.03,-1589.12 3295.03,-1589.12 "
+               id="polygon434"
+               style="stroke:#754c18;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
+            <polygon
+               fill="none"
+               stroke="#d98957"
+               stroke-width="2"
+               points="3571.03,-1538.38 3295.03,-1538.38 3295.03,-1713.88 3571.03,-1713.88 "
+               id="polygon435"
+               style="stroke:#754c18;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
+          </g>
+          <g
+             id="node40"
+             class="node">
+            <title
+               id="title436">39</title>
+            <text
+               text-anchor="start"
+               x="2796.3999"
+               y="-1361.4"
+               font-family="sans"
+               font-weight="bold"
+               font-size="18px"
+               id="text436">complete_db</text>
+            <text
+               text-anchor="start"
+               x="2715.03"
+               y="-1332.7"
+               font-family="sans"
+               font-size="10px"
+               id="text437" />
+            <text
+               text-anchor="start"
+               x="2717.28"
+               y="-1332.7"
+               font-family="sans"
+               font-weight="bold"
+               font-size="14px"
+               id="text438">↪ input</text>
+            <text
+               text-anchor="start"
+               x="2770.53"
+               y="-1332.7"
+               font-family="sans"
+               font-size="10px"
+               id="text439" />
+            <text
+               text-anchor="start"
+               x="2715.03"
+               y="-1309"
+               font-family="monospace"
+               font-size="10px"
+               id="text440">config/chromosome_names.csv</text>
+            <text
+               text-anchor="start"
+               x="2715.03"
+               y="-1287.75"
+               font-family="monospace"
+               font-size="10px"
+               id="text441">config/sample_metadata.csv</text>
+            <text
+               text-anchor="start"
+               x="2715.03"
+               y="-1266.5"
+               font-family="monospace"
+               font-size="10px"
+               id="text442">results/dataset/database/SRS8318899/cds.done</text>
+            <text
+               text-anchor="start"
+               x="2715.03"
+               y="-1245.25"
+               font-family="monospace"
+               font-size="10px"
+               id="text443">results/dataset/database/SRS8318899/prots.done</text>
+            <text
+               text-anchor="start"
+               x="2715.03"
+               y="-1224"
+               font-family="monospace"
+               font-size="10px"
+               id="text444">results/dataset/database/SRS8318900/cds.done</text>
+            <text
+               text-anchor="start"
+               x="2715.03"
+               y="-1202.75"
+               font-family="monospace"
+               font-size="10px"
+               id="text445">results/dataset/database/SRS8318900/prots.done</text>
+            <text
+               text-anchor="start"
+               x="2715.03"
+               y="-1181.5"
+               font-family="monospace"
+               font-size="10px"
+               id="text446">results/dataset/database/SRS8318901/cds.done</text>
+            <text
+               text-anchor="start"
+               x="2715.03"
+               y="-1160.25"
+               font-family="monospace"
+               font-size="10px"
+               id="text447">results/dataset/database/SRS8318901/prots.done</text>
+            <text
+               text-anchor="start"
+               x="2715.03"
+               y="-1139"
+               font-family="monospace"
+               font-size="10px"
+               id="text448">results/dataset/files/cnv_calls.tsv</text>
+            <text
+               text-anchor="start"
+               x="2715.03"
+               y="-1117.75"
+               font-family="monospace"
+               font-size="10px"
+               id="text449">results/dataset/files/feature_mapq_depth.tsv</text>
+            <text
+               text-anchor="start"
+               x="2715.03"
+               y="-1096.5"
+               font-family="monospace"
+               font-size="10px"
+               id="text450">results/dataset/snps/all_effects.tsv</text>
+            <text
+               text-anchor="start"
+               x="2715.03"
+               y="-1075.25"
+               font-family="monospace"
+               font-size="10px"
+               id="text451">results/dataset/snps/all_lofs.tsv</text>
+            <text
+               text-anchor="start"
+               x="2715.03"
+               y="-1054"
+               font-family="monospace"
+               font-size="10px"
+               id="text452">results/dataset/snps/all_nmds.tsv</text>
+            <text
+               text-anchor="start"
+               x="2715.03"
+               y="-1032.75"
+               font-family="monospace"
+               font-size="10px"
+               id="text453">results/dataset/snps/all_presence.tsv</text>
+            <text
+               text-anchor="start"
+               x="2715.03"
+               y="-1011.5"
+               font-family="monospace"
+               font-size="10px"
+               id="text454">results/dataset/snps/all_variants.tsv</text>
+            <text
+               text-anchor="start"
+               x="2715.03"
+               y="-990.25"
+               font-family="monospace"
+               font-size="10px"
+               id="text455">results/references/all.gff.tsv</text>
+            <text
+               text-anchor="start"
+               x="2922.78"
+               y="-966.20001"
+               font-family="sans"
+               font-size="10px"
+               id="text456" />
+            <text
+               text-anchor="start"
+               x="2925.03"
+               y="-966.20001"
+               font-family="sans"
+               font-weight="bold"
+               font-size="14px"
+               id="text457">output →</text>
+            <text
+               text-anchor="start"
+               x="2988.78"
+               y="-966.20001"
+               font-family="sans"
+               font-size="10px"
+               id="text458" />
+            <text
+               text-anchor="start"
+               x="2715.03"
+               y="-942.5"
+               font-family="monospace"
+               font-size="10.00"
+               id="text459"
+               style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:16.0001px;font-family:monospace;-inkscape-font-specification:'monospace, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-anchor:start;stroke-width:1.20001;stroke-dasharray:none">results/dataset/database.db</text>
+            <polygon
+               fill="#57d9d9"
+               stroke="#57d9d9"
+               points="2998.03,-1349 2709.03,-1349 "
+               id="polygon459"
+               style="stroke:#754c18;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
+            <polygon
+               fill="#57d9d9"
+               stroke="#57d9d9"
+               points="2998.03,-982.5 2709.03,-982.5 "
+               id="polygon460"
+               style="stroke:#754c18;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
+            <polygon
+               fill="none"
+               stroke="#57d9d9"
+               stroke-width="2"
+               points="2997.03,-931.75 2709.03,-931.75 2709.03,-1383.5 2997.03,-1383.5 "
+               id="polygon461"
+               style="stroke:#754c18;stroke-width:5.00003;stroke-linecap:round;stroke-dasharray:none;stroke-opacity:1" />
+          </g>
+          <g
+             id="edge78"
+             class="edge">
+            <title
+               id="title461">11-&gt;39</title>
+            <path
+               fill="none"
+               stroke="#808080"
+               stroke-width="2"
+               d="m 3382.67,-1537.54 c -25.61,39.23 -59.42,84 -97.64,117.04 -26.17,22.62 -38.97,18.85 -69,36 -69.01,39.4 -143.79,85.35 -207.44,125.48"
+               id="path461" />
+            <polygon
+               fill="#808080"
+               stroke="#808080"
+               stroke-width="2"
+               points="3010.55,-1256.12 3000.22,-1253.74 3006.81,-1262.04 "
+               id="polygon462" />
+          </g>
+          <g
+             id="node22"
+             class="node">
+            <title
+               id="title585">21</title>
+            <text
+               text-anchor="start"
+               x="2140.8999"
+               y="-1691.78"
+               font-family="sans"
+               font-weight="bold"
+               font-size="18px"
+               id="text585">join_mapq_depth</text>
+            <text
+               text-anchor="start"
+               x="2043.03"
+               y="-1663.08"
+               font-family="sans"
+               font-size="10px"
+               id="text586" />
+            <text
+               text-anchor="start"
+               x="2045.28"
+               y="-1663.08"
+               font-family="sans"
+               font-weight="bold"
+               font-size="14px"
+               id="text587">↪ input</text>
+            <text
+               text-anchor="start"
+               x="2098.53"
+               y="-1663.08"
+               font-family="sans"
+               font-size="10px"
+               id="text588" />
+            <text
+               text-anchor="start"
+               x="2043.03"
+               y="-1639.38"
+               font-family="monospace"
+               font-size="10px"
+               id="text589">results/samples/samtools/SRS8318899/feature_mapq_depth.tsv</text>
+            <text
+               text-anchor="start"
+               x="2043.03"
+               y="-1618.12"
+               font-family="monospace"
+               font-size="10px"
+               id="text590">results/samples/samtools/SRS8318900/feature_mapq_depth.tsv</text>
+            <text
+               text-anchor="start"
+               x="2043.03"
+               y="-1596.88"
+               font-family="monospace"
+               font-size="10px"
+               id="text591">results/samples/samtools/SRS8318901/feature_mapq_depth.tsv</text>
+            <text
+               text-anchor="start"
+               x="2322.78"
+               y="-1572.83"
+               font-family="sans"
+               font-size="10px"
+               id="text592" />
+            <text
+               text-anchor="start"
+               x="2325.03"
+               y="-1572.83"
+               font-family="sans"
+               font-weight="bold"
+               font-size="14px"
+               id="text593">output →</text>
+            <text
+               text-anchor="start"
+               x="2388.78"
+               y="-1572.83"
+               font-family="sans"
+               font-size="10px"
+               id="text594" />
+            <text
+               text-anchor="start"
+               x="2043.03"
+               y="-1549.12"
+               font-family="monospace"
+               font-size="10.00"
+               id="text595"
+               style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:13.0001px;font-family:monospace;-inkscape-font-specification:'monospace, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-anchor:start">results/dataset/files/feature_mapq_depth.tsv</text>
+            <polygon
+               fill="#57d9bb"
+               stroke="#57d9bb"
+               points="2398.03,-1679.38 2037.03,-1679.38 "
+               id="polygon595"
+               style="stroke:#754c18;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
+            <polygon
+               fill="#57d9bb"
+               stroke="#57d9bb"
+               points="2398.03,-1589.12 2037.03,-1589.12 "
+               id="polygon596"
+               style="stroke:#754c18;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
+            <polygon
+               fill="none"
+               stroke="#57d9bb"
+               stroke-width="2"
+               points="2397.03,-1538.38 2037.03,-1538.38 2037.03,-1713.88 2397.03,-1713.88 "
+               id="polygon597"
+               style="stroke:#754c18;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
+          </g>
+          <g
+             id="edge80"
+             class="edge">
+            <title
+               id="title598">21-&gt;39</title>
+            <path
+               fill="none"
+               stroke="#808080"
+               stroke-width="2"
+               d="m 2307.86,-1537.49 c 40.66,37.6 89.99,81.05 137.17,116.99 80.09,61.02 174.42,122.19 252.19,170.05"
+               id="path598" />
+            <polygon
+               fill="#808080"
+               stroke="#808080"
+               stroke-width="2"
+               points="2698.8,-1253.58 2705.5,-1245.37 2695.14,-1247.62 "
+               id="polygon599" />
+          </g>
+          <g
+             id="edge41"
+             class="edge">
+            <title
+               id="title599">22-&gt;21</title>
+            <path
+               fill="none"
+               stroke="#808080"
+               stroke-width="2"
+               d="m 2241.9,-1868.07 c -4.55,44.05 -9.91,95.98 -14.49,140.33"
+               id="path599" />
+            <polygon
+               fill="#808080"
+               stroke="#808080"
+               stroke-width="2"
+               points="2230.9,-1727.45 2226.39,-1717.86 2223.94,-1728.17 "
+               id="polygon600" />
+          </g>
+          <g
+             id="node41"
+             class="node">
+            <title
+               id="title647">40</title>
+            <text
+               text-anchor="start"
+               x="4372.1499"
+               y="-2800.78"
+               font-family="sans"
+               font-weight="bold"
+               font-size="18px"
+               id="text647">join_gffs</text>
+            <text
+               text-anchor="start"
+               x="4302.0298"
+               y="-2772.0701"
+               font-family="sans"
+               font-size="10px"
+               id="text648" />
+            <text
+               text-anchor="start"
+               x="4304.2798"
+               y="-2772.0701"
+               font-family="sans"
+               font-weight="bold"
+               font-size="14px"
+               id="text649">↪ input</text>
+            <text
+               text-anchor="start"
+               x="4357.5298"
+               y="-2772.0701"
+               font-family="sans"
+               font-size="10px"
+               id="text650" />
+            <text
+               text-anchor="start"
+               x="4302.0298"
+               y="-2748.3799"
+               font-family="monospace"
+               font-size="10px"
+               id="text651">results/references/VNBI/VNBI.gff.tsv</text>
+            <text
+               text-anchor="start"
+               x="4302.0298"
+               y="-2727.1201"
+               font-family="monospace"
+               font-size="10px"
+               id="text652">results/references/VNI/VNI.gff.tsv</text>
+            <text
+               text-anchor="start"
+               x="4449.7798"
+               y="-2703.0701"
+               font-family="sans"
+               font-size="10px"
+               id="text653" />
+            <text
+               text-anchor="start"
+               x="4452.0298"
+               y="-2703.0701"
+               font-family="sans"
+               font-weight="bold"
+               font-size="14px"
+               id="text654">output →</text>
+            <text
+               text-anchor="start"
+               x="4515.7798"
+               y="-2703.0701"
+               font-family="sans"
+               font-size="10px"
+               id="text655" />
+            <text
+               text-anchor="start"
+               x="4302.0298"
+               y="-2679.3799"
+               font-family="monospace"
+               font-size="10px"
+               id="text656">results/references/all.gff.tsv</text>
+            <polygon
+               fill="#57d975"
+               stroke="#57d975"
+               points="4525.03,-2788.38 4296.03,-2788.38 "
+               id="polygon656"
+               style="stroke:#754c18;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
+            <polygon
+               fill="#57d975"
+               stroke="#57d975"
+               points="4525.03,-2719.38 4296.03,-2719.38 "
+               id="polygon657"
+               style="stroke:#754c18;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
+            <polygon
+               fill="none"
+               stroke="#57d975"
+               stroke-width="2"
+               points="4524.03,-2668.62 4296.03,-2668.62 4296.03,-2822.88 4524.03,-2822.88 "
+               id="polygon658"
+               style="stroke:#754c18;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
+          </g>
+          <g
+             id="edge81"
+             class="edge">
+            <title
+               id="title658">30-&gt;40</title>
+            <path
+               fill="none"
+               stroke="#808080"
+               stroke-width="2"
+               d="m 4404.26,-2944.96 c 0.98,33.71 2.14,73.48 3.16,108.52"
+               id="path658" />
+            <polygon
+               fill="#808080"
+               stroke="#808080"
+               stroke-width="2"
+               points="4410.91,-2836.89 4407.7,-2826.8 4403.91,-2836.69 "
+               id="polygon659" />
+          </g>
+          <g
+             id="edge76"
+             class="edge">
+            <title
+               id="title692">40-&gt;39</title>
+            <path
+               fill="none"
+               stroke="#808080"
+               stroke-width="2"
+               d="m 4394.02,-2667.97 c -20.38,104.66 -52.99,298.19 -52.99,465.09 0,0 0,0 0,236.76 0,245.77 81.89,369.95 -90,545.62 -170.75,174.49 -911.77,235.66 -1240.24,254.47"
+               id="path692" />
+            <polygon
+               fill="#808080"
+               stroke="#808080"
+               stroke-width="2"
+               points="3011.05,-1162.54 3000.87,-1165.47 3010.65,-1169.53 "
+               id="polygon693" />
+          </g>
+          <g
+             id="node42"
+             class="node">
+            <title
+               id="title693">41</title>
+            <text
+               text-anchor="start"
+               x="2503.3999"
+               y="-1808.65"
+               font-family="sans"
+               font-weight="bold"
+               font-size="18px"
+               id="text693">join_dataframes</text>
+            <text
+               text-anchor="start"
+               x="2461.03"
+               y="-1779.95"
+               font-family="sans"
+               font-size="10px"
+               id="text694" />
+            <text
+               text-anchor="start"
+               x="2463.28"
+               y="-1779.95"
+               font-family="sans"
+               font-weight="bold"
+               font-size="14px"
+               id="text695">↪ input</text>
+            <text
+               text-anchor="start"
+               x="2516.53"
+               y="-1779.95"
+               font-family="sans"
+               font-size="10px"
+               id="text696" />
+            <text
+               text-anchor="start"
+               x="2461.03"
+               y="-1756.25"
+               font-family="monospace"
+               font-size="10px"
+               id="text697">results/dataset/snps/VNBI_effects.tsv</text>
+            <text
+               text-anchor="start"
+               x="2461.03"
+               y="-1735"
+               font-family="monospace"
+               font-size="10px"
+               id="text698">results/dataset/snps/VNBI_lofs.tsv</text>
+            <text
+               text-anchor="start"
+               x="2461.03"
+               y="-1713.75"
+               font-family="monospace"
+               font-size="10px"
+               id="text699">results/dataset/snps/VNBI_nmds.tsv</text>
+            <text
+               text-anchor="start"
+               x="2461.03"
+               y="-1692.5"
+               font-family="monospace"
+               font-size="10px"
+               id="text700">results/dataset/snps/VNBI_presence.tsv</text>
+            <text
+               text-anchor="start"
+               x="2461.03"
+               y="-1671.25"
+               font-family="monospace"
+               font-size="10px"
+               id="text701">results/dataset/snps/VNBI_variants.tsv</text>
+            <text
+               text-anchor="start"
+               x="2461.03"
+               y="-1650"
+               font-family="monospace"
+               font-size="10px"
+               id="text702">results/dataset/snps/VNI_effects.tsv</text>
+            <text
+               text-anchor="start"
+               x="2461.03"
+               y="-1628.75"
+               font-family="monospace"
+               font-size="10px"
+               id="text703">results/dataset/snps/VNI_lofs.tsv</text>
+            <text
+               text-anchor="start"
+               x="2461.03"
+               y="-1607.5"
+               font-family="monospace"
+               font-size="10px"
+               id="text704">results/dataset/snps/VNI_nmds.tsv</text>
+            <text
+               text-anchor="start"
+               x="2461.03"
+               y="-1586.25"
+               font-family="monospace"
+               font-size="10px"
+               id="text705">results/dataset/snps/VNI_presence.tsv</text>
+            <text
+               text-anchor="start"
+               x="2461.03"
+               y="-1565"
+               font-family="monospace"
+               font-size="10px"
+               id="text706">results/dataset/snps/VNI_variants.tsv</text>
+            <text
+               text-anchor="start"
+               x="2620.78"
+               y="-1540.95"
+               font-family="sans"
+               font-size="10px"
+               id="text707" />
+            <text
+               text-anchor="start"
+               x="2623.03"
+               y="-1540.95"
+               font-family="sans"
+               font-weight="bold"
+               font-size="14px"
+               id="text708">output →</text>
+            <text
+               text-anchor="start"
+               x="2686.78"
+               y="-1540.95"
+               font-family="sans"
+               font-size="10px"
+               id="text709" />
+            <text
+               text-anchor="start"
+               x="2461.03"
+               y="-1517.25"
+               font-family="monospace"
+               font-size="10px"
+               id="text710">results/dataset/snps/all_effects.tsv</text>
+            <text
+               text-anchor="start"
+               x="2461.03"
+               y="-1496"
+               font-family="monospace"
+               font-size="10px"
+               id="text711">results/dataset/snps/all_lofs.tsv</text>
+            <text
+               text-anchor="start"
+               x="2461.03"
+               y="-1474.75"
+               font-family="monospace"
+               font-size="10px"
+               id="text712">results/dataset/snps/all_nmds.tsv</text>
+            <text
+               text-anchor="start"
+               x="2461.03"
+               y="-1453.5"
+               font-family="monospace"
+               font-size="10px"
+               id="text713">results/dataset/snps/all_presence.tsv</text>
+            <text
+               text-anchor="start"
+               x="2461.03"
+               y="-1432.25"
+               font-family="monospace"
+               font-size="10px"
+               id="text714">results/dataset/snps/all_variants.tsv</text>
+            <polygon
+               fill="#579dd9"
+               stroke="#579dd9"
+               points="2696.03,-1796.25 2455.03,-1796.25 "
+               id="polygon714"
+               style="stroke:#754c18;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
+            <polygon
+               fill="#579dd9"
+               stroke="#579dd9"
+               points="2696.03,-1557.25 2455.03,-1557.25 "
+               id="polygon715"
+               style="stroke:#754c18;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
+            <polygon
+               fill="none"
+               stroke="#579dd9"
+               stroke-width="2"
+               points="2695.03,-1421.5 2455.03,-1421.5 2455.03,-1830.75 2695.03,-1830.75 "
+               id="polygon716"
+               style="stroke:#754c18;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
+          </g>
+          <g
+             id="edge82"
+             class="edge">
+            <title
+               id="title730">42-&gt;41</title>
+            <path
+               fill="none"
+               stroke="#808080"
+               stroke-width="2"
+               d="m 2673.11,-1868.07 c -3.25,7.97 -6.6,16.21 -10.02,24.6"
+               id="path730" />
+            <polygon
+               fill="#808080"
+               stroke="#808080"
+               stroke-width="2"
+               points="2666.37,-1842.23 2659.36,-1834.29 2659.89,-1844.87 "
+               id="polygon731" />
+          </g>
+          <g
+             id="edge83"
+             class="edge">
+            <title
+               id="title744">44-&gt;41</title>
+            <path
+               fill="none"
+               stroke="#808080"
+               stroke-width="2"
+               d="m 2584.81,-2379.99 c -9.31,24.65 -18.11,52.39 -22.78,78.74 -26.79,151.02 -22.75,324.04 -12.43,456.98"
+               id="path744" />
+            <polygon
+               fill="#808080"
+               stroke="#808080"
+               stroke-width="2"
+               points="2553.07,-1844.8 2550.38,-1834.55 2546.1,-1844.24 "
+               id="polygon745" />
+          </g>
+          <g
+             id="node49"
+             class="node">
+            <title
+               id="title762">48</title>
+            <text
+               text-anchor="start"
+               x="3111.8999"
+               y="-1670.53"
+               font-family="sans"
+               font-weight="bold"
+               font-size="18px"
+               id="text762">cds2db</text>
+            <text
+               text-anchor="start"
+               x="3017.03"
+               y="-1641.83"
+               font-family="sans"
+               font-size="10px"
+               id="text763" />
+            <text
+               text-anchor="start"
+               x="3019.28"
+               y="-1641.83"
+               font-family="sans"
+               font-weight="bold"
+               font-size="14px"
+               id="text764">↪ input</text>
+            <text
+               text-anchor="start"
+               x="3072.53"
+               y="-1641.83"
+               font-family="sans"
+               font-size="10px"
+               id="text765" />
+            <text
+               text-anchor="start"
+               x="3017.03"
+               y="-1618.12"
+               font-family="monospace"
+               font-size="10px"
+               id="text766">results/samples/agat/{sample}/cds.fa</text>
+            <text
+               text-anchor="start"
+               x="3200.78"
+               y="-1594.08"
+               font-family="sans"
+               font-size="10px"
+               id="text767" />
+            <text
+               text-anchor="start"
+               x="3203.03"
+               y="-1594.08"
+               font-family="sans"
+               font-weight="bold"
+               font-size="14px"
+               id="text768">output →</text>
+            <text
+               text-anchor="start"
+               x="3266.78"
+               y="-1594.08"
+               font-family="sans"
+               font-size="10px"
+               id="text769" />
+            <text
+               text-anchor="start"
+               x="3017.03"
+               y="-1570.38"
+               font-family="monospace"
+               font-size="10px"
+               id="text770">results/dataset/database/{sample}/cds.done</text>
+            <polygon
+               fill="#57cfd9"
+               stroke="#57cfd9"
+               points="3276.03,-1658.12 3011.03,-1658.12 "
+               id="polygon770"
+               style="stroke:#754c18;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
+            <polygon
+               fill="#57cfd9"
+               stroke="#57cfd9"
+               points="3276.03,-1610.38 3011.03,-1610.38 "
+               id="polygon771"
+               style="stroke:#754c18;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
+            <polygon
+               fill="none"
+               stroke="#57cfd9"
+               stroke-width="2"
+               points="3275.03,-1559.62 3011.03,-1559.62 3011.03,-1692.62 3275.03,-1692.62 "
+               id="polygon772"
+               style="stroke:#754c18;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
+          </g>
+          <g
+             id="edge77"
+             class="edge">
+            <title
+               id="title772">48-&gt;39</title>
+            <path
+               fill="none"
+               stroke="#808080"
+               stroke-width="2"
+               d="m 3101.78,-1558.78 c -27.07,43.54 -64.27,103.38 -101.65,163.53"
+               id="path772" />
+            <polygon
+               fill="#808080"
+               stroke="#808080"
+               stroke-width="2"
+               points="3003.24,-1393.64 2994.99,-1386.99 2997.3,-1397.33 "
+               id="polygon773" />
+          </g>
+          <g
+             id="edge95"
+             class="edge">
+            <title
+               id="title773">49-&gt;48</title>
+            <path
+               fill="none"
+               stroke="#808080"
+               stroke-width="2"
+               d="m 3483.79,-2369.25 c -74.71,162.7 -233.74,509.04 -304.96,664.16"
+               id="path773" />
+            <polygon
+               fill="#808080"
+               stroke="#808080"
+               stroke-width="2"
+               points="3182.06,-1703.74 3174.7,-1696.12 3175.7,-1706.67 "
+               id="polygon774" />
+          </g>
+          <g
+             id="node51"
+             class="node">
+            <title
+               id="title775">50</title>
+            <text
+               text-anchor="start"
+               x="2813.28"
+               y="-1670.53"
+               font-family="sans"
+               font-weight="bold"
+               font-size="18px"
+               id="text775">prots2db</text>
+            <text
+               text-anchor="start"
+               x="2721.03"
+               y="-1641.83"
+               font-family="sans"
+               font-size="10px"
+               id="text776" />
+            <text
+               text-anchor="start"
+               x="2723.28"
+               y="-1641.83"
+               font-family="sans"
+               font-weight="bold"
+               font-size="14px"
+               id="text777">↪ input</text>
+            <text
+               text-anchor="start"
+               x="2776.53"
+               y="-1641.83"
+               font-family="sans"
+               font-size="10px"
+               id="text778" />
+            <text
+               text-anchor="start"
+               x="2721.03"
+               y="-1618.12"
+               font-family="monospace"
+               font-size="10px"
+               id="text779">results/samples/agat/{sample}/proteins.fa</text>
+            <text
+               text-anchor="start"
+               x="2916.78"
+               y="-1594.08"
+               font-family="sans"
+               font-size="10px"
+               id="text780" />
+            <text
+               text-anchor="start"
+               x="2919.03"
+               y="-1594.08"
+               font-family="sans"
+               font-weight="bold"
+               font-size="14px"
+               id="text781">output →</text>
+            <text
+               text-anchor="start"
+               x="2982.78"
+               y="-1594.08"
+               font-family="sans"
+               font-size="10px"
+               id="text782" />
+            <text
+               text-anchor="start"
+               x="2721.03"
+               y="-1570.38"
+               font-family="monospace"
+               font-size="10px"
+               id="text783">results/dataset/database/{sample}/prots.done</text>
+            <polygon
+               fill="#d96157"
+               stroke="#d96157"
+               points="2992.03,-1658.12 2715.03,-1658.12 "
+               id="polygon783"
+               style="stroke:#754c18;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
+            <polygon
+               fill="#d96157"
+               stroke="#d96157"
+               points="2992.03,-1610.38 2715.03,-1610.38 "
+               id="polygon784"
+               style="stroke:#754c18;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
+            <polygon
+               fill="none"
+               stroke="#d96157"
+               stroke-width="2"
+               points="2991.03,-1559.62 2715.03,-1559.62 2715.03,-1692.62 2991.03,-1692.62 "
+               id="polygon785"
+               style="stroke:#754c18;stroke-width:5.00003;stroke-dasharray:none;stroke-opacity:1" />
+          </g>
+          <g
+             id="edge75"
+             class="edge">
+            <title
+               id="title785">50-&gt;39</title>
+            <path
+               fill="none"
+               stroke="#808080"
+               stroke-width="2"
+               d="m 2853.03,-1558.78 c 0,43.09 0,102.15 0,161.66"
+               id="path785" />
+            <polygon
+               fill="#808080"
+               stroke="#808080"
+               stroke-width="2"
+               points="2856.53,-1397.45 2853.03,-1387.45 2849.53,-1397.45 "
+               id="polygon786" />
+          </g>
+          <g
+             id="edge99"
+             class="edge">
+            <title
+               id="title786">51-&gt;50</title>
+            <path
+               fill="none"
+               stroke="#808080"
+               stroke-width="2"
+               d="m 3014.61,-2102.57 c -38.17,112.32 -99.87,293.87 -134.95,397.09"
+               id="path786" />
+            <polygon
+               fill="#808080"
+               stroke="#808080"
+               stroke-width="2"
+               points="2883.02,-1704.5 2876.49,-1696.16 2876.39,-1706.75 "
+               id="polygon787" />
+          </g>
+        </g>
+      </g>
+    </g>
+    <g
+       id="g6">
+      <g
+         id="edge53"
+         class="edge">
+        <title
+           id="title644">29-&gt;28</title>
+        <path
+           fill="none"
+           stroke="#808080"
+           stroke-width="2"
+           d="m 4003.91,-1878.48 c -16.57,15.32 -33.4,31.29 -48.88,46.73 -34.2,34.08 -70.31,72.88 -101.58,107.45"
+           id="path644" />
+        <polygon
+           fill="#808080"
+           stroke="#808080"
+           stroke-width="2"
+           points="3856.08,-1721.99 3846.79,-1716.91 3850.88,-1726.68 "
+           id="polygon645" />
+      </g>
+      <g
+         id="g5">
+        <g
+           id="node29"
+           class="node">
+          <title
+             id="title473">28</title>
+          <text
+             text-anchor="start"
+             x="3664.1499"
+             y="-1691.78"
+             font-family="sans"
+             font-weight="bold"
+             font-size="18px"
+             id="text473">depth_by_regions_plots</text>
+          <text
+             text-anchor="start"
+             x="3597.03"
+             y="-1663.08"
+             font-family="sans"
+             font-size="10px"
+             id="text474" />
+          <text
+             text-anchor="start"
+             x="3599.28"
+             y="-1663.08"
+             font-family="sans"
+             font-weight="bold"
+             font-size="14px"
+             id="text475">↪ input</text>
+          <text
+             text-anchor="start"
+             x="3652.53"
+             y="-1663.08"
+             font-family="sans"
+             font-size="10px"
+             id="text476" />
+          <text
+             text-anchor="start"
+             x="3597.03"
+             y="-1639.38"
+             font-family="monospace"
+             font-size="10px"
+             id="text477">&lt;function depth_by_regions_plots_input at 0x74e077d41e40&gt;</text>
+          <text
+             text-anchor="start"
+             x="3597.03"
+             y="-1618.12"
+             font-family="monospace"
+             font-size="10px"
+             id="text478">config/chromosome_names.csv</text>
+          <text
+             text-anchor="start"
+             x="3597.03"
+             y="-1596.88"
+             font-family="monospace"
+             font-size="10px"
+             id="text479">results/dataset/files/loci_to_plot.tsv</text>
+          <text
+             text-anchor="start"
+             x="3870.78"
+             y="-1572.83"
+             font-family="sans"
+             font-size="10px"
+             id="text480" />
+          <text
+             text-anchor="start"
+             x="3873.03"
+             y="-1572.83"
+             font-family="sans"
+             font-weight="bold"
+             font-size="14px"
+             id="text481">output →</text>
+          <text
+             text-anchor="start"
+             x="3936.78"
+             y="-1572.83"
+             font-family="sans"
+             font-size="10px"
+             id="text482" />
+          <text
+             text-anchor="start"
+             x="3597.03"
+             y="-1549.12"
+             font-family="monospace"
+             font-size="10.00"
+             id="text483"
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:11.0001px;font-family:monospace;-inkscape-font-specification:'monospace, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-anchor:start">results/samples/plots/{sample}/depth_by_regions.png</text>
+          <polygon
+             fill="#5793d9"
+             stroke="#5793d9"
+             points="3946.03,-1679.38 3591.03,-1679.38 "
+             id="polygon483"
+             style="stroke:#b557d9;stroke-width:4.00003;stroke-dasharray:none;stroke-opacity:1" />
+          <polygon
+             fill="#5793d9"
+             stroke="#5793d9"
+             points="3946.03,-1589.12 3591.03,-1589.12 "
+             id="polygon484"
+             style="stroke:#b557d9;stroke-width:4.00003;stroke-dasharray:none;stroke-opacity:1" />
+          <polygon
+             fill="none"
+             stroke="#5793d9"
+             stroke-width="2"
+             points="3945.03,-1538.38 3591.03,-1538.38 3591.03,-1713.88 3945.03,-1713.88 "
+             id="polygon485"
+             style="stroke:#b557d9;stroke-width:4.00003;stroke-dasharray:none;stroke-opacity:1" />
+        </g>
+        <g
+           id="edge54"
+           class="edge">
+          <title
+             id="title485">12-&gt;28</title>
+          <path
+             fill="none"
+             stroke="#808080"
+             stroke-width="2"
+             d="m 3628.79,-1899.96 c 25.25,49.49 60.2,117.97 88.77,173.94"
+             id="path485" />
+          <polygon
+             fill="#808080"
+             stroke="#808080"
+             stroke-width="2"
+             points="3720.56,-1727.83 3721.99,-1717.33 3714.33,-1724.65 "
+             id="polygon486" />
+        </g>
+        <g
+           id="node32"
+           class="node">
+          <title
+             id="title486">31</title>
+          <text
+             text-anchor="start"
+             x="4056.1499"
+             y="-1691.78"
+             font-family="sans"
+             font-weight="bold"
+             font-size="18px"
+             id="text486">mapq_plot</text>
+          <text
+             text-anchor="start"
+             x="3971.03"
+             y="-1663.08"
+             font-family="sans"
+             font-size="10px"
+             id="text487" />
+          <text
+             text-anchor="start"
+             x="3973.28"
+             y="-1663.08"
+             font-family="sans"
+             font-weight="bold"
+             font-size="14px"
+             id="text488">↪ input</text>
+          <text
+             text-anchor="start"
+             x="4026.53"
+             y="-1663.08"
+             font-family="sans"
+             font-size="10px"
+             id="text489" />
+          <text
+             text-anchor="start"
+             x="3971.03"
+             y="-1639.38"
+             font-family="monospace"
+             font-size="10px"
+             id="text490">&lt;function mapq_plot_input at 0x74e077d41c60&gt;</text>
+          <text
+             text-anchor="start"
+             x="3971.03"
+             y="-1618.12"
+             font-family="monospace"
+             font-size="10px"
+             id="text491">config/chromosome_names.csv</text>
+          <text
+             text-anchor="start"
+             x="3971.03"
+             y="-1596.88"
+             font-family="monospace"
+             font-size="10px"
+             id="text492">results/dataset/files/loci_to_plot.tsv</text>
+          <text
+             text-anchor="start"
+             x="4166.7798"
+             y="-1572.83"
+             font-family="sans"
+             font-size="10px"
+             id="text493" />
+          <text
+             text-anchor="start"
+             x="4169.0298"
+             y="-1572.83"
+             font-family="sans"
+             font-weight="bold"
+             font-size="14px"
+             id="text494">output →</text>
+          <text
+             text-anchor="start"
+             x="4232.7798"
+             y="-1572.83"
+             font-family="sans"
+             font-size="10px"
+             id="text495" />
+          <text
+             text-anchor="start"
+             x="3971.03"
+             y="-1549.12"
+             font-family="monospace"
+             font-size="10px"
+             id="text496"
+             style="font-size:10px;font-family:monospace;text-anchor:start"><tspan
+               style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:11.0001px;font-family:Sans;-inkscape-font-specification:'Sans, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal"
+               id="tspan1">results/samples/plots/{sample}/mapq.png</tspan></text>
+          <polygon
+             fill="#5761d9"
+             stroke="#5761d9"
+             points="4242.03,-1679.38 3965.03,-1679.38 "
+             id="polygon496"
+             style="stroke:#b557d9;stroke-width:4.00003;stroke-dasharray:none;stroke-opacity:1" />
+          <polygon
+             fill="#5761d9"
+             stroke="#5761d9"
+             points="4242.03,-1589.12 3965.03,-1589.12 "
+             id="polygon497"
+             style="stroke:#b557d9;stroke-width:4.00003;stroke-dasharray:none;stroke-opacity:1" />
+          <polygon
+             fill="none"
+             stroke="#5761d9"
+             stroke-width="2"
+             points="4241.03,-1538.38 3965.03,-1538.38 3965.03,-1713.88 4241.03,-1713.88 "
+             id="polygon498"
+             style="stroke:#b557d9;stroke-width:4.00003;stroke-dasharray:none;stroke-opacity:1" />
+        </g>
+        <g
+           id="edge61"
+           class="edge">
+          <title
+             id="title498">12-&gt;31</title>
+          <path
+             fill="none"
+             stroke="#808080"
+             stroke-width="2"
+             d="m 3739.8,-1908.17 c 34.98,13.61 72.33,27.8 107.23,40.42 47.58,17.21 67.21,6.06 108,36 38.12,27.98 70.39,68.71 94.97,106.47"
+             id="path498" />
+          <polygon
+             fill="#808080"
+             stroke="#808080"
+             stroke-width="2"
+             points="4052.68,-1727.58 4055.1,-1717.27 4046.78,-1723.82 "
+             id="polygon499" />
+        </g>
+        <g
+           id="edge55"
+           class="edge">
+          <title
+             id="title511">13-&gt;28</title>
+          <path
+             fill="none"
+             stroke="#808080"
+             stroke-width="2"
+             d="m 1967.27,-2123.8 c 20.86,16.54 40.19,35.67 54.76,57.3 50.47,74.97 -26.67,141.17 43,198.75 64.93,53.67 1439.32,1.11 1516,36 49.97,22.74 92.54,65.85 124.38,106.66"
+             id="path511" />
+          <polygon
+             fill="#808080"
+             stroke="#808080"
+             stroke-width="2"
+             points="3708.15,-1727.26 3711.43,-1717.19 3702.59,-1723.02 "
+             id="polygon512" />
+        </g>
+        <g
+           id="node26"
+           class="node"
+           transform="translate(-54.07047,-1059.4303)">
+          <title
+             id="title525">25</title>
+          <text
+             text-anchor="start"
+             x="482.28"
+             y="-1233.9"
+             font-family="sans"
+             font-weight="bold"
+             font-size="18px"
+             id="text525">depth_distribution_plots</text>
+          <text
+             text-anchor="start"
+             x="411.03"
+             y="-1205.2"
+             font-family="sans"
+             font-size="10px"
+             id="text526" />
+          <text
+             text-anchor="start"
+             x="413.28"
+             y="-1205.2"
+             font-family="sans"
+             font-weight="bold"
+             font-size="14px"
+             id="text527">↪ input</text>
+          <text
+             text-anchor="start"
+             x="466.53"
+             y="-1205.2"
+             font-family="sans"
+             font-size="10px"
+             id="text528" />
+          <text
+             text-anchor="start"
+             x="411.03"
+             y="-1181.5"
+             font-family="monospace"
+             font-size="10px"
+             id="text529">config/chromosome_names.csv</text>
+          <text
+             text-anchor="start"
+             x="411.03"
+             y="-1160.25"
+             font-family="monospace"
+             font-size="10px"
+             id="text530">results/samples/samtools/{sample}/depth_distribution.tsv</text>
+          <text
+             text-anchor="start"
+             x="411.03"
+             y="-1139"
+             font-family="monospace"
+             font-size="10px"
+             id="text531">results/samples/samtools/{sample}/global_mode.tsv</text>
+          <text
+             text-anchor="start"
+             x="702.78003"
+             y="-1114.95"
+             font-family="sans"
+             font-size="10px"
+             id="text532" />
+          <text
+             text-anchor="start"
+             x="705.03003"
+             y="-1114.95"
+             font-family="sans"
+             font-weight="bold"
+             font-size="14px"
+             id="text533">output →</text>
+          <text
+             text-anchor="start"
+             x="768.78003"
+             y="-1114.95"
+             font-family="sans"
+             font-size="10px"
+             id="text534" />
+          <text
+             text-anchor="start"
+             x="411.03"
+             y="-1091.25"
+             font-family="monospace"
+             font-size="10.00"
+             id="text535"
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10px;font-family:monospace;-inkscape-font-specification:'monospace, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal">results/samples/plots/{sample}/depth_chrom_distribution.png</text>
+          <text
+             text-anchor="start"
+             x="411.03"
+             y="-1070"
+             font-family="monospace"
+             font-size="10.00"
+             id="text536"
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:10px;font-family:monospace;-inkscape-font-specification:'monospace, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal">results/samples/plots/{sample}/depth_global_distribution.png</text>
+          <polygon
+             fill="#d9c557"
+             stroke="#d9c557"
+             points="405.03,-1221.5 778.03,-1221.5 "
+             id="polygon536"
+             style="stroke:#b557d9;stroke-width:4.00003;stroke-dasharray:none;stroke-opacity:1" />
+          <polygon
+             fill="#d9c557"
+             stroke="#d9c557"
+             points="405.03,-1131.25 778.03,-1131.25 "
+             id="polygon537"
+             style="stroke:#b557d9;stroke-width:4.00003;stroke-dasharray:none;stroke-opacity:1" />
+          <polygon
+             fill="none"
+             stroke="#d9c557"
+             stroke-width="2"
+             points="405.03,-1059.25 405.03,-1256 777.03,-1256 777.03,-1059.25 "
+             id="polygon538"
+             style="stroke:#b557d9;stroke-width:4.00003;stroke-dasharray:none;stroke-opacity:1" />
+        </g>
+        <g
+           id="edge52"
+           class="edge">
+          <title
+             id="title553">17-&gt;28</title>
+          <path
+             fill="none"
+             stroke="#808080"
+             stroke-width="2"
+             d="m 3755.6,-2102.57 c 2.73,104.67 7.04,269.47 9.8,374.97"
+             id="path553" />
+          <polygon
+             fill="#808080"
+             stroke="#808080"
+             stroke-width="2"
+             points="3768.89,-1727.83 3765.66,-1717.75 3761.9,-1727.65 "
+             id="polygon554" />
+        </g>
+        <g
+           id="edge59"
+           class="edge">
+          <title
+             id="title554">17-&gt;31</title>
+          <path
+             fill="none"
+             stroke="#808080"
+             stroke-width="2"
+             d="m 3847.85,-2102.53 c 9.66,11.77 18.93,23.92 27.18,36.03 55.41,81.42 52.8,111.24 98,198.75 24.2,46.86 51.87,98.36 75.45,141.64"
+             id="path554" />
+          <polygon
+             fill="#808080"
+             stroke="#808080"
+             stroke-width="2"
+             points="4051.53,-1727.82 4053.24,-1717.37 4045.38,-1724.47 "
+             id="polygon555" />
+        </g>
+        <g
+           id="node27"
+           class="node">
+          <title
+             id="title571">26</title>
+          <text
+             text-anchor="start"
+             x="1316.65"
+             y="-2032.78"
+             font-family="sans"
+             font-weight="bold"
+             font-size="18px"
+             id="text571">depth_by_chrom_plots</text>
+          <text
+             text-anchor="start"
+             x="1245.03"
+             y="-2004.08"
+             font-family="sans"
+             font-size="10px"
+             id="text572" />
+          <text
+             text-anchor="start"
+             x="1247.28"
+             y="-2004.08"
+             font-family="sans"
+             font-weight="bold"
+             font-size="14px"
+             id="text573">↪ input</text>
+          <text
+             text-anchor="start"
+             x="1300.53"
+             y="-2004.08"
+             font-family="sans"
+             font-size="10px"
+             id="text574" />
+          <text
+             text-anchor="start"
+             x="1245.03"
+             y="-1980.38"
+             font-family="monospace"
+             font-size="10px"
+             id="text575">config/chromosome_names.csv</text>
+          <text
+             text-anchor="start"
+             x="1245.03"
+             y="-1959.12"
+             font-family="monospace"
+             font-size="10px"
+             id="text576">results/samples/mosdepth/{sample}/depth_by_chrom_good.tsv</text>
+          <text
+             text-anchor="start"
+             x="1245.03"
+             y="-1937.88"
+             font-family="monospace"
+             font-size="10px"
+             id="text577">results/samples/mosdepth/{sample}/depth_by_chrom_raw.tsv</text>
+          <text
+             text-anchor="start"
+             x="1518.78"
+             y="-1913.83"
+             font-family="sans"
+             font-size="10px"
+             id="text578" />
+          <text
+             text-anchor="start"
+             x="1521.03"
+             y="-1913.83"
+             font-family="sans"
+             font-weight="bold"
+             font-size="14px"
+             id="text579">output →</text>
+          <text
+             text-anchor="start"
+             x="1584.78"
+             y="-1913.83"
+             font-family="sans"
+             font-size="10px"
+             id="text580" />
+          <text
+             text-anchor="start"
+             x="1245.03"
+             y="-1890.12"
+             font-family="monospace"
+             font-size="10.00"
+             id="text581"
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:11.0001px;font-family:monospace;-inkscape-font-specification:'monospace, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;text-anchor:start">results/samples/plots/{sample}/depth_by_chrom.png</text>
+          <polygon
+             fill="#d9a757"
+             stroke="#d9a757"
+             points="1594.03,-2020.38 1239.03,-2020.38 "
+             id="polygon581"
+             style="stroke:#b557d9;stroke-width:4.00003;stroke-dasharray:none;stroke-opacity:1" />
+          <polygon
+             fill="#d9a757"
+             stroke="#d9a757"
+             points="1594.03,-1930.12 1239.03,-1930.12 "
+             id="polygon582"
+             style="stroke:#b557d9;stroke-width:4.00003;stroke-dasharray:none;stroke-opacity:1" />
+          <polygon
+             fill="none"
+             stroke="#d9a757"
+             stroke-width="2"
+             points="1593.03,-1879.38 1239.03,-1879.38 1239.03,-2054.88 1593.03,-2054.88 "
+             id="polygon583"
+             style="stroke:#b557d9;stroke-width:4.00003;stroke-dasharray:none;stroke-opacity:1" />
+        </g>
+        <g
+           id="edge50"
+           class="edge">
+          <title
+             id="title583">20-&gt;26</title>
+          <path
+             fill="none"
+             stroke="#808080"
+             stroke-width="2"
+             d="m 1392.44,-2134.49 c 2.93,20.65 6.22,43.89 9.4,66.31"
+             id="path583" />
+          <polygon
+             fill="#808080"
+             stroke="#808080"
+             stroke-width="2"
+             points="1405.28,-2068.85 1403.22,-2058.46 1398.35,-2067.87 "
+             id="polygon584" />
+        </g>
+        <g
+           id="edge62"
+           class="edge">
+          <title
+             id="title601">23-&gt;31</title>
+          <path
+             fill="none"
+             stroke="#808080"
+             stroke-width="2"
+             d="m 2429.85,-2135.19 c 42.73,13.19 88.62,25.27 132.18,32.69 130.07,22.17 1072.36,-29.34 1187,36 90.86,51.79 46.97,130.23 126,198.75 29.45,25.54 49.77,11.37 80,36 35.96,29.3 67.47,69.34 92.08,106.23"
+             id="path601" />
+          <polygon
+             fill="#808080"
+             stroke="#808080"
+             stroke-width="2"
+             points="4049.98,-1727.52 4052.53,-1717.23 4044.13,-1723.69 "
+             id="polygon602" />
+        </g>
+        <g
+           id="edge49"
+           class="edge">
+          <title
+             id="title617">27-&gt;26</title>
+          <path
+             fill="none"
+             stroke="#808080"
+             stroke-width="2"
+             d="m 1114.39,-2134.49 c 40.99,22.61 87.61,48.32 131.73,72.66"
+             id="path617" />
+          <polygon
+             fill="#808080"
+             stroke="#808080"
+             stroke-width="2"
+             points="1247.56,-2065.04 1254.63,-2057.14 1244.18,-2058.91 "
+             id="polygon618" />
+        </g>
+        <g
+           id="node30"
+           class="node">
+          <title
+             id="title632">29</title>
+          <text
+             text-anchor="start"
+             x="4087.6499"
+             y="-2032.78"
+             font-family="sans"
+             font-weight="bold"
+             font-size="18px"
+             id="text632">loci</text>
+          <text
+             text-anchor="start"
+             x="3989.03"
+             y="-2004.08"
+             font-family="sans"
+             font-size="10px"
+             id="text633" />
+          <text
+             text-anchor="start"
+             x="3991.28"
+             y="-2004.08"
+             font-family="sans"
+             font-weight="bold"
+             font-size="14px"
+             id="text634">↪ input</text>
+          <text
+             text-anchor="start"
+             x="4044.53"
+             y="-2004.08"
+             font-family="sans"
+             font-size="10px"
+             id="text635" />
+          <text
+             text-anchor="start"
+             x="3989.03"
+             y="-1980.38"
+             font-family="monospace"
+             font-size="10px"
+             id="text636">config/loci.csv</text>
+          <text
+             text-anchor="start"
+             x="3989.03"
+             y="-1959.12"
+             font-family="monospace"
+             font-size="10px"
+             id="text637">results/references/VNBI/VNBI.gff.tsv</text>
+          <text
+             text-anchor="start"
+             x="3989.03"
+             y="-1937.88"
+             font-family="monospace"
+             font-size="10px"
+             id="text638">results/references/VNI/VNI.gff.tsv</text>
+          <text
+             text-anchor="start"
+             x="4148.7798"
+             y="-1913.83"
+             font-family="sans"
+             font-size="10px"
+             id="text639" />
+          <text
+             text-anchor="start"
+             x="4151.0298"
+             y="-1913.83"
+             font-family="sans"
+             font-weight="bold"
+             font-size="14px"
+             id="text640">output →</text>
+          <text
+             text-anchor="start"
+             x="4214.7798"
+             y="-1913.83"
+             font-family="sans"
+             font-size="10px"
+             id="text641" />
+          <text
+             text-anchor="start"
+             x="3989.03"
+             y="-1890.12"
+             font-family="monospace"
+             font-size="10px"
+             id="text642">results/dataset/files/loci_to_plot.tsv</text>
+          <polygon
+             fill="#d99d57"
+             stroke="#d99d57"
+             points="4224.03,-2020.38 3983.03,-2020.38 "
+             id="polygon642"
+             style="stroke:#b557d9;stroke-width:4.00003;stroke-dasharray:none;stroke-opacity:1" />
+          <polygon
+             fill="#d99d57"
+             stroke="#d99d57"
+             points="4224.03,-1930.12 3983.03,-1930.12 "
+             id="polygon643"
+             style="stroke:#b557d9;stroke-width:4.00003;stroke-dasharray:none;stroke-opacity:1" />
+          <polygon
+             fill="none"
+             stroke="#d99d57"
+             stroke-width="2"
+             points="4223.03,-1879.38 3983.03,-1879.38 3983.03,-2054.88 4223.03,-2054.88 "
+             id="polygon644"
+             style="stroke:#b557d9;stroke-width:4.00003;stroke-dasharray:none;stroke-opacity:1" />
+        </g>
+        <g
+           id="edge60"
+           class="edge">
+          <title
+             id="title645">29-&gt;31</title>
+          <path
+             fill="none"
+             stroke="#808080"
+             stroke-width="2"
+             d="m 4103.03,-1878.38 c 0,46.09 0,102.79 0,150.66"
+             id="path645" />
+          <polygon
+             fill="#808080"
+             stroke="#808080"
+             stroke-width="2"
+             points="4106.53,-1727.82 4103.03,-1717.82 4099.53,-1727.82 "
+             id="polygon646" />
+        </g>
+        <g
+           id="edge56"
+           class="edge">
+          <title
+             id="title646">30-&gt;29</title>
+          <path
+             fill="none"
+             stroke="#808080"
+             stroke-width="2"
+             d="m 4328.17,-2944.91 c -16.24,20.68 -31.69,43.98 -42.14,67.91 -12.14,27.79 -74.71,510.09 -81,539.75 -19.6,92.25 -48.8,195.61 -70.94,269.43"
+             id="path646" />
+          <polygon
+             fill="#808080"
+             stroke="#808080"
+             stroke-width="2"
+             points="4137.57,-2067.23 4131.34,-2058.67 4130.87,-2069.25 "
+             id="polygon647" />
+        </g>
+        <g
+           id="edge70-3"
+           class="edge"
+           transform="translate(-44.509786,-263.12849)">
+          <title
+             id="title630-5">27-&gt;36</title>
+          <path
+             fill="none"
+             stroke="#808080"
+             stroke-width="2"
+             d="m 881.36,-2134.49 c -38.2,22.51 -81.63,48.1 -122.78,72.35"
+             id="path630-6" />
+          <polygon
+             fill="#808080"
+             stroke="#808080"
+             stroke-width="2"
+             points="750.22,-2057.22 757.06,-2065.31 760.61,-2059.28 "
+             id="polygon631-2" />
+        </g>
+      </g>
     </g>
   </g>
 </svg>
