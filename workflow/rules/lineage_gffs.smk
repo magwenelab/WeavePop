@@ -2,6 +2,7 @@
 #   Per lineage: Standardize GFF format and convert to TSV
 # =================================================================================================
 
+# Run AGAT to add and modify tags and convert to TSV 
 rule agat_fix_gff:
     input:
         gff = REF_DATA / "{lineage}.gff",
@@ -23,6 +24,7 @@ rule agat_fix_gff:
         agat_convert_sp_gff2tsv.pl --gff {output.fixed_description} -o {output.tsv} -c {input.config} &>> {log} 
         """
 
+# Recreate IDs
 rule fix_gff_tsv:
     input:
         tsv = rules.agat_fix_gff.output.tsv

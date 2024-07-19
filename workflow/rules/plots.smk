@@ -1,3 +1,7 @@
+# =================================================================================================
+#   Join all lineages: Create table with loci to add to plots
+# =================================================================================================
+
 rule loci:
     input:
         refs = expand(REFDIR / "{lineage}" / "{lineage}.gff.tsv", lineage=LINEAGES),
@@ -8,6 +12,10 @@ rule loci:
         "logs/dataset/files/loci.log"
     shell:
         "xonsh workflow/scripts/loci.xsh -g {input.loci} -o {output} {input.refs} &> {log}"
+
+# =================================================================================================
+#   Per sample: Plot depth distribution and depth by chromosome 
+# =================================================================================================
 
 rule depth_distribution_plots:
     input:
@@ -38,6 +46,10 @@ rule depth_by_chrom_plots:
     script:
         "../scripts/depth_by_chrom_plots.R"
 
+# =================================================================================================
+#   Per sample: Plot depth and mapq by regions
+# =================================================================================================
+
 def depth_by_regions_plots_input(wildcards):
     s = SAMPLE_REFERENCE.loc[wildcards.sample,]
     return {
@@ -58,6 +70,31 @@ rule depth_by_regions_plots:
         "logs/samples/plots/depth_by_regions_{sample}.log"
     script:
         "../scripts/depth_by_regions_plots.R"
+
+def mapq_plot_input(wildcards):
+    s = SAMPLE_REFERENCE.loc[wildcards.sample,]
+    return {
+        "mapq": OUTDIR / "samtools" / s["sample"] / "mapq_window.bed",
+        "structure": OUTDIR / "cnv" / s["sample"] / "cnv_calls.tsv",
+        "repeats": REFDIR / s["group"]  / "repeats" / (s["group"] + "_repeats.bed")
+    }
+rule mapq_plot:
+    input:
+        unpack(mapq_plot_input),
+        chrom_names = CHROM_NAMES,
+        loci = rules.loci.output.locitable
+    output:
+        OUTDIR / "plots" / "{sample}" / "mapq.png"
+    conda:
+        "../envs/r.yaml"
+    log:
+        "logs/samples/plots/mapq_plot_{sample}.log"
+    script:
+        "../scripts/mapq.R"
+
+# =================================================================================================
+#   Per dataset: Plot depth by chromosome and summary
+# =================================================================================================
 
 rule dataset_depth_by_chrom_plot:
     input:
@@ -94,23 +131,3 @@ rule dataset_summary_plot:
     script:
         "../scripts/dataset_summary_plot.R"
 
-def mapq_plot_input(wildcards):
-    s = SAMPLE_REFERENCE.loc[wildcards.sample,]
-    return {
-        "mapq": OUTDIR / "samtools" / s["sample"] / "mapq_window.bed",
-        "structure": OUTDIR / "cnv" / s["sample"] / "cnv_calls.tsv",
-        "repeats": REFDIR / s["group"]  / "repeats" / (s["group"] + "_repeats.bed")
-    }
-rule mapq_plot:
-    input:
-        unpack(mapq_plot_input),
-        chrom_names = CHROM_NAMES,
-        loci = rules.loci.output.locitable
-    output:
-        OUTDIR / "plots" / "{sample}" / "mapq.png"
-    conda:
-        "../envs/r.yaml"
-    log:
-        "logs/samples/plots/mapq_plot_{sample}.log"
-    script:
-        "../scripts/mapq.R"

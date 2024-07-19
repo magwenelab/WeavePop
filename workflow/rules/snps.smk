@@ -1,3 +1,6 @@
+# =================================================================================================
+#   Join dataset | Add sample sequences to database. (Runs per sample but output is dataset-wide)
+# =================================================================================================
 # Make SQL database with cds of all samples
 rule cds2db:
     input: 
@@ -11,7 +14,12 @@ rule cds2db:
     log:
         "logs/dataset/sequences/cds2db_{sample}.log"
     shell:
-        "python workflow/scripts/build_sequences_db.py -d {params.db} -f {input.cds} -s {wildcards.sample} -t DNA &> {log}"
+        "python workflow/scripts/build_sequences_db.py "
+        "-d {params.db} "
+        "-f {input.cds} "
+        "-s {wildcards.sample} "
+        "-t DNA "
+        "&> {log}"
 
 # Make SQL database with proteins of all samples
 rule prots2db:
@@ -26,9 +34,17 @@ rule prots2db:
     log:
         "logs/dataset/sequences/prots2db_{sample}.log"
     shell:
-        "python workflow/scripts/build_sequences_db.py -d {params.db} -f {input.prots} -s {wildcards.sample} -t PROTEIN &> {log}"
+        "python workflow/scripts/build_sequences_db.py "
+        "-d {params.db} "
+        "-f {input.prots} "
+        "-s {wildcards.sample} "
+        "-t PROTEIN "
+        "&> {log}"
         
-# Join all lineages gffs into one
+# =================================================================================================
+#   Join lineages | Create a single GFF file with all lineages
+# =================================================================================================
+
 rule join_gffs:
     input:
         expand(REFDIR / "{lineage}" / "{lineage}.gff.tsv", lineage=LINEAGES)
@@ -38,6 +54,10 @@ rule join_gffs:
         "logs/references/join_gffs.log"
     shell:
         "python workflow/scripts/join_gffs.py -o {output} {input} &> {log}"
+
+# =================================================================================================
+#   Per lineage | Extract CDS and protein sequences from reference genomes
+# =================================================================================================
 
 # Extract cds and protein sequences from reference genomes
 rule extract_ref_seqs:
@@ -107,6 +127,10 @@ rule build_refs_db:
         snpEff build -gff3 -v -dataDir {params.dir} -config {params.config} {params.name} &>> {log}
         """
 
+# =================================================================================================
+#   Join samples per lineage | Intersect VCF files of all samples from each lineage and annotate
+# =================================================================================================
+
 def intersect_vcfs_input(wildcards):
     l = LINEAGE_REFERENCE.loc[wildcards.lineage,]
     return {
@@ -126,7 +150,13 @@ rule intersect_vcfs:
     log:
         "logs/dataset/snps/intersect_vcfs_{lineage}.log"
     shell:
-        "xonsh workflow/scripts/intersect_vcfs.xsh -v {output.vcf} -p {output.tsv} -l {wildcards.lineage} -t {params.tmp_dir} {input.vcfs} &> {log}"
+        "xonsh workflow/scripts/intersect_vcfs.xsh "
+        "-v {output.vcf} "
+        "-p {output.tsv} "
+        "-l {wildcards.lineage} "
+        "-t {params.tmp_dir} "
+        "{input.vcfs} "
+        "&> {log}"
 
 rule snpeff:
     input:
@@ -144,7 +174,13 @@ rule snpeff:
     log:
         "logs/dataset/snps/snpeff_{lineage}.log"
     shell:
-        "snpEff ann -v -classic -dataDir {params.dir} -config {params.config} -s {output.html} {params.name} {input.vcf} 1> {output.vcf} 2> {log}"
+        "snpEff ann -v -classic "
+        "-dataDir {params.dir} "
+        "-config {params.config} "
+        "-s {output.html} 
+        "{params.name} "
+        "{input.vcf} "
+        "1> {output.vcf} 2> {log}"
 
 rule extract_vcf_annotation:
     input:
@@ -159,8 +195,20 @@ rule extract_vcf_annotation:
     log:
         "logs/dataset/snps/extract_vcf_annotation_{lineage}.log"
     shell:
-        "xonsh workflow/scripts/extract_vcf_annotation.xsh -i {input.vcf} -e {output.effects} -v {output.variants} -f {output.lofs} -n {output.nmds} -l {wildcards.lineage} &> {log}"
+        "xonsh workflow/scripts/extract_vcf_annotation.xsh "
+        "-i {input.vcf} "
+        "-e {output.effects} "
+        "-v {output.variants} "
+        "-f {output.lofs} "
+        "-n {output.nmds} "
+        "-l {wildcards.lineage} "
+        "&> {log}"
 
+# =================================================================================================
+#   Per dataset | Create final database
+# =================================================================================================
+
+# Join all effects, variants, lofs, nmds and presence tables
 rule join_dataframes:
     input:
         effects = expand(DATASET_OUTDIR / "snps" / "{lineage}_effects.tsv", lineage=LINEAGES),

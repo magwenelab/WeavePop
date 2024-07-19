@@ -1,3 +1,8 @@
+# =================================================================================================
+#   Per main reference: Standardize GFF format and convert to TSV
+# =================================================================================================
+
+# Run AGAT to add and modify tags and convert to TSV 
 rule agat_fix_gff:
     input: 
         gff= MAIN_GFF,
@@ -21,6 +26,7 @@ rule agat_fix_gff:
         agat_convert_sp_gff2tsv.pl --gff {output.fixed_description} -o {output.tsv} -c {input.config} &>> {log} 
         """
 
+# Recreate IDs
 rule fix_gff_tsv:
     input:
         tsv = rules.agat_fix_gff.output.tsv
@@ -49,7 +55,11 @@ rule main_links:
         "&& "
         "ln -s -r {input.gff} {output.gff} &>> {log}"
 
-# Lift over annotation of the main reference to the reference genomes
+# ==================================================================================================
+#   Per lineage: Annotate reference genomes
+# ==================================================================================================
+
+# Run Lifotff to annotate reference genomes with main reference
 rule ref2ref_liftoff:
     input:
         target_refs = REFDIR / "{lineage}" / "{lineage}.fasta",

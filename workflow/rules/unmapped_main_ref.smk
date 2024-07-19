@@ -1,4 +1,7 @@
-# Plot and count the features that were not lifted over from the main reference
+# =================================================================================================
+#   Join lineages | Plot and count the features that were not lifted over from the main reference
+# =================================================================================================
+
 rule unmapped_ref_features:
     input:
         SAMPLEFILE,
@@ -15,6 +18,10 @@ rule unmapped_ref_features:
         "logs/references/unmapped_ref_features.log"
     script:
         "../scripts/unmapped_features_refs.R"
+
+# =================================================================================================
+#   Per dataset | Plot and count the features that were not lifted over
+# =================================================================================================
 
 rule unmapped_samples_plot:
     input:
