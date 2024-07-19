@@ -1,5 +1,5 @@
 # =================================================================================================
-#   Join all lineages: Create table with loci to add to plots
+#   Join all lineages | Create table with loci to add to plots
 # =================================================================================================
 
 rule loci:
@@ -14,7 +14,7 @@ rule loci:
         "xonsh workflow/scripts/loci.xsh -g {input.loci} -o {output} {input.refs} &> {log}"
 
 # =================================================================================================
-#   Per sample: Plot depth distribution and depth by chromosome 
+#   Per sample | Plot depth distribution and depth by chromosome 
 # =================================================================================================
 
 rule depth_distribution_plots:
@@ -47,7 +47,7 @@ rule depth_by_chrom_plots:
         "../scripts/depth_by_chrom_plots.R"
 
 # =================================================================================================
-#   Per sample: Plot depth and mapq by regions
+#   Per sample | Plot depth and mapq by regions
 # =================================================================================================
 
 def depth_by_regions_plots_input(wildcards):
@@ -93,7 +93,7 @@ rule mapq_plot:
         "../scripts/mapq.R"
 
 # =================================================================================================
-#   Per dataset: Plot depth by chromosome and summary
+#   Per dataset | Plot depth by chromosome and summary
 # =================================================================================================
 
 rule dataset_depth_by_chrom_plot:

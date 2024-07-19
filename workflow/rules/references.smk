@@ -1,5 +1,5 @@
 # =================================================================================================
-#   Per main reference: Standardize GFF format and convert to TSV
+#   Per main reference | Standardize GFF format and convert to TSV
 # =================================================================================================
 
 # Run AGAT to add and modify tags and convert to TSV 
@@ -56,7 +56,7 @@ rule main_links:
         "ln -s -r {input.gff} {output.gff} &>> {log}"
 
 # ==================================================================================================
-#   Per lineage: Annotate reference genomes
+#   Per lineage | Annotate reference genomes
 # ==================================================================================================
 
 # Run Lifotff to annotate reference genomes with main reference

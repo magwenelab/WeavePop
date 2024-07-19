@@ -1,5 +1,5 @@
 # =================================================================================================
-#   Per sample: Run Mosdepth to get depth per region of all (raw) and good quality reads
+#   Per sample | Run Mosdepth to get depth per region of all (raw) and good quality reads
 # =================================================================================================
 
 rule mosdepth:
@@ -46,7 +46,7 @@ rule mosdepth_good:
         "&> {log}"
 
 # =================================================================================================
-#   Per sample: Get depth by chromosome raw and good
+#   Per sample | Get depth by chromosome raw and good
 # =================================================================================================
 
 rule depth_by_chrom_raw:
@@ -74,7 +74,7 @@ rule depth_by_chrom_good:
         "xonsh workflow/scripts/depth_by_chrom.xsh -b {input} -o {output} -s {wildcards.sample} &> {log}"
 
 # =================================================================================================
-#   Per sample: Get distribution and global mode fo depth (genome-wide depth to normalize)
+#   Per sample | Get distribution and global mode fo depth (genome-wide depth to normalize)
 # =================================================================================================
 
 rule bam_good:
@@ -115,7 +115,7 @@ rule depth_distribution:
         "xonsh workflow/scripts/depth_distribution.xsh -s {wildcards.sample} -b {input.bam} -g {input.bam_good} -do {output.distrib} -go {output.global_mode} &> {log}"
 
 # =================================================================================================
-#   Per sample: Normalize depth by chromosome and by region
+#   Per sample | Normalize depth by chromosome and by region
 # =================================================================================================
 
 rule depth_by_chrom_normalized:
@@ -147,7 +147,7 @@ rule depth_by_regions:
         "xonsh workflow/scripts/depth_by_regions.xsh -di {input.depth} -gi {input.global_mode} -do {output} -s {params.smoothing_size} &> {log}"
 
 # =================================================================================================
-#   Per lineage: Run RepeatModeler and RepeatMasker
+#   Per lineage | Run RepeatModeler and RepeatMasker
 # =================================================================================================
 
 rule repeat_modeler:
@@ -185,7 +185,7 @@ rule repeat_masker:
         "bash workflow/scripts/repeat-masker.sh {threads} {input.database} {input.fasta} {input.known} {input.unknown} {output} &> {log}"
 
 # =================================================================================================
-#   Per sample: Intercept depth by regions with repeats and call CNVs
+#   Per sample | Intercept depth by regions with repeats and call CNVs
 # =================================================================================================
 
 def cnv_calling_input(wildcards):
@@ -210,7 +210,7 @@ rule cnv_calling:
         "xonsh workflow/scripts/cnv_calling.xsh -di {input.depth} -ri {input.repeats} -co {output} -sp {wildcards.sample} -rp {params.region_size} -dp {params.depth_threshold} &> {log}"
 
 # =================================================================================================
-#   Per sample: Get mapping stats
+#   Per sample | Get mapping stats
 # =================================================================================================
 
 rule mapping_stats:
@@ -227,7 +227,7 @@ rule mapping_stats:
         "xonsh workflow/scripts/mapping_stats.xsh -b {input.bam} -s {wildcards.sample} -o {output} &> {log}"
 
 # =================================================================================================
-#   Per sample: Get mean MAPQ by region, join it with depth by region and intersect it with GFF
+#   Per sample | Get mean MAPQ by region, join it with depth by region and intersect it with GFF
 # =================================================================================================
 
 rule mapq:
@@ -261,7 +261,7 @@ rule mapq_depth:
         "xonsh workflow/scripts/mapq_depth.xsh -m {input.mapqbed} -c {input.depthbed} -g {input.gff} -cm {output.depthmapq} -gm {input.mode} -s {wildcards.sample} -o {output.tsv} &> {log}"
 
 # =================================================================================================
-#   Per dataset: Join all depth results
+#   Per dataset | Join all depth results
 # =================================================================================================
 
 rule join_depth_by_chrom_raw:
@@ -310,7 +310,7 @@ rule join_depth_by_chrom_normalized:
         """
 
 # =================================================================================================
-#   Per dataset: Join CNV calls
+#   Per dataset | Join CNV calls
 # =================================================================================================
 
 rule join_cnv_calling:
@@ -329,7 +329,7 @@ rule join_cnv_calling:
         """
 
 # =================================================================================================
-#   Per dataset: Join mapping stats
+#   Per dataset | Join mapping stats
 # =================================================================================================
 
 rule join_mapping_stats:
@@ -348,7 +348,7 @@ rule join_mapping_stats:
         """
 
 # =================================================================================================
-#   Per dataset: Join feature MAPQ and Depth
+#   Per dataset | Join feature MAPQ and Depth
 # =================================================================================================
 
 rule join_mapq_depth:

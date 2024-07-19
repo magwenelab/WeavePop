@@ -1,5 +1,5 @@
 # =================================================================================================
-#   Per lineage: Standardize GFF format and convert to TSV
+#   Per lineage | Standardize GFF format and convert to TSV
 # =================================================================================================
 
 # Run AGAT to add and modify tags and convert to TSV 

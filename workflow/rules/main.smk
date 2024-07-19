@@ -1,5 +1,5 @@
 # =================================================================================================
-# Per sample: Run Snippy to map reads to reference genome, get assembly and call SNPs
+# Per sample | Run Snippy to map reads to reference genome, get assembly and call SNPs
 # =================================================================================================
 
 def snippy_input(wildcards):
@@ -38,7 +38,7 @@ rule snippy:
         "{params.extra} &> {log}"
 
 # =================================================================================================
-# Per sample: Run Liftoff to annotate the assembly with the coresponding reference genome
+# Per sample | Run Liftoff to annotate the assembly with the coresponding reference genome
 # =================================================================================================
 
 def liftoff_input(wildcards):
@@ -83,7 +83,7 @@ rule liftoff:
         "{input.refgenome} &>> {log}"
 
 # =================================================================================================
-# Per sample: Run AGAT to extract CDS and protein sequences
+# Per sample | Run AGAT to extract CDS and protein sequences
 # =================================================================================================
 
 rule agat_cds:
