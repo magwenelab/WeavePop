@@ -2,9 +2,8 @@
 #   Input
 # =================================================================================================
 
-sample_table: "config/sample_metadata.csv" # Relative path to metadata CSV table.
-chromosome_names: "config/chromosome_names.csv"
-loci: "config/loci.csv" 
+samples: "config/sample_metadata.csv" # Relative path to metadata CSV table.
+chromosomes: "config/chromosome_names.csv" # Relative path to chromosome names CSV table.
 species_name: "Cryptococcus_neoformans" 
 
 fastqs:
@@ -22,7 +21,7 @@ references:
 output_directory: "results" # Name for the output directory
 
 # =================================================================================================
-#   Module: Reference genomes annotation
+#   Module: Annotation of reference genomes
 # =================================================================================================
 
 annotate_references:
@@ -67,7 +66,8 @@ snpeff:
 
 plotting: 
   activate: True
-  metadata2color : "isolation_source" # Column name in the sample table to color the samples in the plots
+  loci: "config/loci.csv" # Relative path to table with loci to add to plots
+  metadata2color : "isolation_source" # Column name in the samples table to color the samples in the plots
   scale : 0.7 # This is a value to adjust the size of the plots with ggsave scale parameter. Use lower values for fewer samples and bigger values for more samples.
 
 # =================================================================================================
@@ -78,7 +78,7 @@ database:
   activate: True
 
 # =================================================================================================
-#   Specification of parameters for individual tools
+#   Parameters for individual tools
 # =================================================================================================
 
 snippy:

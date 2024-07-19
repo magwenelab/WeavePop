@@ -29,24 +29,12 @@ unique_levels <- unique(chrom_names$Accession_Chromosome)
 new_order <- c(rbind(matrix(unique_levels, nrow = 2, byrow = TRUE)))
 chrom_names$Accession_Chromosome <- factor(chrom_names$Accession_Chromosome, levels = new_order)
 
-print("Rearrange loci data")
-loci_sample <- loci_table %>% 
-    select(Accession = seq_id, Start = start, End = end,Loci)%>%
-    filter(Accession %in% coverage_regions$Accession)%>%
-    mutate(Track = "Loci")%>%
-    droplevels()
-loci <- left_join(loci_sample, chrom_names, by = c("Accession"))%>%
-  select(Accession_Chromosome, Chromosome, Track, Start, End, Loci)
-dark2 <- brewer.pal(8, "Dark2")[1:6]
-l_colors <- dark2[1:nlevels(loci$Loci)]
-
 coverage_regions <- left_join(coverage_regions, chrom_names, by = "Accession")
 coverage <- coverage_regions %>%
   select(Accession_Chromosome, Chromosome, Start, End, Coverage = Norm_Depth)%>%
   mutate(Track = "Coverage", .after = Chromosome)
 topCov <- quantile(coverage$Coverage, 0.75) * 3
 coverage$Coverage<- ifelse(coverage$Coverage >= topCov, topCov, coverage$Coverage)
-l_lim <- topCov 
 
 smooth <- coverage_regions %>%
   select(Accession_Chromosome, Chromosome, Start, End, Smooth = Smooth_Depth)%>%
@@ -103,9 +91,6 @@ c <- ggplot()+
     scale_color_manual(name = "Copy number variants", values = s_colors)+
     guides(color = guide_legend(order=2))+
     new_scale_color()+
-  geom_point(data = loci, aes(x=Start, y = l_lim, color = Loci))+  
-    scale_color_manual(name = "Features", values = l_colors)+
-    guides(color = guide_legend(order=3))+
   # geom_point(data = variants, aes(x=Start, y = v_lim),shape = 24 , size = 2)+
   facet_wrap(~Accession_Chromosome, strip.position = "right", ncol = 2, labeller = as_labeller(my_labeller)) +
   labs(y = "Normalized coverage", title = paste("Lineage:", lineage, " Sample:", sample, sep = " "))+
@@ -117,6 +102,24 @@ c <- ggplot()+
         panel.grid.minor.y = element_blank(),
         panel.background = element_blank(),
         panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 2))
+
+if (nrow(loci_table)!= 0){
+print("Rearrange loci data")
+loci_sample <- loci_table %>% 
+    select(Accession = seq_id, Start = start, End = end,Loci)%>%
+    filter(Accession %in% coverage_regions$Accession)%>%
+    mutate(Track = "Loci")%>%
+    droplevels()
+loci <- left_join(loci_sample, chrom_names, by = c("Accession"))%>%
+  select(Accession_Chromosome, Chromosome, Track, Start, End, Loci)
+dark2 <- brewer.pal(8, "Dark2")[1:6]
+l_colors <- dark2[1:nlevels(loci$Loci)]
+l_lim <- topCov 
+
+c <- c +  geom_point(data = loci, aes(x=Start, y = l_lim, color = Loci))+  
+    scale_color_manual(name = "Features", values = l_colors)+
+    guides(color = guide_legend(order=3))
+}
 
 ggsave(snakemake@output[[1]], c, height =9, width = 16, dpi = 600)
 

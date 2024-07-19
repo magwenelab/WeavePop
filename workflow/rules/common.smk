@@ -11,8 +11,8 @@ from pathlib import Path
 #   Global variables
 # =================================================================================================
 
-SAMPLEFILE=config["sample_table"]
-SAMPLETABLE=(pd.read_csv(config["sample_table"], sep=","))
+SAMPLEFILE=config["samples"]
+SAMPLETABLE=(pd.read_csv(config["samples"], sep=","))
 SAMPLES=list(set(SAMPLETABLE["sample"]))
 LINEAGES=list(set(SAMPLETABLE["group"]))
 REF_DATA = Path(config["references"]["directory"])
@@ -26,9 +26,13 @@ OUTDIR= GENERAL_OUTPUT / "samples"
 DATASET_OUTDIR = GENERAL_OUTPUT / "dataset"
 REFDIR = GENERAL_OUTPUT / "references"
 
-CHROM_NAMES = config["chromosome_names"]
-LOCI_FILE = config["loci"]
-
+CHROM_NAMES = config["chromosomes"]
+if config["plotting"]["loci"]:
+    LOCI_FILE = config["plotting"]["loci"]
+else:
+    LOCI_FILE = OUTDIR / "loci_empty.txt"
+    with open(LOCI_FILE, "w") as f:
+        f.write("")
 # =================================================================================================
 #   Variables for the Module: Reference genomes annotation
 # =================================================================================================

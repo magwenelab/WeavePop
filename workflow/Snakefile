@@ -18,7 +18,7 @@ configfile: "config/config.yaml"
 onstart:
     print("Checking input files...", flush=True)
     try:
-        sample_table = pd.read_csv(config["sample_table"])
+        sample_table = pd.read_csv(config["samples"])
         required_columns = ["sample", "strain", "group", "isolation_source"]
         missing_columns = set(required_columns) - set(sample_table.columns)
         if missing_columns:
@@ -26,7 +26,7 @@ onstart:
         else:
             print("Good: Sample table has all required columns.", flush=True)
         
-        chrom_names = pd.read_csv(config["chromosome_names"],
+        chrom_names = pd.read_csv(config["chromosomes"],
                                     names=["group","accession","chromosome"])
         if chrom_names.isnull().values.any():
             raise ValueError("Bad: Chromosome names file has missing values.")
