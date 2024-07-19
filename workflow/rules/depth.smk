@@ -227,7 +227,7 @@ rule mapping_stats:
         "xonsh workflow/scripts/mapping_stats.xsh -b {input.bam} -s {wildcards.sample} -o {output} &> {log}"
 
 # =================================================================================================
-#   Per sample | Get mean MAPQ by region, join it with depth by region and intersect it with GFF
+#   Per sample | Get mean MAPQ by region
 # =================================================================================================
 
 rule mapq:
@@ -244,6 +244,9 @@ rule mapq:
     script:
         "../scripts/pileup_mapq.sh"
 
+# =================================================================================================
+#   Per sample | Intersect MAPQ with depth by region and GFF
+# =================================================================================================
 rule mapq_depth:
     input:
         mapqbed = rules.mapq.output.winbed,
@@ -259,109 +262,3 @@ rule mapq_depth:
         "logs/samples/samtools/mapq_depth_{sample}.log"
     shell:
         "xonsh workflow/scripts/mapq_depth.xsh -m {input.mapqbed} -c {input.depthbed} -g {input.gff} -cm {output.depthmapq} -gm {input.mode} -s {wildcards.sample} -o {output.tsv} &> {log}"
-
-# =================================================================================================
-#   Per dataset | Join all depth results
-# =================================================================================================
-
-rule join_depth_by_chrom_raw:
-    input:
-        expand(rules.depth_by_chrom_raw.output,sample=SAMPLES),
-    output:
-        DATASET_OUTDIR / "files" / "depth_by_chrom_raw.tsv",
-    log:
-        "logs/dataset/files/join_depth_by_chrom_raw.log"
-    shell:
-        """
-        head -q -n 1 {input} 1> {output}.temp 2>> {log}
-        head -n 1 {output}.temp 1> {output} 2>> {log}
-        tail -q -n +2 {input} 1>> {output} 2>> {log}
-        rm {output}.temp
-        """
-
-rule join_depth_by_chrom_good:
-    input:
-        expand(rules.depth_by_chrom_good.output,sample=SAMPLES),
-    output:
-        DATASET_OUTDIR / "files" / "depth_by_chrom_good.tsv",
-    log:
-        "logs/dataset/files/join_depth_by_chrom_good.log"
-    shell:
-        """
-        head -q -n 1 {input} 1> {output}.temp 2>> {log}
-        head -n 1 {output}.temp 1> {output} 2>> {log}
-        tail -q -n +2 {input} 1>> {output} 2>> {log}
-        rm {output}.temp
-        """
-
-rule join_depth_by_chrom_normalized:
-    input:
-        expand(rules.depth_by_chrom_normalized.output,sample=SAMPLES),
-    output:
-        DATASET_OUTDIR / "files" / "depth_by_chrom_good_normalized.tsv",
-    log:
-        "logs/dataset/files/join_depth_by_chrom_good_normalized.log"
-    shell:
-        """
-        head -q -n 1 {input} 1> {output}.temp 2>> {log}
-        head -n 1 {output}.temp 1> {output} 2>> {log}
-        tail -q -n +2 {input} 1>> {output} 2>> {log}
-        rm {output}.temp
-        """
-
-# =================================================================================================
-#   Per dataset | Join CNV calls
-# =================================================================================================
-
-rule join_cnv_calling:
-    input:
-        expand(rules.cnv_calling.output,sample=SAMPLES),
-    output:
-        DATASET_OUTDIR / "files" / "cnv_calls.tsv",
-    log:
-        "logs/dataset/files/join_cnv_calls.log"
-    shell:
-        """
-        head -q -n 1 {input} 1> {output}.temp 2>> {log}
-        head -n 1 {output}.temp 1> {output} 2>> {log}
-        tail -q -n +2 {input} 1>> {output} 2>> {log}
-        rm {output}.temp
-        """
-
-# =================================================================================================
-#   Per dataset | Join mapping stats
-# =================================================================================================
-
-rule join_mapping_stats:
-    input:
-        expand(rules.mapping_stats.output,sample=SAMPLES),
-    output:
-        DATASET_OUTDIR / "files" / "mapping_stats.tsv",
-    log:
-        "logs/dataset/files/join_mapping_stats.log"
-    shell:
-        """
-        head -q -n 1 {input} 1> {output}.temp 2>> {log}
-        head -n 1 {output}.temp 1> {output} 2>> {log}
-        tail -q -n +2 {input} 1>> {output} 2>> {log}
-        rm {output}.temp
-        """
-
-# =================================================================================================
-#   Per dataset | Join feature MAPQ and Depth
-# =================================================================================================
-
-rule join_mapq_depth:
-    input:
-        expand(rules.mapq_depth.output.tsv,sample=SAMPLES)
-    output:
-        DATASET_OUTDIR / "files" / "feature_mapq_depth.tsv"
-    log:
-        "logs/dataset/files/join_mapq_depth.log"
-    shell:
-        """
-        head -q -n 1 {input} 1> {output}.temp 2>> {log}
-        head -n 1 {output}.temp 1> {output} 2>> {log}
-        tail -q -n +2 {input} 1>> {output} 2>> {log}
-        rm {output}.temp
-        """

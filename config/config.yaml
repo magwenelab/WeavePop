@@ -3,9 +3,9 @@
 # =================================================================================================
 
 sample_table: "config/sample_metadata.csv" # Relative path to metadata CSV table.
-species_name: "Cryptococcus_neoformans" 
 chromosome_names: "config/chromosome_names.csv"
 loci: "config/loci.csv" 
+species_name: "Cryptococcus_neoformans" 
 
 fastqs:
   directory: "data/samples" # Relative path to directory with all FASTQ files 
@@ -54,12 +54,12 @@ coverage_quality:
     repeats_fraction: 0.5 # Fraction of repetitive bases allowed for calculating global coverage
 
 # =================================================================================================
-#   Module: Variant analyses
+#   Module: Variant annotation
 # =================================================================================================
 
-snps:
+snpeff:
   activate: True
-  threads: 12
+  extra: ""
 
 # =================================================================================================
 #   Module: Plotting
@@ -69,6 +69,13 @@ plotting:
   activate: True
   metadata2color : "isolation_source" # Column name in the sample table to color the samples in the plots
   scale : 0.7 # This is a value to adjust the size of the plots with ggsave scale parameter. Use lower values for fewer samples and bigger values for more samples.
+
+# =================================================================================================
+#   Module: Database
+# =================================================================================================
+
+database:
+  activate: True
 
 # =================================================================================================
 #   Specification of parameters for individual tools
