@@ -1,0 +1,18 @@
+$schema: "http://json-schema.org/draft-04/schema#"
+## Source: https://github.com/snakemake-workflows
+description: an entry in the chromosome names table (chromosome_names.csv)
+type: object
+properties:
+  lineage:
+    type: string
+    description: lineage name
+  accession:
+    type: string
+    description: accession number of sequences in the reference genomes FASTA
+  chromosome:
+    type: string
+    description: chromosome name of sequences in the reference genomes FASTA
+required:
+  - lineage
+  - accession
+  - chromosome

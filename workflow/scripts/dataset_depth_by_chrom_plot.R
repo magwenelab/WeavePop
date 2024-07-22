@@ -13,7 +13,7 @@ metadata <- read.csv(snakemake@input[[1]], header = TRUE, stringsAsFactors = TRU
 metadata <- mutate(metadata, name = paste(strain, sample, sep = " "))
 
 # chrom_names <- read.csv("config/chromosome_names.csv", header = FALSE, col.names = c("group", "Accession", "Chromosome"), stringsAsFactors = TRUE)
-chrom_names <- read.csv(snakemake@input[[2]], header = FALSE, col.names = c("group", "Accession", "Chromosome"), stringsAsFactors = TRUE)
+chrom_names <- read.csv(snakemake@input[[2]], header = TRUE, col.names = c("group", "Accession", "Chromosome"), stringsAsFactors = TRUE)
 chrom_names <- chrom_names %>%
     select(Accession, Chromosome)
 

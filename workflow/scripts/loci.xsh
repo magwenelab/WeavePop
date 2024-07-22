@@ -23,7 +23,7 @@ def getloci(genefile, referencetsv, output):
     if not 'locus_tag' in level1.columns:
         level1 = level1.assign(locus_tag = level1.ID)
 
-    mygenes= pd.read_csv(Path(genefile), sep=',', names=("locus_tag", "Loci"))
+    mygenes= pd.read_csv(Path(genefile), sep=',', header=0,  names=("locus_tag", "Loci"))
     myloci=level1.set_index('locus_tag').join(mygenes.set_index('locus_tag'))
     myloci['locus_tag'] = myloci.index
     myloci.dropna(subset=['Loci'], inplace=True)

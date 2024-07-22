@@ -1,0 +1,18 @@
+$schema: "http://json-schema.org/draft-04/schema#"
+## Source: https://github.com/snakemake-workflows
+description: an entry in the metadata table (sample_metadata.csv)
+type: object
+properties:
+  sample:
+    type: string
+    description: sample name
+  group:
+    type: string
+    description: group name (lineage)
+  strain:
+    type: string
+    description: strain name
+required:
+  - sample
+  - group
+  - strain

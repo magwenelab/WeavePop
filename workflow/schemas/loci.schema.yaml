@@ -1,0 +1,14 @@
+$schema: "http://json-schema.org/draft-04/schema#"
+## Source: https://github.com/snakemake-workflows
+description: an entry in the chromosome names table (chromosome_names.csv)
+type: object
+properties:
+  gene_id:
+    type: string
+    description: ID of gene to add to plots
+  feature:
+    type: string
+    description: name of feature the gene belongs to (e.g. MAT locus, centromere, HOG pathway, etc.)
+required:
+  - gene_id
+  - feature

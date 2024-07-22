@@ -6,13 +6,16 @@ import pandas as pd
 import os.path
 import glob
 from pathlib import Path
+from snakemake.utils import validate
 
 # =================================================================================================
 #   Global variables
 # =================================================================================================
 
 SAMPLEFILE=config["samples"]
-SAMPLETABLE=(pd.read_csv(config["samples"], sep=","))
+SAMPLETABLE=(pd.read_csv(config["samples"], sep=",", header=0))
+validate(SAMPLETABLE, schema="../schemas/metadata.schema.yaml")
+
 SAMPLES=list(set(SAMPLETABLE["sample"]))
 LINEAGES=list(set(SAMPLETABLE["group"]))
 REF_DATA = Path(config["references"]["directory"])
@@ -27,8 +30,13 @@ DATASET_OUTDIR = GENERAL_OUTPUT / "dataset"
 REFDIR = GENERAL_OUTPUT / "references"
 
 CHROM_NAMES = config["chromosomes"]
+CHROM_NAMES_TABLE = pd.read_csv(CHROM_NAMES, header=0, dtype={"chromosome": "string"})
+validate(CHROM_NAMES_TABLE, schema="../schemas/chromosomes.schema.yaml")
+
 if config["plotting"]["loci"]:
     LOCI_FILE = config["plotting"]["loci"]
+    LOCI_TABLE = pd.read_csv(LOCI_FILE, sep=",", header=0)
+    validate(LOCI_TABLE, schema="../schemas/loci.schema.yaml")
 else:
     LOCI_FILE = OUTDIR / "loci_empty.txt"
     with open(LOCI_FILE, "w") as f:

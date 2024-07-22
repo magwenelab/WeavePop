@@ -12,21 +12,43 @@ min_version("8.2.1")
 configfile: "config/config.yaml"
 
 # =================================================================================================
+#   Load rules
+# =================================================================================================
+
+include: "rules/common.smk"
+include: "rules/main.smk"
+include: "rules/depth.smk"
+include: "rules/snps.smk"
+
+
+if config["annotate_references"]["activate"]:
+    include: "rules/references.smk"
+
+if not config["annotate_references"]["activate"]:
+    include: "rules/lineage_gffs.smk"
+
+if config["plotting"]["activate"] and config["annotate_references"]["activate"]:
+    include: "rules/unmapped_main_ref.smk"
+
+if config["plotting"]["activate"] and not config["annotate_references"]["activate"]:
+    include: "rules/unmapped_per_lineage.smk"
+
+if config["plotting"]["activate"]:
+    include: "rules/plots.smk"
+    include: "rules/dataset_plots.smk"
+
+if config["database"]["activate"]:
+    include: "rules/database.smk"
+
+# =================================================================================================
 #   Onstart checks
 # =================================================================================================
 
 onstart:
     print("Checking input files...", flush=True)
-    try:
-        sample_table = pd.read_csv(config["samples"])
-        required_columns = ["sample", "strain", "group", "isolation_source"]
-        missing_columns = set(required_columns) - set(sample_table.columns)
-        if missing_columns:
-            raise ValueError(f"Bad: Missing columns in sample table: {', '.join(missing_columns)}")
-        else:
-            print("Good: Sample table has all required columns.", flush=True)
-        
-        chrom_names = pd.read_csv(config["chromosomes"],
+    try:       
+        sample_table = pd.read_csv(config["samples"], header=0)
+        chrom_names = pd.read_csv(config["chromosomes"], header = 0,
                                     names=["group","accession","chromosome"])
         if chrom_names.isnull().values.any():
             raise ValueError("Bad: Chromosome names file has missing values.")
@@ -58,35 +80,6 @@ onstart:
         exit(1)
     else:
         print("Input files are good! Starting workflow...", flush=True)
-
-# =================================================================================================
-#   Load rules
-# =================================================================================================
-
-include: "rules/common.smk"
-include: "rules/main.smk"
-include: "rules/depth.smk"
-include: "rules/snps.smk"
-
-
-if config["annotate_references"]["activate"]:
-    include: "rules/references.smk"
-
-if not config["annotate_references"]["activate"]:
-    include: "rules/lineage_gffs.smk"
-
-if config["plotting"]["activate"] and config["annotate_references"]["activate"]:
-    include: "rules/unmapped_main_ref.smk"
-
-if config["plotting"]["activate"] and not config["annotate_references"]["activate"]:
-    include: "rules/unmapped_per_lineage.smk"
-
-if config["plotting"]["activate"]:
-    include: "rules/plots.smk"
-    include: "rules/dataset_plots.smk"
-
-if config["database"]["activate"]:
-    include: "rules/database.smk"
 
 # =================================================================================================
 #   Define final output
