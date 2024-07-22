@@ -19,10 +19,9 @@ import sqlite3
 @click.option('--lofs', '-l', type=click.Path(), help='Path to the lofs file of all lineages.')
 @click.option('--nmds', '-n', type=click.Path(), help='Path to the nmds file of all lineages.')
 @click.option('--sequences_db', '-s', type=click.Path(), help='Path to the sequences database.')
-@click.option('--lineage_column', '-c', type=str, help='Name of the column in the metadata file that contains the lineage information.')
 @click.option('--output', '-o', type=click.Path(), help='Output database file.')
 
-def build_db(metadata, chrom_names, struc_vars, mapq_depth, gff, effects, variants, presence, lofs, nmds, sequences_db, output, lineage_column):
+def build_db(metadata, chrom_names, struc_vars, mapq_depth, gff, effects, variants, presence, lofs, nmds, sequences_db, output):
     print("Using the following arguments:")
     print(f"metadata: {metadata}")
     print(f"chrom_names: {chrom_names}")
@@ -35,14 +34,12 @@ def build_db(metadata, chrom_names, struc_vars, mapq_depth, gff, effects, varian
     print(f"lofs: {lofs}")
     print(f"nmds: {nmds}")
     print(f"sequences_db: {sequences_db}")
-    print(f"lineage_column: {lineage_column}")
     print(f"output: {output}")
     
     print("Reading and adjusting dataset files")
     df_samples = pd.read_csv(metadata)
     df_samples.columns = df_samples.columns.str.lower()
     df_samples.columns = df_samples.columns.str.replace(' ', '_')
-    df_samples.rename(columns={lineage_column: 'lineage'}, inplace=True)
     print("Metadata table done!")
 
     df_sv = pd.read_csv(struc_vars, sep='\t')
@@ -63,7 +60,6 @@ def build_db(metadata, chrom_names, struc_vars, mapq_depth, gff, effects, varian
     print("Formatting effects table")
     print("Getting gene IDs from GFF file")
     gff_ids = df_gff[['gene_id', 'gene_name', 'feature_id']].copy()
-    print(gff_ids.head())
     gff_ids.drop_duplicates(inplace=True)
     print("Defining function to replace gene names with gene IDs")
     def replace_with_gene_id(part):

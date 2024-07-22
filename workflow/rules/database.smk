@@ -139,8 +139,7 @@ rule complete_db:
     output:
         DATASET_OUTDIR / "database.db"
     params:
-        sequences = DATASET_OUTDIR / "sequences.db",
-        column = 'lineage'
+        sequences = DATASET_OUTDIR / "sequences.db"
     conda:
         "../envs/variants.yaml"
     log:
@@ -158,5 +157,4 @@ rule complete_db:
         "-l {input.lofs} "
         "-n {input.nmds} "
         "-s {params.sequences} "
-        "-c {params.column} "
         "-o {output} &> {log}"
