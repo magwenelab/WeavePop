@@ -49,10 +49,10 @@ onstart:
     try:       
         sample_table = pd.read_csv(config["samples"], header=0)
         chrom_names = pd.read_csv(config["chromosomes"], header = 0,
-                                    names=["group","accession","chromosome"])
+                                    names=["lineage","accession","chromosome"])
         if chrom_names.isnull().values.any():
             raise ValueError("Bad: Chromosome names file has missing values.")
-        if set(sample_table['group'].unique()) == set(chrom_names['group'].unique()):
+        if set(sample_table['lineage'].unique()) == set(chrom_names['lineage'].unique()):
             print("Good: All lineages are in the chromosome names file.", flush=True)
         else:
             raise ValueError("Bad: Lineages in metadata and chromosome names file do not match.")
@@ -60,10 +60,10 @@ onstart:
         chromosome_ids = []
         reference_dir = config["references"]["directory"]
 
-        for group in chrom_names['group'].unique():
-            ref_file = Path(reference_dir) / f"{group}.fasta"
+        for lineage in chrom_names['lineage'].unique():
+            ref_file = Path(reference_dir) / f"{lineage}.fasta"
             if ref_file.exists():
-                for chrom in chrom_names[chrom_names['group'] == group]['accession']:
+                for chrom in chrom_names[chrom_names['lineage'] == lineage]['accession']:
                     with open(ref_file) as f:
                         seq_ids = [line.strip().split()[0][1:] for line in f if line.startswith(">")]
                         if chrom not in seq_ids:

@@ -1,10 +1,11 @@
 # =================================================================================================
-#   Input
+#   Configuration of modules to run
 # =================================================================================================
 
-samples: "config/sample_metadata.csv" # Relative path to metadata CSV table.
-chromosomes: "config/chromosome_names.csv" # Relative path to chromosome names CSV table.
-species_name: "Cryptococcus_neoformans" 
+# -------------------------------------------------------------------------------------------------
+# Per sample steps
+# -------------------------------------------------------------------------------------------------
+# sample_workflow: True
 
 fastqs:
   directory: "data/samples" # Relative path to directory with all FASTQ files 
@@ -13,6 +14,22 @@ fastqs:
 
 references: 
   directory: "data/references/" # Path to directory with reference genomes.
+
+# -------------------------------------------------------------------------------------------------
+# Join results of previous runs
+# -------------------------------------------------------------------------------------------------
+# join_datasets: False
+
+# dataset1_dir: "results1" # Path to the first results directory
+# dataset2_dir: "results2" # Path to the second results directory
+
+# =================================================================================================
+#   Input
+# =================================================================================================
+
+samples: "config/sample_metadata.csv" # Relative path to metadata CSV table.
+chromosomes: "config/chromosome_names.csv" # Relative path to chromosome names CSV table.
+species_name: "Cryptococcus_neoformans" 
 
 # =================================================================================================
 #   Output
@@ -68,7 +85,7 @@ plotting:
   activate: True
   loci: "config/loci.csv" # Relative path to table with loci to add to plots
   metadata2color : "isolation_source" # Column name in the samples table to color the samples in the plots
-  scale : 0.7 # This is a value to adjust the size of the plots with ggsave scale parameter. Use lower values for fewer samples and bigger values for more samples.
+  scale : 0.7 # Ggsave scale parameter to adjust the size of the dataset plots. Use lower values for fewer samples and bigger values for more samples.
 
 # =================================================================================================
 #   Module: Database

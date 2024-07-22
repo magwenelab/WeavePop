@@ -60,12 +60,12 @@ if(nrow(unmapped)== 0){
   colors <-  c( "0" = "gray", "1" = "hotpink4")
   featureCols =colorRampPalette(brewer.pal(8, "Dark2"))(length(unique(unmapped$Feature_type)))
   names(featureCols) = unique(unmapped$Feature_type)
-  linCols =colorRampPalette(brewer.pal(12, "Paired"))(length(unique(samples$group)))
-  names(linCols) = unique(samples$group)
+  linCols =colorRampPalette(brewer.pal(12, "Paired"))(length(unique(samples$lineage)))
+  names(linCols) = unique(samples$lineage)
   row_split <- select(unmapped, Chromosome)
-  col_split <- select(samples, group)
+  col_split <- select(samples, lineage)
   row_ha <- rowAnnotation(Feature_type = unmapped$Feature_type, col = list(Feature_type = featureCols))
-  #col_ha <- HeatmapAnnotation(Lineage = samples$group , col = list(Lineage = linCols))
+  #col_ha <- HeatmapAnnotation(Lineage = samples$lineage , col = list(Lineage = linCols))
 
   plot <-   Heatmap(mat, 
           col = colors,

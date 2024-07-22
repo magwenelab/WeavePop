@@ -17,7 +17,7 @@ SAMPLETABLE=(pd.read_csv(config["samples"], sep=",", header=0))
 validate(SAMPLETABLE, schema="../schemas/metadata.schema.yaml")
 
 SAMPLES=list(set(SAMPLETABLE["sample"]))
-LINEAGES=list(set(SAMPLETABLE["group"]))
+LINEAGES=list(set(SAMPLETABLE["lineage"]))
 REF_DATA = Path(config["references"]["directory"])
 
 FQ_DATA = Path(config["fastqs"]["directory"])
@@ -56,12 +56,12 @@ if config["annotate_references"]["activate"]:
 # =================================================================================================
 
 d={'sample': SAMPLETABLE["sample"],
-    'group': SAMPLETABLE["group"],
-    'refgenome': REFDIR / SAMPLETABLE["group"] / (SAMPLETABLE["group"] + ".fasta"),
-    'refgff': REFDIR / SAMPLETABLE["group"] / (SAMPLETABLE["group"] + ".gff")}
+    'lineage': SAMPLETABLE["lineage"],
+    'refgenome': REFDIR / SAMPLETABLE["lineage"] / (SAMPLETABLE["lineage"] + ".fasta"),
+    'refgff': REFDIR / SAMPLETABLE["lineage"] / (SAMPLETABLE["lineage"] + ".gff")}
 
 SAMPLE_REFERENCE = pd.DataFrame(data=d).set_index("sample", drop=False)
-LINEAGE_REFERENCE = pd.DataFrame(data=d).set_index("group", drop=False)
+LINEAGE_REFERENCE = pd.DataFrame(data=d).set_index("lineage", drop=False)
 
 # =================================================================================================
 #   Final output definition function

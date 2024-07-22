@@ -1,4 +1,4 @@
-group,strain,sample,geo_loc_name_country_continent,geo_loc_name,Host_disease,Host,isolation_source,Organism,SRA Study,Run,BioProject,BioSample,Experiment
+lineage,strain,sample,geo_loc_name_country_continent,geo_loc_name,Host_disease,Host,isolation_source,Organism,SRA Study,Run,BioProject,BioSample,Experiment
 VNBI,NRH5076,SRS8318901,Africa,Botswana,Cryptococcosis,Homo sapiens,cerebrospinal fluid,Cryptococcus neoformans,SRP308189,SRR13783220,PRJNA694643,SAMN18057103,SRX10168485
 VNBI,NRH5084,SRS8318900,Africa,Botswana,Cryptococcosis,Homo sapiens,cerebrospinal fluid,Cryptococcus neoformans,SRP308189,SRR13783221,PRJNA694643,SAMN18057102,SRX10168484
 VNI,NRH5081,SRS8318899,Africa,Botswana,Cryptococcosis,Homo sapiens,cerebrospinal fluid,Cryptococcus neoformans,SRP308189,SRR13783222,PRJNA694643,SAMN18057101,SRX10168483

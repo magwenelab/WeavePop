@@ -192,7 +192,7 @@ def cnv_calling_input(wildcards):
     s = SAMPLE_REFERENCE.loc[wildcards.sample,]
     return {
         "depth": OUTDIR / "mosdepth" / s["sample"] / "depth_by_regions.tsv",
-        "repeats": REFDIR / s["group"]  / "repeats" / (s["group"] + "_repeats.bed")
+        "repeats": REFDIR / s["lineage"]  / "repeats" / (s["lineage"] + "_repeats.bed")
         }
 rule cnv_calling:
     input:

@@ -140,7 +140,7 @@ rule complete_db:
         DATASET_OUTDIR / "database.db"
     params:
         sequences = DATASET_OUTDIR / "sequences.db",
-        column = 'group'
+        column = 'lineage'
     conda:
         "../envs/variants.yaml"
     log:

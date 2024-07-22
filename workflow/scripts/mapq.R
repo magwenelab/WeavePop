@@ -91,7 +91,7 @@ if (nrow(loci) != 0){
   loci_colors <- combined_palette[1:nlevels(loci_chrom$Loci)]
   plot <- plot +
     geom_point(data = loci_chrom, aes(x= start, y = y_loci, color = Loci), size = 2, shape = 19)+
-    scale_color_manual(name = "Loci", values = loci_colors)
+    scale_color_manual(name = "Features", values = loci_colors)
 }
 
 ggsave(snakemake@output[[1]], plot = plot, units = "in", height = 9, width = 16, dpi = 600)

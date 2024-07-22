@@ -6,13 +6,13 @@ properties:
   sample:
     type: string
     description: sample name
-  group:
+  lineage:
     type: string
-    description: group name (lineage)
+    description: lineage name
   strain:
     type: string
     description: strain name
 required:
   - sample
-  - group
+  - lineage
   - strain

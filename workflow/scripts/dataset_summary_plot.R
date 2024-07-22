@@ -11,8 +11,8 @@ suppressPackageStartupMessages(library(patchwork))
 metadata <- read.csv(snakemake@input[[1]], header = TRUE, stringsAsFactors = TRUE)
 metadata <- mutate(metadata, name = paste(strain, sample, sep = " "))
 
-# chrom_names <- read.csv("config/chromosome_names.csv", header = FALSE, col.names = c("group", "Accession", "Chromosome"), stringsAsFactors = TRUE)
-chrom_names <- read.csv(snakemake@input[[2]], header = FALSE, col.names = c("group", "Accession", "Chromosome"), stringsAsFactors = TRUE)
+# chrom_names <- read.csv("config/chromosome_names.csv", header = FALSE, col.names = c("lineage", "Accession", "Chromosome"), stringsAsFactors = TRUE)
+chrom_names <- read.csv(snakemake@input[[2]], header = FALSE, col.names = c("lineage", "Accession", "Chromosome"), stringsAsFactors = TRUE)
 chrom_names <- chrom_names %>%
     select(Accession, Chromosome)
 
@@ -49,7 +49,7 @@ shape_stat <- c("Mean" = 16, "Median" = 15)
 all <- bind_rows(good_stats %>% mutate(Quality = "Good quality mappings"), raw_stats %>% mutate(Quality = "All mappings"))
 all$name <- reorder(all$name, -all$Global_Mean, sum)
 all <- all %>%
-        select(sample, name, Mean = Global_Mean, Median = Global_Median, Quality, group)%>%
+        select(sample, name, Mean = Global_Mean, Median = Global_Median, Quality, lineage)%>%
         pivot_longer(cols = c(Mean, Median), names_to = "Measurement", values_to = "Value")%>%
         as.data.frame()
 
@@ -57,7 +57,7 @@ topylim <- max(all$Value) + max(all$Value) / 10
 g <- ggplot(all) +
     geom_point(aes(x = name, y = Value, shape = Measurement, color = Quality)) +
     ylim(0, topylim) +
-    facet_grid(~group, scale = "free_x", space = "free_x") +
+    facet_grid(~lineage, scale = "free_x", space = "free_x") +
     scale_color_manual(name= "", values= color_quality)+
     scale_shape_manual(values = c(16,15), name = NULL, labels = c("Mean", "Median"))+
     theme_bw() +
@@ -76,7 +76,7 @@ g <- ggplot(all) +
 map_stats <- read.table(snakemake@input[[5]], header = TRUE, stringsAsFactors = TRUE, sep = "\t")
 
 metadata <- metadata %>%
-    select(sample, strain, group)
+    select(sample, strain, lineage)
 stats_metad <- merge(map_stats, metadata, by = "sample")
 stats_metad <- stats_metad %>%
     mutate(name = paste(strain,sample, sep = " "),
@@ -90,7 +90,7 @@ stats_metad <- stats_metad %>%
         percent_60 = (MAPQ_60/reads_mapped)*100)
 
 stats_long <- stats_metad %>%
-    pivot_longer(cols = -c(sample, name, group, strain), names_to = "Metric", values_to = "Value")
+    pivot_longer(cols = -c(sample, name, lineage, strain), names_to = "Metric", values_to = "Value")
 stats_reads <- stats_long %>%
     filter(Metric %in% c("percent_only_mapped", "percent_unmapped", "percent_properly_paired"))
 stats_reads$Metric <- factor(stats_reads$Metric, levels = c("percent_unmapped", "percent_only_mapped", "percent_properly_paired"),
@@ -114,7 +114,7 @@ palette_qualit <- brewer.pal(n = length(unique(stats_qualit$Metric)), name = "Bu
 
 reads <- ggplot()+
     geom_bar(data = stats_reads, aes(x = name, y = Value, fill = Metric), stat = "identity")+
-    facet_grid(~ group, scales = "free", space = "free_x")+
+    facet_grid(~ lineage, scales = "free", space = "free_x")+
     theme(panel.background = element_blank(), 
           panel.grid.major = element_blank(),
           panel.grid.minor = element_blank(),
@@ -128,7 +128,7 @@ reads <- ggplot()+
 
 mapq <- ggplot()+
     geom_bar(data = stats_qualit, aes(x = name, y = Value, fill = Metric), stat = "identity")+
-    facet_grid(~ group, scales = "free", space = "free_x")+
+    facet_grid(~ lineage, scales = "free", space = "free_x")+
     theme(panel.background = element_blank(), 
           panel.grid.major = element_blank(),
           panel.grid.minor = element_blank(),

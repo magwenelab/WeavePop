@@ -10,9 +10,9 @@ suppressPackageStartupMessages(library(RColorBrewer))
 #metadata<- read.csv("config/sample_metadata.csv", header = TRUE)
 metadata <- read.csv(snakemake@input[[1]], header = TRUE)
 rownames(metadata) <- metadata$sample
-metadata$group <- as.factor(metadata$group)
+metadata$lineage <- as.factor(metadata$lineage)
 
-for (lin in levels(metadata$group)){
+for (lin in levels(metadata$lineage)){
   #genes<-read_delim(paste(paste("results/references", lin, lin, sep ="/"), ".gff.tsv", sep = ""), col_names = TRUE, na = "N/A", show_col_types = FALSE )
   
   genes<-read_delim(paste(paste(snakemake@params[[1]], lin, lin, sep ="/"), ".gff.tsv", sep = ""), col_names = TRUE, na = "N/A", show_col_types = FALSE )
@@ -26,7 +26,7 @@ for (lin in levels(metadata$group)){
   rownames(genes)<- genes$Feature 
 
   samples <- metadata %>%
-    filter(group == lin)
+    filter(lineage == lin)
 
   for (samp in samples$sample){
     

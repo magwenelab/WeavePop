@@ -21,13 +21,13 @@ genes <- unite(genes, Feature, all_of(toFeature), sep = " ", remove = FALSE, na.
 rownames(genes)<- genes$Feature
 
 
-# for (lin in levels(as.factor(lins$group))){
+# for (lin in levels(as.factor(lins$lineage))){
 #   file <- paste("results/references/", lin, "/unmapped_features.txt", sep = "")
 #   df<- read.csv(file, header = FALSE, col.names = c("ID"), colClasses = "character")
 #   genes <- genes %>%
 #     mutate(!!lin := ifelse(ID %in% df$ID, 0, 1))
 # }
-for (lin in levels(as.factor(lins$group))){
+for (lin in levels(as.factor(lins$lineage))){
  file <- paste(snakemake@params[[1]], lin, "unmapped_features.txt", sep = "/")
  df<- read.csv(file, header = FALSE, col.names = c("ID"), colClasses = "character")
  genes <- genes %>%
@@ -35,11 +35,11 @@ for (lin in levels(as.factor(lins$group))){
 }
 
 unmapped <- genes %>% 
-  select(Chromosome, Feature_type, lins$group)%>%
+  select(Chromosome, Feature_type, lins$lineage)%>%
   filter(rowSums(. == 0) > 0)
 
 unmapped_count <- unmapped %>%
-  select(lins$group)
+  select(lins$lineage)
 unmapped_count <- colSums(unmapped_count == 0)
 unmapped_count <-as.data.frame(unmapped_count)
 unmapped_count$lineage <- rownames(unmapped_count)
@@ -48,7 +48,7 @@ unmapped_count$lineage <- rownames(unmapped_count)
 write.table(unmapped_count, file = snakemake@output[[1]],  col.names = FALSE, row.names = FALSE, quote = FALSE)
 
 mat <- unmapped %>%
-  select(lins$group)%>%
+  select(lins$lineage)%>%
   mutate_all(as.integer)%>%
   as.matrix()
   

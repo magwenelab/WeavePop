@@ -55,7 +55,7 @@ def depth_by_regions_plots_input(wildcards):
     return {
         "depth": OUTDIR / "mosdepth" / s["sample"]  / "depth_by_regions.tsv",
         "cnv": OUTDIR / "cnv" / s["sample"] / "cnv_calls.tsv",
-        "repeats": REFDIR / s["group"]  / "repeats" / (s["group"] + "_repeats.bed")
+        "repeats": REFDIR / s["lineage"]  / "repeats" / (s["lineage"] + "_repeats.bed")
     }
 rule depth_by_regions_plots:
     input:
@@ -76,7 +76,7 @@ def mapq_plot_input(wildcards):
     return {
         "mapq": OUTDIR / "samtools" / s["sample"] / "mapq_window.bed",
         "structure": OUTDIR / "cnv" / s["sample"] / "cnv_calls.tsv",
-        "repeats": REFDIR / s["group"]  / "repeats" / (s["group"] + "_repeats.bed")
+        "repeats": REFDIR / s["lineage"]  / "repeats" / (s["lineage"] + "_repeats.bed")
     }
 rule mapq_plot:
     input:

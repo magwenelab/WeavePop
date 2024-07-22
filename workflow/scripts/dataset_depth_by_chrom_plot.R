@@ -12,8 +12,8 @@ print("Reading and processing files")
 metadata <- read.csv(snakemake@input[[1]], header = TRUE, stringsAsFactors = TRUE)
 metadata <- mutate(metadata, name = paste(strain, sample, sep = " "))
 
-# chrom_names <- read.csv("config/chromosome_names.csv", header = FALSE, col.names = c("group", "Accession", "Chromosome"), stringsAsFactors = TRUE)
-chrom_names <- read.csv(snakemake@input[[2]], header = TRUE, col.names = c("group", "Accession", "Chromosome"), stringsAsFactors = TRUE)
+# chrom_names <- read.csv("config/chromosome_names.csv", header = FALSE, col.names = c("lineage", "Accession", "Chromosome"), stringsAsFactors = TRUE)
+chrom_names <- read.csv(snakemake@input[[2]], header = TRUE, col.names = c("lineage", "Accession", "Chromosome"), stringsAsFactors = TRUE)
 chrom_names <- chrom_names %>%
     select(Accession, Chromosome)
 
@@ -33,7 +33,7 @@ print("Plotting")
 meanplot <- ggplot(good_stats, aes(x = reorder(name, -Global_Mean, sum), y = Norm_Chrom_Mean)) +
     geom_point(aes(color = get(snakemake@params[[1]]))) +
     ylim(0, toplim) +
-    facet_grid(scale = "free_x", space = "free_x", rows = vars(Chromosome), cols = vars(group)) +
+    facet_grid(scale = "free_x", space = "free_x", rows = vars(Chromosome), cols = vars(lineage)) +
     scale_color_brewer(palette = "Set2", name = str_to_title(snakemake@params[[1]])) +
     theme_bw() +
     theme(panel.background = element_blank(), 
