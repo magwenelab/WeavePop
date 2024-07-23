@@ -1,9 +1,10 @@
 
-# Diversity Pipeline Main Repo
+# Diversity Pipeline
 
 ## Description
 
-This is a Snakemake workflow to map short-reads of samples to the reference genome of the corresponding lineage/group. You will get the mapping file, variant calling file, a reference-based assembly, and an annotation GFF. An SQL database will be created with the DNA and protein sequences, and with tables describing the presence of the called variants and their effects. Additionaly you can get analyses of the coverage and the mapping quality, plots with this analyses' results, including detection of structural variants, and a table with the intersection of the detected genetic variants between the samples of the same group.  
+This is a Snakemake workflow to map short-reads of samples to the reference genome of the corresponding lineage. You will get the mapping file, variant calling file, a reference-based assembly, and an annotation GFF. An SQL database will be created with the DNA and protein sequences, and with tables describing the presence of the called variants and their effects. Additionaly you can get analyses of the coverage and the mapping quality, plots with this analyses' results, including detection of copy-number variants, and a table with the intersection of the detected genetic variants between the samples of the same lineage.  
+
 If you want to have a common naming scheme of your genes and/or you don't have GFF files of your reference genomes you can provide a main reference to lift over the annotation from this one to your reference genomes.
 
 ## Requirements
@@ -47,25 +48,130 @@ The environments for particular software used in Snakemake rules are installed b
       * `--conda-frontend conda`: Use it if you are using conda instead of mamba. Mamba is the default.
       * `--rerun-incomplete`: Use it when a past run of the workflow was aborted and you are repeating the run.
       * `--keep-going`: Use it to avoid stoping the workflow when a job fails (i.e. run everything that can run).
-      * `-n`: Dry run.
+      * `-n`: Dry run.  
 
 ## Structure of the working directory:    
   * `workflow/` has all the code (rules, scripts and main Snakefile), and the environment files.
-  * `config/` has the `config.yaml` provided [here](https://github.com/magwenelab/DiversityPipeline/blob/workflow-style/config.yaml) file that **you must edit** to adapt to your dataset.
-  * `results/` will hold all the output.
+  * `config/` has the file `config.yaml`(provided [here](https://github.com/magwenelab/DiversityPipeline/blob/main/config/config.yaml)) that **you must edit** to adapt to your dataset.
+  * `results/` will hold all the output. The name is specified in `config/config.yaml`.
   * `logs/` will hold the log files of all runs.  
   * Additionally you need to provide the **starting files** described bellow. It's recommended to put the data files in `data/` and the tables in `config/`.
 
 ## Starting files:
-  * Metadata CSV table: A comma-separated table with one sample per row. Specify the path to it in `config/config.yaml`. Mandatory columns: `sample` (sample ID used in the FASTQ files), `group` (lineage or group that associates the sample with a reference genome), `strain` (strain name, does not need to be unique of each sample, can be the same as `sample`). If plotting will be activated you need  one metadata column to color your samples, specify the name of this column in the `config/config.yaml`. More columns with free format are allowed. [Example](https://github.com/magwenelab/DiversityPipeline/blob/workflow-style/config/sample_metadata.csv)
-  * FASTQ files: Paired end short-read FASTQ files, one forward and one reverse file for each sample. The name of these files should be the one used in the metadata `sample` column (followed by an extension specified in the `config/config.yaml`). Files can be gzip compressed. The FASTQ files for all samples should be in the same directory (e.g., `data/samples/`, specified in the `config.yaml`).
-  * Reference genomes: FASTA files for each reference genome. The names of the files must be the ones in the `group` column of the metadata, e.g. `VNI.fasta`. If you will use a main reference to annotate the reference genomes provide the FASTA and GFF for the main reference. Otherwise provide the GFF file for the reference genomes. Specify the path for all, and the name of the main reference files in the `config/config.yaml`.
+  * Metadata CSV table: A comma-separated table with one sample per row. Specify the path to it in `config/config.yaml`. Mandatory columns: `sample` (sample ID used in the FASTQ file names), `lineage` (lineage or group name that associates the sample with a reference genome), `strain` (strain name, it can be the same as `sample`). If the plotting will be activated you need  one metadata column to color your samples, specify the name of this column in the `config/config.yaml`. More columns with free format are allowed. [Example](https://github.com/magwenelab/DiversityPipeline/blob/main/config/sample_metadata.csv)  
+  * FASTQ files: Paired end short-read FASTQ files, one forward and one reverse file for each sample. The names of these files should be the names used in the metadata `sample` column, followed by an extension specified in the `config/config.yaml`. Files can be gzip compressed. The FASTQ files for all samples should be in the same directory (e.g., `data/samples/`, specified in the `config.yaml`).  
+  * Reference genomes:    
+    * If you will use reference genomes with annotation: Provide the FASTA and GFF files for each reference genome. The names of the files must be the ones in the `lineage` column of the metadata (e.g. `VNI.fasta` and `VNI.gff`). Put all the files in the same directory (e.g. `data/references`) and specify the path to it in the `config/config.yaml`.  
+    * If you will use a main reference to annotate the reference genomes: Provide the FASTA file for each reference genome. The names of the files must be the ones in the `lineage` column of the metadata, e.g. `VNI.fasta`. Put all the files in the same directory (e.g. `data/references`) and specify the path to it in the `config/config.yaml`. And provide a FASTA and GFF files for the main reference, put both files in the same directory (e.g. `data/main_reference`) and specify the path to it and the names of the files in the `config/config.yaml`.   
 
-  * `config/loci.csv`: CSV with first column with the gene IDs and second column with the name of the locus/pathway the gene belongs to if you want genes to be plotted to coverage and MAPQ plots.  No column names.[Example](https://github.com/magwenelab/DiversityPipeline/blob/workflow-style/config/loci.csv)
-  * `config/chromosome_names.csv`: CSV with colums group, chromosome ID (the sequence ID in the FASTA and GFF of the references. Make sure each chromosome ID is not repeated in this file.), chromosome name (e.g. chr01, 1, VNI_chr1).  No column names. [Example](https://github.com/magwenelab/DiversityPipeline/blob/workflow-style/config/chromosome_names.csv).
+  * `config/chromosomes.csv`: CSV with the columns `lineage`, `accession` (with the sequence ID of the chromosomes in the FASTA and GFF of the references. Make sure each chromosome ID is not repeated in this file), and `chromosome` (with the chromosome names, e.g. chr01, 1, VNI_chr1). [Example](https://github.com/magwenelab/DiversityPipeline/blob/main/config/chromosome_names.csv).
   * `config/RepBase.fasta`: Database of repetitive sequences to use for RepeatModeler and RepeatMasker in FASTA format.
+  * `config/loci.csv`: If you want gene features to be plotted to the depth and MAPQ plots provide a CSV with the first column `gene_id` with the gene IDs, and the second column `feature` with the name of the feature (locus, pathway, centromere, individual gene name etc.) the gene belongs to. [Example](https://github.com/magwenelab/DiversityPipeline/blob/main/config/loci.csv)
 
+
+## Output
+
+<details>
+<summary>Output description table </summary> 
+
+| Path | Description | Column names |
+| :---------------- | ----: |----: |
+| results/dataset/files/loci_to_plot.tsv |||
+| results/dataset/files/unmapped_count.tsv
+| results/dataset/plots/unmapped.svg
+| results/dataset/snps/{lineage}_effects.tsv
+| results/dataset/snps/{lineage}_intersection.vcf
+| results/dataset/snps/{lineage}_lofs.tsv
+| results/dataset/snps/{lineage}_nmds.tsv
+| results/dataset/snps/{lineage}_presence.tsv
+| results/dataset/snps/{lineage}_snpeff.genes.txt
+| results/dataset/snps/{lineage}_snpeff.html
+| results/dataset/snps/{lineage}_snpeff.vcf
+| results/dataset/snps/{lineage}_variants.tsv
+| results/references/snpeff_data
+results/references/{lineage}/intermediate_files
+results/references/{lineage}/repeats
+results/references/{lineage}/repeats/{lineage}_repeats.bed
+results/references/{lineage}/{main_reference}.fasta
+results/references/{lineage}/{main_reference}.fasta.fai
+results/references/{lineage}/{main_reference}.gff
+results/references/{lineage}/{main_reference}.gff_db
+results/references/{lineage}/liftoff.gff
+results/references/{lineage}/unmapped_features.txt
+results/references/{lineage}/{lineage}.cds.fa
+results/references/{lineage}/{lineage}.fasta
+results/references/{lineage}/{lineage}.fasta.fai
+results/references/{lineage}/{lineage}.fasta.index
+results/references/{lineage}/{lineage}.fasta.mmi
+results/references/{lineage}/{lineage}.gff
+results/references/{lineage}/{lineage}.gff.tsv
+results/references/{lineage}/{lineage}.prots.fa
+results/references/agat_config.yaml
+results/references/{main_reference}.gff
+results/references/{main_reference}.tsv
+results/references/unmapped_count.tsv
+results/references/unmapped.svg
+results/samples/agat/{sample}/cds.fa
+results/samples/agat/{sample}/proteins.fa
+results/samples/cnv/{sample}/cnv_calls.tsv
+results/samples/liftoff/{sample}/intermediate_files
+results/samples/liftoff/{sample}/lifted.gff
+results/samples/liftoff/{sample}/lifted.gff_polished
+results/samples/liftoff/{sample}/ref.gff
+results/samples/liftoff/{sample}/ref.gff_db
+results/samples/liftoff/{sample}/unmapped_features.txt
+results/samples/mosdepth/{sample}/coverage_good.mosdepth.global.dist.txt
+results/samples/mosdepth/{sample}/coverage_good.mosdepth.region.dist.txt
+results/samples/mosdepth/{sample}/coverage_good.mosdepth.summary.txt
+results/samples/mosdepth/{sample}/coverage_good.regions.bed.gz
+results/samples/mosdepth/{sample}/coverage_good.regions.bed.gz.csi
+results/samples/mosdepth/{sample}/coverage.mosdepth.global.dist.txt
+results/samples/mosdepth/{sample}/coverage.mosdepth.region.dist.txt
+results/samples/mosdepth/{sample}/coverage.mosdepth.summary.txt
+results/samples/mosdepth/{sample}/coverage.regions.bed.gz
+results/samples/mosdepth/{sample}/coverage.regions.bed.gz.csi
+results/samples/mosdepth/{sample}/depth_by_chrom_good_normalized.tsv
+results/samples/mosdepth/{sample}/depth_by_chrom_good.tsv
+results/samples/mosdepth/{sample}/depth_by_chrom_raw.tsv
+results/samples/mosdepth/{sample}/depth_by_regions.tsv
+results/samples/plots/{sample}/depth_by_chrom.png
+results/samples/plots/{sample}/depth_by_regions.png
+results/samples/plots/{sample}/depth_chrom_distribution.png
+results/samples/plots/{sample}/depth_global_distribution.png
+results/samples/plots/{sample}/mapq.png
+results/samples/samtools/{sample}/depth_distribution.tsv
+results/samples/samtools/{sample}/feature_mapq_depth.tsv
+results/samples/samtools/{sample}/global_mode.tsv
+results/samples/samtools/{sample}/mapping_stats.tsv
+results/samples/samtools/{sample}/mapq_depth_window.bed
+results/samples/samtools/{sample}/mapq_window.bed
+results/samples/snippy/{sample}/ref.fa
+results/samples/snippy/{sample}/ref.fa.fai
+results/samples/snippy/{sample}/snps.aligned.fa
+results/samples/snippy/{sample}/snps.bam
+results/samples/snippy/{sample}/snps.bam.bai
+results/samples/snippy/{sample}/snps.bed
+results/samples/snippy/{sample}/snps.consensus.fa
+results/samples/snippy/{sample}/snps.consensus.fa.fai
+results/samples/snippy/{sample}/snps.consensus.fa.index
+results/samples/snippy/{sample}/snps.consensus.fa.mmi
+results/samples/snippy/{sample}/snps.consensus.subs.fa
+results/samples/snippy/{sample}/snps.csv
+results/samples/snippy/{sample}/snps.filt.vcf
+results/samples/snippy/{sample}/snps.gff
+results/samples/snippy/{sample}/snps.html
+results/samples/snippy/{sample}/snps.log
+results/samples/snippy/{sample}/snps.raw.vcf
+results/samples/snippy/{sample}/snps.subs.vcf
+results/samples/snippy/{sample}/snps.tab
+results/samples/snippy/{sample}/snps.txt
+results/samples/snippy/{sample}/snps.vcf
+results/samples/snippy/{sample}/snps.vcf.gz
+results/samples/snippy/{sample}/snps.vcf.gz.csi
+
+<details>
 
 ## Filegraph
+
 
 ![Filegraph](all.svg)
