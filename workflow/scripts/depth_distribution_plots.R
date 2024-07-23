@@ -15,17 +15,24 @@ sample <- snakemake@wildcards$sample
 cov<- read.table(snakemake@input[[1]], header = TRUE, stringsAsFactors = TRUE, sep = "\t")
 global_mode <- read.delim(snakemake@input[[2]], header = TRUE, stringsAsFactors = TRUE)
 print(global_mode)
-chrom_names <- read.csv(snakemake@input[[3]], header = FALSE, col.names = c("Lineage", "Accession", "Chromosome"))
+chrom_names <- read.csv(snakemake@input[[3]], header = TRUE, col.names = c("Lineage", "Accession", "Chromosome"))
 
 cov[is.na(cov)] <- 0
-cov <- left_join(cov, chrom_names, by = "Accession")
 
+chrom_names <- chrom_names %>%
+  filter(Accession %in% unique(cov$Accession) )
+chrom_names['Accession_Chromosome'] <- paste(chrom_names$Chromosome, chrom_names$Accession, sep = "xxx")
+unique_levels <- unique(chrom_names$Accession_Chromosome)
+new_order <- c(rbind(matrix(unique_levels, nrow = 2, byrow = TRUE)))
+chrom_names$Accession_Chromosome <- factor(chrom_names$Accession_Chromosome, levels = new_order)
+
+cov <- left_join(cov, chrom_names, by = "Accession")
+lineage <- levels(as.factor(cov$Lineage))
 
 print("Plotting depth distribution by chromosome")
 raw_color = "#B3B3B3"
 good_color = "#666666" 
 color_quality = c("Good quality alignments" = good_color, "All alignments" = raw_color)
-lineage <- levels(as.factor(cov$Lineage))
 
 plot_chrom <- ggplot(cov, aes(x=Depth))+
   geom_col(aes(y = Count_Raw, fill= "All alignments"))+ 
@@ -36,7 +43,11 @@ plot_chrom <- ggplot(cov, aes(x=Depth))+
   scale_fill_manual(name= "Alignment quality", values= color_quality)+
   theme(legend.position="none")+
   labs(title = paste("Lineage:",lineage, " Sample:", sample,  sep = " "))+
-  theme_bw()
+  theme(panel.grid.minor.x = element_blank(),
+        panel.grid.minor.y = element_blank(),
+        panel.grid.major = element_line(color = "gray95"),
+        panel.background = element_rect(fill = "white"),
+        panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 2))
 
 pheight <- 0.5 + length(unique((cov$Chromosome)))/2
 pwidth <- pheight * 1.78
