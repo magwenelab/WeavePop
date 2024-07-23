@@ -74,16 +74,27 @@ def build_db(metadata, chrom_names, struc_vars, mapq_depth, gff, effects, varian
     df_gene_transcript = effects_pre[(effects_pre['gene_name'].notnull()) & (effects_pre['transcript_id'].notnull())].copy()
     df_gene_no_transcript = effects_pre[(effects_pre['gene_name'].notnull()) & (effects_pre['transcript_id'].isnull())].copy()
     df_no_gene_no_transcript = effects_pre[(effects_pre['gene_name'].isnull()) & (effects_pre['transcript_id'].isnull())].copy()
-    print("Separating fused gene names")
-    df_gene_no_transcript[['part1', 'part2']] = df_gene_no_transcript['gene_name'].str.split('+', expand=True)
-    print("Replacing gene names with gene IDs in part1")
-    df_gene_no_transcript['gene_tag_id1'] = df_gene_no_transcript['part1'].apply(replace_with_gene_id)
-    print("Replacing gene names with gene IDs in part2")
-    df_gene_no_transcript.loc[df_gene_no_transcript['part2'].notnull(), 'gene_tag_id2'] = df_gene_no_transcript.loc[df_gene_no_transcript['part2'].notnull(), 'part2'].apply(replace_with_gene_id)
-    print("Joining part1 with part2")
-    df_gene_no_transcript['gene_id'] = df_gene_no_transcript.apply(lambda row: row['gene_tag_id1'] + '+' + row['gene_tag_id2'] if pd.notnull(row['part2']) else row['gene_tag_id1'], axis=1)
-    print("Removing unnecessary columns")
-    df_gene_no_transcript.drop(['part1', 'part2', 'gene_tag_id1', 'gene_tag_id2'], axis=1, inplace=True)
+
+    if '+' in df_gene_no_transcript['gene_name'].values:
+        print("Fused gene names found")
+        df_fused_genes = df_gene_no_transcript[df_gene_no_transcript['gene_name'].str.contains('+')]
+        print("Separating fused gene names")
+        df_fused_genes[['part1', 'part2']] = df_fused_genes['gene_name'].str.split('+', expand=True)
+        print("Replacing gene names with gene IDs in part1")
+        df_fused_genes['gene_tag_id1'] = df_fused_genes['part1'].apply(replace_with_gene_id)
+        print("Replacing gene names with gene IDs in part2")
+        df_fused_genes.loc[df_fused_genes['part2'].notnull(), 'gene_tag_id2'] = df_fused_genes.loc[df_fused_genes['part2'].notnull(), 'part2'].apply(replace_with_gene_id)
+        print("Joining part1 with part2")
+        df_fused_genes['gene_id'] = df_fused_genes.apply(lambda row: row['gene_tag_id1'] + '+' + row['gene_tag_id2'] if pd.notnull(row['part2']) else row['gene_tag_id1'], axis=1)
+        print("Removing unnecessary columns")
+        df_fused_genes.drop(['part1', 'part2', 'gene_tag_id1', 'gene_tag_id2'], axis=1, inplace=True)
+        df_gene_no_transcript_fixed = df_fused_genes.copy()
+    else:
+        print("No fused gene names found")
+        df_gene_no_transcript_fixed = df_gene_no_transcript.copy()
+        df_gene_no_transcript_fixed['gene_id'] = df_gene_no_transcript_fixed['gene_name'].apply(replace_with_gene_id)
+
+
     print("Getting unique gene IDs from GFF")
     gff_ids_unique = gff_ids.drop_duplicates(subset='feature_id', keep='first')
     print("Creating dictionary to map feature IDs to gene IDs")
@@ -91,7 +102,7 @@ def build_db(metadata, chrom_names, struc_vars, mapq_depth, gff, effects, varian
     print("Mapping transcript IDs to gene IDs")
     df_gene_transcript['gene_id'] = df_gene_transcript['transcript_id'].map(feature_to_gene)
     print("Concatenating dataframes")
-    df_effects = pd.concat([df_gene_transcript, df_gene_no_transcript, df_no_gene_no_transcript])
+    df_effects = pd.concat([df_gene_transcript, df_gene_no_transcript_fixed, df_no_gene_no_transcript])
     print("Effects table done!")
 
     df_variants = pd.read_csv(variants, header = 0, sep='\t')

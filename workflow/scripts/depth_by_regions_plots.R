@@ -12,18 +12,18 @@ coverage_regions <- read.delim(snakemake@input[[1]], sep= "\t", col.names = c("A
 struc_vars <- read.delim(snakemake@input[[2]], sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
 repeats_table <- read.delim(snakemake@input[[3]], sep= "\t", header = FALSE, col.names = c("Accession", "Start", "End", "Repeat_type"), stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
 loci_table <- read.delim(snakemake@input[[4]], header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
-chrom_names <- read.csv(snakemake@input[[5]], sep = ",", header = FALSE, col.names = c("Lineage", "Accession", "Chromosome"), stringsAsFactors = TRUE, na = c("", "N/A"))
+chrom_names <- read.csv(snakemake@input[[5]], sep = ",", header = TRUE, col.names = c("Lineage", "Accession", "Chromosome"), stringsAsFactors = TRUE, na = c("", "N/A"))
 sample <- snakemake@wildcards$sample
 
-# coverage_regions <- read.delim("results/samples/mosdepth/PMY3493/good_regions_coverage.tsv", sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
-# struc_vars <- read.delim("results/samples/mosdepth/PMY3493/good_structural_variants.tsv", sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
-# repeats_table <- read.delim("results/references/VNI_VNIV/repeats/VNI_VNIV_repeats.bed", sep= "\t", header = FALSE, col.names = c("Accession", "Start", "End", "Repeat_type"), stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
-# loci_table <- read.delim("results/dataset/files/loci_to_plot.tsv", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
-# chrom_names <- read.csv("config/chromosome_names.csv", header = FALSE, col.names = c("Lineage", "Accession", "Chromosome"), stringsAsFactors = TRUE, na = c("", "N/A"))
-# sample <- "PMY3493"
+# coverage_regions <- read.delim("results_230724/samples/mosdepth/PMY3315/depth_by_regions.tsv", sep= "\t", col.names = c("Accession", "Start", "End", "Depth", "Norm_Depth", "Smooth_Depth"), stringsAsFactors = TRUE, na = c("", "N/A"))
+# struc_vars <- read.delim("results_230724/samples/cnv/PMY3315/cnv_calls.tsv", sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
+# repeats_table <- read.delim("results_230724/references/Cdeneoformans/repeats/Cdeneoformans_repeats.bed", sep= "\t", header = FALSE, col.names = c("Accession", "Start", "End", "Repeat_type"), stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
+# loci_table <- read.delim("results_230724/dataset/files/loci_to_plot.tsv", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
+# chrom_names <- read.csv("config/chromosome_names.csv", sep = ",", header = TRUE, col.names = c("Lineage", "Accession", "Chromosome"), stringsAsFactors = TRUE, na = c("", "N/A"))
+# sample <- "PMY3315"
 print("Get chromosome names")
 chrom_names <- chrom_names %>%
-  filter(Accession %in% unique(struc_vars$Accession) )
+  filter(Accession %in% unique(coverage_regions$Accession) )
 chrom_names['Accession_Chromosome'] <- paste(chrom_names$Chromosome, chrom_names$Accession, sep = "xxx")
 unique_levels <- unique(chrom_names$Accession_Chromosome)
 new_order <- c(rbind(matrix(unique_levels, nrow = 2, byrow = TRUE)))

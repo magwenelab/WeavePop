@@ -31,9 +31,11 @@ def fix_gff(input, output_tsv, output_gff):
             df.at[index, 'Parent'] = new_Parent
             
     print("Adding Name and description to all features")
-    df['Name'] = df.groupby('locus')['Name'].transform('first')
-    df['description'] = df.groupby('locus')['description'].transform('first')
+    if 'Name' in df.columns:
+        df['Name'] = df.groupby('locus')['Name'].transform('first')
 
+    if 'description' in df.columns:
+        df['description'] = df.groupby('locus')['description'].transform('first')
             
     print("Fixing columns")
     df_fixed = df.copy()
