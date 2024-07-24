@@ -79,15 +79,7 @@ metadata <- metadata %>%
     select(sample, strain, lineage)
 stats_metad <- merge(map_stats, metadata, by = "sample")
 stats_metad <- stats_metad %>%
-    mutate(name = paste(strain,sample, sep = " "),
-        reads_unmapped = raw_total_sequences - reads_mapped,
-        percent_unmapped = (reads_unmapped/raw_total_sequences)*100,
-        reads_only_mapped = reads_mapped - reads_properly_paired,
-        percent_only_mapped = (reads_only_mapped/raw_total_sequences)*100,
-        percent_properly_paired = (reads_properly_paired/raw_total_sequences)*100,
-        percent_20 = (MAPQ_20/reads_mapped)*100,
-        percent_20_59 = (MAPQ_20_59/reads_mapped)*100,
-        percent_60 = (MAPQ_60/reads_mapped)*100)
+    mutate(name = paste(strain,sample, sep = " "))
 
 stats_long <- stats_metad %>%
     pivot_longer(cols = -c(sample, name, lineage, strain), names_to = "Metric", values_to = "Value")

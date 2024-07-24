@@ -55,11 +55,19 @@ def stats(sample, bamfile,  mapped_out):
     filtered_stats = sn_stats[sn_stats['Metric'].isin(['raw_total_sequences', 'reads_mapped', 'reads_properly_paired', 'average_quality'])].copy()
     filtered_stats['sample'] = sample
     stats_wider = filtered_stats.pivot(index='sample', columns='Metric', values='Value').reset_index()
+    stats_wider['reads_unmapped'] = stats_wider['raw_total_sequences'] - stats_wider['reads_mapped']
+    stats_wider['percent_unmapped'] = stats_wider['reads_unmapped'] / stats_wider['raw_total_sequences'] * 100
     stats_wider['percent_mapped'] = stats_wider['reads_mapped'] / stats_wider['raw_total_sequences'] * 100
     stats_wider['percent_paired'] = stats_wider['reads_properly_paired'] / stats_wider['raw_total_sequences'] * 100
+    stats_wider['reads_only_mapped'] = stats_wider['reads_mapped'] - stats_wider['reads_properly_paired']
+    stats_wider['percent_only_mapped'] = stats_wider['reads_only_mapped'] / stats_wider['raw_total_sequences'] * 100
+    stats_wider['percent_properly_paired'] = stats_wider['reads_properly_paired'] / stats_wider['raw_total_sequences'] * 100
     stats_wider = stats_wider.round(2)
     print("Joining mapped reads metrics with MAPQ metrics")
     stats_wider = pd.merge(stats_wider, quality_wider, on = 'sample', how = 'outer')
+    stats_wider['percent_20'] = stats_wider['MAPQ_20'] / stats_wider['reads_mapped'] * 100
+    stats_wider['percent_20_59'] = stats_wider['MAPQ_20_59'] / stats_wider['reads_mapped'] * 100
+    stats_wider['percent_60'] = stats_wider['MAPQ_60'] / stats_wider['reads_mapped'] * 100
     print("Saving mapped reads metrics")
     stats_wider.to_csv(mapped_out, index=False, sep = "\t")
 if __name__ == "__main__":
