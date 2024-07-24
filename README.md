@@ -53,7 +53,7 @@ The environments for particular software used in Snakemake rules are installed b
 ## Structure of the working directory:    
   * `workflow/` has all the code (rules, scripts and main Snakefile), and the environment files.
   * `config/` has the file `config.yaml`(provided [here](https://github.com/magwenelab/DiversityPipeline/blob/main/config/config.yaml)) that **you must edit** to adapt to your dataset.
-  * `results/` will hold all the output. The name is specified in `config/config.yaml`.
+  * `| results/` will hold all the output. The name is specified in `config/config.yaml`.
   * `logs/` will hold the log files of all runs.  
   * Additionally you need to provide the **starting files** described bellow. It's recommended to put the data files in `data/` and the tables in `config/`.
 
@@ -76,9 +76,25 @@ The environments for particular software used in Snakemake rules are installed b
 
 | Path | Description | Column names |
 | :---------------- | ----: |----: |
-| results/dataset/files/loci_to_plot.tsv |||
+| results/dataset/database
+| results/dataset/files/cnv_calls.tsv
+| results/dataset/files/depth_by_chrom_good_normalized.tsv
+| results/dataset/files/depth_by_chrom_good.tsv
+| results/dataset/files/depth_by_chrom_raw.tsv
+| results/dataset/files/feature_mapq_depth.tsv
+| results/dataset/files/loci_to_plot.tsv
+| results/dataset/files/mapping_stats.tsv
 | results/dataset/files/unmapped_count.tsv
+| **results/dataset/plots/dataset_depth_by_chrom.png**
+| **results/dataset/plots/dataset_summary.png**
 | results/dataset/plots/unmapped.svg
+| results/dataset/snps/all_effects.tsv
+| results/dataset/snps/all_lofs.tsv
+| results/dataset/snps/all_nmds.tsv
+| results/dataset/snps/all_presence.tsv
+| results/dataset/snps/all_variants.tsv
+| **results/dataset/database.db**
+| results/dataset/sequences.db
 | results/dataset/snps/{lineage}_effects.tsv
 | results/dataset/snps/{lineage}_intersection.vcf
 | results/dataset/snps/{lineage}_lofs.tsv
@@ -89,87 +105,87 @@ The environments for particular software used in Snakemake rules are installed b
 | results/dataset/snps/{lineage}_snpeff.vcf
 | results/dataset/snps/{lineage}_variants.tsv
 | results/references/snpeff_data
-results/references/{lineage}/intermediate_files
-results/references/{lineage}/repeats
-results/references/{lineage}/repeats/{lineage}_repeats.bed
-results/references/{lineage}/{main_reference}.fasta
-results/references/{lineage}/{main_reference}.fasta.fai
-results/references/{lineage}/{main_reference}.gff
-results/references/{lineage}/{main_reference}.gff_db
-results/references/{lineage}/liftoff.gff
-results/references/{lineage}/unmapped_features.txt
-results/references/{lineage}/{lineage}.cds.fa
-results/references/{lineage}/{lineage}.fasta
-results/references/{lineage}/{lineage}.fasta.fai
-results/references/{lineage}/{lineage}.fasta.index
-results/references/{lineage}/{lineage}.fasta.mmi
-results/references/{lineage}/{lineage}.gff
-results/references/{lineage}/{lineage}.gff.tsv
-results/references/{lineage}/{lineage}.prots.fa
-results/references/agat_config.yaml
-results/references/{main_reference}.gff
-results/references/{main_reference}.tsv
-results/references/unmapped_count.tsv
-results/references/unmapped.svg
-results/samples/agat/{sample}/cds.fa
-results/samples/agat/{sample}/proteins.fa
-results/samples/cnv/{sample}/cnv_calls.tsv
-results/samples/liftoff/{sample}/intermediate_files
-results/samples/liftoff/{sample}/lifted.gff
-results/samples/liftoff/{sample}/lifted.gff_polished
-results/samples/liftoff/{sample}/ref.gff
-results/samples/liftoff/{sample}/ref.gff_db
-results/samples/liftoff/{sample}/unmapped_features.txt
-results/samples/mosdepth/{sample}/coverage_good.mosdepth.global.dist.txt
-results/samples/mosdepth/{sample}/coverage_good.mosdepth.region.dist.txt
-results/samples/mosdepth/{sample}/coverage_good.mosdepth.summary.txt
-results/samples/mosdepth/{sample}/coverage_good.regions.bed.gz
-results/samples/mosdepth/{sample}/coverage_good.regions.bed.gz.csi
-results/samples/mosdepth/{sample}/coverage.mosdepth.global.dist.txt
-results/samples/mosdepth/{sample}/coverage.mosdepth.region.dist.txt
-results/samples/mosdepth/{sample}/coverage.mosdepth.summary.txt
-results/samples/mosdepth/{sample}/coverage.regions.bed.gz
-results/samples/mosdepth/{sample}/coverage.regions.bed.gz.csi
-results/samples/mosdepth/{sample}/depth_by_chrom_good_normalized.tsv
-results/samples/mosdepth/{sample}/depth_by_chrom_good.tsv
-results/samples/mosdepth/{sample}/depth_by_chrom_raw.tsv
-results/samples/mosdepth/{sample}/depth_by_regions.tsv
-results/samples/plots/{sample}/depth_by_chrom.png
-results/samples/plots/{sample}/depth_by_regions.png
-results/samples/plots/{sample}/depth_chrom_distribution.png
-results/samples/plots/{sample}/depth_global_distribution.png
-results/samples/plots/{sample}/mapq.png
-results/samples/samtools/{sample}/depth_distribution.tsv
-results/samples/samtools/{sample}/feature_mapq_depth.tsv
-results/samples/samtools/{sample}/global_mode.tsv
-results/samples/samtools/{sample}/mapping_stats.tsv
-results/samples/samtools/{sample}/mapq_depth_window.bed
-results/samples/samtools/{sample}/mapq_window.bed
-results/samples/snippy/{sample}/ref.fa
-results/samples/snippy/{sample}/ref.fa.fai
-results/samples/snippy/{sample}/snps.aligned.fa
-results/samples/snippy/{sample}/snps.bam
-results/samples/snippy/{sample}/snps.bam.bai
-results/samples/snippy/{sample}/snps.bed
-results/samples/snippy/{sample}/snps.consensus.fa
-results/samples/snippy/{sample}/snps.consensus.fa.fai
-results/samples/snippy/{sample}/snps.consensus.fa.index
-results/samples/snippy/{sample}/snps.consensus.fa.mmi
-results/samples/snippy/{sample}/snps.consensus.subs.fa
-results/samples/snippy/{sample}/snps.csv
-results/samples/snippy/{sample}/snps.filt.vcf
-results/samples/snippy/{sample}/snps.gff
-results/samples/snippy/{sample}/snps.html
-results/samples/snippy/{sample}/snps.log
-results/samples/snippy/{sample}/snps.raw.vcf
-results/samples/snippy/{sample}/snps.subs.vcf
-results/samples/snippy/{sample}/snps.tab
-results/samples/snippy/{sample}/snps.txt
-results/samples/snippy/{sample}/snps.vcf
-results/samples/snippy/{sample}/snps.vcf.gz
-results/samples/snippy/{sample}/snps.vcf.gz.csi
+| results/references/{lineage}/intermediate_files
+| results/references/{lineage}/repeats
+| results/references/{lineage}/repeats/{lineage}_repeats.bed
+| results/references/{lineage}/{main_reference}.fasta
+| results/references/{lineage}/{main_reference}.fasta.fai
+| results/references/{lineage}/{main_reference}.gff
+| results/references/{lineage}/{main_reference}.gff_db
+| results/references/{lineage}/liftoff.gff
+| results/references/{lineage}/unmapped_features.txt
+| results/references/{lineage}/{lineage}.cds.fa
+| results/references/{lineage}/{lineage}.fasta
+| results/references/{lineage}/{lineage}.fasta.fai
+| results/references/{lineage}/{lineage}.fasta.index
+| results/references/{lineage}/{lineage}.fasta.mmi
+| results/references/{lineage}/{lineage}.gff
+| results/references/{lineage}/{lineage}.gff.tsv
+| results/references/{lineage}/{lineage}.prots.fa
+| results/references/agat_config.yaml
+| results/references/{main_reference}.gff
+| results/references/{main_reference}.tsv
+| results/references/unmapped_count.tsv
+| results/references/unmapped.svg
+| **results/samples/agat/{sample}/cds.fa**
+| **results/samples/agat/{sample}/proteins.fa**
+| **results/samples/cnv/{sample}/cnv_calls.tsv**
+| results/samples/liftoff/{sample}/intermediate_files
+| results/samples/liftoff/{sample}/lifted.gff
+| **results/samples/liftoff/{sample}/lifted.gff_polished**
+| results/samples/liftoff/{sample}/ref.gff
+| results/samples/liftoff/{sample}/ref.gff_db
+| results/samples/liftoff/{sample}/unmapped_features.txt
+| results/samples/mosdepth/{sample}/coverage_good.mosdepth.global.dist.txt
+| results/samples/mosdepth/{sample}/coverage_good.mosdepth.region.dist.txt
+| results/samples/mosdepth/{sample}/coverage_good.mosdepth.summary.txt
+| results/samples/mosdepth/{sample}/coverage_good.regions.bed.gz
+| results/samples/mosdepth/{sample}/coverage_good.regions.bed.gz.csi
+| results/samples/mosdepth/{sample}/coverage.mosdepth.global.dist.txt
+| results/samples/mosdepth/{sample}/coverage.mosdepth.region.dist.txt
+| results/samples/mosdepth/{sample}/coverage.mosdepth.summary.txt
+| results/samples/mosdepth/{sample}/coverage.regions.bed.gz
+| results/samples/mosdepth/{sample}/coverage.regions.bed.gz.csi
+| results/samples/mosdepth/{sample}/depth_by_chrom_good_normalized.tsv
+| results/samples/mosdepth/{sample}/depth_by_chrom_good.tsv
+| results/samples/mosdepth/{sample}/depth_by_chrom_raw.tsv
+| **results/samples/mosdepth/{sample}/depth_by_regions.tsv**
+| **results/samples/plots/{sample}/depth_by_chrom.png**
+| **results/samples/plots/{sample}/depth_by_regions.png**
+| **results/samples/plots/{sample}/depth_chrom_distribution.png**
+| **results/samples/plots/{sample}/depth_global_distribution.png**
+| **results/samples/plots/{sample}/mapq.png**
+| results/samples/samtools/{sample}/depth_distribution.tsv
+| **results/samples/samtools/{sample}/feature_mapq_depth.tsv**
+| results/samples/samtools/{sample}/global_mode.tsv
+| results/samples/samtools/{sample}/mapping_stats.tsv
+| results/samples/samtools/{sample}/mapq_depth_window.bed
+| results/samples/samtools/{sample}/mapq_window.bed
+| results/samples/snippy/{sample}/ref.fa
+| results/samples/snippy/{sample}/ref.fa.fai
+| results/samples/snippy/{sample}/snps.aligned.fa
+| **results/samples/snippy/{sample}/snps.bam**
+| results/samples/snippy/{sample}/snps.bam.bai
+| results/samples/snippy/{sample}/snps.bed
+| **results/samples/snippy/{sample}/snps.consensus.fa**
+| results/samples/snippy/{sample}/snps.consensus.fa.fai
+| results/samples/snippy/{sample}/snps.consensus.fa.index
+| results/samples/snippy/{sample}/snps.consensus.fa.mmi
+| results/samples/snippy/{sample}/snps.consensus.subs.fa
+| results/samples/snippy/{sample}/snps.csv
+| results/samples/snippy/{sample}/snps.filt.vcf
+| results/samples/snippy/{sample}/snps.gff
+| results/samples/snippy/{sample}/snps.html
+| results/samples/snippy/{sample}/snps.log
+| results/samples/snippy/{sample}/snps.raw.vcf
+| results/samples/snippy/{sample}/snps.subs.vcf
+| results/samples/snippy/{sample}/snps.tab
+| results/samples/snippy/{sample}/snps.txt
+| **results/samples/snippy/{sample}/snps.vcf**
+| results/samples/snippy/{sample}/snps.vcf.gz
+| results/samples/snippy/{sample}/snps.vcf.gz.csi
 
-<details>
+</details>
 
 ## Filegraph
 
