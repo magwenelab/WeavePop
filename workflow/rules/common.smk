@@ -74,6 +74,9 @@ def get_final_output():
     final_output.extend(expand(OUTDIR / "liftoff" / "{sample}" / "unmapped_features.txt",sample=SAMPLES))
     final_output.extend(expand(OUTDIR / "agat" / "{sample}" / "proteins.fa",sample=SAMPLES))
     final_output.extend(expand(OUTDIR / "agat" / "{sample}" / "cds.fa",sample=SAMPLES))
+    final_output.append(GENERAL_OUTPUT / "metadata.csv")
+    final_output.append(GENERAL_OUTPUT / "chromosomes.csv")
+    final_output.append(GENERAL_OUTPUT / "loci.csv")
     if config["coverage_quality"]["activate"]:
         final_output.extend(expand(OUTDIR / "mosdepth" / "{sample}" / "depth_by_regions.tsv",sample=SAMPLES))
         final_output.extend(expand(OUTDIR / "mosdepth" / "{sample}" / "depth_by_chrom_good.tsv",sample=SAMPLES))
@@ -120,6 +123,20 @@ rule links:
     shell:
         "ln -s -r {input} {output}"
 
+rule copy_config:
+    input:
+        s = config["samples"],
+        c = config["chromosomes"],
+        l = LOCI_FILE
+    output:
+        s = GENERAL_OUTPUT / "metadata.csv",
+        c = GENERAL_OUTPUT / "chromosomes.csv",
+        l = GENERAL_OUTPUT / "loci.csv"
+    shell:
+        "scp {input.s} {output.s} && "
+        "scp {input.c} {output.c} && "
+        "scp {input.l} {output.l}"
+    
 # Edit the agat config file to avoid creating log files
 rule agat_config:
     output:
@@ -132,3 +149,4 @@ rule agat_config:
         "agat config --expose &> {log} && "
         "mv agat_config.yaml {output} &> {log} && "
         "sed -i 's/log: true/log: false/g' {output} &>> {log} "
+

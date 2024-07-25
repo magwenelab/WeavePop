@@ -4,7 +4,7 @@
 
 rule join_depth_by_chrom_raw:
     input:
-        expand(rules.depth_by_chrom_raw.output,sample=SAMPLES),
+        expand(OUTDIR / "mosdepth" / "{sample}" / "depth_by_chrom_raw.tsv",sample=SAMPLES),
     output:
         DATASET_OUTDIR / "files" / "depth_by_chrom_raw.tsv",
     log:
@@ -19,7 +19,7 @@ rule join_depth_by_chrom_raw:
 
 rule join_depth_by_chrom_good:
     input:
-        expand(rules.depth_by_chrom_good.output,sample=SAMPLES),
+        expand(OUTDIR / "mosdepth" / "{sample}" / "depth_by_chrom_good.tsv",sample=SAMPLES),
     output:
         DATASET_OUTDIR / "files" / "depth_by_chrom_good.tsv",
     log:
@@ -34,7 +34,7 @@ rule join_depth_by_chrom_good:
 
 rule join_mapping_stats:
     input:
-        expand(rules.mapping_stats.output,sample=SAMPLES),
+        expand(OUTDIR / "samtools" / "{sample}" / "mapping_stats.tsv",sample=SAMPLES),
     output:
         DATASET_OUTDIR / "files" / "mapping_stats.tsv",
     log:
@@ -70,7 +70,7 @@ rule dataset_summary_plot:
 # =================================================================================================
 rule join_depth_by_chrom_normalized:
     input:
-        expand(rules.depth_by_chrom_normalized.output,sample=SAMPLES),
+        expand(OUTDIR / "mosdepth" / "{sample}" / "depth_by_chrom_good_normalized.tsv",sample=SAMPLES),
     output:
         DATASET_OUTDIR / "files" / "depth_by_chrom_good_normalized.tsv",
     log:

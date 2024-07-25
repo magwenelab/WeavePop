@@ -1,11 +1,14 @@
 # =================================================================================================
-#   Configuration of modules to run
+#   Choose which workflow to run
 # =================================================================================================
 
-# -------------------------------------------------------------------------------------------------
-# Per sample steps
-# -------------------------------------------------------------------------------------------------
-# sample_workflow: True
+#sample_workflow: True
+#join_datasets_workflow: False
+
+# =================================================================================================
+# Sample workflow parameters
+# =================================================================================================
+# ------------------Input--------------------------------------------------------------------------
 
 fastqs:
   directory: "data/samples" # Relative path to directory with all FASTQ files 
@@ -15,31 +18,15 @@ fastqs:
 references: 
   directory: "data/references/" # Path to directory with reference genomes.
 
-# -------------------------------------------------------------------------------------------------
-# Join results of previous runs
-# -------------------------------------------------------------------------------------------------
-# join_datasets: False
-
-# dataset1_dir: "results1" # Path to the first results directory
-# dataset2_dir: "results2" # Path to the second results directory
-
-# =================================================================================================
-#   Input
-# =================================================================================================
-
-samples: "config/sample_metadata.csv" # Relative path to metadata CSV table.
+samples: "config/metadata2.csv" # Relative path to metadata CSV table.
 chromosomes: "config/chromosome_names.csv" # Relative path to chromosome names CSV table.
 species_name: "Cryptococcus_neoformans" 
 
-# =================================================================================================
-#   Output
-# =================================================================================================
+# ------------------Output-------------------------------------------------------------------------
 
-output_directory: "results" # Name for the output directory
+output_directory: "results_2" # Name for the output directory
 
-# =================================================================================================
-#   Module: Annotation of reference genomes
-# =================================================================================================
+# ------------------Annotation of reference genomes------------------------------------------------
 
 annotate_references:
   activate: True
@@ -50,9 +37,7 @@ annotate_references:
     threads: 12
     extra: ""
 
-# =================================================================================================
-#   Module: Depth of coverage and quality analyses
-# =================================================================================================
+# ------------------Depth and quality analyses-----------------------------------------
 
 coverage_quality: 
   activate: True
@@ -69,30 +54,30 @@ coverage_quality:
     repeats_threads: 20
     repeats_fraction: 0.5 # Fraction of repetitive bases allowed for calculating global coverage
 
-# =================================================================================================
-#   Module: Variant annotation
-# =================================================================================================
+# ------------------Variant annotation-------------------------------------------------------------
 
 snpeff:
   activate: True
   extra: ""
 
-# =================================================================================================
-#   Module: Plotting
-# =================================================================================================
-
+# ------------------Plotting-----------------------------------------------------------------------
 plotting: 
   activate: True
   loci: "config/loci.csv" # Relative path to table with loci to add to plots
-  metadata2color : "isolation_source" # Column name in the samples table to color the samples in the plots
+  metadata2color : "source" # Column name in the samples table to color the samples in the plots
   scale : 0.7 # Ggsave scale parameter to adjust the size of the dataset plots. Use lower values for fewer samples and bigger values for more samples.
 
-# =================================================================================================
-#   Module: Database
-# =================================================================================================
+# ------------------Database-----------------------------------------------------------------------
 
 database:
   activate: True
+
+# =================================================================================================
+# Join datasets workflow parameters
+# =================================================================================================
+
+datasets_paths: "results_1,results_2" # Comma-separated list of directories with datasets to join.
+joint_datasets_output: "results_joined" # Name for the output directory with joined datasets.
 
 # =================================================================================================
 #   Parameters for individual tools

@@ -17,7 +17,7 @@ rule join_gffs:
 # Make SQL database with cds of all samples
 rule cds2db:
     input: 
-        cds = rules.agat_cds.output.cds,
+        cds = OUTDIR / "agat" / "{sample}" / "cds.fa",
     output:
         touch(DATASET_OUTDIR / "database" / "{sample}" / "cds.done"),
     params:
@@ -37,7 +37,7 @@ rule cds2db:
 # Make SQL database with proteins of all samples
 rule prots2db:
     input: 
-        prots = rules.agat_prots.output.prots,
+        prots = OUTDIR / "agat" / "{sample}" / "proteins.fa",
     output:
         touch(DATASET_OUTDIR / "database" / "{sample}" / "prots.done")
     params:
@@ -60,7 +60,7 @@ rule prots2db:
 
 rule join_mapq_depth:
     input:
-        expand(rules.mapq_depth.output.tsv,sample=SAMPLES)
+        expand(OUTDIR / "samtools" / "{sample}" / "feature_mapq_depth.tsv",sample=SAMPLES)
     output:
         DATASET_OUTDIR / "files" / "feature_mapq_depth.tsv"
     log:
@@ -79,7 +79,7 @@ rule join_mapq_depth:
 
 rule join_cnv_calling:
     input:
-        expand(rules.cnv_calling.output,sample=SAMPLES),
+        expand(OUTDIR / "cnv" / "{sample}" / "cnv_calls.tsv",sample=SAMPLES),
     output:
         DATASET_OUTDIR / "files" / "cnv_calls.tsv",
     log:
