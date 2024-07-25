@@ -15,71 +15,41 @@ configfile: "config/config.yaml"
 #   Load rules
 # =================================================================================================
 
-include: "rules/common.smk"
-include: "rules/main.smk"
-include: "rules/depth.smk"
-include: "rules/snps.smk"
+if config["sample_workflow"] and not config["join_datasets_workflow"]:
+    include: "rules/common.smk"
+    include: "rules/main.smk"
+    include: "rules/depth.smk"
+    include: "rules/snpeff_db.smk"
+    include: "rules/snps.smk"
 
+    if config["annotate_references"]["activate"]:
+        include: "rules/references.smk"
 
-if config["annotate_references"]["activate"]:
-    include: "rules/references.smk"
+    if not config["annotate_references"]["activate"]:
+        include: "rules/lineage_gffs.smk"
 
-if not config["annotate_references"]["activate"]:
-    include: "rules/lineage_gffs.smk"
+    if config["plotting"]["activate"] and config["annotate_references"]["activate"]:
+        include: "rules/unmapped_main_ref.smk"
 
-if config["plotting"]["activate"] and config["annotate_references"]["activate"]:
-    include: "rules/unmapped_main_ref.smk"
+    if config["plotting"]["activate"] and not config["annotate_references"]["activate"]:
+        include: "rules/unmapped_per_lineage.smk"
 
-if config["plotting"]["activate"] and not config["annotate_references"]["activate"]:
-    include: "rules/unmapped_per_lineage.smk"
+    if config["plotting"]["activate"]:
+        include: "rules/plots.smk"
 
-if config["plotting"]["activate"]:
-    include: "rules/plots.smk"
+    if config["database"]["activate"]:
+        include: "rules/database.smk"
+        if config["plotting"]["activate"]:
+            include: "rules/dataset_plots.smk"
+elif config["join_datasets_workflow"] and not config["sample_workflow"]:
+    include: "rules/join_results.smk"
+    include: "rules/snps.smk"
     include: "rules/dataset_plots.smk"
-
-if config["database"]["activate"]:
     include: "rules/database.smk"
-
-# =================================================================================================
-#   Onstart checks
-# =================================================================================================
-
-onstart:
-    print("Checking input files...", flush=True)
-    try:       
-        sample_table = pd.read_csv(config["samples"], header=0)
-        chrom_names = pd.read_csv(config["chromosomes"], header = 0,
-                                    names=["lineage","accession","chromosome"])
-        if chrom_names.isnull().values.any():
-            raise ValueError("Bad: Chromosome names file has missing values.")
-        if set(sample_table['lineage'].unique()) == set(chrom_names['lineage'].unique()):
-            print("Good: All lineages are in the chromosome names file.", flush=True)
-        else:
-            raise ValueError("Bad: Lineages in metadata and chromosome names file do not match.")
-        
-        chromosome_ids = []
-        reference_dir = config["references"]["directory"]
-
-        for lineage in chrom_names['lineage'].unique():
-            ref_file = Path(reference_dir) / f"{lineage}.fasta"
-            if ref_file.exists():
-                for chrom in chrom_names[chrom_names['lineage'] == lineage]['accession']:
-                    with open(ref_file) as f:
-                        seq_ids = [line.strip().split()[0][1:] for line in f if line.startswith(">")]
-                        if chrom not in seq_ids:
-                            raise ValueError(f"Bad: Chromosome {chrom} not found in reference {ref_file}")
-                        else:
-                            print(f"Good: Chromosome {chrom} found in reference {ref_file}", flush=True)
-            else:
-                raise ValueError(f"Bad: Reference {ref_file} not found")
-
-    except Exception as e:
-        print("Error in input files:", flush=True)
-        print(e)
-        print("Exiting...", flush=True)
-        exit(1)
-    else:
-        print("Input files are good! Starting workflow...", flush=True)
+elif config["join_datasets_workflow"] and config["sample_workflow"]:
+    raise ValueError("Both workflows cannot be activated at the same time.")
+else: 
+    raise ValueError("No workflow activated.")
 
 # =================================================================================================
 #   Define final output
