@@ -62,12 +62,12 @@ def stats(sample, bamfile,  mapped_out):
     stats_wider['reads_only_mapped'] = stats_wider['reads_mapped'] - stats_wider['reads_properly_paired']
     stats_wider['percent_only_mapped'] = stats_wider['reads_only_mapped'] / stats_wider['raw_total_sequences'] * 100
     stats_wider['percent_properly_paired'] = stats_wider['reads_properly_paired'] / stats_wider['raw_total_sequences'] * 100
-    stats_wider = stats_wider.round(2)
     print("Joining mapped reads metrics with MAPQ metrics")
     stats_wider = pd.merge(stats_wider, quality_wider, on = 'sample', how = 'outer')
     stats_wider['percent_20'] = stats_wider['MAPQ_20'] / stats_wider['reads_mapped'] * 100
     stats_wider['percent_20_59'] = stats_wider['MAPQ_20_59'] / stats_wider['reads_mapped'] * 100
     stats_wider['percent_60'] = stats_wider['MAPQ_60'] / stats_wider['reads_mapped'] * 100
+    stats_wider = stats_wider.round(2)
     print("Saving mapped reads metrics")
     stats_wider.to_csv(mapped_out, index=False, sep = "\t")
 if __name__ == "__main__":
