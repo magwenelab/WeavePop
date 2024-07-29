@@ -132,3 +132,41 @@ rule agat_prots:
         "{params.extra} &> {log} " 
         "&& "
         "sed -i 's/type=cds//g' {output} &>> {log} "
+
+# =================================================================================================
+# Per sample | Convert fasta to csv
+# =================================================================================================
+
+rule cds2csv:
+    input: 
+        cds = OUTDIR / "agat" / "{sample}" / "cds.fa"
+    output:
+        cds = OUTDIR / "agat" / "{sample}" / "cds.csv"
+    conda:
+        "../envs/variants.yaml"
+    log:
+        "logs/dataset/sequences/cds2csv_{sample}.log"
+    shell:
+        "python workflow/scripts/fasta_to_csv.py "
+        "-f {input.cds} "
+        "-s {wildcards.sample} "
+        "-t DNA "
+        "-o {output.cds} "
+        "&> {log}"
+
+rule prots2csv:
+    input: 
+        prots = OUTDIR / "agat" / "{sample}" / "proteins.fa"
+    output:
+        prots = OUTDIR / "agat" / "{sample}" / "proteins.csv"
+    conda:
+        "../envs/variants.yaml"
+    log:
+        "logs/dataset/sequences/prots2db_{sample}.log"
+    shell:
+        "python workflow/scripts/fasta_to_csv.py "
+        "-f {input.prots} "
+        "-s {wildcards.sample} "
+        "-t PROTEIN "
+        "-o {output.prots} "
+        "&> {log}"

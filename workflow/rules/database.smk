@@ -12,48 +12,21 @@ rule join_gffs:
         "python workflow/scripts/join_gffs.py -o {output} {input} &> {log}"
 
 # =================================================================================================
-#   Join dataset | Add sample sequences to database. (Runs per sample but output is dataset-wide)
+#   Join dataset | Join tables with sequences and convert them to SQL db
 # =================================================================================================
-# Make SQL database with cds of all samples
-rule cds2db:
-    input: 
-        cds = OUTDIR / "agat" / "{sample}" / "cds.fa",
-    output:
-        touch(DATASET_OUTDIR / "database" / "{sample}" / "cds.done"),
-    params:
-        db = DATASET_OUTDIR / "sequences.db"
-    conda:
-        "../envs/variants.yaml"
-    log:
-        "logs/dataset/sequences/cds2db_{sample}.log"
-    shell:
-        "python workflow/scripts/build_sequences_db.py "
-        "-d {params.db} "
-        "-f {input.cds} "
-        "-s {wildcards.sample} "
-        "-t DNA "
-        "&> {log}"
 
-# Make SQL database with proteins of all samples
-rule prots2db:
-    input: 
-        prots = OUTDIR / "agat" / "{sample}" / "proteins.fa",
+rule join_sequences:
+    input:
+        cds = expand(OUTDIR / "agat" / "{sample}" / "cds.csv", sample=SAMPLES),
+        prots = expand(OUTDIR / "agat" / "{sample}" / "proteins.csv", sample=SAMPLES)
     output:
-        touch(DATASET_OUTDIR / "database" / "{sample}" / "prots.done")
-    params:
-        db = DATASET_OUTDIR / "sequences.db"
-    conda:
-        "../envs/variants.yaml"
-    log:
-        "logs/dataset/sequences/prots2db_{sample}.log"
-    shell:
-        "python workflow/scripts/build_sequences_db.py "
-        "-d {params.db} "
-        "-f {input.prots} "
-        "-s {wildcards.sample} "
-        "-t PROTEIN "
-        "&> {log}"
-
+        joined = DATASET_OUTDIR / "sequences.csv"
+    run: 
+        cds = pd.concat([pd.read_csv(f) for f in input.cds])
+        prots = pd.concat([pd.read_csv(f) for f in input.prots])
+        sequences = pd.concat([cds, prots])
+        sequences.to_csv(output.joined, sep=",", index=False, header = True)
+    
 # =================================================================================================
 #   Per dataset | Join feature MAPQ and Depth
 # =================================================================================================
@@ -96,7 +69,7 @@ rule join_cnv_calling:
 #   Per dataset | Create final database
 # =================================================================================================
 # Join all effects, variants, lofs, nmds and presence tables
-rule join_dataframes:
+rule join_variant_annotation:
     input:
         effects = expand(DATASET_OUTDIR / "snps" / "{lineage}_effects.tsv", lineage=LINEAGES),
         variants = expand(DATASET_OUTDIR / "snps" / "{lineage}_variants.tsv", lineage=LINEAGES),
@@ -129,17 +102,14 @@ rule complete_db:
         sv = rules.join_cnv_calling.output,
         md = rules.join_mapq_depth.output,
         gffs = rules.join_gffs.output,
-        effects = rules.join_dataframes.output.effects,
-        variants = rules.join_dataframes.output.variants,
-        presence = rules.join_dataframes.output.presence,
-        lofs = rules.join_dataframes.output.lofs,
-        nmds = rules.join_dataframes.output.nmds,
-        cds = expand(DATASET_OUTDIR / "database" / "{sample}" / "cds.done", sample=SAMPLES),
-        prots = expand(DATASET_OUTDIR / "database" / "{sample}" / "prots.done", sample=SAMPLES),
+        effects = rules.join_variant_annotation.output.effects,
+        variants = rules.join_variant_annotation.output.variants,
+        presence = rules.join_variant_annotation.output.presence,
+        lofs = rules.join_variant_annotation.output.lofs,
+        nmds = rules.join_variant_annotation.output.nmds,
+        seqs = rules.join_sequences.output
     output:
         DATASET_OUTDIR / "database.db"
-    params:
-        sequences = DATASET_OUTDIR / "sequences.db"
     conda:
         "../envs/variants.yaml"
     log:
@@ -156,5 +126,5 @@ rule complete_db:
         "-p {input.presence} "
         "-l {input.lofs} "
         "-n {input.nmds} "
-        "-s {params.sequences} "
+        "-s {input.seqs} "
         "-o {output} &> {log}"
