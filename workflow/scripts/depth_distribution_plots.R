@@ -7,10 +7,11 @@ suppressPackageStartupMessages(library(RColorBrewer))
 suppressPackageStartupMessages(library(scales))
 
 print("Reading files and joining data with chromosome names")
-# setwd("./results/samples/samtools/SRS8318899")
-# cov<- read.delim("distrib_cov.tsv", header = TRUE, stringsAsFactors = TRUE)
-# chrom_names <- read.csv("../../../../config/chromosome_names.csv", header = FALSE, col.names = c("Lineage", "Accession", "Chromosome"))
-# sample <- "/mnt/FastData/czirion/DiversityPipeline/results/samples/samtools/SRS8318899/distrib_cov.csv"
+# setwd("./results/samples/samtools/SRS17145125")
+# cov<- read.delim("depth_distribution.tsv", header = TRUE, stringsAsFactors = TRUE)
+# chrom_names <- read.csv("../../../../config/chromosome_names.csv", header = TRUE, col.names = c("Lineage", "Accession", "Chromosome"))
+# sample <- "SRS17145125"
+# global_mode <- read.delim("global_mode.tsv", header = TRUE, stringsAsFactors = TRUE)
 sample <- snakemake@wildcards$sample
 cov<- read.table(snakemake@input[[1]], header = TRUE, stringsAsFactors = TRUE, sep = "\t")
 global_mode <- read.delim(snakemake@input[[2]], header = TRUE, stringsAsFactors = TRUE)
@@ -24,6 +25,10 @@ chrom_names <- chrom_names %>%
 chrom_names['Accession_Chromosome'] <- paste(chrom_names$Chromosome, chrom_names$Accession, sep = "xxx")
 unique_levels <- unique(chrom_names$Accession_Chromosome)
 new_order <- c(rbind(matrix(unique_levels, nrow = 2, byrow = TRUE)))
+# If unique levels is an odd number, the last element is removed
+if (length(unique_levels) %% 2 != 0){
+  new_order <- new_order[-length(new_order)]
+}
 chrom_names$Accession_Chromosome <- factor(chrom_names$Accession_Chromosome, levels = new_order)
 
 cov <- left_join(cov, chrom_names, by = "Accession")

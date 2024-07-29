@@ -27,6 +27,10 @@ chrom_names <- chrom_names %>%
 chrom_names['Accession_Chromosome'] <- paste(chrom_names$Chromosome, chrom_names$Accession, sep = "xxx")
 unique_levels <- unique(chrom_names$Accession_Chromosome)
 new_order <- c(rbind(matrix(unique_levels, nrow = 2, byrow = TRUE)))
+# If unique levels is an odd number, the last element is removed
+if (length(unique_levels) %% 2 != 0){
+  new_order <- new_order[-length(new_order)]
+}
 chrom_names$Accession_Chromosome <- factor(chrom_names$Accession_Chromosome, levels = new_order)
 
 coverage_regions <- left_join(coverage_regions, chrom_names, by = "Accession")
