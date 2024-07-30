@@ -1,5 +1,5 @@
 # =================================================================================================
-#   Per dataset | Join depth by chrom and mapping stats and plot summary
+#   Per dataset | Join depth by chrom and mapping stats 
 # =================================================================================================
 
 rule join_depth_by_chrom_raw:
@@ -47,6 +47,10 @@ rule join_mapping_stats:
         rm {output}.temp
         """
 
+# =================================================================================================
+#   Per dataset | Plot dataset mapping quality and depth summary
+# =================================================================================================
+
 rule dataset_summary_plot:  
     input:
         SAMPLEFILE,
@@ -66,28 +70,14 @@ rule dataset_summary_plot:
         "../scripts/dataset_summary_plot.R"
 
 # =================================================================================================
-#   Per dataset | Join normalized depth by chrom and plot
+#   Per dataset | Plot normalized chromosome depth of all samples
 # =================================================================================================
-rule join_depth_by_chrom_normalized:
-    input:
-        expand(OUTDIR / "mosdepth" / "{sample}" / "depth_by_chrom_good_normalized.tsv",sample=SAMPLES),
-    output:
-        DATASET_OUTDIR / "files" / "depth_by_chrom_good_normalized.tsv",
-    log:
-        "logs/dataset/files/join_depth_by_chrom_good_normalized.log"
-    shell:
-        """
-        head -q -n 1 {input} 1> {output}.temp 2>> {log}
-        head -n 1 {output}.temp 1> {output} 2>> {log}
-        tail -q -n +2 {input} 1>> {output} 2>> {log}
-        rm {output}.temp
-        """
 
 rule dataset_depth_by_chrom_plot:
     input:
         SAMPLEFILE,
         CHROM_NAMES,
-        rules.join_depth_by_chrom_normalized.output
+        rules.join_depth_by_chrom_good.output
     output:
         DATASET_OUTDIR / "plots" / "dataset_depth_by_chrom.png"
     conda:

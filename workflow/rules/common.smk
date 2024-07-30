@@ -81,7 +81,6 @@ def get_final_output():
         final_output.extend(expand(OUTDIR / "mosdepth" / "{sample}" / "depth_by_regions.tsv",sample=SAMPLES))
         final_output.extend(expand(OUTDIR / "mosdepth" / "{sample}" / "depth_by_chrom_good.tsv",sample=SAMPLES))
         final_output.extend(expand(OUTDIR / "mosdepth" / "{sample}" / "depth_by_chrom_raw.tsv",sample=SAMPLES))
-        final_output.extend(expand(OUTDIR / "mosdepth" / "{sample}" / "depth_by_chrom_good_normalized.tsv",sample=SAMPLES))
         final_output.extend(expand(OUTDIR / "samtools" / "{sample}" / "mapping_stats.tsv",sample=SAMPLES))
         final_output.extend(expand(OUTDIR / "samtools" / "{sample}" / "feature_mapq_depth.tsv",sample=SAMPLES))
         final_output.extend(expand(OUTDIR / "cnv" / "{sample}" / "cnv_calls.tsv",sample=SAMPLES))

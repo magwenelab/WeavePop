@@ -46,34 +46,6 @@ rule mosdepth_good:
         "&> {log}"
 
 # =================================================================================================
-#   Per sample | Get depth by chromosome raw and good
-# =================================================================================================
-
-rule depth_by_chrom_raw:
-    input:
-        rules.mosdepth.output.bed
-    output:
-        OUTDIR / "mosdepth" / "{sample}" / "depth_by_chrom_raw.tsv"
-    conda: 
-        "../envs/samtools.yaml"
-    log:
-        "logs/samples/mosdepth/depth_by_chrom_raw_{sample}.log"
-    shell:
-        "xonsh workflow/scripts/depth_by_chrom.xsh -b {input} -o {output} -s {wildcards.sample} &> {log}"
-
-rule depth_by_chrom_good:
-    input:
-        rules.mosdepth_good.output.bed
-    output:
-        OUTDIR / "mosdepth" / "{sample}" / "depth_by_chrom_good.tsv"
-    conda: 
-        "../envs/samtools.yaml"
-    log:
-        "logs/samples/mosdepth/depth_by_chrom_good_{sample}.log"
-    shell:
-        "xonsh workflow/scripts/depth_by_chrom.xsh -b {input} -o {output} -s {wildcards.sample} &> {log}"
-
-# =================================================================================================
 #   Per sample | Get distribution and global mode fo depth (genome-wide depth to normalize)
 # =================================================================================================
 
@@ -115,21 +87,38 @@ rule depth_distribution:
         "xonsh workflow/scripts/depth_distribution.xsh -s {wildcards.sample} -b {input.bam} -g {input.bam_good} -do {output.distrib} -go {output.global_mode} &> {log}"
 
 # =================================================================================================
-#   Per sample | Normalize depth by chromosome and by region
+#   Per sample | Get depth by chromosome raw and good
 # =================================================================================================
 
-rule depth_by_chrom_normalized:
+rule depth_by_chrom_raw:
     input:
-        depth = rules.depth_by_chrom_good.output,
-        global_mode = rules.depth_distribution.output.global_mode
+        bed = rules.mosdepth.output.bed
     output:
-        OUTDIR / "mosdepth" / "{sample}" / "depth_by_chrom_good_normalized.tsv"
+        OUTDIR / "mosdepth" / "{sample}" / "depth_by_chrom_raw.tsv"
     conda: 
         "../envs/samtools.yaml"
     log:
-        "logs/samples/mosdepth/depth_by_chrom_good_normalized_{sample}.log"
+        "logs/samples/mosdepth/depth_by_chrom_raw_{sample}.log"
     shell:
-        "xonsh workflow/scripts/depth_by_chrom_normalized.xsh -d {input.depth} -g {input.global_mode} -o {output} &> {log}"
+        "python workflow/scripts/depth_by_chrom.py -b {input.bed} -o {output} -s {wildcards.sample} &> {log}"
+
+rule depth_by_chrom_good:
+    input:
+        bed = rules.mosdepth_good.output.bed,
+        global_mode = rules.depth_distribution.output.global_mode
+    output:
+        OUTDIR / "mosdepth" / "{sample}" / "depth_by_chrom_good.tsv"
+    conda: 
+        "../envs/samtools.yaml"
+    log:
+        "logs/samples/mosdepth/depth_by_chrom_good_{sample}.log"
+    shell:
+        "python workflow/scripts/depth_by_chrom.py -b {input.bed} -g {input.global_mode} -o {output} -s {wildcards.sample} &> {log}"
+
+
+# =================================================================================================
+#   Per sample | Normalize depth and by region
+# =================================================================================================
 
 rule depth_by_regions:
     input:
@@ -145,6 +134,7 @@ rule depth_by_regions:
         "logs/samples/mosdepth/depth_by_regions_{sample}.log"
     shell:
         "xonsh workflow/scripts/depth_by_regions.xsh -di {input.depth} -gi {input.global_mode} -do {output} -s {params.smoothing_size} &> {log}"
+
 
 # =================================================================================================
 #   Per lineage | Run RepeatModeler and RepeatMasker
@@ -216,15 +206,20 @@ rule cnv_calling:
 rule mapping_stats:
     input:
         bam = rules.snippy.output.bam,
-        bai = rules.snippy.output.bai
+        bai = rules.snippy.output.bai,
+        global_mode = rules.depth_distribution.output.global_mode
     output:
         OUTDIR / "samtools" / "{sample}" / "mapping_stats.tsv"
+    params:
+        min_depth = config["coverage_quality"]["flag_quality"]["min_percent_genome-wide_depth"],
+        min_mapq = config["coverage_quality"]["flag_quality"]["min_percent_MAPQ"],    
+        min_pp= config["coverage_quality"]["flag_quality"]["min_percent_properly_paired_reads"],
     conda:
         "../envs/samtools.yaml"
     log:
         "logs/samples/samtools/mapping_stats_{sample}.log"
     shell:
-        "xonsh workflow/scripts/mapping_stats.xsh -b {input.bam} -s {wildcards.sample} -o {output} &> {log}"
+        "xonsh workflow/scripts/mapping_stats.xsh -b {input.bam} -s {wildcards.sample} -m {input.global_mode} -d {params.min_depth} -q {params.min_mapq} -p {params.min_pp} -o {output} &> {log}"
 
 # =================================================================================================
 #   Per sample | Get mean MAPQ by region

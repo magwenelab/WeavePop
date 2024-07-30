@@ -46,6 +46,10 @@ coverage_quality:
     window: 500 # Window size for mosdepth
     min_mapq: 20 # Minimum mapping quality for mosdepth
     extra: ""
+  flag_quality: # Minimum values for a sample to be considered to have a good quality read mapping
+    min_percent_genome-wide_depth: 2 # Minimum percentage of genome-wide depth (Global mode)
+    min_percent_properly_paired_reads: 25 # Minimum percentage of properly paired mapped reads
+    min_percent_MAPQ: 80 # Minimum percentage of reads with MAPQ = 60
   cnv:
     smoothing_size: 15 # Parameter for median filtering smoothing of the coverage
     depth_threshold: 0.6 # Minimum change in coverage for cnv calling

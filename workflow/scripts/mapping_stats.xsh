@@ -8,9 +8,13 @@ import os
 @click.command()
 @click.option("-s", "--sample", type=str, help="Sample name")
 @click.option("-b", "--bamfile", type=click.Path(exists=True), help="Input BAM file")
-@click.option("-o", "--mapped_out", type=click.Path(), help="Output file with mapped reads metrics")
+@click.option("-m", "--global_mode", type=click.Path(), help="Path to table with global mode of the sample")
+@click.option("-d", "--min_depth", type=int, help="Minimum percentage of genome-wide depth (Global mode)")
+@click.option("-q", "--min_mapq", type=int, help="Minimum percentage of MAPQ 60")
+@click.option("-p", "--min_pp", type=int, help="Minimum percentage of properly paired reads")
+@click.option("-o", "--output", type=click.Path(), help="Output file with mapped reads metrics")
 
-def stats(sample, bamfile,  mapped_out):
+def stats(sample, bamfile,  global_mode,min_depth, min_mapq, min_pp, output):
     chromosomes = $(samtools idxstats @(bamfile) | cut -f1 | grep -v "*")
     chromosomes = pd.Series(list(filter(None, chromosomes.split("\n"))))
 
@@ -33,7 +37,7 @@ def stats(sample, bamfile,  mapped_out):
     quality['MAPQ'] = quality['MAPQ'].astype(int)
     quality['Count'] = quality['Count'].astype(int)
     quality['MAPQ_20'] = pd.cut(quality['MAPQ'], bins=[-1, 19, 59, 100], labels=['MAPQ_20', 'MAPQ_20_59', 'MAPQ_60'])
-    quality_sum = quality.groupby(['MAPQ_20']).agg({'Count': 'sum'}).reset_index()
+    quality_sum = quality.groupby(['MAPQ_20'], observed=False).agg({'Count': 'sum'}).reset_index()
     quality_sum.rename(columns={'Count': 'Count_bins'}, inplace=True)
     quality_sum['sample'] = sample
     quality_sum = quality_sum.round(2)
@@ -68,8 +72,25 @@ def stats(sample, bamfile,  mapped_out):
     stats_wider['percent_20_59'] = stats_wider['MAPQ_20_59'] / stats_wider['reads_mapped'] * 100
     stats_wider['percent_60'] = stats_wider['MAPQ_60'] / stats_wider['reads_mapped'] * 100
     stats_wider = stats_wider.round(2)
+
+    print("Joining mapped reads metrics with global mode")
+    global_mode = pd.read_csv(global_mode, sep = "\t", header = 0, names = ["sample", "genome-wide_depth"])
+    stats_wider = pd.merge(stats_wider, global_mode, on = 'sample', how = 'outer')
+
+    print("Adding quality warning flag")
+    stats_wider['mapq_warning'] = stats_wider.apply(lambda row: "MAPQ-Low" if row['percent_60'] < min_mapq else None, axis=1)
+    stats_wider['pp_warning'] = stats_wider.apply(lambda row: "Properly-paired-Low" if row['percent_properly_paired'] < min_pp else None, axis=1)
+    stats_wider['depth_warning'] = stats_wider.apply(lambda row: "Depth-Low" if row['genome-wide_depth'] <= min_depth else None, axis=1)
+    print(stats_wider)
+
+    print("Joining warnings")
+
+    stats_wider['quality_warning'] = stats_wider[['mapq_warning', 'pp_warning', 'depth_warning']].apply(lambda x: '_'.join(x.dropna()), axis=1)
+    stats_wider = stats_wider.drop(columns = ['mapq_warning', 'pp_warning', 'depth_warning'])
+    
+
     print("Saving mapped reads metrics")
-    stats_wider.to_csv(mapped_out, index=False, sep = "\t")
+    stats_wider.to_csv(output, index=False, sep = "\t")
 if __name__ == "__main__":
         stats() 
 
