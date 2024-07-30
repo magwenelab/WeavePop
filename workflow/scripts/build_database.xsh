@@ -21,7 +21,7 @@ import sqlite3
 @click.option('--sequences', '-s', type=click.Path(), help='Path to the sequences table.')
 @click.option('--output', '-o', type=click.Path(), help='Output database file.')
 
-def build_db(metadata, chrom_names, struc_vars, mapq_depth, gff, effects, variants, presence, lofs, nmds, sequences_db, output):
+def build_db(metadata, chrom_names, struc_vars, mapq_depth, gff, effects, variants, presence, lofs, nmds, sequences, output):
     print("Using the following arguments:")
     print(f"1. metadata: {metadata}")
     print(f"2. chrom_names: {chrom_names}")
@@ -33,7 +33,7 @@ def build_db(metadata, chrom_names, struc_vars, mapq_depth, gff, effects, varian
     print(f"8. presence: {presence}")
     print(f"9. lofs: {lofs}")
     print(f"10. nmds: {nmds}")
-    print(f"11. sequences_db: {sequences_db}")
+    print(f"11. sequences: {sequences}")
     print(f"12. output: {output}")
     
     print("Reading and adjusting dataset files")
@@ -117,7 +117,7 @@ def build_db(metadata, chrom_names, struc_vars, mapq_depth, gff, effects, varian
     df_nmds = pd.read_csv(nmds, header = 0, sep='\t')
     print("Nonsense-mediated decay table done!")
 
-    df_sequences = pd.read_csv("results_2/dataset/sequences.csv")
+    df_sequences = pd.read_csv(sequences, header = 0, sep=',')
     print("Sequences table done!")
 
     print("Formatting dataframes done!")
