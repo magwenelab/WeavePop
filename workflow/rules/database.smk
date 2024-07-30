@@ -5,7 +5,7 @@ rule join_gffs:
     input:
         expand(REFDIR / "{lineage}" / "{lineage}.gff.tsv", lineage=LINEAGES)
     output:
-        REFDIR / "all.gff.tsv"
+        REFDIR / "all_lineages.gff.tsv"
     log:
         "logs/references/join_gffs.log"
     shell:
@@ -33,11 +33,11 @@ rule join_sequences:
 
 rule join_mapq_depth:
     input:
-        expand(OUTDIR / "samtools" / "{sample}" / "feature_mapq_depth.tsv",sample=SAMPLES)
+        expand(OUTDIR / "depth_quality" / "{sample}" / "feature_mapq_depth.tsv",sample=SAMPLES)
     output:
-        DATASET_OUTDIR / "files" / "feature_mapq_depth.tsv"
+        DATASET_OUTDIR / "depth_quality" / "feature_mapq_depth.tsv"
     log:
-        "logs/dataset/files/join_mapq_depth.log"
+        "logs/dataset/depth_quality/join_mapq_depth.log"
     shell:
         """
         head -q -n 1 {input} 1> {output}.temp 2>> {log}
@@ -54,9 +54,9 @@ rule join_cnv_calling:
     input:
         expand(OUTDIR / "cnv" / "{sample}" / "cnv_calls.tsv",sample=SAMPLES),
     output:
-        DATASET_OUTDIR / "files" / "cnv_calls.tsv",
+        DATASET_OUTDIR / "cnv" / "cnv_calls.tsv",
     log:
-        "logs/dataset/files/join_cnv_calls.log"
+        "logs/dataset/cnv/join_cnv_calls.log"
     shell:
         """
         head -q -n 1 {input} 1> {output}.temp 2>> {log}

@@ -7,7 +7,7 @@ rule loci:
         refs = expand(REFDIR / "{lineage}" / "{lineage}.gff.tsv", lineage=LINEAGES),
         loci = LOCI_FILE
     output:
-        locitable = DATASET_OUTDIR / "files"/ "loci_to_plot.tsv"
+        locitable = REFDIR/ "loci_to_plot.tsv"
     log: 
         "logs/dataset/files/loci.log"
     shell:
@@ -53,7 +53,7 @@ rule depth_by_chrom_plots:
 def depth_by_regions_plots_input(wildcards):
     s = SAMPLE_REFERENCE.loc[wildcards.sample,]
     return {
-        "depth": OUTDIR / "mosdepth" / s["sample"]  / "depth_by_regions.tsv",
+        "depth": OUTDIR / "depth_quality" / s["sample"]  / "depth_by_regions.tsv",
         "cnv": OUTDIR / "cnv" / s["sample"] / "cnv_calls.tsv",
         "repeats": REFDIR / s["lineage"]  / "repeats" / (s["lineage"] + "_repeats.bed")
     }
@@ -74,7 +74,7 @@ rule depth_by_regions_plots:
 def mapq_plot_input(wildcards):
     s = SAMPLE_REFERENCE.loc[wildcards.sample,]
     return {
-        "mapq": OUTDIR / "samtools" / s["sample"] / "mapq_window.bed",
+        "mapq": OUTDIR / "depth_quality" / s["sample"] / "mapq_region.bed",
         "structure": OUTDIR / "cnv" / s["sample"] / "cnv_calls.tsv",
         "repeats": REFDIR / s["lineage"]  / "repeats" / (s["lineage"] + "_repeats.bed")
     }

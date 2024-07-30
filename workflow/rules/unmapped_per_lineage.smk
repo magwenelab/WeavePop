@@ -8,7 +8,7 @@ rule unmapped_samples_plot:
         expand(rules.fix_gff_tsv.output.tsv, lineage=LINEAGES),
         expand(rules.liftoff.output.unmapped, sample=SAMPLES)        
     output:
-        expand(DATASET_OUTDIR / "files" / "{lineage}_unmapped_count.tsv", lineage=LINEAGES),
+        expand(DATASET_OUTDIR / "liftoff" / "{lineage}_unmapped_count.tsv", lineage=LINEAGES),
         expand(DATASET_OUTDIR / "plots" / "{lineage}_unmapped.svg", lineage=LINEAGES)
     conda:
         "../envs/r.yaml"
@@ -16,7 +16,7 @@ rule unmapped_samples_plot:
         dir = REFDIR,
         sampledir = OUTDIR / "liftoff",
         datasetplots = DATASET_OUTDIR / "plots",
-        datasetfiles = DATASET_OUTDIR / "files"
+        datasetfiles = DATASET_OUTDIR / "liftoff"
     log:
         "logs/datset/plots/unmapped_samples_plot.log"
     script:

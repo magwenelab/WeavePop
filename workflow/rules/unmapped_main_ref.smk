@@ -8,14 +8,14 @@ rule unmapped_ref_features:
         rules.fix_gff_tsv.output.tsv,
         expand(rules.ref2ref_liftoff.output.unmapped, lineage=LINEAGES)        
     output:
-        REFDIR / "unmapped_count.tsv",
-        REFDIR / "unmapped.svg"
+        REFDIR / "lifotff" / "unmapped_count.tsv",
+        REFDIR / "lifotff" / "unmapped.svg"
     conda:
         "../envs/r.yaml"
     params:
         refdir = REFDIR
     log:
-        "logs/references/unmapped_ref_features.log"
+        "logs/references/lifotff/unmapped_ref_features.log"
     script:
         "../scripts/unmapped_features_refs.R"
 
@@ -29,7 +29,7 @@ rule unmapped_samples_plot:
         rules.fix_gff_tsv.output.tsv,
         expand(rules.liftoff.output.unmapped, sample=SAMPLES)        
     output:
-        DATASET_OUTDIR / "files" / "unmapped_count.tsv",
+        DATASET_OUTDIR / "liftoff" / "unmapped_count.tsv",
         DATASET_OUTDIR / "plots" / "unmapped.svg"
     conda:
         "../envs/r.yaml"
