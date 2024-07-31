@@ -17,27 +17,42 @@ configfile: "config/config.yaml"
 
 include: "rules/common.smk"
 include: "rules/main.smk"
-include: "rules/depth.smk"
-include: "rules/snps.smk"
+include: "rules/quality.smk"
 
-
+# ------------------Reference annotation rules-----------------------------------------------------
 if config["annotate_references"]["activate"]:
     include: "rules/references.smk"
+    if config["plotting"]["activate"]:
+        include: "rules/unmapped_main_ref.smk"
 
 if not config["annotate_references"]["activate"]:
     include: "rules/lineage_gffs.smk"
+    if config["plotting"]["activate"]:
+        include: "rules/unmapped_per_lineage.smk"
 
-if config["plotting"]["activate"] and config["annotate_references"]["activate"]:
-    include: "rules/unmapped_main_ref.smk"
-
-if config["plotting"]["activate"] and not config["annotate_references"]["activate"]:
-    include: "rules/unmapped_per_lineage.smk"
-
+# ------------------Module rules-------------------------------------------------------------------
 if config["plotting"]["activate"]:
     include: "rules/plots.smk"
-    include: "rules/dataset_plots.smk"
+
+if config["cnv"]["activate"]:
+    include: "rules/cnv.smk"
+
+if config["genes_mapq_depth"]["activate"]:
+    include: "rules/genes_mapq_depth.smk"
+
+if config["snpeff"]["activate"]:
+    include: "rules/snps.smk"
+
+if config["dataset"]["activate"]:
+    include: "rules/dataset_quality.smk"
+    include: "rules/database.smk"
+    if config["plotting"]["activate"]:
+        include: "rules/dataset_plots.smk"
 
 if config["database"]["activate"]:
+    include: "rules/cnv.smk"
+    include: "rules/snps.smk"
+    include: "rules/genes_mapq_depth.smk"
     include: "rules/database.smk"
 
 # =================================================================================================

@@ -38,7 +38,6 @@ annotate_references:
     extra: ""
 
 # ------------------Depth and quality analyses-----------------------------------------------------
-
 depth_quality: 
   activate: True
   mosdepth: 
@@ -53,7 +52,7 @@ depth_quality:
 
 # ------------------Copy-number variant calling----------------------------------------------------
 cnv:
-  activate: True
+  activate: 
   smoothing_size: 15 # Parameter for median filtering smoothing of the coverage
   depth_threshold: 0.6 # Minimum change in coverage for cnv calling
   repeats:
@@ -61,10 +60,13 @@ cnv:
     repeats_threads: 20
     repeats_fraction: 0.5 # Fraction of repetitive bases allowed for calculating global coverage
 
-# ------------------Variant annotation-------------------------------------------------------------
+# ------------------MAPQ and Depth of genetic features---------------------------------------------
+genes_mapq_depth:
+  activate: 
 
+# ------------------Variant annotation-------------------------------------------------------------
 snpeff:
-  activate: True
+  activate:
   extra: ""
 
 # ------------------Plotting-----------------------------------------------------------------------
@@ -74,8 +76,11 @@ plotting:
   metadata2color : "isolation_source" # Column name in the samples table to color the samples in the plots
   scale : 0.7 # Ggsave scale parameter to adjust the size of the dataset plots. Use lower values for fewer samples and bigger values for more samples.
 
-# ------------------Database-----------------------------------------------------------------------
+# ------------------Join sample results into dataset-wide files------------------------------------
+dataset: 
+  activate: 
 
+# ------------------Database-----------------------------------------------------------------------
 database:
   activate: True
 
