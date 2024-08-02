@@ -66,7 +66,7 @@ map_stats <- read.table(snakemake@input[[5]], header = TRUE, stringsAsFactors = 
 
 map_stats_metad <- merge(map_stats, metadata, by = "sample")
 stats_metad <- map_stats_metad %>%
-    select(sample, name, lineage, strain, percent_only_mapped, percent_unmapped, percent_properly_paired, percent_20, percent_20_59, percent_60)
+    select(sample, name, lineage, strain, percent_only_mapped, percent_unmapped, percent_properly_paired, percent_low_mapq, percent_inter_mapq, percent_high_mapq)
 
 stats_long <- stats_metad %>%
     pivot_longer(cols = -c(sample, name, lineage, strain), names_to = "Metric", values_to = "Value")
@@ -78,9 +78,9 @@ stats_reads$Metric <- factor(stats_reads$Metric, levels = c("percent_unmapped", 
                               labels = c("Unmapped", "Mapped", "Mapped and properly paired"))
 
 stats_qualit <- stats_long %>%
-    filter(Metric %in% c("percent_20", "percent_20_59", "percent_60"))
-stats_qualit$Metric <- factor(stats_qualit$Metric, levels = c("percent_20","percent_20_59","percent_60"),
-                              labels = c("MAPQ < 20", "MAPQ 20 - 59", "MAPQ 60"))
+    filter(Metric %in% c("percent_low_mapq", "percent_inter_mapq", "percent_high_mapq"))
+stats_qualit$Metric <- factor(stats_qualit$Metric, levels = c("percent_low_mapq","percent_inter_mapq","percent_high_mapq"),
+                              labels = c("Low MAPQ", "Intermediate MAPQ", "High MAPQ"))
 
 palette_reads <- brewer.pal(n = length(unique(stats_reads$Metric)), name = "BuPu")
 palette_qualit <- brewer.pal(n = length(unique(stats_qualit$Metric)), name = "BuGn")

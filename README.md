@@ -239,7 +239,6 @@ The environments for particular software used in Snakemake rules are installed b
 | results/references/{lineage}/{lineage}.gff.tsv
 | results/references/unmapped.svg
 
-
 <details>
 <summary> Intermediate files </summary> 
 
@@ -261,14 +260,6 @@ The environments for particular software used in Snakemake rules are installed b
 | results/references/{main_reference}.gff
 | results/references/{main_reference}.tsv
 | results/references/unmapped_count.tsv
-
-
-
-
-
-
-
-
 
 </details>
 

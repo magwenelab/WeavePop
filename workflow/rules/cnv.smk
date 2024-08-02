@@ -5,7 +5,7 @@
 rule depth_by_regions:
     input:
         depth = rules.mosdepth_good.output.bed,
-        global_mode = rules.depth_distribution.output.global_mode
+        global_mode = OUTDIR / "depth_quality" / "{sample}" / "global_mode.tsv"
     output:
         OUTDIR / "depth_quality" / "{sample}" / "depth_by_regions.tsv"
     conda:

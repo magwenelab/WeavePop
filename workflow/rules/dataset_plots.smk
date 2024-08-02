@@ -5,8 +5,8 @@
 
 rule dataset_summary_plot:  
     input:
-        SAMPLEFILE,
-        CHROM_NAMES,
+        GENERAL_OUTPUT / "metadata.csv",
+        rules.copy_config.output.c,
         rules.join_depth_by_chrom_good.output,
         rules.join_depth_by_chrom_raw.output,
         rules.join_mapping_stats.output
@@ -27,8 +27,8 @@ rule dataset_summary_plot:
 
 rule dataset_depth_by_chrom_plot:
     input:
-        SAMPLEFILE,
-        CHROM_NAMES,
+        GENERAL_OUTPUT / "metadata.csv",
+        rules.copy_config.output.c,
         rules.join_depth_by_chrom_good.output
     output:
         DATASET_OUTDIR / "plots" / "dataset_depth_by_chrom.png"

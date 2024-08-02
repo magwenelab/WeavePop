@@ -21,7 +21,7 @@ references:
 samples: "config/sample_metadata.csv" # Relative path to metadata CSV table.
 chromosomes: "config/chromosome_names.csv" # Relative path to chromosome names CSV table.
 species_name: "Cryptococcus_neoformans" 
-
+samples_to_exclude: # Optional: File with list of samples to exclude from all analyses.
 # ------------------Output-------------------------------------------------------------------------
 
 output_directory: "results_1" # Name for the output directory
@@ -39,20 +39,23 @@ annotate_references:
 
 # ------------------Depth and quality analyses-----------------------------------------------------
 depth_quality: 
-  activate: True
   mosdepth: 
     threads: 12  
     window: 500 # Window size for mosdepth
     min_mapq: 20 # Minimum mapping quality for mosdepth
     extra: ""
   flag_quality: # Minimum values for a sample to be considered to have a good quality read mapping
+    low_MAPQ_threshold: 20 # Threshold for low MAPQ reads
+    high_MAPQ_threshold: 60 # Threshold for high MAPQ reads
+    min_percent_MAPQ: 93 # Minimum percentage of reads in the high MAPQ bin
     min_percent_genome-wide_depth: 2 # Minimum percentage of genome-wide depth (Global mode)
     min_percent_properly_paired_reads: 25 # Minimum percentage of properly paired mapped reads
-    min_percent_MAPQ: 80 # Minimum percentage of reads with MAPQ = 60
+
+    # Exclude samples
 
 # ------------------Copy-number variant calling----------------------------------------------------
 cnv:
-  activate: 
+  activate: True
   smoothing_size: 15 # Parameter for median filtering smoothing of the coverage
   depth_threshold: 0.6 # Minimum change in coverage for cnv calling
   repeats:
@@ -62,11 +65,11 @@ cnv:
 
 # ------------------MAPQ and Depth of genetic features---------------------------------------------
 genes_mapq_depth:
-  activate: 
+  activate: True
 
 # ------------------Variant annotation-------------------------------------------------------------
 snpeff:
-  activate:
+  activate: True
   extra: ""
 
 # ------------------Plotting-----------------------------------------------------------------------
@@ -78,7 +81,7 @@ plotting:
 
 # ------------------Join sample results into dataset-wide files------------------------------------
 dataset: 
-  activate: 
+  activate: True
 
 # ------------------Database-----------------------------------------------------------------------
 database:

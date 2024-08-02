@@ -1,41 +1,20 @@
+
 # =================================================================================================
-# Per sample | Run Snippy to map reads to reference genome, get assembly and call SNPs
+#   Tables for sample-dependent input files 
 # =================================================================================================
 
-def snippy_input(wildcards):
-    s = SAMPLE_REFERENCE.loc[wildcards.sample,]
-    return {
-        "fq1": FQ_DATA / (s["sample"] + FQ1),
-        "fq2": FQ_DATA / (s["sample"] + FQ2),
-        "refgenome": s["refgenome"],
-    }
+def get_filtered_sample_reference():
+    filtered_output = rules.quality_filter.output.metadata
+    filtered_table = pd.read_csv(filtered_output, header=0)
+    d={'sample': filtered_table["sample"],
+        'lineage': filtered_table["lineage"],
+        'refgenome': REFDIR / filtered_table["lineage"] / (filtered_table["lineage"] + ".fasta"),
+        'refgff': REFDIR / filtered_table["lineage"] / (filtered_table["lineage"] + ".gff")}
+    SAMPLE_REFERENCE = pd.DataFrame(data=d).set_index("sample", drop=False)
+    LINEAGE_REFERENCE = pd.DataFrame(data=d).set_index("lineage", drop=False)
+    return SAMPLE_REFERENCE, LINEAGE_REFERENCE
 
-rule snippy:
-    input:
-        unpack(snippy_input)
-    output:
-        fa = OUTDIR / "snippy" / "{sample}" / "snps.consensus.fa",
-        bam = OUTDIR / "snippy" / "{sample}" / "snps.bam",
-        ref = OUTDIR / "snippy" / "{sample}" / "ref.fa",
-        bai = OUTDIR / "snippy" / "{sample}" / "snps.bam.bai",
-        vcf = OUTDIR / "snippy" / "{sample}" / "snps.vcf.gz"
-    threads: 
-        config["snippy"]["threads"]
-    params:
-        outpath = OUTDIR / "snippy",
-        extra = config["snippy"]["extra"]
-    conda:
-        "../envs/snippy.yaml"
-    log:
-        "logs/samples/snippy/snippy_{sample}.log"
-    shell:
-        "snippy --outdir {params.outpath}/{wildcards.sample} "
-        "--cpus {threads} "
-        "--ref {input.refgenome} "
-        "--R1 {input.fq1} "
-        "--R2 {input.fq2} "
-        "--force "
-        "{params.extra} &> {log}"
+SAMPLE_REFERENCE, LINEAGE_REFERENCE = get_filtered_sample_reference()
 
 # =================================================================================================
 # Per sample | Run Liftoff to annotate the assembly with the coresponding reference genome
@@ -89,7 +68,7 @@ rule liftoff:
 rule agat_cds:
     input:
         gff = rules.liftoff.output.polished,
-        fa = rules.snippy.output.fa,
+        fa = OUTDIR / "snippy" / "{sample}" / "snps.consensus.fa",
         config = rules.agat_config.output
     output:
         cds = OUTDIR / "agat" / "{sample}" / "cds.fa",
@@ -111,7 +90,7 @@ rule agat_cds:
 rule agat_prots:
     input:
         gff = rules.liftoff.output.polished,
-        fa = rules.snippy.output.fa,
+        fa = OUTDIR / "snippy" / "{sample}" / "snps.consensus.fa",
         config = rules.agat_config.output,
         cds = rules.agat_cds.output.cds
     output:

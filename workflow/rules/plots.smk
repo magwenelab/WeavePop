@@ -5,9 +5,9 @@
 rule loci:
     input:
         refs = expand(REFDIR / "{lineage}" / "{lineage}.gff.tsv", lineage=LINEAGES),
-        loci = LOCI_FILE
+        loci = rules.copy_config.output.l
     output:
-        locitable = REFDIR/ "loci_to_plot.tsv"
+        locitable = REFDIR / "loci_to_plot.tsv"
     log: 
         "logs/dataset/files/loci.log"
     shell:
@@ -19,9 +19,9 @@ rule loci:
 
 rule depth_distribution_plots:
     input:
-        rules.depth_distribution.output.distrib,
-        rules.depth_distribution.output.global_mode,
-        CHROM_NAMES
+        OUTDIR / "depth_quality" / "{sample}" / "depth_distribution.tsv",
+        OUTDIR / "depth_quality" / "{sample}" / "global_mode.tsv",
+        rules.copy_config.output.c
     output:
         OUTDIR / "plots" / "{sample}" / "depth_chrom_distribution.png",
         OUTDIR / "plots" / "{sample}" / "depth_global_distribution.png"

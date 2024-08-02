@@ -76,7 +76,7 @@ rule build_refs_db:
 def intersect_vcfs_input(wildcards):
     l = LINEAGE_REFERENCE.loc[wildcards.lineage,]
     return {
-        "vcfs" : expand(rules.snippy.output.vcf, sample=l["sample"])
+        "vcfs" : expand(OUTDIR / "snippy" / "{sample}" / "snps.vcf", sample=l["sample"])
     }
     
 rule intersect_vcfs:

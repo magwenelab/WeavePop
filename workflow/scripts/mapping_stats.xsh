@@ -9,12 +9,14 @@ import os
 @click.option("-s", "--sample", type=str, help="Sample name")
 @click.option("-b", "--bamfile", type=click.Path(exists=True), help="Input BAM file")
 @click.option("-m", "--global_mode", type=click.Path(), help="Path to table with global mode of the sample")
+@click.option("-l", "--low_mapq", type=int, help="Threshold of low MAPQ bin")
+@click.option("-h", "--high_mapq", type=int, help="Threshold of high MAPQ bin")
 @click.option("-d", "--min_depth", type=int, help="Minimum percentage of genome-wide depth (Global mode)")
-@click.option("-q", "--min_mapq", type=int, help="Minimum percentage of MAPQ 60")
+@click.option("-q", "--min_mapq", type=int, help="Minimum percentage of MAPQ high")
 @click.option("-p", "--min_pp", type=int, help="Minimum percentage of properly paired reads")
 @click.option("-o", "--output", type=click.Path(), help="Output file with mapped reads metrics")
 
-def stats(sample, bamfile,  global_mode,min_depth, min_mapq, min_pp, output):
+def stats(sample, bamfile,  global_mode, low_mapq, high_mapq,min_depth, min_mapq, min_pp, output):
     chromosomes = $(samtools idxstats @(bamfile) | cut -f1 | grep -v "*")
     chromosomes = pd.Series(list(filter(None, chromosomes.split("\n"))))
 
@@ -31,17 +33,17 @@ def stats(sample, bamfile,  global_mode,min_depth, min_mapq, min_pp, output):
     print("Concatenating MAPQ distribution of all chromosomes")
     quality = pd.concat(out_mapq)
     quality = quality.dropna()
-    quality.columns = ["Accession", "MAPQ", "Count"]
+    quality.columns = ["Accession", "mapq", "count"]
 
     print("Binning MAPQ values")
-    quality['MAPQ'] = quality['MAPQ'].astype(int)
-    quality['Count'] = quality['Count'].astype(int)
-    quality['MAPQ_20'] = pd.cut(quality['MAPQ'], bins=[-1, 19, 59, 100], labels=['MAPQ_20', 'MAPQ_20_59', 'MAPQ_60'])
-    quality_sum = quality.groupby(['MAPQ_20'], observed=False).agg({'Count': 'sum'}).reset_index()
-    quality_sum.rename(columns={'Count': 'Count_bins'}, inplace=True)
+    quality['mapq'] = quality['mapq'].astype(int)
+    quality['count'] = quality['count'].astype(int)
+    quality['low_mapq'] = pd.cut(quality['mapq'], bins=[-1, (low_mapq -1), (high_mapq -1), 100], labels=['low_mapq', 'intermediate_mapq', 'high_mapq'])
+    quality_sum = quality.groupby(['low_mapq'], observed=False).agg({'count': 'sum'}).reset_index()
+    quality_sum.rename(columns={'count': 'count_bins'}, inplace=True)
     quality_sum['sample'] = sample
     quality_sum = quality_sum.round(2)
-    quality_wider = quality_sum.pivot(index='sample', columns='MAPQ_20', values='Count_bins').reset_index()
+    quality_wider = quality_sum.pivot(index='sample', columns='low_mapq', values='count_bins').reset_index()
 
     print("Getting mapped reads metrics")
     stats = $(samtools stats @(bamfile))
@@ -68,9 +70,9 @@ def stats(sample, bamfile,  global_mode,min_depth, min_mapq, min_pp, output):
     stats_wider['percent_properly_paired'] = stats_wider['reads_properly_paired'] / stats_wider['raw_total_sequences'] * 100
     print("Joining mapped reads metrics with MAPQ metrics")
     stats_wider = pd.merge(stats_wider, quality_wider, on = 'sample', how = 'outer')
-    stats_wider['percent_20'] = stats_wider['MAPQ_20'] / stats_wider['reads_mapped'] * 100
-    stats_wider['percent_20_59'] = stats_wider['MAPQ_20_59'] / stats_wider['reads_mapped'] * 100
-    stats_wider['percent_60'] = stats_wider['MAPQ_60'] / stats_wider['reads_mapped'] * 100
+    stats_wider['percent_low_mapq'] = stats_wider['low_mapq'] / stats_wider['reads_mapped'] * 100
+    stats_wider['percent_inter_mapq'] = stats_wider['intermediate_mapq'] / stats_wider['reads_mapped'] * 100
+    stats_wider['percent_high_mapq'] = stats_wider['high_mapq'] / stats_wider['reads_mapped'] * 100
     stats_wider = stats_wider.round(2)
 
     print("Joining mapped reads metrics with global mode")
@@ -78,7 +80,7 @@ def stats(sample, bamfile,  global_mode,min_depth, min_mapq, min_pp, output):
     stats_wider = pd.merge(stats_wider, global_mode, on = 'sample', how = 'outer')
 
     print("Adding quality warning flag")
-    stats_wider['mapq_warning'] = stats_wider.apply(lambda row: "MAPQ-Low" if row['percent_60'] < min_mapq else None, axis=1)
+    stats_wider['mapq_warning'] = stats_wider.apply(lambda row: "MAPQ-Low" if row['percent_high_mapq'] < min_mapq else None, axis=1)
     stats_wider['pp_warning'] = stats_wider.apply(lambda row: "Properly-paired-Low" if row['percent_properly_paired'] < min_pp else None, axis=1)
     stats_wider['depth_warning'] = stats_wider.apply(lambda row: "Depth-Low" if row['genome-wide_depth'] <= min_depth else None, axis=1)
     print(stats_wider)

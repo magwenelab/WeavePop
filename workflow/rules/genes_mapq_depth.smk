@@ -6,7 +6,7 @@ rule mapq_depth:
         mapqbed = rules.mapq.output.region_bed,
         depthbed = rules.mosdepth.output.bed,
         gff = rules.liftoff.output.polished,
-        mode = rules.depth_distribution.output.global_mode
+        mode = OUTDIR / "depth_quality" / "{sample}" / "global_mode.tsv"
     output:
         depthmapq = OUTDIR / "depth_quality" / "{sample}" / "mapq_depth_region.bed",
         tsv = OUTDIR / "depth_quality" / "{sample}" / "feature_mapq_depth.tsv"

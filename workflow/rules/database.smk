@@ -97,8 +97,8 @@ rule join_variant_annotation:
 # Create the final database
 rule complete_db:
     input:
-        metadata = SAMPLEFILE,
-        chrom_names = CHROM_NAMES,
+        metadata = GENERAL_OUTPUT / "metadata.csv",
+        chrom_names = rules.copy_config.output.c,
         sv = rules.join_cnv_calling.output,
         md = rules.join_mapq_depth.output,
         gffs = rules.join_gffs.output,
