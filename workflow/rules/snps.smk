@@ -73,8 +73,11 @@ rule build_refs_db:
 # =================================================================================================
 #   Join samples per lineage | Intersect VCF files of all samples from each lineage and annotate
 # =================================================================================================
+
 def intersect_vcfs_input(wildcards):
-    l = LINEAGE_REFERENCE.loc[wildcards.lineage,]
+    sample_wildcards = listing_samples(wildcards)
+    l = LINEAGE_REFERENCE[LINEAGE_REFERENCE["sample"].isin(sample_wildcards)] # l = LINEAGE_REFERENCE.query('sample in @sample_wildcards')
+    l = l.loc[wildcards.lineage,]
     return {
         "vcfs" : expand(OUTDIR / "snippy" / "{sample}" / "snps.vcf", sample=l["sample"])
     }

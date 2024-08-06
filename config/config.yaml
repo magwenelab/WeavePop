@@ -76,7 +76,7 @@ snpeff:
 plotting: 
   activate: True
   loci: "config/loci.csv" # Relative path to table with loci to add to plots
-  metadata2color : "isolation_source" # Column name in the samples table to color the samples in the plots
+  metadata2color : "source" # Column name in the samples table to color the samples in the plots
   scale : 0.7 # Ggsave scale parameter to adjust the size of the dataset plots. Use lower values for fewer samples and bigger values for more samples.
 
 # ------------------Join sample results into dataset-wide files------------------------------------

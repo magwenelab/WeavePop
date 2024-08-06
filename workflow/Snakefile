@@ -30,8 +30,8 @@ if config["annotate_references"]["activate"]:
 
 if not config["annotate_references"]["activate"]:
     include: "rules/lineage_gffs.smk"
-    if config["plotting"]["activate"]:
-        include: "rules/unmapped_per_lineage.smk"
+    # if config["plotting"]["activate"]:
+    #     include: "rules/unmapped_per_lineage.smk"
 
 # # ------------------Module rules-------------------------------------------------------------------
 if config["plotting"]["activate"]:

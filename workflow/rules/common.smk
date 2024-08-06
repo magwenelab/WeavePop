@@ -66,7 +66,8 @@ d={'sample': UNFILTERED_SAMPLE_TABLE["sample"],
     'refgenome': REFDIR / UNFILTERED_SAMPLE_TABLE["lineage"] / (UNFILTERED_SAMPLE_TABLE["lineage"] + ".fasta"),
     'refgff': REFDIR / UNFILTERED_SAMPLE_TABLE["lineage"] / (UNFILTERED_SAMPLE_TABLE["lineage"] + ".gff")}
 
-UNFILTERED_SAMPLE_REFERENCE = pd.DataFrame(data=d).set_index("sample", drop=False)
+SAMPLE_REFERENCE = pd.DataFrame(data=d).set_index("sample", drop=False)
+LINEAGE_REFERENCE = pd.DataFrame(data=d).set_index("lineage", drop=False)
 
 # =================================================================================================
 #   Checkpoint functions
@@ -80,8 +81,8 @@ SAMPLES = listing_samples
 
 def listing_lineages(wildcards):
     checkpoint_output = checkpoints.filtered_lineages.get(**wildcards).output[0]
-    return expand("{i}",
-                i=glob_wildcards(os.path.join(checkpoint_output, "{i}.txt" )).i)
+    return expand("{lineage}",
+                lineage=glob_wildcards(os.path.join(checkpoint_output, "{lineage}.txt" )).lineage)
 
 LINEAGES = listing_lineages
 
@@ -140,9 +141,9 @@ def get_filtered_output():
         final_output = final_output, expand(DATASET_OUTDIR / "snps" / "{lineage}_effects.tsv",lineage=LINEAGES)
     if config["genes_mapq_depth"]["activate"]:
         final_output = final_output, expand(OUTDIR / "depth_quality" / "{sample}" / "feature_mapq_depth.tsv",sample=SAMPLES)
-    if config["plotting"]["activate"] and not config["annotate_references"]["activate"]:
-        final_output = final_output, expand(DATASET_OUTDIR / "liftoff" / "{lineage}_unmapped_count.tsv", lineage=LINEAGES)
-        final_output = final_output, expand(DATASET_OUTDIR / "plots" / "{lineage}_unmapped.svg", lineage=LINEAGES)
+    # if config["plotting"]["activate"] and not config["annotate_references"]["activate"]:
+    #     final_output = final_output, expand(DATASET_OUTDIR / "liftoff" / "{lineage}_unmapped_count.tsv", lineage=LINEAGES)
+    #     final_output = final_output, expand(DATASET_OUTDIR / "plots" / "{lineage}_unmapped.svg", lineage=LINEAGES)
     return final_output
 # =================================================================================================
 #   Setup rules

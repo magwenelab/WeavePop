@@ -1,21 +1,3 @@
-
-# =================================================================================================
-#   Tables for sample-dependent input files 
-# =================================================================================================
-
-def get_filtered_sample_reference():
-    filtered_output = rules.quality_filter.output.metadata
-    filtered_table = pd.read_csv(filtered_output, header=0)
-    d={'sample': filtered_table["sample"],
-        'lineage': filtered_table["lineage"],
-        'refgenome': REFDIR / filtered_table["lineage"] / (filtered_table["lineage"] + ".fasta"),
-        'refgff': REFDIR / filtered_table["lineage"] / (filtered_table["lineage"] + ".gff")}
-    SAMPLE_REFERENCE = pd.DataFrame(data=d).set_index("sample", drop=False)
-    LINEAGE_REFERENCE = pd.DataFrame(data=d).set_index("lineage", drop=False)
-    return SAMPLE_REFERENCE, LINEAGE_REFERENCE
-
-SAMPLE_REFERENCE, LINEAGE_REFERENCE = get_filtered_sample_reference()
-
 # =================================================================================================
 # Per sample | Run Liftoff to annotate the assembly with the coresponding reference genome
 # =================================================================================================

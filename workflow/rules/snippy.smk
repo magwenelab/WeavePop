@@ -3,7 +3,7 @@
 # =================================================================================================
 
 def snippy_input(wildcards):
-    s = UNFILTERED_SAMPLE_REFERENCE.loc[wildcards.unf_sample,]
+    s = SAMPLE_REFERENCE.loc[wildcards.unf_sample,]
     return {
         "fq1": FQ_DATA / (s["sample"] + FQ1),
         "fq2": FQ_DATA / (s["sample"] + FQ2),

@@ -19,7 +19,7 @@ rule bam_good:
         "samtools index {output.bam_good} -o {output.bai_good} 2>> {log} "
 
 def depth_distribution_input(wildcards):
-    s = UNFILTERED_SAMPLE_REFERENCE.loc[wildcards.unf_sample,]
+    s = SAMPLE_REFERENCE.loc[wildcards.unf_sample,]
     return {
         "bam": OUTDIR / "snippy" / s["sample"] / "snps.bam" ,
         "bai": OUTDIR / "snippy" / s["sample"] / "snps.bam.bai",
