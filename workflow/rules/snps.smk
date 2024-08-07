@@ -79,7 +79,7 @@ def intersect_vcfs_input(wildcards):
     l = LINEAGE_REFERENCE[LINEAGE_REFERENCE["sample"].isin(sample_wildcards)] # l = LINEAGE_REFERENCE.query('sample in @sample_wildcards')
     l = l.loc[wildcards.lineage,]
     return {
-        "vcfs" : expand(OUTDIR / "snippy" / "{sample}" / "snps.vcf", sample=l["sample"])
+        "vcfs" : expand(OUTDIR / "snippy" / "{sample}" / "snps.vcf.gz", sample=l["sample"])
     }
     
 rule intersect_vcfs:
@@ -89,7 +89,7 @@ rule intersect_vcfs:
         vcf = DATASET_OUTDIR / "snps" / "{lineage}_intersection.vcf",
         tsv = DATASET_OUTDIR / "snps" / "{lineage}_presence.tsv"
     params:
-        tmp_dir = "{lineage}"
+        tmp_dir = "tmp_{lineage}"
     conda:
         "../envs/variants.yaml"
     log:
