@@ -76,7 +76,7 @@ rule build_refs_db:
 
 def intersect_vcfs_input(wildcards):
     sample_wildcards = listing_samples(wildcards)
-    l = LINEAGE_REFERENCE[LINEAGE_REFERENCE["sample"].isin(sample_wildcards)] # l = LINEAGE_REFERENCE.query('sample in @sample_wildcards')
+    l = LINEAGE_REFERENCE[LINEAGE_REFERENCE["sample"].isin(sample_wildcards)] 
     l = l.loc[wildcards.lineage,]
     return {
         "vcfs" : expand(OUTDIR / "snippy" / "{sample}" / "snps.vcf.gz", sample=l["sample"])

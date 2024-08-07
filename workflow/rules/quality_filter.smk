@@ -51,8 +51,8 @@ rule mapping_stats:
     output:
         OUTDIR / "depth_quality" / "{unf_sample}" / "mapping_stats.tsv"
     params:
-        low_mapq = config["depth_quality"]["flag_quality"]["low_MAPQ_threshold"],
-        high_mapq = config["depth_quality"]["flag_quality"]["high_MAPQ_threshold"],
+        low_mapq = config["depth_quality"]["flag_quality"]["low_MAPQ_limit"],
+        high_mapq = config["depth_quality"]["flag_quality"]["high_MAPQ_limit"],
         min_depth = config["depth_quality"]["flag_quality"]["min_percent_genome-wide_depth"],
         min_mapq = config["depth_quality"]["flag_quality"]["min_percent_MAPQ"],    
         min_pp= config["depth_quality"]["flag_quality"]["min_percent_properly_paired_reads"],
@@ -93,13 +93,20 @@ rule quality_filter:
     output:
         stats = DATASET_OUTDIR / "depth_quality" / "filtered_mapping_stats.tsv",
         metadata = GENERAL_OUTPUT / "metadata.csv"
+    params:
+        exclude = config["depth_quality"]["flag_quality"]["exclude_samples"]
     run:
         stats = pd.read_csv(input[0], sep="\t", header = 0)
-        stats_filtered = stats[stats["quality_warning"].isna()]
+        metadata = pd.read_csv(input[1], header=0)
+        if params.exclude:
+            stats_filtered = stats[stats["quality_warning"].isna()]
+            metadata_filtered = metadata.loc[metadata["sample"].isin(stats_filtered["sample"]),]
+        else:
+            stats_filtered = stats
+            metadata_filtered = metadata
         stats_filtered.to_csv(output.stats, index=False, header=True, sep = "\t")
-        metadata_unfiltered = pd.read_csv(input[1], header=0)
-        metadata_filtered = metadata_unfiltered.loc[metadata_unfiltered["sample"].isin(stats_filtered["sample"]),]
         metadata_filtered.to_csv(output.metadata, index=False)
+
 
 checkpoint filtered_samples:
     input:

@@ -58,7 +58,7 @@ if config["annotate_references"]["activate"]:
     MAIN_NAME, _ = os.path.splitext(os.path.basename(MAIN_GFF))
 
 # =================================================================================================
-#   Tables for snippy input 
+#   Tables for input functions
 # =================================================================================================
 
 d={'sample': UNFILTERED_SAMPLE_TABLE["sample"],
@@ -145,6 +145,7 @@ def get_filtered_output():
     #     final_output = final_output, expand(DATASET_OUTDIR / "liftoff" / "{lineage}_unmapped_count.tsv", lineage=LINEAGES)
     #     final_output = final_output, expand(DATASET_OUTDIR / "plots" / "{lineage}_unmapped.svg", lineage=LINEAGES)
     return final_output
+    
 # =================================================================================================
 #   Setup rules
 # =================================================================================================

@@ -18,13 +18,13 @@ fastqs:
 references: 
   directory: "data/references/" # Path to directory with reference genomes.
 
-samples: "config/sample_metadata.csv" # Relative path to metadata CSV table.
+samples: "config/metadata2.csv" # Relative path to metadata CSV table.
 chromosomes: "config/chromosome_names.csv" # Relative path to chromosome names CSV table.
 species_name: "Cryptococcus_neoformans" 
 samples_to_exclude: # Optional: File with list of samples to exclude from all analyses.
 # ------------------Output-------------------------------------------------------------------------
 
-output_directory: "results_1" # Name for the output directory
+output_directory: "results_2" # Name for the output directory
 
 # ------------------Annotation of reference genomes------------------------------------------------
 
@@ -45,13 +45,12 @@ depth_quality:
     min_mapq: 20 # Minimum mapping quality for mosdepth
     extra: ""
   flag_quality: # Minimum values for a sample to be considered to have a good quality read mapping
-    low_MAPQ_threshold: 20 # Threshold for low MAPQ reads
-    high_MAPQ_threshold: 60 # Threshold for high MAPQ reads
+    low_MAPQ_limit: 20 # Top limit for low MAPQ reads
+    high_MAPQ_limit: 60 # Bottom limit for high MAPQ reads
     min_percent_MAPQ: 93 # Minimum percentage of reads in the high MAPQ bin
-    min_percent_genome-wide_depth: 2 # Minimum percentage of genome-wide depth (Global mode)
+    min_percent_genome-wide_depth: 50 # Minimum percentage of genome-wide depth (Global mode)
     min_percent_properly_paired_reads: 25 # Minimum percentage of properly paired mapped reads
-
-    # Exclude samples
+    exclude_samples: True # Exclude samples that do not meet the quality thresholds
 
 # ------------------Copy-number variant calling----------------------------------------------------
 cnv:
@@ -61,7 +60,7 @@ cnv:
   repeats:
     repeats_database: "config/RepBase.fasta"
     repeats_threads: 20
-    repeats_fraction: 0.5 # Fraction of repetitive bases allowed for calculating global coverage
+    repeats_fraction: 0.5 # Fraction of repetitive bases allowed for calculating global depth
 
 # ------------------MAPQ and Depth of genetic features---------------------------------------------
 genes_mapq_depth:
