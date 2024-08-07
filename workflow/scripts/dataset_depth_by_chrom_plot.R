@@ -2,6 +2,7 @@ log <- file(snakemake@log[[1]], open = "wt")
 sink(log, type = "output")
 sink(log, type = "message")
 
+print("Loading libraries")
 suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(RColorBrewer))
 suppressPackageStartupMessages(library(scales))
@@ -47,3 +48,4 @@ meanplot <- ggplot(good_stats, aes(x = reorder(name, -Global_Mean, sum), y = Nor
 
 print("Saving plot")
 ggsave(snakemake@output[[1]], plot = meanplot, units = "in", height = 9, width = 16, scale = gscale)
+print("Done!")

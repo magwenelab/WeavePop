@@ -2,11 +2,13 @@ log <- file(snakemake@log[[1]], open = "wt")
 sink(log, type = "output")
 sink(log, type = "message")
 
+print("Loading libraries")
 suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(RColorBrewer))
 suppressPackageStartupMessages(library(scales))
 suppressPackageStartupMessages(library(patchwork))
 
+print("Reading and processing files")
 #metadata <- read.csv("config/sample_metadata_filtered.csv", header = TRUE, stringsAsFactors = TRUE)
 metadata <- read.csv(snakemake@input[[1]], header = TRUE, stringsAsFactors = TRUE)
 metadata <- metadata %>%
@@ -29,12 +31,14 @@ raw_stats <- rename(raw_stats, sample = Sample)
 raw_stats <- left_join(raw_stats, metadata, by = "sample")
 raw_stats <- left_join(raw_stats, chrom_names, by = "Accession")
 
+print("Making plot parameters")
 topylim <- max(good_stats$Global_Mean) + max(good_stats$Global_Mean / 10)
 raw_color = "#B3B3B3"
 good_color = "#666666" 
 color_quality = c("Good quality mappings" = good_color, "All mappings" = raw_color)
 shape_stat <- c("Mean" = 16, "Median" = 15)
 
+print("Binding and pivoting data")
 all <- bind_rows(good_stats %>% mutate(Quality = "Good quality mappings"), raw_stats %>% mutate(Quality = "All mappings"))
 all$name <- reorder(all$name, -all$Global_Mean, sum)
 all <- all %>%
@@ -42,6 +46,7 @@ all <- all %>%
         pivot_longer(cols = c(Mean, Median, Mode), names_to = "Measurement", values_to = "Value")%>%
         as.data.frame()
 
+print("Plotting genome-wide read depth")
 topylim <- max(all$Value) + max(all$Value) / 10
 g <- ggplot(all) +
     geom_point(aes(x = name, y = Value, shape = Measurement, color = Quality)) +
@@ -60,7 +65,7 @@ g <- ggplot(all) +
          y = "Read depth (X)",
          x = "")
 
-# Mapping stats and MAPQ
+print("Reading and processing files")
 # map_stats <- read.table("results/dataset/files/mapping_stats.tsv",header = TRUE, stringsAsFactors = TRUE, sep = "\t")
 map_stats <- read.table(snakemake@input[[5]], header = TRUE, stringsAsFactors = TRUE, sep = "\t")
 
@@ -82,9 +87,11 @@ stats_qualit <- stats_long %>%
 stats_qualit$Metric <- factor(stats_qualit$Metric, levels = c("percent_low_mapq","percent_inter_mapq","percent_high_mapq"),
                               labels = c("Low MAPQ", "Intermediate MAPQ", "High MAPQ"))
 
+print("Making plot parameters")
 palette_reads <- brewer.pal(n = length(unique(stats_reads$Metric)), name = "BuPu")
 palette_qualit <- brewer.pal(n = length(unique(stats_qualit$Metric)), name = "BuGn")
 
+print("Plotting percentage of reads by mapping status")
 reads <- ggplot()+
     geom_bar(data = stats_reads, aes(x = name, y = Value, fill = Metric), stat = "identity")+
     facet_grid(~ lineage, scales = "free", space = "free_x")+
@@ -99,19 +106,9 @@ reads <- ggplot()+
     labs(x = "", y = "Percentage of reads", fill = "Metric", title = "Percentage of reads by mapping status")+
     scale_fill_manual(values = palette_reads, name = "")
 
-# flags<- map_stats_metad%>%
-#     select(name, lineage, quality_warning)
-# flags$name <- factor(flags$name, levels = levels(all$name))
-# # order rows in flags according to the order of the levels in flags$name
-# flags <- flags[order(flags$name),]
-# flags$color = ifelse(flags$quality_warning == "" | is.na(flags$quality_warning), "white", "red")
-
-# print(flags)
-
+print("Plotting percentage of reads by mapping quality")
 mapq <- ggplot() +
     geom_bar(data = stats_qualit, aes(x = name, y = Value, fill = Metric), stat = "identity") +
-    # geom_point(data = flags, aes(x = name, y = -1,  color = quality_warning))+
-    # scale_color_manual(values = flags$color, name = "Bad quality")+
     facet_grid(~ lineage, scales = "free", space = "free_x") +
     theme(panel.background = element_blank(), 
           panel.grid.major = element_blank(),
@@ -123,7 +120,10 @@ mapq <- ggplot() +
     labs(x = "", y = "Percentage of reads", fill = "Metric", title = "Percentage of mapped reads by mapping quality") +
     scale_fill_manual(values = palette_qualit, name = "")
 
+print("Joining plots")
 plot <- g/reads/mapq
 
+print("Saving plot")
 gscale = snakemake@params[[1]]
 ggsave(snakemake@output[[1]], plot = plot, units = "in", height = 9, width = 16, scale = gscale)
+print("Done!")

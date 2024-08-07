@@ -2,26 +2,27 @@ log <- file(snakemake@log[[1]], open="wt")
 sink(log, type = "output")
 sink(log, type = "message")
 
+print("Loading libraries")
 suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(RColorBrewer))
 suppressPackageStartupMessages(library(scales))
 
 print("Reading files and joining data with chromosome names")
 # setwd("./results/samples/samtools/SRS17145125")
-# cov<- read.delim("depth_distribution.tsv", header = TRUE, stringsAsFactors = TRUE)
+# depth<- read.delim("depth_distribution.tsv", header = TRUE, stringsAsFactors = TRUE)
 # chrom_names <- read.csv("../../../../config/chromosome_names.csv", header = TRUE, col.names = c("Lineage", "Accession", "Chromosome"))
 # sample <- "SRS17145125"
 # global_mode <- read.delim("global_mode.tsv", header = TRUE, stringsAsFactors = TRUE)
 sample <- snakemake@wildcards$sample
-cov<- read.table(snakemake@input[[1]], header = TRUE, stringsAsFactors = TRUE, sep = "\t")
+depth<- read.table(snakemake@input[[1]], header = TRUE, stringsAsFactors = TRUE, sep = "\t")
 global_mode <- read.delim(snakemake@input[[2]], header = TRUE, stringsAsFactors = TRUE)
-print(global_mode)
 chrom_names <- read.csv(snakemake@input[[3]], header = TRUE, col.names = c("Lineage", "Accession", "Chromosome"))
 
-cov[is.na(cov)] <- 0
+print("Adding 0 to null depth values")
+depth[is.na(depth)] <- 0
 
 chrom_names <- chrom_names %>%
-  filter(Accession %in% unique(cov$Accession) )
+  filter(Accession %in% unique(depth$Accession) )
 chrom_names['Accession_Chromosome'] <- paste(chrom_names$Chromosome, chrom_names$Accession, sep = "xxx")
 unique_levels <- unique(chrom_names$Accession_Chromosome)
 new_order <- c(rbind(matrix(unique_levels, nrow = 2, byrow = TRUE)))
@@ -31,15 +32,16 @@ if (length(unique_levels) %% 2 != 0){
 }
 chrom_names$Accession_Chromosome <- factor(chrom_names$Accession_Chromosome, levels = new_order)
 
-cov <- left_join(cov, chrom_names, by = "Accession")
-lineage <- levels(as.factor(cov$Lineage))
+depth <- left_join(depth, chrom_names, by = "Accession")
+lineage <- levels(as.factor(depth$Lineage))
 
 print("Plotting depth distribution by chromosome")
 raw_color = "#B3B3B3"
 good_color = "#666666" 
 color_quality = c("Good quality alignments" = good_color, "All alignments" = raw_color)
 
-plot_chrom <- ggplot(cov, aes(x=Depth))+
+print("Plotting depth distribution by chromosome")
+plot_chrom <- ggplot(depth, aes(x=Depth))+
   geom_col(aes(y = Count_Raw, fill= "All alignments"))+ 
   geom_col(aes(y = Count_Good, fill= "Good quality alignments"))+ 
   facet_wrap(~Chromosome,ncol = 2)+
@@ -54,10 +56,9 @@ plot_chrom <- ggplot(cov, aes(x=Depth))+
         panel.background = element_rect(fill = "white"),
         panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 2))
 
-pheight <- 0.5 + length(unique((cov$Chromosome)))/2
-pwidth <- pheight * 1.78
 
-cov_global <- cov %>%
+print("Calculating global depth distribution")
+depth_global <- depth %>%
   select(Depth, Count_Good, Count_Raw)%>%
   group_by(Depth)%>%
   summarize(Count_Good_Global = sum(Count_Good), Count_Raw_Global = sum(Count_Raw))%>%
@@ -65,8 +66,8 @@ cov_global <- cov %>%
 
 print("Plotting genome-wide depth distribution")
 plot_global <- ggplot()+
-  geom_col(data = cov_global, aes(x=Depth, y = Count_Raw_Global, fill= "All alignments"))+ 
-  geom_col(data = cov_global, aes(x=Depth,y = Count_Good_Global, fill= "Good quality alignments"))+ 
+  geom_col(data = depth_global, aes(x=Depth, y = Count_Raw_Global, fill= "All alignments"))+ 
+  geom_col(data = depth_global, aes(x=Depth,y = Count_Good_Global, fill= "Good quality alignments"))+ 
   geom_vline(data = global_mode, aes(xintercept = Global_Mode), color ="red")+
   scale_y_log10(name = "Number of Sites", labels = comma)+
   scale_x_continuous(name = "Depth (X) ", labels = comma, n.breaks = 10)+
@@ -74,6 +75,10 @@ plot_global <- ggplot()+
   theme(legend.position="none")+
   labs(title = paste("Lineage:",lineage, " Sample:", sample,  sep = " "))+
   theme_bw()
+
+print("Calculating plot dimensions")
+pheight <- 0.5 + length(unique((depth$Chromosome)))/2
+pwidth <- pheight * 1.78
 
 print("Saving plots")
 ggsave(snakemake@output[[1]], plot = plot_chrom, units = "in", height = pheight, width = pwidth, dpi = 600)
