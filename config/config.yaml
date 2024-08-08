@@ -41,7 +41,7 @@ annotate_references:
 depth_quality: 
   mosdepth: 
     threads: 12  
-    window: 500 # Window size for mosdepth
+    window: 10 # Window size for mosdepth
     min_mapq: 20 # Minimum mapping quality for mosdepth
     extra: ""
   flag_quality: # Minimum values for a sample to be considered to have a good quality read mapping

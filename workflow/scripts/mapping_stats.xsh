@@ -76,7 +76,9 @@ def stats(sample, bamfile,  global_mode, low_mapq, high_mapq,min_depth, min_mapq
     stats_wider = stats_wider.round(2)
 
     print("Joining mapped reads metrics with global mode")
-    global_mode = pd.read_csv(global_mode, sep = "\t", header = 0, names = ["sample", "genome-wide_depth"])
+    global_mode = pd.read_csv(global_mode, sep = "\t", header = 0)
+    global_mode = global_mode[['Sample', 'Global_Mode']]
+    global_mode.columns = ['sample', 'genome-wide_depth']
     stats_wider = pd.merge(stats_wider, global_mode, on = 'sample', how = 'outer')
 
     print("Adding quality warning flag")

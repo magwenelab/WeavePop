@@ -20,7 +20,6 @@ rule loci:
 rule depth_distribution_plots:
     input:
         OUTDIR / "depth_quality" / "{sample}" / "depth_distribution.tsv",
-        OUTDIR / "depth_quality" / "{sample}" / "global_mode.tsv",
         rules.copy_config.output.c
     output:
         OUTDIR / "plots" / "{sample}" / "depth_chrom_distribution.png",
@@ -34,8 +33,8 @@ rule depth_distribution_plots:
 
 rule depth_by_chrom_plots:
     input:
-        rules.depth_by_chrom_raw.output,
-        rules.depth_by_chrom_good.output,
+        OUTDIR / "depth_quality" / "{sample}" / "depth_by_chrom_raw.tsv",
+        OUTDIR / "depth_quality" / "{sample}" / "depth_by_chrom_good.tsv",
         CHROM_NAMES
     output:
         OUTDIR / "plots" / "{sample}" / "depth_by_chrom.png"

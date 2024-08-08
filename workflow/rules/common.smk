@@ -109,16 +109,16 @@ def get_dataset_output():
             final_output.append(DATASET_OUTDIR / "plots" / "dataset_summary.png")
     if config["dataset"]["activate"]:
         final_output.append(DATASET_OUTDIR / "cnv" / "cnv_calls.tsv")
-    if config["dataset"]["activate"]:
         final_output.append(DATASET_OUTDIR / "depth_quality" / "feature_mapq_depth.tsv")
+        if config["plotting"]["activate"]:
+            if config["annotate_references"]["activate"]:
+                final_output.append(REFDIR / "lifotff" / "unmapped_count.tsv")
+                final_output.append(REFDIR / "lifotff" / "unmapped.svg")
+                final_output.append(DATASET_OUTDIR / "liftoff" / "unmapped_count.tsv")
+                final_output.append(DATASET_OUTDIR / "plots" / "unmapped.svg")
     if config["database"]["activate"]:
         final_output.append(expand(DATASET_OUTDIR / "database.db"))
-    if config["plotting"]["activate"]:
-        if config["annotate_references"]["activate"]:
-            final_output.append(REFDIR / "lifotff" / "unmapped_count.tsv")
-            final_output.append(REFDIR / "lifotff" / "unmapped.svg")
-            final_output.append(DATASET_OUTDIR / "liftoff" / "unmapped_count.tsv")
-            final_output.append(DATASET_OUTDIR / "plots" / "unmapped.svg")
+
     return final_output
 
 def get_filtered_output():

@@ -12,11 +12,9 @@ print("Reading files and joining data with chromosome names")
 # depth<- read.delim("depth_distribution.tsv", header = TRUE, stringsAsFactors = TRUE)
 # chrom_names <- read.csv("../../../../config/chromosome_names.csv", header = TRUE, col.names = c("Lineage", "Accession", "Chromosome"))
 # sample <- "SRS17145125"
-# global_mode <- read.delim("global_mode.tsv", header = TRUE, stringsAsFactors = TRUE)
 sample <- snakemake@wildcards$sample
 depth<- read.table(snakemake@input[[1]], header = TRUE, stringsAsFactors = TRUE, sep = "\t")
-global_mode <- read.delim(snakemake@input[[2]], header = TRUE, stringsAsFactors = TRUE)
-chrom_names <- read.csv(snakemake@input[[3]], header = TRUE, col.names = c("Lineage", "Accession", "Chromosome"))
+chrom_names <- read.csv(snakemake@input[[2]], header = TRUE, col.names = c("Lineage", "Accession", "Chromosome"))
 
 print("Adding 0 to null depth values")
 depth[is.na(depth)] <- 0
@@ -68,7 +66,6 @@ print("Plotting genome-wide depth distribution")
 plot_global <- ggplot()+
   geom_col(data = depth_global, aes(x=Depth, y = Count_Raw_Global, fill= "All alignments"))+ 
   geom_col(data = depth_global, aes(x=Depth,y = Count_Good_Global, fill= "Good quality alignments"))+ 
-  geom_vline(data = global_mode, aes(xintercept = Global_Mode), color ="red")+
   scale_y_log10(name = "Number of Sites", labels = comma)+
   scale_x_continuous(name = "Depth (X) ", labels = comma, n.breaks = 10)+
   scale_fill_manual(name= "Alignment quality", values= color_quality)+

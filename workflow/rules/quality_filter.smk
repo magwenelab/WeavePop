@@ -31,13 +31,20 @@ rule depth_distribution:
         unpack(depth_distribution_input)
     output:
         distrib = OUTDIR / "depth_quality" / "{unf_sample}" / "depth_distribution.tsv",
-        global_mode = OUTDIR / "depth_quality" / "{unf_sample}" / "global_mode.tsv"
+        by_chrom_good = OUTDIR / "depth_quality" / "{unf_sample}" / "depth_by_chrom_good.tsv",
+        by_chrom_raw = OUTDIR / "depth_quality" / "{unf_sample}" / "depth_by_chrom_raw.tsv"
     conda: 
         "../envs/samtools.yaml"
     log:
         "logs/samples/depth_quality/depth_distribution_{unf_sample}.log"
     shell:
-        "xonsh workflow/scripts/depth_distribution.xsh -s {wildcards.unf_sample} -b {input.bam} -g {input.bam_good} -do {output.distrib} -go {output.global_mode} &> {log}"
+        "xonsh workflow/scripts/depth_distribution.xsh "
+        "-s {wildcards.unf_sample} "
+        "-b {input.bam} "
+        "-g {input.bam_good} " 
+        "-do {output.distrib} " 
+        "-go {output.by_chrom_good} " 
+        "-ro {output.by_chrom_raw} &> {log} "
 
 # =================================================================================================
 #   Per sample | Get mapping stats
@@ -47,7 +54,7 @@ rule mapping_stats:
     input:
         bam = rules.snippy.output.bam,
         bai = rules.snippy.output.bai,
-        global_mode = rules.depth_distribution.output.global_mode
+        global_mode = rules.depth_distribution.output.by_chrom_good
     output:
         OUTDIR / "depth_quality" / "{unf_sample}" / "mapping_stats.tsv"
     params:
@@ -132,3 +139,37 @@ checkpoint filtered_lineages:
             path_l = GENERAL_OUTPUT / "filtered_lineages" / f"{lineage}.txt"
             path_l.parent.mkdir(parents=True, exist_ok=True)
             path_l.touch()
+
+# =================================================================================================
+#   Per dataset | Join depth by chrom 
+# =================================================================================================
+
+rule join_depth_by_chrom_raw:
+    input:
+        expand(OUTDIR / "depth_quality" / "{sample}" / "depth_by_chrom_raw.tsv",sample=SAMPLES),
+    output:
+        DATASET_OUTDIR / "depth_quality" / "depth_by_chrom_raw.tsv",
+    log:
+        "logs/dataset/depth_quality/join_depth_by_chrom_raw.log"
+    shell:
+        """
+        head -q -n 1 {input} 1> {output}.temp 2>> {log}
+        head -n 1 {output}.temp 1> {output} 2>> {log}
+        tail -q -n +2 {input} 1>> {output} 2>> {log}
+        rm {output}.temp
+        """
+
+rule join_depth_by_chrom_good:
+    input:
+        expand(OUTDIR / "depth_quality" / "{sample}" / "depth_by_chrom_good.tsv",sample=SAMPLES),
+    output:
+        DATASET_OUTDIR / "depth_quality" / "depth_by_chrom_good.tsv",
+    log:
+        "logs/dataset/depth_quality/join_depth_by_chrom_good.log"
+    shell:
+        """
+        head -q -n 1 {input} 1> {output}.temp 2>> {log}
+        head -n 1 {output}.temp 1> {output} 2>> {log}
+        tail -q -n +2 {input} 1>> {output} 2>> {log}
+        rm {output}.temp
+        """

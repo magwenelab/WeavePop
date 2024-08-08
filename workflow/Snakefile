@@ -19,8 +19,6 @@ include: "rules/common.smk"
 include: "rules/snippy.smk"
 include: "rules/quality_filter.smk"
 include: "rules/main.smk"
-include: "rules/quality.smk"
-include: "rules/dataset_quality.smk"
 
 # ------------------Reference annotation rules-----------------------------------------------------
 if config["annotate_references"]["activate"]:

@@ -1,11 +1,37 @@
 # =================================================================================================
+#   Per sample | Run Mosdepth to get depth per region of  good quality reads
+# =================================================================================================
+
+rule mosdepth_good:
+    input:
+        bam = OUTDIR / "snippy" / "{sample}" / "snps.bam",
+        bai = OUTDIR / "snippy" / "{sample}" / "snps.bam.bai"
+    output:
+        bed = OUTDIR / "mosdepth" / "{sample}" / "coverage_good.regions.bed.gz"
+    params:
+        window = config["depth_quality"]["mosdepth"]["window"],
+        extra = config["depth_quality"]["mosdepth"]["extra"],
+        min_mapq = config["depth_quality"]["mosdepth"]["min_mapq"],
+        outdir = OUTDIR / "mosdepth"
+    conda: 
+        "../envs/depth.yaml"
+    threads:
+       config["depth_quality"]["mosdepth"]["threads"]   
+    log:
+        "logs/samples/mosdepth/mosdepth_good_{sample}.log"
+    shell:
+        "mosdepth -n --by {params.window} --mapq {params.min_mapq} -t {threads} {params.extra} "
+        "{params.outdir}/{wildcards.sample}/coverage_good {input.bam} "
+        "&> {log}"
+
+# =================================================================================================
 #   Per sample | Normalize depth and by region
 # =================================================================================================
 
 rule depth_by_regions:
     input:
         depth = rules.mosdepth_good.output.bed,
-        global_mode = OUTDIR / "depth_quality" / "{sample}" / "global_mode.tsv"
+        global_mode = OUTDIR / "depth_quality" / "{sample}" / "depth_by_chrom_good.tsv"
     output:
         OUTDIR / "depth_quality" / "{sample}" / "depth_by_regions.tsv"
     conda:
