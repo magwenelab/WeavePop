@@ -60,15 +60,28 @@ rule mapping_stats:
     params:
         low_mapq = config["depth_quality"]["flag_quality"]["low_MAPQ_limit"],
         high_mapq = config["depth_quality"]["flag_quality"]["high_MAPQ_limit"],
+        min_position_depth = config["depth_quality"]["flag_quality"]["min_position_depth"],
         min_depth = config["depth_quality"]["flag_quality"]["min_percent_genome-wide_depth"],
         min_mapq = config["depth_quality"]["flag_quality"]["min_percent_MAPQ"],    
         min_pp= config["depth_quality"]["flag_quality"]["min_percent_properly_paired_reads"],
+        min_coverage = config["depth_quality"]["flag_quality"]["min_percent_coverage"]
     conda:
         "../envs/samtools.yaml"
     log:
         "logs/samples/depth_quality/mapping_stats_{unf_sample}.log"
     shell:
-        "xonsh workflow/scripts/mapping_stats.xsh -b {input.bam} -s {wildcards.unf_sample} -m {input.global_mode} -l {params.low_mapq} -h {params.high_mapq} -d {params.min_depth} -q {params.min_mapq} -p {params.min_pp} -o {output} &> {log}"
+        "xonsh workflow/scripts/mapping_stats.xsh "
+        "-b {input.bam} "
+        "-s {wildcards.unf_sample} "
+        "-m {input.global_mode} "
+        "-l {params.low_mapq} "
+        "-h {params.high_mapq} "
+        "-pd {params.min_position_depth} "
+        "-d {params.min_depth} "
+        "-q {params.min_mapq} "
+        "-p {params.min_pp} "
+        "-c {params.min_coverage} "
+        "-o {output} &> {log}"
 
 # =================================================================================================
 #   Per dataset | Join mapping stats 

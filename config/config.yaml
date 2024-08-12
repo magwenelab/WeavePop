@@ -47,9 +47,11 @@ depth_quality:
   flag_quality: # Minimum values for a sample to be considered to have a good quality read mapping
     low_MAPQ_limit: 20 # Top limit for low MAPQ reads
     high_MAPQ_limit: 60 # Bottom limit for high MAPQ reads
+    min_position_depth: 5 # Minimum depth for a position to be considered covered
     min_percent_MAPQ: 93 # Minimum percentage of reads in the high MAPQ bin
     min_percent_genome-wide_depth: 50 # Minimum percentage of genome-wide depth (Global mode)
     min_percent_properly_paired_reads: 25 # Minimum percentage of properly paired mapped reads
+    min_percent_coverage: 50 # Minimum percentage of genome-wide coverage
     exclude_samples: True # Exclude samples that do not meet the quality thresholds
 
 # ------------------Copy-number variant calling----------------------------------------------------
