@@ -15,44 +15,44 @@ configfile: "config/config.yaml"
 #   Load rules
 # =================================================================================================
 
-include: "rules/common.smk"
-include: "rules/snippy.smk"
-include: "rules/quality_filter.smk"
-include: "rules/main.smk"
+if config["sample_workflow"]:
+    include: "rules/common.smk"
+    include: "rules/snippy.smk"
+    include: "rules/quality_filter.smk"
+    include: "rules/annotation.smk"
+    include: "rules/database.smk"
 
-# ------------------Reference annotation rules-----------------------------------------------------
-if config["annotate_references"]["activate"]:
-    include: "rules/references.smk"
+    # ------------------Reference annotation rules-----------------------------------------------------
+    if config["annotate_references"]["activate"]:
+        include: "rules/references.smk"
+        if config["plotting"]["activate"]:
+            include: "rules/unmapped_main_ref.smk"
+
+    if not config["annotate_references"]["activate"]:
+        include: "rules/lineage_gffs.smk"
+        # if config["plotting"]["activate"]:
+        #     include: "rules/unmapped_per_lineage.smk"
+
+    # ------------------Module rules-------------------------------------------------------------------
     if config["plotting"]["activate"]:
-        include: "rules/unmapped_main_ref.smk"
+        include: "rules/plots.smk"
+        include: "rules/dataset_plots.smk"
 
-if not config["annotate_references"]["activate"]:
-    include: "rules/lineage_gffs.smk"
-    # if config["plotting"]["activate"]:
-    #     include: "rules/unmapped_per_lineage.smk"
+    if config["cnv"]["activate"]:
+        include: "rules/cnv.smk"
 
-# # ------------------Module rules-------------------------------------------------------------------
-if config["plotting"]["activate"]:
-    include: "rules/plots.smk"
-    include: "rules/dataset_plots.smk"
+    if config["genes_mapq_depth"]["activate"]:
+        include: "rules/genes_mapq_depth.smk"
 
-if config["cnv"]["activate"]:
-    include: "rules/cnv.smk"
+    if config["snpeff"]["activate"]:
+        include: "rules/snps.smk"     
 
-if config["genes_mapq_depth"]["activate"]:
-    include: "rules/genes_mapq_depth.smk"
-
-if config["snpeff"]["activate"]:
-    include: "rules/snps.smk"     
-
-if config["dataset"]["activate"]:
-    include: "rules/database.smk"
-
-if config["database"]["activate"]:
-    include: "rules/cnv.smk"
-    include: "rules/snps.smk"
-    include: "rules/genes_mapq_depth.smk"
-    include: "rules/database.smk"
+    if config["database"]["activate"]:
+        include: "rules/cnv.smk"
+        include: "rules/snps.smk"
+        include: "rules/genes_mapq_depth.smk"
+elif config["join_datasets_workflow"]:
+    include: "rules/join_results.smk"
 
 # =================================================================================================
 #   Onstart checks
@@ -99,8 +99,13 @@ onstart:
 #   Define final output
 # =================================================================================================
 
-rule all:
-    input:
-        get_unfiltered_output(),
-        get_filtered_output(),
-        get_dataset_output()
+if config["sample_workflow"]:
+    rule all:
+        input:
+            get_unfiltered_output(),
+            get_filtered_output(),
+            get_dataset_output()
+elif config["join_datasets_workflow"]:
+    rule all:
+        input:
+            get_final_output()

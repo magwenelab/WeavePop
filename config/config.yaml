@@ -2,8 +2,8 @@
 #   Choose which workflow to run
 # =================================================================================================
 
-#sample_workflow: True
-#join_datasets_workflow: False
+sample_workflow: True
+join_datasets_workflow: False
 
 # =================================================================================================
 # Sample workflow parameters

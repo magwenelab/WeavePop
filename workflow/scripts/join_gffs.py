@@ -11,7 +11,11 @@ def join_gff(output, lineage_tsv):
     paths = {}
     for path in lineage_tsv:
         lineage = Path(Path(path).stem).stem
-        paths[lineage] = path    
+        paths[lineage] = path   
+        print("Available lineages and paths:") 
+        print(lineage, path)
+    print("Files to concatenate:")    
+    print(paths)
     print("Read files and concatenate dataframes into list")
     dfs = []
     for lineage, path in paths.items():
