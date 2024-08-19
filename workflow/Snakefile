@@ -82,8 +82,6 @@ onstart:
                         seq_ids = [line.strip().split()[0][1:] for line in f if line.startswith(">")]
                         if chrom not in seq_ids:
                             raise ValueError(f"Bad: Chromosome {chrom} not found in reference {ref_file}")
-                        else:
-                            print(f"Good: Chromosome {chrom} found in reference {ref_file}", flush=True)
             else:
                 raise ValueError(f"Bad: Reference {ref_file} not found")
 
