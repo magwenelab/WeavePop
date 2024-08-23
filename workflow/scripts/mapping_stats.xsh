@@ -95,7 +95,7 @@ def stats(sample, bamfile,  global_mode, low_mapq, high_mapq, min_position_depth
     print("Adding quality warning flag")
     stats_wider['mapq_warning'] = stats_wider.apply(lambda row: "MAPQ-Low" if row['percent_high_mapq'] < min_mapq else None, axis=1)
     stats_wider['pp_warning'] = stats_wider.apply(lambda row: "Properly-paired-Low" if row['percent_properly_paired'] < min_pp else None, axis=1)
-    stats_wider['depth_warning'] = stats_wider.apply(lambda row: "Depth-Low" if row['genome-wide_depth'] <= min_depth else None, axis=1)
+    stats_wider['depth_warning'] = stats_wider.apply(lambda row: "Depth-Low" if row['genome-wide_depth'] < min_depth else None, axis=1)
     stats_wider['coverage_warning'] = stats_wider.apply(lambda row: "Coverage-Low" if row['percent_covered'] < min_coverage else None, axis=1)
 
     print("Joining warnings")
