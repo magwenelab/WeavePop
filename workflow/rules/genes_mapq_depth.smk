@@ -1,6 +1,6 @@
 
 # =================================================================================================
-#   Per sample | Run Mosdepth to get depth per region of all (raw) reads
+#   Per sample | Run Mosdepth to get depth per window of all (raw) reads
 # =================================================================================================
 
 rule mosdepth:
@@ -25,7 +25,7 @@ rule mosdepth:
         "&> {log}"
 
 # =================================================================================================
-#   Per sample | Get mean MAPQ by region
+#   Per sample | Get mean MAPQ by window
 # =================================================================================================
 
 rule mapq:
@@ -34,7 +34,7 @@ rule mapq:
        rules.mosdepth.output.bed
     output:
         bed = OUTDIR / "depth_quality" / "{sample}" / "mapq.bed",
-        region_bed = OUTDIR / "depth_quality" / "{sample}" / "mapq_region.bed"
+        window_bed = OUTDIR / "depth_quality" / "{sample}" / "mapq_window.bed"
     conda:
         "../envs/samtools.yaml"
     log:
@@ -42,16 +42,16 @@ rule mapq:
     script:
         "../scripts/pileup_mapq.sh"
 # =================================================================================================
-#   Per sample | Intersect MAPQ with depth by region and GFF
+#   Per sample | Intersect MAPQ with depth by window and GFF
 # =================================================================================================
 rule mapq_depth:
     input:
-        mapqbed = rules.mapq.output.region_bed,
+        mapqbed = rules.mapq.output.window_bed,
         depthbed = rules.mosdepth.output.bed,
         gff = rules.liftoff.output.polished,
         global_mode = OUTDIR / "depth_quality" / "{sample}" / "depth_by_chrom_good.tsv"
     output:
-        depthmapq = OUTDIR / "depth_quality" / "{sample}" / "mapq_depth_region.bed",
+        depthmapq = OUTDIR / "depth_quality" / "{sample}" / "mapq_depth_window.bed",
         tsv = OUTDIR / "depth_quality" / "{sample}" / "feature_mapq_depth.tsv"
     conda:
         "../envs/samtools.yaml"

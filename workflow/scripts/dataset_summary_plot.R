@@ -8,24 +8,25 @@ suppressPackageStartupMessages(library(RColorBrewer))
 suppressPackageStartupMessages(library(scales))
 suppressPackageStartupMessages(library(patchwork))
 
-print("Reading and processing files")
+print("Reading files")
 #metadata <- read.csv("config/sample_metadata_filtered.csv", header = TRUE, stringsAsFactors = TRUE)
+# chrom_names <- read.csv("config/chromosome_names.csv", header = TRUE, col.names = c("lineage", "Accession", "Chromosome"), colClasses = "factor")
+# good_stats <- read.delim("results/dataset/files/depth_by_chrom_good.tsv", sep = "\t", header = TRUE, stringsAsFactors = TRUE)
+# raw_stats <- read.delim("results/dataset/files/depth_by_chrom_raw.tsv", sep = "\t", header = TRUE, stringsAsFactors = TRUE)
+
 metadata <- read.csv(snakemake@input[[1]], header = TRUE, stringsAsFactors = TRUE)
 metadata <- metadata %>%
     select(sample, strain, lineage) %>%
     mutate(name = paste(strain, sample, sep = " "))
 
-# chrom_names <- read.csv("config/chromosome_names.csv", header = TRUE, col.names = c("lineage", "Accession", "Chromosome"), colClasses = "factor")
 chrom_names <- read.csv(snakemake@input[[2]], header = TRUE, col.names = c("lineage", "Accession", "Chromosome"), colClasses = "factor")
 chrom_names <- select(chrom_names, Accession, Chromosome)
 
-# good_stats <- read.delim("results/dataset/files/depth_by_chrom_good.tsv", sep = "\t", header = TRUE, stringsAsFactors = TRUE)
 good_stats <- read.delim(snakemake@input[[3]], sep = "\t", header = TRUE, stringsAsFactors = TRUE)
 good_stats <- rename(good_stats, sample = Sample)
 good_stats <- left_join(good_stats, metadata, by = "sample")
 good_stats <- left_join(good_stats, chrom_names, by = "Accession")
 
-# raw_stats <- read.delim("results/dataset/files/depth_by_chrom_raw.tsv", sep = "\t", header = TRUE, stringsAsFactors = TRUE)
 raw_stats <- read.delim(snakemake@input[[4]], sep = "\t", header = TRUE, stringsAsFactors = TRUE)
 raw_stats <- rename(raw_stats, sample = Sample)
 raw_stats <- left_join(raw_stats, metadata, by = "sample")

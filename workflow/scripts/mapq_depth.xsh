@@ -4,8 +4,8 @@ from pathlib import Path
 import click
 
 @click.command()
-@click.option("--mapqbed", "-m", help='BED file with MAPQ per region', type=click.Path(exists=True))
-@click.option("--depthbed", "-c", help='BED file with depth per region', type=click.Path(exists=True))
+@click.option("--mapqbed", "-m", help='BED file with MAPQ per window', type=click.Path(exists=True))
+@click.option("--depthbed", "-c", help='BED file with depth per window', type=click.Path(exists=True))
 @click.option("--gff", "-g", help='Sample gff', type=click.Path(exists=True))
 @click.option("--depthmapq", "-cm", help ='Intermediate BED file with MAPQ and Depth', type=click.Path())
 @click.option("--global_mode", "-gm", help='Global mode', type=click.Path(exists=True))

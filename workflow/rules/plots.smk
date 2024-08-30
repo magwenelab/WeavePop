@@ -46,35 +46,35 @@ rule depth_by_chrom_plots:
         "../scripts/depth_by_chrom_plots.R"
 
 # =================================================================================================
-#   Per sample | Plot depth and mapq by regions
+#   Per sample | Plot depth and mapq by windows
 # =================================================================================================
 
-def depth_by_regions_plots_input(wildcards):
+def depth_by_windows_plots_input(wildcards):
     s = SAMPLE_REFERENCE.loc[wildcards.sample,]
     return {
-        "depth": OUTDIR / "depth_quality" / s["sample"]  / "depth_by_regions.tsv",
+        "depth": OUTDIR / "depth_quality" / s["sample"]  / "depth_by_windows.tsv",
         "cnv": OUTDIR / "cnv" / s["sample"] / "cnv_calls.tsv",
         "repeats": REFDIR / s["lineage"]  / "repeats" / (s["lineage"] + "_repeats.bed")
     }
-rule depth_by_regions_plots:
+rule depth_by_windows_plots:
     input:
-        unpack(depth_by_regions_plots_input),
+        unpack(depth_by_windows_plots_input),
         loci = rules.loci.output.locitable,
         chrom_names = CHROM_NAMES
     output:
-        OUTDIR / "plots" / "{sample}" / "depth_by_regions.png"
+        OUTDIR / "plots" / "{sample}" / "depth_by_windows.png"
     conda:
         "../envs/r.yaml"
     log:
-        "logs/samples/plots/depth_by_regions_{sample}.log"
+        "logs/samples/plots/depth_by_windows_{sample}.log"
     script:
-        "../scripts/depth_by_regions_plots.R"
+        "../scripts/depth_by_windows_plots.R"
 
 def mapq_plot_input(wildcards):
     s = SAMPLE_REFERENCE.loc[wildcards.sample,]
     return {
-        "mapq": OUTDIR / "depth_quality" / s["sample"] / "mapq_region.bed",
-        "structure": OUTDIR / "cnv" / s["sample"] / "cnv_calls.tsv",
+        "mapq": OUTDIR / "depth_quality" / s["sample"] / "mapq_window.bed",
+        "cnv": OUTDIR / "cnv" / s["sample"] / "cnv_calls.tsv",
         "repeats": REFDIR / s["lineage"]  / "repeats" / (s["lineage"] + "_repeats.bed")
     }
 rule mapq_plot:

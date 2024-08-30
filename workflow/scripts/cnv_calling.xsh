@@ -11,11 +11,11 @@ import numpy as np
 @click.option('-co', '--cnv_output', help='Path to output table of CNV calling.', type=click.Path())
 
 @click.option('-sp', '--sample_name', help='Sample name as a string.', type=str)
-@click.option('-rp', '--region_size', help='Size of regions in the depth BED file.', type=int)
+@click.option('-wp', '--window_size', help='Size of windows in the depth BED file.', type=int)
 @click.option('-dp', '--depth_threshold', help='Threshold to define copy number variation in smoothed normalzed depth.', type=click.types.FloatRange(min=0.0))
 
-def intersect_repeats(depth_input, repeats_input, cnv_output, sample_name, region_size, depth_threshold):
-    print("Merge overlapping regions in repeats and intersect with regions.")
+def intersect_repeats(depth_input, repeats_input, cnv_output, sample_name, window_size, depth_threshold):
+    print("Merge overlapping repeats and intersect with windows.")
     intersect = $(bedtools merge -i @(repeats_input) -c 4 -o collapse | bedtools intersect -a @(depth_input) -b stdin -wao)
 
     print("Reorganize intersection.")
@@ -30,41 +30,41 @@ def intersect_repeats(depth_input, repeats_input, cnv_output, sample_name, regio
     df.rename(columns={'r_Type_mix': 'r_Type', 'Overlap_bp_sum': 'Overlap_bp'}, inplace=True)    
     df = df.reset_index(drop=True)
 
-    print("Calculate fraction of region with repetitive sequences.")
-    regions_repeats = df.copy()
-    regions_repeats['Repeat_fraction'] = (regions_repeats['Overlap_bp'] / region_size).round(2)
-    regions_repeats.columns = regions_repeats.columns.str.replace('bed_', '')
-    regions_repeats['Sample'] = sample_name
+    print("Calculate fraction of window with repetitive sequences.")
+    repeats_fragments = df.copy()
+    repeats_fragments['Repeat_fraction'] = (repeats_fragments['Overlap_bp'] / window_size).round(2)
+    repeats_fragments.columns = repeats_fragments.columns.str.replace('bed_', '')
+    repeats_fragments['Sample'] = sample_name
 
-    print("Define structure of regions.")
-    structure_windows = pd.DataFrame()
-    for accession in regions_repeats['Accession'].unique():
-        regions_windowed = regions_repeats[regions_repeats['Accession'] == accession].copy()
-        regions_windowed.loc[:, 'Structure'] = 'HAPLOID'
-        regions_windowed = regions_windowed.reset_index(drop=True)
-        for i in range(len(regions_windowed)):
-            if regions_windowed.loc[i, 'Smooth_Depth'] > 1 + depth_threshold:
-                regions_windowed.loc[i, 'Structure'] = "DUPLICATION"
-            elif regions_windowed.loc[i, 'Smooth_Depth'] < 1 - depth_threshold:
-                regions_windowed.loc[i, 'Structure'] = "DELETION"
+    print("Define copy-number of regions.")
+    cnv_regions = pd.DataFrame()
+    for accession in repeats_fragments['Accession'].unique():
+        regions_merged = repeats_fragments[repeats_fragments['Accession'] == accession].copy()
+        regions_merged.loc[:, 'CNV'] = 'HAPLOID'
+        regions_merged = regions_merged.reset_index(drop=True)
+        for i in range(len(regions_merged)):
+            if regions_merged.loc[i, 'Smooth_Depth'] > 1 + depth_threshold:
+                regions_merged.loc[i, 'CNV'] = "DUPLICATION"
+            elif regions_merged.loc[i, 'Smooth_Depth'] < 1 - depth_threshold:
+                regions_merged.loc[i, 'CNV'] = "DELETION"
             else:
-                regions_windowed.loc[i, 'Structure'] = "HAPLOID"
-        regions_windowed.loc[:,'Window_index'] = 1
-        for i in range(1, len(regions_windowed)):
-            if regions_windowed.loc[i, 'Structure'] == regions_windowed.loc[i - 1, 'Structure']:
-                regions_windowed.loc[i, 'Window_index'] = regions_windowed.loc[i - 1, 'Window_index']
+                regions_merged.loc[i, 'CNV'] = "HAPLOID"
+        regions_merged.loc[:,'Region_index'] = 1
+        for i in range(1, len(regions_merged)):
+            if regions_merged.loc[i, 'CNV'] == regions_merged.loc[i - 1, 'CNV']:
+                regions_merged.loc[i, 'Region_index'] = regions_merged.loc[i - 1, 'Region_index']
             else:
-                regions_windowed.loc[i, 'Window_index'] = regions_windowed.loc[i - 1, 'Window_index'] + 1
-        windows = regions_windowed.groupby('Window_index').agg(Accession = ('Accession', 'first'),Start=('Start', 'first'), End=('End', 'last'), Depth = ('Depth', 'median'),Norm_Depth=('Norm_Depth', 'median'), Smooth_Depth=('Smooth_Depth', 'median'), Structure=('Structure', 'first'), Overlap_bp=('Overlap_bp', 'sum')).reset_index()
-        windows['Window_Size'] = windows['End'] - windows['Start']
-        windows['Repeat_fraction'] = (windows['Overlap_bp'] / windows['Window_Size']).round(2)
-        windows = windows.drop(['Window_index'], axis=1)
-        structure_windows = pd.concat([structure_windows, windows], ignore_index=True)
-    print("Join windows with structure variants of all chromosomes.")
-    structure_windows = structure_windows[structure_windows['Structure'] != 'HAPLOID']
-    structure_windows = structure_windows.round(2)
-    structure_windows['Sample'] = sample_name
-    structure_windows.to_csv(cnv_output, sep='\t', index=False, header=True)
+                regions_merged.loc[i, 'Region_index'] = regions_merged.loc[i - 1, 'Region_index'] + 1
+        regions = regions_merged.groupby('Region_index').agg(Accession = ('Accession', 'first'),Start=('Start', 'first'), End=('End', 'last'), Depth = ('Depth', 'median'),Norm_Depth=('Norm_Depth', 'median'), Smooth_Depth=('Smooth_Depth', 'median'), CNV=('CNV', 'first'), Overlap_bp=('Overlap_bp', 'sum')).reset_index()
+        regions['Region_Size'] = regions['End'] - regions['Start']
+        regions['Repeat_fraction'] = (regions['Overlap_bp'] / regions['Region_Size']).round(2)
+        regions = regions.drop(['Region_index'], axis=1)
+        cnv_regions = pd.concat([cnv_regions, regions], ignore_index=True)
+    print("Join regions with copy-number variants of all chromosomes.")
+    cnv_regions = cnv_regions[cnv_regions['CNV'] != 'HAPLOID']
+    cnv_regions = cnv_regions.round(2)
+    cnv_regions['Sample'] = sample_name
+    cnv_regions.to_csv(cnv_output, sep='\t', index=False, header=True)
     
 if __name__ == '__main__':
     intersect_repeats()

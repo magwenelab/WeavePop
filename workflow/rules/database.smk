@@ -99,7 +99,7 @@ rule complete_db:
     input:
         metadata = GENERAL_OUTPUT / "metadata.csv",
         chrom_names = rules.copy_config.output.c,
-        sv = rules.join_cnv_calling.output,
+        cnv = rules.join_cnv_calling.output,
         md = rules.join_mapq_depth.output,
         gffs = rules.join_gffs.output,
         effects = rules.join_variant_annotation.output.effects,
@@ -118,7 +118,7 @@ rule complete_db:
         "xonsh workflow/scripts/build_database.xsh "
         "-m {input.metadata} "
         "-ch {input.chrom_names} "
-        "-sv {input.sv} "
+        "-cnv {input.cnv} "
         "-md {input.md} "
         "-g {input.gffs} "
         "-e {input.effects} "

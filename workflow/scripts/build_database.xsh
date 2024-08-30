@@ -10,7 +10,7 @@ import sqlite3
 @click.command()
 @click.option('--metadata', '-m', type=click.Path(exists=True), help='Path to the sample metadata CSV file.')
 @click.option('--chrom_names', '-ch', type=click.Path(), help='Path to the chromosome names file.')
-@click.option('--struc_vars', '-sv', type=click.Path(), help='Path to the structural variants file.')
+@click.option('--cnvs', '-cnv', type=click.Path(), help='Path to the copy-number variants file.')
 @click.option('--mapq_depth', '-md', type=click.Path(), help='Path to the mapq and depth of features file.')
 @click.option('--gff', '-g', type=click.Path(), help='Path to the GFF file.')
 @click.option('--effects', '-e', type=click.Path(), help='Path to the effects file of all lineages.')
@@ -21,11 +21,11 @@ import sqlite3
 @click.option('--sequences', '-s', type=click.Path(), help='Path to the sequences table.')
 @click.option('--output', '-o', type=click.Path(), help='Output database file.')
 
-def build_db(metadata, chrom_names, struc_vars, mapq_depth, gff, effects, variants, presence, lofs, nmds, sequences, output):
+def build_db(metadata, chrom_names, cnvs, mapq_depth, gff, effects, variants, presence, lofs, nmds, sequences, output):
     print("Using the following arguments:")
     print(f"1. metadata: {metadata}")
     print(f"2. chrom_names: {chrom_names}")
-    print(f"3. struc_vars: {struc_vars}")
+    print(f"3. cnvs: {cnvs}")
     print(f"4. mapq_depth: {mapq_depth}")
     print(f"5. gff: {gff}")
     print(f"6. effects: {effects}")
@@ -42,9 +42,9 @@ def build_db(metadata, chrom_names, struc_vars, mapq_depth, gff, effects, varian
     df_samples.columns = df_samples.columns.str.replace(' ', '_')
     print("Metadata table done!")
 
-    df_sv = pd.read_csv(struc_vars, sep='\t')
-    df_sv.columns = df_sv.columns.str.lower()
-    print("Structural variants table done!")
+    df_cnv = pd.read_csv(cnvs, sep='\t')
+    df_cnv.columns = df_cnv.columns.str.lower()
+    print("Copy-number variants table done!")
 
     df_mapq_depth = pd.read_csv(mapq_depth, sep='\t')
     df_mapq_depth.rename(columns={'ID' : 'feature_id'}, inplace=True)
@@ -127,7 +127,7 @@ def build_db(metadata, chrom_names, struc_vars, mapq_depth, gff, effects, varian
 
     print("Registering dataframes")
     con.register('df_samples', df_samples)
-    con.register('df_sv', df_sv)
+    con.register('df_cnv', df_cnv)
     con.register('df_mapq_depth', df_mapq_depth)
     con.register('df_chroms', df_chroms)
     con.register('df_gff', df_gff)
@@ -139,7 +139,7 @@ def build_db(metadata, chrom_names, struc_vars, mapq_depth, gff, effects, varian
     
     print("Adding dataframes to database")
     con.execute("CREATE TABLE IF NOT EXISTS samples AS SELECT * FROM df_samples")   
-    con.execute("CREATE TABLE IF NOT EXISTS structural_variants AS SELECT * FROM df_sv")
+    con.execute("CREATE TABLE IF NOT EXISTS cnvs AS SELECT * FROM df_cnv")
     con.execute("CREATE TABLE IF NOT EXISTS mapq_depth AS SELECT * FROM df_mapq_depth")
     con.execute("CREATE TABLE IF NOT EXISTS chromosome_names AS SELECT * FROM df_chroms")
     con.execute("CREATE TABLE IF NOT EXISTS gff AS SELECT * FROM df_gff")

@@ -130,7 +130,7 @@ def get_filtered_output():
     if config["cnv"]["activate"]:
         final_output = final_output, expand(OUTDIR / "cnv" / "{sample}" / "cnv_calls.tsv",sample=SAMPLES)
         if config["plotting"]["activate"]:
-            final_output = final_output, expand(OUTDIR / "plots" / "{sample}" / "depth_by_regions.png",sample=SAMPLES)
+            final_output = final_output, expand(OUTDIR / "plots" / "{sample}" / "depth_by_windows.png",sample=SAMPLES)
             final_output = final_output, expand(OUTDIR / "plots" / "{sample}" / "mapq.png",sample=SAMPLES)
     if config["genes_mapq_depth"]["activate"]:
         final_output = final_output, expand(OUTDIR / "depth_quality" / "{sample}" / "feature_mapq_depth.tsv",sample=SAMPLES)
@@ -140,9 +140,9 @@ def get_filtered_output():
         final_output = final_output, expand(OUTDIR / "plots" / "{sample}" / "depth_chrom_distribution.png",sample=SAMPLES)
         final_output = final_output, expand(OUTDIR / "plots" / "{sample}" / "depth_global_distribution.png",sample=SAMPLES)
         final_output = final_output, expand(OUTDIR / "plots" / "{sample}" / "depth_by_chrom.png",sample=SAMPLES)
-        if not config["annotate_references"]["activate"]:
-            final_output = final_output, expand(DATASET_OUTDIR / "liftoff" / "{lineage}_unmapped_count.tsv", lineage=LINEAGES)
-            final_output = final_output, expand(DATASET_OUTDIR / "plots" / "{lineage}_unmapped.svg", lineage=LINEAGES)
+        # if not config["annotate_references"]["activate"]:
+        #     final_output = final_output, expand(DATASET_OUTDIR / "liftoff" / "{lineage}_unmapped_count.tsv", lineage=LINEAGES)
+        #     final_output = final_output, expand(DATASET_OUTDIR / "plots" / "{lineage}_unmapped.svg", lineage=LINEAGES)
     return final_output
     
 # =================================================================================================

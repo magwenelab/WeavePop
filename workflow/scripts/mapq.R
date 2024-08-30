@@ -8,14 +8,14 @@ suppressPackageStartupMessages(library(RColorBrewer))
 suppressPackageStartupMessages(library(scales))
 suppressPackageStartupMessages(library(ggnewscale))
 
+print("Reading files")
 # sample <- "SRS8318899"
 # raw<- read.delim("results/samples/samtools/SRS8318899/mapq_window.bed", header = FALSE, col.names = c("Accession", "Start", "End", "MAPQ"), stringsAsFactors = TRUE)
 # chrom_names <- read.csv("config/chromosome_names.csv", header = FALSE, col.names = c("Lineage", "Accession", "Chromosome"))
 # loci <- read.delim("results/dataset/files/loci_to_plot.tsv", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
-# cnv <- read.delim("results/samples/mosdepth/SRS8318899/good_structural_variants.tsv", sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
+# cnv <- read.delim("results/samples/mosdepth/SRS8318899/cnv_calls.tsv", sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
 # repeats_table <- read.delim("/FastData/czirion/DiversityPipeline/results/references/VNI/repeats/VNI_repeats.bed", sep= "\t", header = FALSE, col.names = c("Accession", "Start", "End", "Repeat_type"), stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
 
-print("Reading files")
 raw<- read.delim(snakemake@input[[1]], header = FALSE, col.names = c("Accession", "Start", "End", "MAPQ"), stringsAsFactors = TRUE)
 cnv <- read.delim(snakemake@input[[2]], sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
 repeats_table <- read.delim(snakemake@input[[3]], sep= "\t", header = FALSE, col.names = c("Accession", "Start", "End", "Repeat_type"), stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
@@ -26,6 +26,7 @@ sample <- snakemake@wildcards$sample
 print("Filtering chromosome names")
 chrom_names <- chrom_names %>%
   filter(Accession %in% unique(raw$Accession) )
+
 print("Ordering chromosome names")
 chrom_names['Accession_Chromosome'] <- paste(chrom_names$Chromosome, chrom_names$Accession, sep = "xxx")
 unique_levels <- unique(chrom_names$Accession_Chromosome)
@@ -42,22 +43,21 @@ loci <- loci %>% rename(Accession = seq_id)
 lineage <- levels(as.factor(raw$Lineage))
 
 cnv <- left_join(cnv, chrom_names, by = "Accession")
-cnv$Structure <- str_to_title(cnv$Structure)
-cnv$Structure <- as.factor(cnv$Structure)
+cnv$CNV <- str_to_title(cnv$CNV)
+cnv$CNV <- as.factor(cnv$CNV)
 
-structure <- cnv %>%
-  select(Accession_Chromosome, Chromosome, Start, End, Structure)
+feature <- cnv %>%
+  select(Accession_Chromosome, Chromosome, Start, End, CNV)
 
 repeats<- left_join(repeats_table, chrom_names, by = "Accession")%>%
   select(Accession_Chromosome, Chromosome, Start, End, Repeat_type)
-
 repeats$Repeat_type <- ifelse(repeats$Repeat_type == "Simple_repeat", "Simple repeat", "Others")
 repeats$Repeat_type <- factor(repeats$Repeat_type, levels = c("Simple repeat", "Others"))
 
 print("Getting plot parameters")
 s_lim <- max(raw$MAPQ) + 40
 set2 <- rev(brewer.pal(8, "Set2")[1:6])
-s_colors <- set2[1:nlevels(structure$Structure)]
+s_colors <- set2[1:nlevels(feature$CNV)]
 r_lim <- max(raw$MAPQ) + 60
 r_colors <- colorRampPalette(brewer.pal(12, "Paired"))(nlevels(repeats$Repeat_type))
 raw_color <- "black"
@@ -78,7 +78,7 @@ plot <- ggplot()+
     scale_color_manual(name = "Type of repetitive sequence", values = r_colors)+
     guides(color = guide_legend(order=1))+
     new_scale_color()+
-  geom_segment(data = structure, aes(x = Start, xend = End, y = s_lim, yend = s_lim, color = Structure), linewidth = 2)+
+  geom_segment(data = feature, aes(x = Start, xend = End, y = s_lim, yend = s_lim, color = CNV), linewidth = 2)+
     scale_color_manual(name = "Structural variant", values = s_colors)+
     guides(color = guide_legend(order=2))+
     new_scale_color()+

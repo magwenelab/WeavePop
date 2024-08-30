@@ -8,17 +8,18 @@ suppressPackageStartupMessages(library(RColorBrewer))
 suppressPackageStartupMessages(library(scales))
 suppressPackageStartupMessages(library(patchwork))
 
-print("Reading and processing files")
+print("Reading files")
 #metadata <- read.csv("config/sample_metadata.csv", header = TRUE, stringsAsFactors = TRUE)
+# chrom_names <- read.csv("config/chromosome_names.csv", header = FALSE, col.names = c("lineage", "Accession", "Chromosome"), stringsAsFactors = TRUE)
+# good_stats <- read.delim("results/dataset/files/coverage_good.tsv", sep = "\t", header = TRUE, stringsAsFactors = TRUE)
+
 metadata <- read.csv(snakemake@input[[1]], header = TRUE, stringsAsFactors = TRUE)
 metadata <- mutate(metadata, name = paste(strain, sample, sep = " "))
 
-# chrom_names <- read.csv("config/chromosome_names.csv", header = FALSE, col.names = c("lineage", "Accession", "Chromosome"), stringsAsFactors = TRUE)
 chrom_names <- read.csv(snakemake@input[[2]], header = TRUE, col.names = c("lineage", "Accession", "Chromosome"), stringsAsFactors = TRUE)
 chrom_names <- chrom_names %>%
     select(Accession, Chromosome)
 
-# good_stats <- read.delim("results/dataset/files/coverage_good.tsv", sep = "\t", header = TRUE, stringsAsFactors = TRUE)
 good_stats <- read.delim(snakemake@input[[3]], sep = "\t", header = TRUE, stringsAsFactors = TRUE)
 good_stats <- rename(good_stats, sample = Sample)
 good_stats <- left_join(good_stats, metadata, by = "sample")

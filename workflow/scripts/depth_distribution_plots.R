@@ -12,6 +12,7 @@ print("Reading files and joining data with chromosome names")
 # depth<- read.delim("depth_distribution.tsv", header = TRUE, stringsAsFactors = TRUE)
 # chrom_names <- read.csv("../../../../config/chromosome_names.csv", header = TRUE, col.names = c("Lineage", "Accession", "Chromosome"))
 # sample <- "SRS17145125"
+
 sample <- snakemake@wildcards$sample
 depth<- read.table(snakemake@input[[1]], header = TRUE, stringsAsFactors = TRUE, sep = "\t")
 chrom_names <- read.csv(snakemake@input[[2]], header = TRUE, col.names = c("Lineage", "Accession", "Chromosome"))
