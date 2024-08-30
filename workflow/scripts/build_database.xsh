@@ -50,7 +50,7 @@ def build_db(metadata, chrom_names, struc_vars, mapq_depth, gff, effects, varian
     df_mapq_depth.rename(columns={'ID' : 'feature_id'}, inplace=True)
     print("MapQ Depth table done!")
 
-    df_chroms = pd.read_csv(chrom_names, names=["lineage", "accession", "chromosome"], dtype = str)
+    df_chroms = pd.read_csv(chrom_names, header = 0, dtype = str)
     print("Chromosome names table done!")
 
     df_gff = pd.read_csv(gff, sep='\t', header = 0, low_memory=False)
