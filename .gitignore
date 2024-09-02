@@ -6,7 +6,7 @@ fastq_combined/
 references/
 srafiles/
 analysis*
-*results*
+results*
 files/SraRunTable.txt
 backup*
 files/loci_to_plot.tsv
