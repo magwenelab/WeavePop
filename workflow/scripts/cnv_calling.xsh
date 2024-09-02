@@ -3,6 +3,7 @@ import io
 import click
 from scipy import ndimage
 import numpy as np
+from pathlib import Path
 
 @click.command()
 @click.option('-di', '--depth_input', help='Path to BED file with depth of each region.', type=click.Path(exists=True))
@@ -64,7 +65,10 @@ def intersect_repeats(depth_input, repeats_input, cnv_output, sample_name, windo
     cnv_regions = cnv_regions[cnv_regions['CNV'] != 'HAPLOID']
     cnv_regions = cnv_regions.round(2)
     cnv_regions['Sample'] = sample_name
-    cnv_regions.to_csv(cnv_output, sep='\t', index=False, header=True)
+    # Make directory if it doesn't exist
+    output_path = Path(cnv_output)
+    output_path.parent.mkdir(parents=True, exist_ok=True)
+    cnv_regions.to_csv(output_path, sep='\t', index=False, header=True)
     
 if __name__ == '__main__':
     intersect_repeats()
