@@ -156,11 +156,11 @@ The environments for particular software used in Snakemake rules are installed b
 
 | Path | Description | Column names |
 | :---------------- | ----: |----: |
-| **results/samples/cnv/{sample}/cnv_calls.tsv**
-| **results/samples/depth_quality/{sample}/depth_by_regions.tsv**
+| **results/samples/cnv/{sample}/cnv_calls.tsv** | Position index 0
+| **results/samples/depth_quality/{sample}/depth_by_regions.tsv** | Position index 0
 | **results/samples/plots/{sample}/depth_by_regions.png**
 | **results/samples/plots/{sample}/mapq.png**
-| results/dataset/depth_quality/cnv_calls.tsv
+| results/dataset/depth_quality/cnv_calls.tsv | Position index 0
 
 <details>
 <summary> Intermediate files </summary> 
@@ -184,7 +184,8 @@ The environments for particular software used in Snakemake rules are installed b
 
 | Path | Description | Column names |
 | :---------------- | ----: |----: |
-| results/samples/depth_quality/{sample}/mapq_depth_region.bed
+| results/samples/depth_quality/{sample}/mapq_depth_region.bed | Position index 0
+
 
 </details>
 

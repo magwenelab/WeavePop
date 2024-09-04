@@ -40,6 +40,9 @@ def build_db(metadata, chrom_names, cnvs, mapq_depth, gff, effects, variants, pr
     df_samples = pd.read_csv(metadata)
     df_samples.columns = df_samples.columns.str.lower()
     df_samples.columns = df_samples.columns.str.replace(' ', '_')
+    if 'dataset' not in df_samples.columns:
+        df_samples['dataset'] = "X" 
+        
     print("Metadata table done!")
 
     df_cnv = pd.read_csv(cnvs, sep='\t')

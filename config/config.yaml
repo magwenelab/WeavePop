@@ -2,8 +2,8 @@
 #   Choose which workflow to run
 # =================================================================================================
 
-sample_workflow: True
-join_datasets_workflow: False
+sample_workflow: False
+join_datasets_workflow: True
 
 # =================================================================================================
 # Sample workflow parameters
@@ -18,13 +18,13 @@ fastqs:
 references: 
   directory: "data/references/" # Path to directory with reference genomes.
 
-samples: "config/metadata2.csv" # Relative path to metadata CSV table.
+samples: "config/sample_metadata.csv" # Relative path to metadata CSV table.
 chromosomes: "config/chromosome_names.csv" # Relative path to chromosome names CSV table.
 species_name: "Cryptococcus_neoformans" 
 samples_to_exclude: # Optional: File with list of samples to exclude from all analyses.
 # ------------------Output-------------------------------------------------------------------------
 
-output_directory: "results_2" # Name for the output directory
+output_directory: "results_1" # Name for the output directory
 
 # ------------------Annotation of reference genomes------------------------------------------------
 
@@ -48,8 +48,8 @@ depth_quality:
     low_MAPQ_limit: 20 # Top limit for low MAPQ reads
     high_MAPQ_limit: 60 # Bottom limit for high MAPQ reads
     min_position_depth: 5 # Minimum depth for a position to be considered covered
-    min_percent_MAPQ: 93 # Minimum percentage of reads in the high MAPQ bin
-    min_percent_genome-wide_depth: 50 # Minimum percentage of genome-wide depth (Global mode)
+    min_percent_MAPQ: 75 # Minimum percentage of reads in the high MAPQ bin
+    min_percent_genome-wide_depth: 2 # Minimum percentage of genome-wide depth (Global mode)
     min_percent_properly_paired_reads: 25 # Minimum percentage of properly paired mapped reads
     min_percent_coverage: 50 # Minimum percentage of genome-wide coverage
     exclude_samples: True # Exclude samples that do not meet the quality thresholds
@@ -78,7 +78,7 @@ plotting:
   activate: True
   loci: "config/loci.csv" # Relative path to table with loci to add to plots
   metadata2color : "source" # Column name in the samples table to color the samples in the plots
-  scale : 0.7 # Ggsave scale parameter to adjust the size of the dataset plots. Use lower values for fewer samples and bigger values for more samples.
+  scale : 0.3 # Ggsave scale parameter to adjust the size of the dataset plots. Use lower values for fewer samples and bigger values for more samples.
 
 # ------------------Join sample results into dataset-wide files------------------------------------
 dataset: 
@@ -91,9 +91,12 @@ database:
 # =================================================================================================
 # Join datasets workflow parameters
 # =================================================================================================
-
-datasets_paths: "results_1,results_2" # Comma-separated list of directories with datasets to join.
-joint_datasets_output: "results_joined" # Name for the output directory with joined datasets.
+# This workflow joins the results of running the sample_workflow in different datasets. It assumes that
+# if the same lineage is present in the different datasets, the same reference genome was used.
+# datasets_paths: "results_1,results_2"
+datasets_paths: "/FastData/czirion/DiversityPipeline/results_1,/FastData/czirion/DiversityPipeline/results_2" # Comma-separated list of directories with datasets to join.
+datasets_names: "R1,R2" # Comma-separated list of names for the datasets.
+joint_datasets_output: "results_joined_R1R2" # Name for the output directory with joined datasets.
 
 # =================================================================================================
 #   Parameters for individual tools
