@@ -13,26 +13,30 @@ print("Reading files")
 # chrom_names <- read.csv("config/chromosome_names.csv", header = TRUE, col.names = c("lineage", "Accession", "Chromosome"), colClasses = "factor")
 # good_stats <- read.delim("results/dataset/files/depth_by_chrom_good.tsv", sep = "\t", header = TRUE, stringsAsFactors = TRUE)
 # raw_stats <- read.delim("results/dataset/files/depth_by_chrom_raw.tsv", sep = "\t", header = TRUE, stringsAsFactors = TRUE)
+# map_stats <- read.table("results/dataset/files/mapping_stats.tsv",header = TRUE, stringsAsFactors = TRUE, sep = "\t")
 
 metadata <- read.csv(snakemake@input[[1]], header = TRUE, stringsAsFactors = TRUE)
+chrom_names <- read.csv(snakemake@input[[2]], header = TRUE, col.names = c("lineage", "Accession", "Chromosome"), colClasses = "factor")
+good_stats <- read.delim(snakemake@input[[3]], sep = "\t", header = TRUE, stringsAsFactors = TRUE)
+raw_stats <- read.delim(snakemake@input[[4]], sep = "\t", header = TRUE, stringsAsFactors = TRUE)
+map_stats <- read.table(snakemake@input[[5]], header = TRUE, stringsAsFactors = TRUE, sep = "\t")
+
+print("Joining and arranging data")
 metadata <- metadata %>%
     select(sample, strain, lineage) %>%
     mutate(name = paste(strain, sample, sep = " "))
 
-chrom_names <- read.csv(snakemake@input[[2]], header = TRUE, col.names = c("lineage", "Accession", "Chromosome"), colClasses = "factor")
 chrom_names <- select(chrom_names, Accession, Chromosome)
 
-good_stats <- read.delim(snakemake@input[[3]], sep = "\t", header = TRUE, stringsAsFactors = TRUE)
 good_stats <- rename(good_stats, sample = Sample)
 good_stats <- left_join(good_stats, metadata, by = "sample")
 good_stats <- left_join(good_stats, chrom_names, by = "Accession")
 
-raw_stats <- read.delim(snakemake@input[[4]], sep = "\t", header = TRUE, stringsAsFactors = TRUE)
 raw_stats <- rename(raw_stats, sample = Sample)
 raw_stats <- left_join(raw_stats, metadata, by = "sample")
 raw_stats <- left_join(raw_stats, chrom_names, by = "Accession")
 
-print("Making plot parameters")
+print("Getting plot parameters")
 topylim <- max(good_stats$Global_Mean) + max(good_stats$Global_Mean / 10)
 raw_color = "#B3B3B3"
 good_color = "#666666" 
@@ -66,9 +70,7 @@ g <- ggplot(all) +
          y = "Read depth (X)",
          x = "")
 
-print("Reading and processing files")
-# map_stats <- read.table("results/dataset/files/mapping_stats.tsv",header = TRUE, stringsAsFactors = TRUE, sep = "\t")
-map_stats <- read.table(snakemake@input[[5]], header = TRUE, stringsAsFactors = TRUE, sep = "\t")
+print("Joining and arranging data")
 
 map_stats_metad <- merge(map_stats, metadata, by = "sample")
 stats_metad <- map_stats_metad %>%
@@ -88,7 +90,7 @@ stats_qualit <- stats_long %>%
 stats_qualit$Metric <- factor(stats_qualit$Metric, levels = c("percent_low_mapq","percent_inter_mapq","percent_high_mapq"),
                               labels = c("Low MAPQ", "Intermediate MAPQ", "High MAPQ"))
 
-print("Making plot parameters")
+print("Getting plot parameters")
 palette_reads <- brewer.pal(n = length(unique(stats_reads$Metric)), name = "BuPu")
 palette_qualit <- brewer.pal(n = length(unique(stats_qualit$Metric)), name = "BuGn")
 

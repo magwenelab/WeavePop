@@ -14,18 +14,22 @@ print("Reading files")
 # good_stats <- read.delim("results/dataset/files/coverage_good.tsv", sep = "\t", header = TRUE, stringsAsFactors = TRUE)
 
 metadata <- read.csv(snakemake@input[[1]], header = TRUE, stringsAsFactors = TRUE)
-metadata <- mutate(metadata, name = paste(strain, sample, sep = " "))
-
 chrom_names <- read.csv(snakemake@input[[2]], header = TRUE, col.names = c("lineage", "Accession", "Chromosome"), stringsAsFactors = TRUE)
+good_stats <- read.delim(snakemake@input[[3]], sep = "\t", header = TRUE, stringsAsFactors = TRUE)
+
+print("Filtering chromosome names")
 chrom_names <- chrom_names %>%
     select(Accession, Chromosome)
 
-good_stats <- read.delim(snakemake@input[[3]], sep = "\t", header = TRUE, stringsAsFactors = TRUE)
+print("Joining and arranging data")
+metadata <- mutate(metadata, name = paste(strain, sample, sep = " "))
+
 good_stats <- rename(good_stats, sample = Sample)
 good_stats <- left_join(good_stats, metadata, by = "sample")
 good_stats <- left_join(good_stats, chrom_names, by = "Accession")
 
-print("Making plot parameters")
+
+print("Getting plot parameters")
 toplim <- ceiling(max(good_stats$Norm_Chrom_Mean))
 values <- seq(0, toplim, by = 1)
 ylabel <- "Normalized depth"

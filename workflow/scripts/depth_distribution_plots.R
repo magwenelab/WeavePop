@@ -20,8 +20,11 @@ chrom_names <- read.csv(snakemake@input[[2]], header = TRUE, col.names = c("Line
 print("Adding 0 to null depth values")
 depth[is.na(depth)] <- 0
 
+print("Filtering chromosome names")
 chrom_names <- chrom_names %>%
   filter(Accession %in% unique(depth$Accession) )
+print("Ordering chromosome names")
+
 chrom_names['Accession_Chromosome'] <- paste(chrom_names$Chromosome, chrom_names$Accession, sep = "xxx")
 unique_levels <- unique(chrom_names$Accession_Chromosome)
 new_order <- c(rbind(matrix(unique_levels, nrow = 2, byrow = TRUE)))
@@ -31,10 +34,11 @@ if (length(unique_levels) %% 2 != 0){
 }
 chrom_names$Accession_Chromosome <- factor(chrom_names$Accession_Chromosome, levels = new_order)
 
+print("Joining and arranging data")
 depth <- left_join(depth, chrom_names, by = "Accession")
 lineage <- levels(as.factor(depth$Lineage))
 
-print("Plotting depth distribution by chromosome")
+print("Getting plot parameters")
 raw_color = "#B3B3B3"
 good_color = "#666666" 
 color_quality = c("Good quality alignments" = good_color, "All alignments" = raw_color)
