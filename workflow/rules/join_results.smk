@@ -201,7 +201,9 @@ rule copy_snpeff_data:
     params:
         dir = REFDIR / "snpeff_data"
     shell:
-        "ln -s -r {input} {params.dir} && touch {output}"
+        """
+        ln -sf {input} {params.dir} && touch {output}
+        """
 
 rule copy_snpeff_config:
     input:
