@@ -29,6 +29,7 @@ def join_gff(output, lineage_tsv):
         'frame', 'ID', 'Parent', 'locus', 'Name', 'description', 'old_ID', 'lineage',
         'matches_ref_protein','missing_start_codon', 'missing_stop_codon', 'inframe_stop_codon']
     existing_columns = [column for column in keep_columns if column in df.columns]
+    print(existing_columns)
     df = df[existing_columns]
     print("Replacing True/False for Yes/No")
     df = df.replace({True: 'Yes', False: 'No'})
