@@ -59,13 +59,18 @@ def build_db(metadata, chrom_names, cnvs, mapq_depth, gff, effects, variants, pr
     df_gff = pd.read_csv(gff, sep='\t', header = 0, low_memory=False)
     df_gff['feature_id_lineage'] = df_gff['feature_id'] + '_' + df_gff['lineage']
     df_gff.columns = df_gff.columns.str.lower()
-    ref_mutations = ['missing_start_codon', 'missing_stop_codon', 'inframe_stop_codon']
-    for column in ref_mutations:
-        df_gff[column] = df_gff[column].apply(lambda x: column if x == 'Yes' else x)
-    df_gff['mutation_in_reference'] = df_gff[ref_mutations].apply(lambda x: ', '.join(x.dropna()), axis=1)
 
-    df_gff = df_gff.drop(columns=ref_mutations)
-    
+    ref_mutations = ['missing_start_codon', 'missing_stop_codon', 'inframe_stop_codon']
+
+    if all(column in df_gff.columns for column in ref_mutations):
+        for column in ref_mutations:
+            df_gff[column] = df_gff[column].apply(lambda x: column if x == 'Yes' else x)
+        df_gff['mutation_in_reference'] = df_gff[ref_mutations].apply(lambda x: ', '.join(x.dropna()), axis=1)
+        df_gff = df_gff.drop(columns=ref_mutations)
+    else:
+        df_gff['mutation_in_reference'] = None
+
+
     print("GFF table done!")
     print("Formatting effects table")
     print("Getting gene IDs from GFF file")
