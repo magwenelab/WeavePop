@@ -4,12 +4,12 @@ from pathlib import Path
 import click
 
 @click.command()
-@click.option("--mapqbed", "-m", help='BED file with MAPQ per window', type=click.Path(exists=True))
-@click.option("--depthbed", "-c", help='BED file with depth per window', type=click.Path(exists=True))
-@click.option("--gff", "-g", help='Sample gff', type=click.Path(exists=True))
-@click.option("--depthmapq", "-cm", help ='Intermediate BED file with MAPQ and Depth', type=click.Path())
-@click.option("--global_mode", "-gm", help='Global mode', type=click.Path(exists=True))
-@click.option("--sample", "-s", help='Sample name', type=str)
+@click.option("--mapqbed", "-mi", help='BED file with MAPQ per window', type=click.Path(exists=True))
+@click.option("--depthbed", "-di", help='BED file with depth per window', type=click.Path(exists=True))
+@click.option("--gff", "-gi", help='Sample gff', type=click.Path(exists=True))
+@click.option("--global_mode", "-gmi", help='Global mode', type=click.Path(exists=True))
+@click.option("--sample", "-sp", help='Sample name', type=str)
+@click.option("--depthmapq", "-dmo", help ='Intermediate BED file with MAPQ and Depth', type=click.Path())
 @click.option("--output", "-o", help= 'Output table with average MAPQ and Depth per genetic feature.', type=click.Path())
 def mapqdepth2gff(mapqbed, depthbed, gff, depthmapq, global_mode, sample, output):
     print("Make merged version of BED file with MAPQ and Depth columns")

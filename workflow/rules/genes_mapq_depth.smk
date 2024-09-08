@@ -58,4 +58,11 @@ rule mapq_depth:
     log: 
         "logs/samples/depth_quality/mapq_depth_{sample}.log"
     shell:
-        "xonsh workflow/scripts/mapq_depth.xsh -m {input.mapqbed} -c {input.depthbed} -g {input.gff} -cm {output.depthmapq} -gm {input.global_mode} -s {wildcards.sample} -o {output.tsv} &> {log}"
+        "xonsh workflow/scripts/mapq_depth.xsh "
+        "-mi {input.mapqbed} "
+        "-di {input.depthbed} "
+        "-gi {input.gff} "
+        "-gmi {input.global_mode} "
+        "-sp {wildcards.sample} "
+        "-dmo {output.depthmapq} "
+        "-o {output.tsv} &> {log}"
