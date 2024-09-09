@@ -115,7 +115,7 @@ def get_dataset_output():
             final_output.append(REFDIR / "lifotff" / "unmapped_count.tsv")
             final_output.append(REFDIR / "lifotff" / "unmapped.svg")
             final_output.append(DATASET_OUTDIR / "liftoff" / "unmapped_count.tsv")
-            final_output.append(DATASET_OUTDIR / "plots" / "unmapped.svg")
+            final_output.append(DATASET_OUTDIR / "liftoff" / "unmapped.svg")
     if config["database"]["activate"]:
         final_output.append(expand(DATASET_OUTDIR / "database.db"))
     return final_output

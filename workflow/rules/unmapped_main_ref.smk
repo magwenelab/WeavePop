@@ -30,12 +30,12 @@ rule unmapped_samples_plot:
         expand(rules.liftoff.output.unmapped, sample=SAMPLES)        
     output:
         DATASET_OUTDIR / "liftoff" / "unmapped_count.tsv",
-        DATASET_OUTDIR / "plots" / "unmapped.svg"
+        DATASET_OUTDIR / "liftoff" / "unmapped.svg"
     conda:
         "../envs/r.yaml"
     params:
         dir = OUTDIR / "liftoff"
     log:
-        "logs/dataset/plots/unmapped_samples_plot.log"
+        "logs/dataset/liftoff/unmapped_samples_plot.log"
     script:
         "../scripts/samples_unmapped_main.R"
