@@ -48,15 +48,15 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="pt"
-     inkscape:zoom="0.48338699"
-     inkscape:cx="575.10857"
-     inkscape:cy="690.95777"
+     inkscape:zoom="0.68361244"
+     inkscape:cx="560.99038"
+     inkscape:cy="513.44882"
      inkscape:window-width="1920"
-     inkscape:window-height="1016"
+     inkscape:window-height="962"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
-     inkscape:current-layer="node19" />
+     inkscape:current-layer="graph0" />
   <g
      id="graph0"
      class="graph"
@@ -65,205 +65,324 @@
        id="title1">snakemake_dag</title>
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="m 379.03817,-459.03271 -86.06948,125.90272"
+       d="m 388.88097,-459.03271 -95.91228,125.90272"
        id="path153"
        inkscape:connector-type="polyline"
        inkscape:connector-curvature="0"
        inkscape:connection-start="#node7" />
     <polygon
-       fill="white"
+       fill="#ffffff"
        stroke="none"
-       points="-4,4 -4,-832 904.99,-832 904.99,4 -4,4"
-       id="polygon1" />
+       points="904.99,4 -4,4 -4,-832 904.99,-832 "
+       id="polygon1"
+       transform="translate(-0.08478159,-0.14785311)" />
     <!-- 0 -->
     <g
        id="node1"
-       class="node">
+       class="node"
+       transform="translate(-43.396685)">
       <title
          id="title2">0</title>
       <path
          fill="none"
          stroke="#d87556"
          stroke-width="2"
-         d="M471.99,-36C471.99,-36 419.99,-36 419.99,-36 413.99,-36 407.99,-30 407.99,-24 407.99,-24 407.99,-12 407.99,-12 407.99,-6 413.99,0 419.99,0 419.99,0 471.99,0 471.99,0 477.99,0 483.99,-6 483.99,-12 483.99,-12 483.99,-24 483.99,-24 483.99,-30 477.99,-36 471.99,-36"
+         d="m 471.99,-36 c 0,0 -52,0 -52,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 52,0 52,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
          id="path2"
          style="stroke:#f3e316;stroke-opacity:1" />
       <text
          text-anchor="middle"
-         x="445.99"
+         x="445.98999"
          y="-15.62"
          font-family="sans"
-         font-size="10.00"
+         font-size="10px"
          id="text2">complete_db</text>
     </g>
     <!-- 1 -->
-    <g
-       id="node2"
-       class="node"
-       transform="translate(-23.651685,-25.841622)">
-      <title
-         id="title3">1</title>
-      <path
-         fill="none"
-         stroke="#d85e56"
-         stroke-width="2"
-         d="m 439.87,-180 c 0,0 -49.75,0 -49.75,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 49.75,0 49.75,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
-         id="path3"
-         style="stroke:#a32d26;stroke-opacity:1" />
-      <text
-         text-anchor="middle"
-         x="414.98999"
-         y="-159.62"
-         font-family="sans"
-         font-size="10px"
-         id="text3">quality_filter</text>
-    </g>
     <!-- 1&#45;&gt;0 -->
     <!-- 2 -->
-    <g
-       id="node3"
-       class="node"
-       transform="translate(-21.651685,-26.012433)">
-      <title
-         id="title5">2</title>
-      <path
-         fill="none"
-         stroke="#d88556"
-         stroke-width="2"
-         d="m 452.87,-252 c 0,0 -79.75,0 -79.75,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 79.75,0 79.75,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
-         id="path5"
-         style="stroke:#a32d26;stroke-opacity:1" />
-      <text
-         text-anchor="middle"
-         x="412.98999"
-         y="-231.62"
-         font-family="sans"
-         font-size="10px"
-         id="text5">join_mapping_stats</text>
-    </g>
     <!-- 2&#45;&gt;1 -->
     <!-- 3 -->
+    <!-- 3&#45;&gt;2 -->
+    <!-- 4 -->
+    <!-- 4&#45;&gt;3 -->
+    <!-- 6 -->
+    <!-- 4&#45;&gt;6 -->
+    <!-- 7 -->
+    <!-- 4&#45;&gt;7 -->
+    <!-- 12 -->
+    <!-- 4&#45;&gt;12 -->
+    <!-- 17 -->
+    <!-- 4&#45;&gt;17 -->
+    <!-- 18 -->
+    <!-- 4&#45;&gt;18 -->
+    <!-- 19 -->
+    <!-- 4&#45;&gt;19 -->
+    <!-- 27 -->
+    <!-- 4&#45;&gt;27 -->
+    <!-- 29 -->
+    <!-- 4&#45;&gt;29 -->
+    <!-- 35 -->
+    <!-- 4&#45;&gt;35 -->
+    <!-- 5 -->
+    <!-- 5&#45;&gt;4 -->
+    <!-- 13 -->
+    <!-- 5&#45;&gt;13 -->
+    <!-- 14 -->
+    <!-- 5&#45;&gt;14 -->
+    <!-- 5&#45;&gt;19 -->
+    <!-- 20 -->
+    <!-- 5&#45;&gt;20 -->
+    <!-- 37 -->
+    <!-- 5&#45;&gt;37 -->
+    <!-- 38 -->
+    <!-- 5&#45;&gt;38 -->
+    <!-- 6&#45;&gt;3 -->
+    <!-- 11 -->
+    <!-- 6&#45;&gt;11 -->
+    <!-- 16 -->
     <g
-       id="node4"
+       id="node17"
        class="node"
-       transform="translate(-18.651685,-26.183244)">
+       transform="translate(-11.778914,-26.183244)">
       <title
-         id="title7">3</title>
+         id="title45">16</title>
       <path
          fill="none"
-         stroke="#d85656"
+         stroke="#56d8a2"
          stroke-width="2"
-         d="m 439.37,-324 c 0,0 -58.75,0 -58.75,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 58.75,0 58.75,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
-         id="path7"
-         style="stroke:#a32d26;stroke-opacity:1" />
+         d="m 320.24,-324 c 0,0 -50.5,0 -50.5,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 50.5,0 50.5,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
+         id="path45"
+         style="stroke:#a7d856;stroke-opacity:1" />
       <text
          text-anchor="middle"
-         x="409.98999"
+         x="294.98999"
          y="-303.62"
          font-family="sans"
          font-size="10px"
-         id="text7">mapping_stats</text>
+         id="text45">mapq_depth</text>
     </g>
-    <!-- 3&#45;&gt;2 -->
-    <!-- 4 -->
+    <!-- 6&#45;&gt;16 -->
+    <!-- 7&#45;&gt;6 -->
+    <!-- 8 -->
+    <!-- 8&#45;&gt;0 -->
+    <!-- 9 -->
+    <!-- 9&#45;&gt;0 -->
+    <!-- 10 -->
+    <!-- 10&#45;&gt;9 -->
+    <!-- 11&#45;&gt;10 -->
+    <!-- 12&#45;&gt;11 -->
+    <!-- 13&#45;&gt;10 -->
+    <!-- 14&#45;&gt;13 -->
+    <!-- 15 -->
+    <!-- 15&#45;&gt;0 -->
+    <!-- 16&#45;&gt;15 -->
+    <!-- 17&#45;&gt;16 -->
+    <!-- 18&#45;&gt;16 -->
+    <!-- 18&#45;&gt;17 -->
+    <!-- 19&#45;&gt;16 -->
+    <!-- 19&#45;&gt;27 -->
+    <!-- 19&#45;&gt;29 -->
+    <!-- 20&#45;&gt;19 -->
+    <!-- 31 -->
+    <!-- 20&#45;&gt;31 -->
+    <!-- 20&#45;&gt;37 -->
+    <!-- 20&#45;&gt;38 -->
+    <!-- 21 -->
+    <!-- 21&#45;&gt;20 -->
+    <!-- 22 -->
+    <!-- 22&#45;&gt;21 -->
+    <!-- 23 -->
+    <!-- 23&#45;&gt;22 -->
+    <!-- 24 -->
+    <!-- 24&#45;&gt;23 -->
+    <!-- 24&#45;&gt;27 -->
+    <!-- 24&#45;&gt;29 -->
+    <!-- 24&#45;&gt;31 -->
+    <!-- 24&#45;&gt;38 -->
+    <!-- 25 -->
+    <!-- 25&#45;&gt;0 -->
+    <!-- 26 -->
+    <!-- 26&#45;&gt;25 -->
+    <!-- 27&#45;&gt;26 -->
+    <!-- 27&#45;&gt;29 -->
+    <!-- 28 -->
+    <!-- 28&#45;&gt;25 -->
+    <!-- 29&#45;&gt;28 -->
+    <!-- 30 -->
+    <!-- 30&#45;&gt;0 -->
+    <!-- 31&#45;&gt;30 -->
+    <!-- 32 -->
+    <!-- 32&#45;&gt;0 -->
+    <!-- 33 -->
+    <!-- 33&#45;&gt;32 -->
+    <!-- 34 -->
+    <!-- 34&#45;&gt;33 -->
+    <!-- 35&#45;&gt;32 -->
+    <!-- 35&#45;&gt;34 -->
+    <!-- 36 -->
+    <!-- 36&#45;&gt;34 -->
+    <!-- 37&#45;&gt;36 -->
+    <!-- 38&#45;&gt;37 -->
     <g
-       id="node5"
+       id="node23"
        class="node"
-       transform="translate(48.010229,-260.48739)">
+       transform="translate(19.500001,-65.65826)">
       <title
-         id="title9">4</title>
+         id="title74">22</title>
       <path
          fill="none"
-         stroke="#70d856"
+         stroke="#56d8d0"
          stroke-width="2"
-         d="m 347.99,-540 c 0,0 -30,0 -30,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 30,0 30,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
-         id="path9"
-         style="stroke:#2b701a;stroke-opacity:1" />
+         d="m 788.24,-684 c 0,0 -38.5,0 -38.5,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 38.5,0 38.5,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
+         id="path74"
+         style="stroke:#1f24d7;stroke-opacity:1" />
       <text
          text-anchor="middle"
-         x="332.98999"
-         y="-519.62"
+         x="768.98999"
+         y="-663.62"
          font-family="sans"
          font-size="10px"
-         id="text9">snippy</text>
+         id="text74">fix_gff_tsv</text>
     </g>
-    <!-- 4&#45;&gt;3 -->
-    <!-- 6 -->
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
+       d="m 788.31908,-764.48739 0.0772,14.82913"
+       id="path108"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#node24"
+       inkscape:connection-end="#node23" />
     <g
-       id="node7"
+       id="node24"
        class="node"
-       transform="translate(-20.646685,-99.032708)"
-       inkscape:connector-avoid="true">
+       transform="translate(19.230365,-44.48739)">
       <title
-         id="title11">6</title>
+         id="title76">23</title>
       <path
          fill="none"
-         stroke="#566bd8"
+         stroke="#78d856"
          stroke-width="2"
-         d="m 450.74,-396 c 0,0 -77.5,0 -77.5,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 77.5,0 77.5,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
-         id="path11"
-         style="stroke:#a32d26;stroke-opacity:1" />
+         d="m 791.62,-756 c 0,0 -45.25,0 -45.25,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 45.25,0 45.25,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
+         id="path76"
+         style="stroke:#1f24d7;stroke-opacity:1" />
       <text
          text-anchor="middle"
-         x="411.98999"
-         y="-375.62"
+         x="768.98999"
+         y="-735.62"
          font-family="sans"
          font-size="10px"
-         id="text11">depth_distribution</text>
+         id="text76">agat_fix_gff</text>
     </g>
-    <!-- 4&#45;&gt;6 -->
-    <!-- 7 -->
     <g
-       id="node8"
+       id="node22"
        class="node"
-       transform="translate(-2.4623397,-104.82704)"
-       inkscape:connector-avoid="true">
+       transform="translate(19.495001,-86.829131)">
       <title
-         id="title13">7</title>
+         id="title72">21</title>
       <path
          fill="none"
-         stroke="#5673d8"
+         stroke="#56d8a9"
          stroke-width="2"
-         d="m 451.37,-468 c 0,0 -40.75,0 -40.75,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 40.75,0 40.75,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
-         id="path13"
-         style="stroke:#a32d26;stroke-opacity:1" />
+         d="m 788.62,-612 c 0,0 -39.25,0 -39.25,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 39.25,0 39.25,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
+         id="path72"
+         style="stroke:#1f24d7;stroke-opacity:1" />
       <text
          text-anchor="middle"
-         x="430.98999"
-         y="-447.62"
+         x="768.98999"
+         y="-591.62"
          font-family="sans"
          font-size="10px"
-         id="text13">bam_good</text>
+         id="text72">main_links</text>
     </g>
-    <!-- 4&#45;&gt;7 -->
-    <!-- 12 -->
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
+       d="m 788.49,-713.65826 v 14.82913"
+       id="path109"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#node23"
+       inkscape:connection-end="#node22" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
+       d="m 623.91971,-99.406478 -185.9689,68.40157"
+       id="path123"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#node33"
+       inkscape:connection-end="#node1" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
+       d="M 846.865,-111.68645 440.3841,-25.969187"
+       id="path124"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#node31"
+       inkscape:connection-end="#node1" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
+       d="M 512.33522,-99.406478 426.85864,-36"
+       id="path125"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#node10"
+       inkscape:connection-end="#node1" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
+       d="M 402.59331,-169.84162 V -36"
+       id="path126"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#node2"
+       inkscape:connection-end="#node1" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
+       d="M 304.82819,-99.406478 380.97621,-36"
+       id="path127"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#node16"
+       inkscape:connection-end="#node1" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
+       d="m 230.42441,-32.972304 134.1689,11.667714"
+       id="path128"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#node9"
+       inkscape:connection-end="#node1" />
     <g
-       id="node13"
+       id="node9"
        class="node"
-       transform="translate(-5.394457,-29.525397)"
-       inkscape:connector-avoid="true">
+       transform="translate(-73.945585,53.951384)">
       <title
-         id="title15">12</title>
+         id="title48">8</title>
       <path
          fill="none"
-         stroke="#56c9d8"
+         stroke="#567bd8"
          stroke-width="2"
-         d="m 560.87,-396 c 0,0 -67.75,0 -67.75,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 67.75,0 67.75,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
-         id="path15" />
+         d="m 292.37,-108 c 0,0 -46.75,0 -46.75,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 46.75,0 46.75,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
+         id="path48" />
       <text
          text-anchor="middle"
-         x="526.98999"
-         y="-375.62"
+         x="268.98999"
+         y="-87.620003"
          font-family="sans"
          font-size="10px"
-         id="text15">mosdepth_good</text>
+         id="text48">copy_config</text>
     </g>
-    <!-- 4&#45;&gt;12 -->
-    <!-- 17 -->
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
+       d="m 158.68453,-103.46224 208.18366,72.944655"
+       id="path129"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#node26"
+       inkscape:connection-end="#node1" />
     <g
        id="node18"
        class="node"
-       transform="translate(35.721086,-26.778329)"
+       transform="translate(43.221086,-26.778329)"
        inkscape:connector-avoid="true">
       <title
          id="title17">17</title>
@@ -282,8 +401,149 @@
          font-size="10px"
          id="text17">mapq</text>
     </g>
-    <!-- 4&#45;&gt;17 -->
-    <!-- 18 -->
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
+       d="M 396.90407,-764.48739 288.90033,-422.77833"
+       id="path139"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#node5"
+       inkscape:connection-end="#node18" />
+    <g
+       id="node2"
+       class="node"
+       transform="translate(-12.401685,-25.841622)">
+      <title
+         id="title3">1</title>
+      <path
+         fill="none"
+         stroke="#d85e56"
+         stroke-width="2"
+         d="m 439.87,-180 c 0,0 -49.75,0 -49.75,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 49.75,0 49.75,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
+         id="path3"
+         style="stroke:#a32d26;stroke-opacity:1" />
+      <text
+         text-anchor="middle"
+         x="414.98999"
+         y="-159.62"
+         font-family="sans"
+         font-size="10px"
+         id="text3">quality_filter</text>
+    </g>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
+       d="m 402.59331,-242.01243 v 36.17081"
+       id="path151"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#node3"
+       inkscape:connection-end="#node2" />
+    <g
+       id="node3"
+       class="node"
+       transform="translate(-10.401685,-26.012433)">
+      <title
+         id="title5">2</title>
+      <path
+         fill="none"
+         stroke="#d88556"
+         stroke-width="2"
+         d="m 452.87,-252 c 0,0 -79.75,0 -79.75,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 79.75,0 79.75,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
+         id="path5"
+         style="stroke:#a32d26;stroke-opacity:1" />
+      <text
+         text-anchor="middle"
+         x="412.98999"
+         y="-231.62"
+         font-family="sans"
+         font-size="10px"
+         id="text5">join_mapping_stats</text>
+    </g>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
+       d="m 402.59332,-314.18324 -1e-5,36.17081"
+       id="path150"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#node4"
+       inkscape:connection-end="#node3" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
+       d="m 387.75805,-459.03271 -89.7117,108.84947"
+       id="path154"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#node7"
+       inkscape:connection-end="#node17" />
+    <g
+       id="node4"
+       class="node"
+       transform="translate(-7.401685,-26.183244)">
+      <title
+         id="title7">3</title>
+      <path
+         fill="none"
+         stroke="#d85656"
+         stroke-width="2"
+         d="m 439.37,-324 c 0,0 -58.75,0 -58.75,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 58.75,0 58.75,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
+         id="path7"
+         style="stroke:#a32d26;stroke-opacity:1" />
+      <text
+         text-anchor="middle"
+         x="409.98999"
+         y="-303.62"
+         font-family="sans"
+         font-size="10px"
+         id="text7">mapping_stats</text>
+    </g>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
+       d="m 402.59332,-459.03271 v 108.84947"
+       id="path149"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#node7"
+       inkscape:connection-end="#node4" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#a4a4a4;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
+       d="m 398.88319,-764.48739 -60.53988,293.71447 1.19059,5.08703 54.55719,115.50265"
+       id="path142"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#node5"
+       inkscape:connection-end="#node4" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
+       d="m 235.82674,-458.52487 31.54879,35.78478"
+       id="path156"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#node19"
+       inkscape:connection-end="#node18" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
+       d="m 283.21109,-386.77833 0,36.59509"
+       id="path157"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#node18"
+       inkscape:connection-end="#node17" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
+       d="m 227.58137,-458.52487 27.5703,65.09336 19.81315,43.24827"
+       id="path158"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#node19"
+       inkscape:connection-end="#node17" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
+       d="m 136.52976,-536.82704 53.93851,76.16637 79.74932,110.47743"
+       id="path159"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-end="#node17"
+       inkscape:connection-start="#node20" />
     <g
        id="node19"
        class="node"
@@ -306,224 +566,76 @@
          font-size="10px"
          id="text19">mosdepth</text>
     </g>
-    <!-- 4&#45;&gt;18 -->
-    <!-- 19 -->
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
+       d="M 391.84871,-764.48739 230.70207,-494.52487"
+       id="path138"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#node5"
+       inkscape:connection-end="#node19" />
     <g
-       id="node20"
+       id="node10"
        class="node"
-       transform="translate(3.7927536,-104.82704)">
+       transform="translate(17.605544,44.593522)">
       <title
-         id="title21">19</title>
+         id="title50">9</title>
       <path
          fill="none"
-         stroke="#97d856"
+         stroke="#d89556"
          stroke-width="2"
-         d="m 134.99,-468 c 0,0 -30,0 -30,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 30,0 30,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
-         id="path21"
-         style="stroke:#831bd9;stroke-opacity:1" />
+         d="m 549.87,-180 c 0,0 -61.75,0 -61.75,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 61.75,0 61.75,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
+         id="path50"
+         style="stroke:#56c9d8;stroke-opacity:1" />
       <text
          text-anchor="middle"
-         x="119.99"
-         y="-447.62"
+         x="518.98999"
+         y="-159.62"
          font-family="sans"
          font-size="10px"
-         id="text21">liftoff</text>
+         id="text50">join_cnv_calling</text>
     </g>
-    <!-- 4&#45;&gt;19 -->
-    <!-- 27 -->
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
+       d="m 536.60054,-242.01243 v 106.60595"
+       id="path147"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#node11"
+       inkscape:connection-end="#node10" />
     <g
-       id="node28"
+       id="node11"
        class="node"
-       transform="translate(18.826629,45.816757)">
+       transform="translate(15.605544,-26.012433)">
       <title
-         id="title23">27</title>
+         id="title52">10</title>
       <path
          fill="none"
-         stroke="#5663d8"
+         stroke="#9fd856"
          stroke-width="2"
-         d="m 68.87,-396 c 0,0 -31.75,0 -31.75,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 31.75,0 31.75,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
-         id="path23"
-         style="stroke:#831bd9;stroke-opacity:1" />
+         d="m 541.37,-252 c 0,0 -40.75,0 -40.75,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 40.75,0 40.75,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
+         id="path52"
+         style="stroke:#56c9d8;stroke-opacity:1" />
       <text
          text-anchor="middle"
-         x="52.990002"
-         y="-375.62"
+         x="520.98999"
+         y="-231.62"
          font-family="sans"
          font-size="10px"
-         id="text23">agat_cds</text>
+         id="text52">cnv_calling</text>
     </g>
-    <!-- 4&#45;&gt;27 -->
-    <!-- 29 -->
-    <g
-       id="node30"
-       class="node"
-       transform="translate(58.083857,-26.183244)">
-      <title
-         id="title25">29</title>
-      <path
-         fill="none"
-         stroke="#8fd856"
-         stroke-width="2"
-         d="m 131.37,-324 c 0,0 -40.75,0 -40.75,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 40.75,0 40.75,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
-         id="path25"
-         style="stroke:#831bd9;stroke-opacity:1" />
-      <text
-         text-anchor="middle"
-         x="110.99"
-         y="-303.62"
-         font-family="sans"
-         font-size="10px"
-         id="text25">agat_prots</text>
-    </g>
-    <!-- 4&#45;&gt;29 -->
-    <!-- 35 -->
-    <g
-       id="node36"
-       class="node"
-       transform="translate(-18.637229,-26.183244)">
-      <title
-         id="title27">35</title>
-      <path
-         fill="none"
-         stroke="#56b1d8"
-         stroke-width="2"
-         d="m 696.87,-324 c 0,0 -55.75,0 -55.75,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 55.75,0 55.75,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
-         id="path27"
-         style="stroke:#e88202;stroke-opacity:1" />
-      <text
-         text-anchor="middle"
-         x="668.98999"
-         y="-303.62"
-         font-family="sans"
-         font-size="10px"
-         id="text27">intersect_vcfs</text>
-    </g>
-    <!-- 4&#45;&gt;35 -->
-    <!-- 5 -->
-    <!-- 5&#45;&gt;4 -->
-    <!-- 13 -->
-    <g
-       id="node14"
-       class="node"
-       transform="translate(15.199445,-26.614863)">
-      <title
-         id="title31">13</title>
-      <path
-         fill="none"
-         stroke="#d8bc56"
-         stroke-width="2"
-         d="m 630.87,-468 c 0,0 -61.75,0 -61.75,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 61.75,0 61.75,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
-         id="path31"
-         style="stroke:#1f24d7;stroke-opacity:1" />
-      <text
-         text-anchor="middle"
-         x="599.98999"
-         y="-447.62"
-         font-family="sans"
-         font-size="10px"
-         id="text31">repeat_masker</text>
-    </g>
-    <!-- 5&#45;&gt;13 -->
-    <!-- 14 -->
-    <g
-       id="node15"
-       class="node"
-       transform="translate(63.204445,-32.827043)">
-      <title
-         id="title33">14</title>
-      <path
-         fill="none"
-         stroke="#59d856"
-         stroke-width="2"
-         d="m 585.49,-540 c 0,0 -67,0 -67,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 67,0 67,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
-         id="path33"
-         style="stroke:#1f24d7;stroke-opacity:1" />
-      <text
-         text-anchor="middle"
-         x="551.98999"
-         y="-519.62"
-         font-family="sans"
-         font-size="10px"
-         id="text33">repeat_modeler</text>
-    </g>
-    <!-- 5&#45;&gt;14 -->
-    <!-- 5&#45;&gt;19 -->
-    <!-- 20 -->
-    <g
-       id="node21"
-       class="node"
-       transform="translate(-3.005,-108)">
-      <title
-         id="title36">20</title>
-      <path
-         fill="none"
-         stroke="#d8ac56"
-         stroke-width="2"
-         d="m 796.12,-540 c 0,0 -54.25,0 -54.25,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 54.25,0 54.25,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
-         id="path36"
-         style="stroke:#1f24d7;stroke-opacity:1" />
-      <text
-         text-anchor="middle"
-         x="768.98999"
-         y="-519.62"
-         font-family="sans"
-         font-size="10px"
-         id="text36">ref2ref_liftoff</text>
-    </g>
-    <!-- 5&#45;&gt;20 -->
-    <!-- 37 -->
-    <g
-       id="node38"
-       class="node"
-       transform="translate(26.995,-26.354055)">
-      <title
-         id="title38">37</title>
-      <path
-         fill="none"
-         stroke="#56d85b"
-         stroke-width="2"
-         d="m 772.87,-396 c 0,0 -67.75,0 -67.75,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 67.75,0 67.75,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
-         id="path38"
-         style="stroke:#e88202;stroke-opacity:1" />
-      <text
-         text-anchor="middle"
-         x="738.98999"
-         y="-375.62"
-         font-family="sans"
-         font-size="10px"
-         id="text38">prepare_refs_db</text>
-    </g>
-    <!-- 5&#45;&gt;37 -->
-    <!-- 38 -->
-    <g
-       id="node39"
-       class="node"
-       transform="translate(-17,-24.716344)"
-       inkscape:connector-avoid="true">
-      <title
-         id="title40">38</title>
-      <path
-         fill="none"
-         stroke="#d8c356"
-         stroke-width="2"
-         d="m 816.49,-468 c 0,0 -67,0 -67,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 67,0 67,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
-         id="path40"
-         style="stroke:#e88202;stroke-opacity:1" />
-      <text
-         text-anchor="middle"
-         x="782.98999"
-         y="-447.62"
-         font-family="sans"
-         font-size="10px"
-         id="text40">extract_ref_seqs</text>
-    </g>
-    <!-- 5&#45;&gt;38 -->
-    <!-- 6&#45;&gt;3 -->
-    <!-- 11 -->
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
+       d="m 536.60054,-314.18324 v 36.17081"
+       id="path146"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#node12"
+       inkscape:connection-end="#node11" />
     <g
        id="node12"
        class="node"
-       transform="translate(0.605543,-26.183244)"
+       transform="translate(15.605544,-26.183244)"
        inkscape:connector-avoid="true">
       <title
          id="title43">11</title>
@@ -542,195 +654,214 @@
          font-size="10px"
          id="text43">depth_by_windows</text>
     </g>
-    <!-- 6&#45;&gt;11 -->
-    <!-- 16 -->
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
+       d="m 418.63839,-459.03271 56.02773,62.85413 44.5141,45.99534"
+       id="path152"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#node7"
+       inkscape:connection-end="#node12" />
     <g
-       id="node17"
+       id="node7"
        class="node"
-       transform="translate(-19.278914,-26.183244)">
+       transform="translate(-9.396685,-99.032708)"
+       inkscape:connector-avoid="true">
       <title
-         id="title45">16</title>
+         id="title11">6</title>
       <path
          fill="none"
-         stroke="#56d8a2"
+         stroke="#566bd8"
          stroke-width="2"
-         d="m 320.24,-324 c 0,0 -50.5,0 -50.5,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 50.5,0 50.5,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
-         id="path45"
-         style="stroke:#a7d856;stroke-opacity:1" />
+         d="m 450.74,-396 c 0,0 -77.5,0 -77.5,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 77.5,0 77.5,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
+         id="path11"
+         style="stroke:#a32d26;stroke-opacity:1" />
       <text
          text-anchor="middle"
-         x="294.98999"
-         y="-303.62"
+         x="411.98999"
+         y="-375.62"
          font-family="sans"
          font-size="10px"
-         id="text45">mapq_depth</text>
+         id="text11">depth_distribution</text>
     </g>
-    <!-- 6&#45;&gt;16 -->
-    <!-- 7&#45;&gt;6 -->
-    <!-- 8 -->
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
+       d="m 431.81991,-536.82704 -20.42846,41.79433"
+       id="path148"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#node8"
+       inkscape:connection-end="#node7" />
     <g
-       id="node9"
+       id="node8"
        class="node"
-       transform="translate(-21.123709,53.951384)">
+       transform="translate(9.6230447,-104.82704)"
+       inkscape:connector-avoid="true">
       <title
-         id="title48">8</title>
+         id="title13">7</title>
       <path
          fill="none"
-         stroke="#567bd8"
+         stroke="#5673d8"
          stroke-width="2"
-         d="m 292.37,-108 c 0,0 -46.75,0 -46.75,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 46.75,0 46.75,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
-         id="path48" />
+         d="m 451.37,-468 c 0,0 -40.75,0 -40.75,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 40.75,0 40.75,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
+         id="path13"
+         style="stroke:#a32d26;stroke-opacity:1" />
       <text
          text-anchor="middle"
-         x="268.98999"
-         y="-87.620003"
-         font-family="sans"
-         font-size="10px"
-         id="text48">copy_config</text>
-    </g>
-    <!-- 8&#45;&gt;0 -->
-    <!-- 9 -->
-    <!-- 9&#45;&gt;0 -->
-    <!-- 10 -->
-    <g
-       id="node11"
-       class="node"
-       transform="translate(0.605543,-26.012433)">
-      <title
-         id="title52">10</title>
-      <path
-         fill="none"
-         stroke="#9fd856"
-         stroke-width="2"
-         d="m 541.37,-252 c 0,0 -40.75,0 -40.75,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 40.75,0 40.75,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
-         id="path52"
-         style="stroke:#56c9d8;stroke-opacity:1" />
-      <text
-         text-anchor="middle"
-         x="520.98999"
-         y="-231.62"
-         font-family="sans"
-         font-size="10px"
-         id="text52">cnv_calling</text>
-    </g>
-    <!-- 10&#45;&gt;9 -->
-    <!-- 11&#45;&gt;10 -->
-    <!-- 12&#45;&gt;11 -->
-    <!-- 13&#45;&gt;10 -->
-    <!-- 14&#45;&gt;13 -->
-    <!-- 15 -->
-    <!-- 15&#45;&gt;0 -->
-    <!-- 16&#45;&gt;15 -->
-    <!-- 17&#45;&gt;16 -->
-    <!-- 18&#45;&gt;16 -->
-    <!-- 18&#45;&gt;17 -->
-    <!-- 19&#45;&gt;16 -->
-    <!-- 19&#45;&gt;27 -->
-    <!-- 19&#45;&gt;29 -->
-    <!-- 20&#45;&gt;19 -->
-    <!-- 31 -->
-    <g
-       id="node32"
-       class="node"
-       transform="translate(0,-26.524866)">
-      <title
-         id="title68">31</title>
-      <path
-         fill="none"
-         stroke="#56d86b"
-         stroke-width="2"
-         d="m 888.99,-468 c 0,0 -30,0 -30,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 30,0 30,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
-         id="path68"
-         style="stroke:#1f24d7;stroke-opacity:1" />
-      <text
-         text-anchor="middle"
-         x="873.98999"
+         x="430.98999"
          y="-447.62"
          font-family="sans"
          font-size="10px"
-         id="text68">gff2tsv</text>
+         id="text13">bam_good</text>
     </g>
-    <!-- 20&#45;&gt;31 -->
-    <!-- 20&#45;&gt;37 -->
-    <!-- 20&#45;&gt;38 -->
-    <!-- 21 -->
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
+       d="m 536.60054,-389.5254 v 39.34216"
+       id="path145"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#node13"
+       inkscape:connection-end="#node12" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
+       d="m 612.27165,-458.61486 -21.54611,132.6914 -1.19058,5.08704 -3.19522,4.51737 -33.83866,38.30662"
+       id="path132"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#node14"
+       inkscape:connection-end="#node11" />
     <g
-       id="node22"
+       id="node14"
        class="node"
-       transform="translate(-3.005,-86.829131)">
+       transform="translate(15.199445,-26.614863)"
+       inkscape:connector-avoid="true">
       <title
-         id="title72">21</title>
+         id="title31">13</title>
       <path
          fill="none"
-         stroke="#56d8a9"
+         stroke="#d8bc56"
          stroke-width="2"
-         d="m 788.62,-612 c 0,0 -39.25,0 -39.25,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 39.25,0 39.25,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
-         id="path72"
+         d="m 630.87,-468 c 0,0 -61.75,0 -61.75,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 61.75,0 61.75,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
+         id="path31"
          style="stroke:#1f24d7;stroke-opacity:1" />
       <text
          text-anchor="middle"
-         x="768.98999"
-         y="-591.62"
+         x="599.98999"
+         y="-447.62"
          font-family="sans"
          font-size="10px"
-         id="text72">main_links</text>
+         id="text31">repeat_masker</text>
     </g>
-    <!-- 21&#45;&gt;20 -->
-    <!-- 22 -->
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
+       d="m 615.19444,-536.82704 v 42.21218"
+       id="path131"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#node15"
+       inkscape:connection-end="#node14" />
     <g
-       id="node23"
+       id="node13"
        class="node"
-       transform="translate(-3,-65.65826)">
+       transform="translate(9.605544,-29.525397)"
+       inkscape:connector-avoid="true">
       <title
-         id="title74">22</title>
+         id="title15">12</title>
       <path
          fill="none"
-         stroke="#56d8d0"
+         stroke="#56c9d8"
          stroke-width="2"
-         d="m 788.24,-684 c 0,0 -38.5,0 -38.5,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 38.5,0 38.5,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
-         id="path74"
-         style="stroke:#1f24d7;stroke-opacity:1" />
+         d="m 560.87,-396 c 0,0 -67.75,0 -67.75,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 67.75,0 67.75,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
+         id="path15" />
       <text
          text-anchor="middle"
-         x="768.98999"
-         y="-663.62"
+         x="526.98999"
+         y="-375.62"
          font-family="sans"
          font-size="10px"
-         id="text74">fix_gff_tsv</text>
+         id="text15">mosdepth_good</text>
     </g>
-    <!-- 22&#45;&gt;21 -->
-    <!-- 23 -->
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
+       id="path134"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#node5"
+       inkscape:connection-end="#node13"
+       d="M 409.02631,-764.48739 530.16755,-425.5254" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
+       d="m 405.59975,-764.48739 32.01186,191.66035"
+       id="path155"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#node5"
+       inkscape:connection-end="#node8" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
+       d="m 402.59331,-764.48739 0,269.45468"
+       id="path137"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#node5"
+       inkscape:connection-end="#node7" />
     <g
-       id="node24"
+       id="node16"
        class="node"
-       transform="translate(-3.005,-44.48739)">
+       transform="translate(-86.778914,-27.406478)">
       <title
-         id="title76">23</title>
+         id="title58">15</title>
       <path
          fill="none"
-         stroke="#78d856"
+         stroke="#a7d856"
          stroke-width="2"
-         d="m 791.62,-756 c 0,0 -45.25,0 -45.25,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 45.25,0 45.25,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
-         id="path76"
-         style="stroke:#1f24d7;stroke-opacity:1" />
+         d="m 405.74,-108 c 0,0 -71.5,0 -71.5,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 71.5,0 71.5,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
+         id="path58" />
       <text
          text-anchor="middle"
-         x="768.98999"
-         y="-735.62"
+         x="369.98999"
+         y="-87.620003"
          font-family="sans"
          font-size="10px"
-         id="text76">agat_fix_gff</text>
+         id="text58">join_mapq_depth</text>
     </g>
-    <!-- 23&#45;&gt;22 -->
-    <!-- 24 -->
-    <!-- 24&#45;&gt;23 -->
-    <!-- 24&#45;&gt;27 -->
-    <!-- 24&#45;&gt;29 -->
-    <!-- 24&#45;&gt;31 -->
-    <!-- 24&#45;&gt;38 -->
-    <!-- 25 -->
-    <!-- 25&#45;&gt;0 -->
-    <!-- 26 -->
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
+       d="m 283.21109,-314.18324 0,178.77676"
+       id="path160"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#node17"
+       inkscape:connection-end="#node16" />
+    <g
+       id="node26"
+       class="node"
+       transform="translate(-7.102257,44.593522)">
+      <title
+         id="title84">25</title>
+      <path
+         fill="none"
+         stroke="#80d856"
+         stroke-width="2"
+         d="m 157.24,-180 c 0,0 -62.5,0 -62.5,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 62.5,0 62.5,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
+         id="path84"
+         style="stroke:#831bd9;stroke-opacity:1" />
+      <text
+         text-anchor="middle"
+         x="125.99"
+         y="-159.62"
+         font-family="sans"
+         font-size="10px"
+         id="text84">join_sequences</text>
+    </g>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
+       d="m 77.762405,-242.01243 35.184565,106.60595"
+       id="path165"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#node27"
+       inkscape:connection-end="#node26" />
     <g
        id="node27"
        class="node"
@@ -752,10 +883,359 @@
          font-size="10px"
          id="text86">cds2csv</text>
     </g>
-    <!-- 26&#45;&gt;25 -->
-    <!-- 27&#45;&gt;26 -->
-    <!-- 27&#45;&gt;29 -->
-    <!-- 28 -->
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
+       d="m 71.821629,-314.18324 v 36.17081"
+       id="path164"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#node28"
+       inkscape:connection-end="#node27" />
+    <g
+       id="node28"
+       class="node"
+       transform="translate(18.826629,45.816757)">
+      <title
+         id="title23">27</title>
+      <path
+         fill="none"
+         stroke="#5663d8"
+         stroke-width="2"
+         d="m 68.87,-396 c 0,0 -31.75,0 -31.75,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 31.75,0 31.75,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
+         id="path23"
+         style="stroke:#831bd9;stroke-opacity:1" />
+      <text
+         text-anchor="middle"
+         x="52.990002"
+         y="-375.62"
+         font-family="sans"
+         font-size="10px"
+         id="text23">agat_cds</text>
+    </g>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
+       d="m 162.74364,-242.01243 -37.52068,106.60595"
+       id="path166"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-end="#node26"
+       inkscape:connection-start="#node29" />
+    <g
+       id="node31"
+       class="node"
+       transform="translate(78.995,-27.406478)">
+      <title
+         id="title93">30</title>
+      <path
+         fill="none"
+         stroke="#56d8c9"
+         stroke-width="2"
+         d="m 810.12,-108 c 0,0 -30.25,0 -30.25,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 30.25,0 30.25,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
+         id="path93"
+         style="stroke:#1f24d7;stroke-opacity:1" />
+      <text
+         text-anchor="middle"
+         x="794.98999"
+         y="-87.620003"
+         font-family="sans"
+         font-size="10px"
+         id="text93">join_gffs</text>
+    </g>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
+       d="m 873.99,-458.52487 0,323.11839"
+       id="path122"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#node32"
+       inkscape:connection-end="#node31" />
+    <g
+       id="node32"
+       class="node"
+       transform="translate(0,-26.524866)">
+      <title
+         id="title68">31</title>
+      <path
+         fill="none"
+         stroke="#56d86b"
+         stroke-width="2"
+         d="m 888.99,-468 c 0,0 -30,0 -30,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 30,0 30,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
+         id="path68"
+         style="stroke:#1f24d7;stroke-opacity:1" />
+      <text
+         text-anchor="middle"
+         x="873.98999"
+         y="-447.62"
+         font-family="sans"
+         font-size="10px"
+         id="text68">gff2tsv</text>
+    </g>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
+       d="m 798.51768,-612 65.44464,117.47513"
+       id="path112"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#node21"
+       inkscape:connection-end="#node32" />
+    <g
+       id="node33"
+       class="node"
+       transform="translate(39.867771,-27.406478)">
+      <title
+         id="title96">32</title>
+      <path
+         fill="none"
+         stroke="#56d89a"
+         stroke-width="2"
+         d="m 682.99,-108 c 0,0 -100,0 -100,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 100,0 100,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
+         id="path96"
+         style="stroke:#e88202;stroke-opacity:1" />
+      <text
+         text-anchor="middle"
+         x="632.98999"
+         y="-87.620003"
+         font-family="sans"
+         font-size="10px"
+         id="text96">join_variant_annotation</text>
+    </g>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
+       d="m 714.92165,-169.84162 -27.62414,34.43514"
+       id="path121"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#node34"
+       inkscape:connection-end="#node33" />
+    <g
+       id="node34"
+       class="node"
+       transform="translate(8.3663867,-25.841622)"
+       inkscape:connector-avoid="true">
+      <title
+         id="title98">33</title>
+      <path
+         fill="none"
+         stroke="#569ad8"
+         stroke-width="2"
+         d="m 769.12,-180 c 0,0 -96.25,0 -96.25,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 96.25,0 96.25,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
+         id="path98"
+         style="stroke:#e88202;stroke-opacity:1" />
+      <text
+         text-anchor="middle"
+         x="720.98999"
+         y="-159.62"
+         font-family="sans"
+         font-size="10px"
+         id="text98">extract_vcf_annotation</text>
+    </g>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
+       d="m 729.36139,-242.01243 v 36.17081"
+       id="path118"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#node35"
+       inkscape:connection-end="#node34" />
+    <g
+       id="node35"
+       class="node"
+       transform="translate(8.3713867,-26.012433)">
+      <title
+         id="title100">34</title>
+      <path
+         fill="none"
+         stroke="#56a2d8"
+         stroke-width="2"
+         d="m 735.99,-252 c 0,0 -30,0 -30,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 30,0 30,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
+         id="path100"
+         style="stroke:#e88202;stroke-opacity:1" />
+      <text
+         text-anchor="middle"
+         x="720.98999"
+         y="-231.62"
+         font-family="sans"
+         font-size="10px"
+         id="text100">snpeff</text>
+    </g>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
+       d="m 684.13552,-314.18324 30.19815,36.17085"
+       id="path119"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#node36"
+       inkscape:connection-end="#node35" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
+       d="m 773.74283,-314.18324 -29.63428,36.17081"
+       id="path117"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#node37"
+       inkscape:connection-end="#node35" />
+    <g
+       id="node37"
+       class="node"
+       transform="translate(22.500001,-26.183244)">
+      <title
+         id="title104">36</title>
+      <path
+         fill="none"
+         stroke="#56b9d8"
+         stroke-width="2"
+         d="m 792.74,-324 c 0,0 -53.5,0 -53.5,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 53.5,0 53.5,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
+         id="path104"
+         style="stroke:#e88202;stroke-opacity:1" />
+      <text
+         text-anchor="middle"
+         x="765.98999"
+         y="-303.62"
+         font-family="sans"
+         font-size="10px"
+         id="text104">build_refs_db</text>
+    </g>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
+       d="m 788.49,-386.35406 v 36.17082"
+       id="path116"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#node38"
+       inkscape:connection-end="#node37" />
+    <g
+       id="node38"
+       class="node"
+       transform="translate(49.495001,-26.354055)">
+      <title
+         id="title38">37</title>
+      <path
+         fill="none"
+         stroke="#56d85b"
+         stroke-width="2"
+         d="m 772.87,-396 c 0,0 -67.75,0 -67.75,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 67.75,0 67.75,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
+         id="path38"
+         style="stroke:#e88202;stroke-opacity:1" />
+      <text
+         text-anchor="middle"
+         x="738.98999"
+         y="-375.62"
+         font-family="sans"
+         font-size="10px"
+         id="text38">prepare_refs_db</text>
+    </g>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
+       d="m 782.66752,-612 -40.73694,125.93684 -1.19058,5.08703 v 12.51957 l 1.19058,5.08704 3.19522,4.51737 29.04158,36.49809"
+       id="path130"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-end="#node38"
+       inkscape:connection-start="#node21" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
+       d="m 788.49,-456.71634 v 34.36228"
+       id="path115"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#node39"
+       inkscape:connection-end="#node38" />
+    <g
+       id="node39"
+       class="node"
+       transform="translate(5.500001,-24.716344)"
+       inkscape:connector-avoid="true">
+      <title
+         id="title40">38</title>
+      <path
+         fill="none"
+         stroke="#d8c356"
+         stroke-width="2"
+         d="m 816.49,-468 c 0,0 -67,0 -67,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 67,0 67,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
+         id="path40"
+         style="stroke:#e88202;stroke-opacity:1" />
+      <text
+         text-anchor="middle"
+         x="782.98999"
+         y="-447.62"
+         font-family="sans"
+         font-size="10px"
+         id="text40">extract_ref_seqs</text>
+    </g>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
+       d="m 788.49,-612 v 119.28366"
+       id="path113"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#node21"
+       inkscape:connection-end="#node39" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
+       d="m 668.83123,-314.18324 -1.84484,120.08183 v 12.51958 l 4.22457,46.17535"
+       id="path120"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#node36"
+       inkscape:connection-end="#node33" />
+    <g
+       id="node36"
+       class="node"
+       transform="translate(0.11277233,-26.183244)">
+      <title
+         id="title27">35</title>
+      <path
+         fill="none"
+         stroke="#56b1d8"
+         stroke-width="2"
+         d="m 696.87,-324 c 0,0 -55.75,0 -55.75,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 55.75,0 55.75,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
+         id="path27"
+         style="stroke:#e88202;stroke-opacity:1" />
+      <text
+         text-anchor="middle"
+         x="668.98999"
+         y="-303.62"
+         font-family="sans"
+         font-size="10px"
+         id="text27">intersect_vcfs</text>
+    </g>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
+       d="m 412.16398,-764.48739 159.09605,299.21935 3.19522,4.51738 81.40076,110.56742"
+       id="path133"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#node5"
+       inkscape:connection-end="#node36" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#a4a4a4;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
+       d="M 389.37138,-764.48739 85.04356,-350.18324"
+       id="path141"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#node5"
+       inkscape:connection-end="#node28" />
+    <g
+       id="node15"
+       class="node"
+       transform="translate(63.204445,-32.827043)">
+      <title
+         id="title33">14</title>
+      <path
+         fill="none"
+         stroke="#59d856"
+         stroke-width="2"
+         d="m 585.49,-540 c 0,0 -67,0 -67,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 67,0 67,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
+         id="path33"
+         style="stroke:#1f24d7;stroke-opacity:1" />
+      <text
+         text-anchor="middle"
+         x="551.98999"
+         y="-519.62"
+         font-family="sans"
+         font-size="10px"
+         id="text33">repeat_modeler</text>
+    </g>
     <g
        id="node29"
        class="node"
@@ -777,470 +1257,43 @@
          font-size="10px"
          id="text90">prots2csv</text>
     </g>
-    <!-- 28&#45;&gt;25 -->
-    <!-- 29&#45;&gt;28 -->
-    <!-- 30 -->
-    <!-- 30&#45;&gt;0 -->
-    <!-- 31&#45;&gt;30 -->
-    <!-- 32 -->
-    <!-- 32&#45;&gt;0 -->
-    <!-- 33 -->
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
+       d="m 171.89358,-314.18324 -1.87944,36.17081"
+       id="path163"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#node30"
+       inkscape:connection-end="#node29" />
     <g
-       id="node34"
+       id="node30"
        class="node"
-       transform="translate(-12.258615,-25.841622)">
+       transform="translate(61.833858,-26.183244)">
       <title
-         id="title98">33</title>
+         id="title25">29</title>
       <path
          fill="none"
-         stroke="#569ad8"
+         stroke="#8fd856"
          stroke-width="2"
-         d="m 769.12,-180 c 0,0 -96.25,0 -96.25,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 96.25,0 96.25,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
-         id="path98"
-         style="stroke:#e88202;stroke-opacity:1" />
+         d="m 131.37,-324 c 0,0 -40.75,0 -40.75,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 40.75,0 40.75,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
+         id="path25"
+         style="stroke:#831bd9;stroke-opacity:1" />
       <text
          text-anchor="middle"
-         x="720.98999"
-         y="-159.62"
-         font-family="sans"
-         font-size="10px"
-         id="text98">extract_vcf_annotation</text>
-    </g>
-    <!-- 33&#45;&gt;32 -->
-    <!-- 34 -->
-    <g
-       id="node35"
-       class="node"
-       transform="translate(-12.253615,-26.012433)">
-      <title
-         id="title100">34</title>
-      <path
-         fill="none"
-         stroke="#56a2d8"
-         stroke-width="2"
-         d="m 735.99,-252 c 0,0 -30,0 -30,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 30,0 30,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
-         id="path100"
-         style="stroke:#e88202;stroke-opacity:1" />
-      <text
-         text-anchor="middle"
-         x="720.98999"
-         y="-231.62"
-         font-family="sans"
-         font-size="10px"
-         id="text100">snpeff</text>
-    </g>
-    <!-- 34&#45;&gt;33 -->
-    <!-- 35&#45;&gt;32 -->
-    <!-- 35&#45;&gt;34 -->
-    <!-- 36 -->
-    <g
-       id="node37"
-       class="node"
-       transform="translate(0,-26.183244)">
-      <title
-         id="title104">36</title>
-      <path
-         fill="none"
-         stroke="#56b9d8"
-         stroke-width="2"
-         d="m 792.74,-324 c 0,0 -53.5,0 -53.5,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 53.5,0 53.5,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
-         id="path104"
-         style="stroke:#e88202;stroke-opacity:1" />
-      <text
-         text-anchor="middle"
-         x="765.98999"
+         x="110.99"
          y="-303.62"
          font-family="sans"
          font-size="10px"
-         id="text104">build_refs_db</text>
+         id="text25">agat_prots</text>
     </g>
-    <!-- 36&#45;&gt;34 -->
-    <!-- 37&#45;&gt;36 -->
-    <!-- 38&#45;&gt;37 -->
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="m 765.99,-764.48739 0,14.82913"
-       id="path108"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#node24"
-       inkscape:connection-end="#node23" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="m 765.99,-713.65826 v 14.82913"
-       id="path109"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#node23"
-       inkscape:connection-end="#node22" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="m 765.99,-662.82913 0,14.82913"
-       id="path111"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#node22"
-       inkscape:connection-end="#node21" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="m 778.65655,-612 82.6669,117.47513"
-       id="path112"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#node21"
-       inkscape:connection-end="#node32" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="m 765.99,-612 v 119.28366"
-       id="path113"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#node21"
-       inkscape:connection-end="#node39" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="m 765.99,-456.71634 v 34.36228"
-       id="path115"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#node39"
-       inkscape:connection-end="#node38" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="m 765.99,-386.35406 v 36.17082"
-       id="path116"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#node38"
-       inkscape:connection-end="#node37" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="m 751.71047,-314.18324 -28.69456,36.17081"
-       id="path117"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#node37"
-       inkscape:connection-end="#node35" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="m 708.73638,-242.01243 10e-6,36.17081"
-       id="path118"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#node35"
-       inkscape:connection-end="#node34" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="m 664.91788,-314.18324 29.25839,36.17081"
-       id="path119"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#node36"
-       inkscape:connection-end="#node35" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="m 649.59558,-314.18324 -7.57006,178.77676"
-       id="path120"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#node36"
-       inkscape:connection-end="#node33" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="m 691.49336,-169.84162 -32.987,34.43514"
-       id="path121"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#node34"
-       inkscape:connection-end="#node33" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="m 870.33064,-458.52487 -65.6893,323.11839"
-       id="path122"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#node32"
-       inkscape:connection-end="#node31" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="M 605.90427,-99.406478 477.80766,-34.1972"
-       id="path123"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#node33"
-       inkscape:connection-end="#node1" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="M 773.98872,-109.8477 482.98096,-28.358379"
-       id="path124"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#node31"
-       inkscape:connection-end="#node1" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="M 462.20856,-99.406478 449.57613,-36"
-       id="path125"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#node10"
-       inkscape:connection-end="#node1" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="M 397.13483,-169.84162 440.19848,-36"
-       id="path126"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#node2"
-       inkscape:connection-end="#node1" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="M 330.18253,-99.406478 420.38351,-36"
-       id="path127"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#node16"
-       inkscape:connection-end="#node1" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="M 283.24629,-32.825953 407.99,-21.4618"
-       id="path128"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#node9"
-       inkscape:connection-end="#node1" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="m 183.3874,-104.15097 226.43549,74.285772"
-       id="path129"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#node26"
-       inkscape:connection-end="#node1" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="m 760.16752,-612 -40.73694,125.93684 -1.19058,5.08703 v 12.51957 l 1.19058,5.08704 3.19522,4.51737 29.04158,36.49809"
-       id="path130"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-end="#node38"
-       inkscape:connection-start="#node21" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="m 615.19444,-536.82704 v 42.21218"
-       id="path131"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#node15"
-       inkscape:connection-end="#node14" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="m 610.49629,-458.61486 -35.96133,137.77844 -3.19522,4.51737 -33.83866,38.30662"
-       id="path132"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#node14"
-       inkscape:connection-end="#node11" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="m 391.76725,-764.48739 247.8235,414.30415"
-       id="path133"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#node5"
-       inkscape:connection-end="#node36" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       id="path134"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#node5"
-       inkscape:connection-end="#node13"
-       d="M 387.74973,-764.48739 514.85104,-425.5254" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="m 381.60973,-764.48739 9.12408,269.45468"
-       id="path137"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#node5"
-       inkscape:connection-end="#node7" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="M 371.52597,-764.48739 229.43173,-494.52487"
-       id="path138"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#node5"
-       inkscape:connection-end="#node19" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="m 375.9826,-764.48739 -95.25388,341.70906"
-       id="path139"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#node5"
-       inkscape:connection-end="#node18" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="M 361.74845,-765.44786 143.03453,-571.86657"
-       id="path140"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#node5"
-       inkscape:connection-end="#node20" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#a4a4a4;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="M 368.64144,-764.48739 84.18042,-350.18324"
-       id="path141"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#node5"
-       inkscape:connection-end="#node28" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#a4a4a4;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="m 378.43393,-764.48739 -40.09062,281.19489 v 12.51958 l 1.19059,5.08703 44.82401,115.50265"
-       id="path142"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#node5"
-       inkscape:connection-end="#node4" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#a4a4a4;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="m 373.71885,-764.48739 -121.07696,299.30934 -72.25331,114.99481"
+       d="m 394.08702,-764.48739 -141.44513,299.30934 -69.01085,114.99481"
        id="path143"
        inkscape:connector-type="polyline"
        inkscape:connector-curvature="0"
        inkscape:connection-start="#node5"
        inkscape:connection-end="#node30" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="M 726.865,-625.42026 150.78275,-557.9875"
-       id="path144"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#node21"
-       inkscape:connection-end="#node20" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="m 521.60054,-389.5254 v 39.34216"
-       id="path145"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#node13"
-       inkscape:connection-end="#node12" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="m 521.60054,-314.18324 v 36.17081"
-       id="path146"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#node12"
-       inkscape:connection-end="#node11" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="m 514.55662,-242.01243 -41.71801,106.60595"
-       id="path147"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#node11"
-       inkscape:connection-end="#node10" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="m 419.92781,-536.82704 -19.97965,41.79433"
-       id="path148"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#node8"
-       inkscape:connection-end="#node7" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="m 391.34331,-459.03271 v 108.84947"
-       id="path149"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#node7"
-       inkscape:connection-end="#node4" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="m 391.34331,-314.18324 v 36.17081"
-       id="path150"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#node4"
-       inkscape:connection-end="#node3" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="m 391.34331,-242.01243 v 36.17081"
-       id="path151"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#node3"
-       inkscape:connection-end="#node2" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="m 407.52998,-459.03271 97.8839,108.84947"
-       id="path152"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#node7"
-       inkscape:connection-end="#node12" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="m 376.97405,-459.03271 -86.8937,108.84947"
-       id="path154"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#node7"
-       inkscape:connection-end="#node17" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="m 384.75839,-764.48739 40.01611,191.66035"
-       id="path155"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#node5"
-       inkscape:connection-end="#node8" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="m 233.94512,-458.52487 27.77832,35.74654"
-       id="path156"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#node19"
-       inkscape:connection-end="#node18" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="m 275.71109,-386.77833 0,36.59509"
-       id="path157"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#node18"
-       inkscape:connection-end="#node17" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="m 225.95669,-458.52487 21.69498,65.09336 19.81315,43.24827"
-       id="path158"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#node19"
-       inkscape:connection-end="#node17" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="m 136.06565,-536.82704 127.36254,186.6438"
-       id="path159"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-end="#node17"
-       inkscape:connection-start="#node20" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="m 278.1302,-314.18324 24.02673,178.77676"
-       id="path160"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#node17"
-       inkscape:connection-end="#node16" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
        d="m 119.58187,-536.82704 -43.559359,186.6438"
@@ -1251,147 +1304,98 @@
        inkscape:connection-end="#node28" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="m 127.44479,-536.82704 37.97203,186.6438"
+       d="m 127.74797,-536.82704 41.11568,186.6438"
        id="path162"
        inkscape:connector-type="polyline"
        inkscape:connector-curvature="0"
        inkscape:connection-start="#node20"
        inkscape:connection-end="#node30" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="m 169.07886,-314.18324 v 36.17081"
-       id="path163"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#node30"
-       inkscape:connection-end="#node29" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="m 71.821629,-314.18324 v 36.17081"
-       id="path164"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#node28"
-       inkscape:connection-end="#node27" />
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="m 80.803679,-242.01243 53.196661,106.60595"
-       id="path165"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#node27"
-       inkscape:connection-end="#node26" />
     <g
-       id="node10"
+       id="node20"
        class="node"
-       transform="translate(-53.200314,44.593522)">
+       transform="translate(3.7927536,-104.82704)">
       <title
-         id="title50">9</title>
+         id="title21">19</title>
       <path
          fill="none"
-         stroke="#d89556"
+         stroke="#97d856"
          stroke-width="2"
-         d="m 549.87,-180 c 0,0 -61.75,0 -61.75,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 61.75,0 61.75,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
-         id="path50"
-         style="stroke:#56c9d8;stroke-opacity:1" />
-      <text
-         text-anchor="middle"
-         x="518.98999"
-         y="-159.62"
-         font-family="sans"
-         font-size="10px"
-         id="text50">join_cnv_calling</text>
-    </g>
-    <path
-       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
-       d="m 165.78491,-242.01243 -19.50857,106.60595"
-       id="path166"
-       inkscape:connector-type="polyline"
-       inkscape:connector-curvature="0"
-       inkscape:connection-start="#node29"
-       inkscape:connection-end="#node26" />
-    <g
-       id="node16"
-       class="node"
-       transform="translate(-65.413961,-27.406478)">
-      <title
-         id="title58">15</title>
-      <path
-         fill="none"
-         stroke="#a7d856"
-         stroke-width="2"
-         d="m 405.74,-108 c 0,0 -71.5,0 -71.5,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 71.5,0 71.5,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
-         id="path58" />
-      <text
-         text-anchor="middle"
-         x="369.98999"
-         y="-87.620003"
-         font-family="sans"
-         font-size="10px"
-         id="text58">join_mapq_depth</text>
-    </g>
-    <g
-       id="node26"
-       class="node"
-       transform="translate(16.992393,44.593522)">
-      <title
-         id="title84">25</title>
-      <path
-         fill="none"
-         stroke="#80d856"
-         stroke-width="2"
-         d="m 157.24,-180 c 0,0 -62.5,0 -62.5,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 62.5,0 62.5,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
-         id="path84"
+         d="m 134.99,-468 c 0,0 -30,0 -30,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 30,0 30,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
+         id="path21"
          style="stroke:#831bd9;stroke-opacity:1" />
       <text
          text-anchor="middle"
-         x="125.99"
-         y="-159.62"
+         x="119.99"
+         y="-447.62"
          font-family="sans"
          font-size="10px"
-         id="text84">join_sequences</text>
+         id="text21">liftoff</text>
     </g>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
+       d="m 749.365,-625.57528 -598.58225,67.69476"
+       id="path144"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#node21"
+       inkscape:connection-end="#node20" />
     <g
-       id="node31"
+       id="node21"
        class="node"
-       transform="translate(5.9869794,-27.406478)">
+       transform="translate(19.495001,-108)">
       <title
-         id="title93">30</title>
+         id="title36">20</title>
       <path
          fill="none"
-         stroke="#56d8c9"
+         stroke="#d8ac56"
          stroke-width="2"
-         d="m 810.12,-108 c 0,0 -30.25,0 -30.25,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 30.25,0 30.25,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
-         id="path93"
+         d="m 796.12,-540 c 0,0 -54.25,0 -54.25,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 54.25,0 54.25,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
+         id="path36"
          style="stroke:#1f24d7;stroke-opacity:1" />
       <text
          text-anchor="middle"
-         x="794.98999"
-         y="-87.620003"
+         x="768.98999"
+         y="-519.62"
          font-family="sans"
          font-size="10px"
-         id="text93">join_gffs</text>
+         id="text36">ref2ref_liftoff</text>
     </g>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
+       d="M 788.49,-662.82913 V -648"
+       id="path111"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#node22"
+       inkscape:connection-end="#node21" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker167)"
+       d="M 382.34309,-765.95225 144.03297,-571.36218"
+       id="path140"
+       inkscape:connector-type="polyline"
+       inkscape:connector-curvature="0"
+       inkscape:connection-start="#node5"
+       inkscape:connection-end="#node20" />
     <g
-       id="node33"
+       id="node5"
        class="node"
-       transform="translate(8.2733329,-27.406478)">
+       transform="translate(69.603315,-260.48739)">
       <title
-         id="title96">32</title>
+         id="title9">4</title>
       <path
          fill="none"
-         stroke="#56d89a"
+         stroke="#70d856"
          stroke-width="2"
-         d="m 682.99,-108 c 0,0 -100,0 -100,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 100,0 100,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
-         id="path96"
-         style="stroke:#e88202;stroke-opacity:1" />
+         d="m 347.99,-540 c 0,0 -30,0 -30,0 -6,0 -12,6 -12,12 0,0 0,12 0,12 0,6 6,12 12,12 0,0 30,0 30,0 6,0 12,-6 12,-12 0,0 0,-12 0,-12 0,-6 -6,-12 -12,-12"
+         id="path9"
+         style="stroke:#2b701a;stroke-opacity:1" />
       <text
          text-anchor="middle"
-         x="632.98999"
-         y="-87.620003"
+         x="332.98999"
+         y="-519.62"
          font-family="sans"
          font-size="10px"
-         id="text96">join_variant_annotation</text>
+         id="text9">snippy</text>
     </g>
   </g>
 </svg>
