@@ -6,18 +6,15 @@ import numpy as np
 from pathlib import Path
 
 @click.command()
-@click.option('-di', '--depth_input', help='Path to BED file with depth of each region.', type=click.Path(exists=True))
+@click.option('-di', '--depth_input', help='Path to BED file with depth of each window.', type=click.Path(exists=True))
 @click.option('-ri', '--repeats_input', help='Path to BED file with coordinates of repetititve sequences of reference genome.', type=click.Path(exists=True))
-
-@click.option('-co', '--cnv_output', help='Path to output table of CNV calling.', type=click.Path())
-
 @click.option('-sp', '--sample_name', help='Sample name as a string.', type=str)
 @click.option('-wp', '--window_size', help='Size of windows in the depth BED file.', type=int)
 @click.option('-dp', '--depth_threshold', help='Threshold to define copy number variation in smoothed normalzed depth.', type=click.types.FloatRange(min=0.0))
-
-def intersect_repeats(depth_input, repeats_input, cnv_output, sample_name, window_size, depth_threshold):
+@click.option('-co', '--cnv_output', help='Path to output table of CNV calling.', type=click.Path())
+def intersect_repeats(depth_input, repeats_input, sample_name, window_size, depth_threshold, cnv_output):
     print("Merge overlapping repeats and intersect with windows.")
-    intersect = $(bedtools merge -i @(repeats_input) -c 4 -o collapse | bedtools intersect -a @(depth_input) -b stdin -wao)
+    intersect = $(bedtools intersect -a @(depth_input) -b @(repeats_input) -wao)
 
     print("Reorganize intersection.")
     df = pd.read_csv(io.StringIO(intersect), sep='\t', header=None)

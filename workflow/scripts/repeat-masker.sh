@@ -99,9 +99,15 @@ tail -n +4 ${repeat_dir_abs}/02_complex/${lineage}.fasta.out | awk '{print $5"\t
 tail -n +4 ${repeat_dir_abs}/03_known/${lineage}.fasta.out | awk '{print $5"\t"$6"\t"$7"\t"$11}' > ${repeat_dir_abs}/03_known/${lineage}.bed
 tail -n +4 ${repeat_dir_abs}/04_unknown/${lineage}.fasta.out | awk '{print $5"\t"$6"\t"$7"\t"$11}' > ${repeat_dir_abs}/04_unknown/${lineage}.bed
 
-cat ${repeat_dir_abs}/01_simple/${lineage}.bed ${repeat_dir_abs}/02_complex/${lineage}.bed ${repeat_dir_abs}/03_known/${lineage}.bed ${repeat_dir_abs}/04_unknown/${lineage}.bed > ${output}.unsorted
+echo "Combining all repeats, sorting, merging, converting to BED base-0 and saving to ${output}"
+cat ${repeat_dir_abs}/01_simple/${lineage}.bed \
+    ${repeat_dir_abs}/02_complex/${lineage}.bed \
+    ${repeat_dir_abs}/03_known/${lineage}.bed \
+    ${repeat_dir_abs}/04_unknown/${lineage}.bed \
+    | bedtools sort \
+    | bedtools merge -c 4 -o collapse \
+    | awk '{print $1"\t"$2 - 1"\t"$3"\t"$4}' > ${output}
 
-bedtools sort -i ${output}.unsorted > ${output}
 
 echo "Cleaning up"
 find . -type d -empty -delete
