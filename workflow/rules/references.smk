@@ -8,10 +8,10 @@ rule agat_fix_gff:
         gff= MAIN_GFF,
         config = rules.agat_config.output
     output:
-        fixed_ID = temp(REFDIR / str(MAIN_NAME + "_fixed_ID.gff")),
-        fixed_locus = temp(REFDIR / str(MAIN_NAME + "_fixed_locus.gff")),
-        fixed_description = temp(REFDIR / str(MAIN_NAME + "_fixed_description.gff")),
-        tsv = temp(REFDIR / str(MAIN_NAME + "_fixed.tsv"))
+        fixed_ID = REFDIR / str(MAIN_NAME + "_fixed_ID.gff"),
+        fixed_locus = REFDIR / str(MAIN_NAME + "_fixed_locus.gff"),
+        fixed_description = REFDIR / str(MAIN_NAME + "_fixed_description.gff"),
+        tsv = REFDIR / str(MAIN_NAME + "_fixed.tsv")
     conda:
         "../envs/agat.yaml"
     params:
