@@ -2,7 +2,7 @@
 set -e
 
 if [ "$#" -ne 6 ]; then
-    echo "Usage: $0 <threads> <database_path> <fasta> <known> <unknown> <output>"
+    echo "Usage: $0 <threads> <database_path> <fasta> <known> <unknown>  <output>"
     exit 1
 fi
 
@@ -54,11 +54,12 @@ echo "Using unknown repeats in:" $unknown
 
 output=$6
 echo "Requested output file:" $output
-repeat_dir=$(dirname "$output")
-echo "Repeat directory:" $repeat_dir
-echo "Getting absolute path of ${repeat_dir}"
-repeat_dir_abs=$(realpath ${repeat_dir})
-echo "Absolute path of ${repeat_dir}: ${repeat_dir_abs}"
+
+repdir=$(dirname ${unknown})
+echo "Repeat directory: ${repdir}"
+echo "Getting absolute path of ${repdir}"
+repeat_dir_abs=$(realpath ${repdir})
+echo "Absolute path of ${repdir}: ${repeat_dir_abs}"
 database="database.fasta"
 ln -s -r -f ${database_path} ${repeat_dir_abs}/${database}
 

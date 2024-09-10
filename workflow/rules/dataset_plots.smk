@@ -5,13 +5,13 @@
 
 rule dataset_summary_plot:  
     input:
-        GENERAL_OUTPUT / "metadata.csv",
+        INTDIR / "metadata.csv",
         rules.copy_config.output.c,
         rules.join_depth_by_chrom_good.output,
         rules.join_depth_by_chrom_raw.output,
         rules.join_mapping_stats.output
     output:
-        DATASET_OUTDIR / "plots" / "dataset_summary.png"
+        DATASET_DIR / "plots" / "dataset_summary.png"
     conda:
         "../envs/r.yaml"
     params:
@@ -27,11 +27,11 @@ rule dataset_summary_plot:
 
 rule dataset_depth_by_chrom_plot:
     input:
-        GENERAL_OUTPUT / "metadata.csv",
+        INTDIR / "metadata.csv",
         rules.copy_config.output.c,
         rules.join_depth_by_chrom_good.output
     output:
-        DATASET_OUTDIR / "plots" / "dataset_depth_by_chrom.png"
+        DATASET_DIR / "plots" / "dataset_depth_by_chrom.png"
     conda:
         "../envs/r.yaml"
     params:

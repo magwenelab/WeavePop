@@ -4,16 +4,16 @@
 
 rule unmapped_ref_features:
     input:
-        GENERAL_OUTPUT / "metadata.csv",
+        INTDIR / "metadata.csv",
         rules.fix_gff_tsv.output.tsv,
         expand(rules.ref2ref_liftoff.output.unmapped, lineage=LINEAGES)        
     output:
-        REFDIR / "lifotff" / "unmapped_count.tsv",
-        REFDIR / "lifotff" / "unmapped.svg"
+        REFS_DIR / "lifotff" / "unmapped_count.tsv",
+        REFS_DIR / "lifotff" / "unmapped.svg"
     conda:
         "../envs/r.yaml"
     params:
-        refdir = REFDIR
+        refdir = REFS_DIR
     log:
         "logs/references/lifotff/unmapped_ref_features.log"
     script:
@@ -25,16 +25,16 @@ rule unmapped_ref_features:
 
 rule unmapped_samples_plot:
     input:
-        GENERAL_OUTPUT / "metadata.csv",
+        INTDIR / "metadata.csv",
         rules.fix_gff_tsv.output.tsv,
         expand(rules.liftoff.output.unmapped, sample=SAMPLES)        
     output:
-        DATASET_OUTDIR / "liftoff" / "unmapped_count.tsv",
-        DATASET_OUTDIR / "liftoff" / "unmapped.svg"
+        DATASET_DIR / "liftoff" / "unmapped_count.tsv",
+        DATASET_DIR / "liftoff" / "unmapped.svg"
     conda:
         "../envs/r.yaml"
     params:
-        dir = OUTDIR / "liftoff"
+        dir = SAMPLES_DIR / "liftoff"
     log:
         "logs/dataset/liftoff/unmapped_samples_plot.log"
     script:

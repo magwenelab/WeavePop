@@ -14,15 +14,15 @@ rule snippy:
     input:
         unpack(snippy_input)
     output:
-        fa = OUTDIR / "snippy" / "{unf_sample}" / "snps.consensus.fa",
-        bam = OUTDIR / "snippy" / "{unf_sample}" / "snps.bam",
-        ref = OUTDIR / "snippy" / "{unf_sample}" / "ref.fa",
-        bai = OUTDIR / "snippy" / "{unf_sample}" / "snps.bam.bai",
-        vcf = OUTDIR / "snippy" / "{unf_sample}" / "snps.vcf.gz"
+        fa = SAMPLES_DIR / "snippy" / "{unf_sample}" / "snps.consensus.fa",
+        bam = SAMPLES_DIR / "snippy" / "{unf_sample}" / "snps.bam",
+        ref = SAMPLES_DIR / "snippy" / "{unf_sample}" / "ref.fa",
+        bai = SAMPLES_DIR / "snippy" / "{unf_sample}" / "snps.bam.bai",
+        vcf = SAMPLES_DIR / "snippy" / "{unf_sample}" / "snps.vcf.gz"
     threads: 
         config["snippy"]["threads"]
     params:
-        outpath = OUTDIR / "snippy",
+        outpath = SAMPLES_DIR / "snippy",
         extra = config["snippy"]["extra"]
     conda:
         "../envs/snippy.yaml"

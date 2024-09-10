@@ -4,10 +4,10 @@
 
 rule loci:
     input:
-        refs = expand(REFDIR / "{lineage}" / "{lineage}.gff.tsv", lineage=LINEAGES),
+        refs = expand(INT_REFS_DIR / "{lineage}" / "{lineage}.gff.tsv", lineage=LINEAGES),
         loci = rules.copy_config.output.l
     output:
-        locitable = REFDIR / "loci_to_plot.tsv"
+        locitable = INT_REFS_DIR / "loci_to_plot.tsv"
     log: 
         "logs/dataset/files/loci.log"
     shell:
@@ -19,11 +19,11 @@ rule loci:
 
 rule depth_distribution_plots:
     input:
-        OUTDIR / "depth_quality" / "{sample}" / "depth_distribution.tsv",
+        INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_distribution.tsv",
         rules.copy_config.output.c
     output:
-        OUTDIR / "plots" / "{sample}" / "depth_chrom_distribution.png",
-        OUTDIR / "plots" / "{sample}" / "depth_global_distribution.png"
+        SAMPLES_DIR / "plots" / "{sample}" / "depth_chrom_distribution.png",
+        SAMPLES_DIR / "plots" / "{sample}" / "depth_global_distribution.png"
     conda:
         "../envs/r.yaml"
     log:
@@ -33,11 +33,11 @@ rule depth_distribution_plots:
 
 rule depth_by_chrom_plots:
     input:
-        OUTDIR / "depth_quality" / "{sample}" / "depth_by_chrom_raw.tsv",
-        OUTDIR / "depth_quality" / "{sample}" / "depth_by_chrom_good.tsv",
+        INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom_raw.tsv",
+        INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom_good.tsv",
         CHROM_NAMES
     output:
-        OUTDIR / "plots" / "{sample}" / "depth_by_chrom.png"
+        SAMPLES_DIR / "plots" / "{sample}" / "depth_by_chrom.png"
     conda:
         "../envs/r.yaml"
     log:
@@ -52,9 +52,9 @@ rule depth_by_chrom_plots:
 def depth_by_windows_plots_input(wildcards):
     s = SAMPLE_REFERENCE.loc[wildcards.sample,]
     return {
-        "depth": OUTDIR / "depth_quality" / s["sample"]  / "depth_by_windows.tsv",
-        "cnv": OUTDIR / "cnv" / s["sample"] / "cnv_calls.tsv",
-        "repeats": REFDIR / s["lineage"]  / "repeats" / (s["lineage"] + "_repeats.bed")
+        "depth": INT_SAMPLES_DIR / "depth_quality" / s["sample"]  / "depth_by_windows.tsv",
+        "cnv": SAMPLES_DIR / "cnv" / s["sample"] / "cnv_calls.tsv",
+        "repeats": REFS_DIR / s["lineage"]  / (s["lineage"] + "_repeats.bed")
     }
 rule depth_by_windows_plots:
     input:
@@ -62,7 +62,7 @@ rule depth_by_windows_plots:
         loci = rules.loci.output.locitable,
         chrom_names = CHROM_NAMES
     output:
-        OUTDIR / "plots" / "{sample}" / "depth_by_windows.png"
+        SAMPLES_DIR / "plots" / "{sample}" / "depth_by_windows.png"
     conda:
         "../envs/r.yaml"
     log:
@@ -73,9 +73,9 @@ rule depth_by_windows_plots:
 def mapq_plot_input(wildcards):
     s = SAMPLE_REFERENCE.loc[wildcards.sample,]
     return {
-        "mapq": OUTDIR / "depth_quality" / s["sample"] / "mapq_window.bed",
-        "cnv": OUTDIR / "cnv" / s["sample"] / "cnv_calls.tsv",
-        "repeats": REFDIR / s["lineage"]  / "repeats" / (s["lineage"] + "_repeats.bed")
+        "mapq": INT_SAMPLES_DIR / "depth_quality" / s["sample"] / "mapq_window.bed",
+        "cnv": SAMPLES_DIR / "cnv" / s["sample"] / "cnv_calls.tsv",
+        "repeats": REFS_DIR / s["lineage"] / (s["lineage"] + "_repeats.bed")
     }
 rule mapq_plot:
     input:
@@ -83,7 +83,7 @@ rule mapq_plot:
         chrom_names = CHROM_NAMES,
         loci = rules.loci.output.locitable
     output:
-        OUTDIR / "plots" / "{sample}" / "mapq.png"
+        SAMPLES_DIR / "plots" / "{sample}" / "mapq.png"
     conda:
         "../envs/r.yaml"
     log:

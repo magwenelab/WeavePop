@@ -11,26 +11,27 @@ from pathlib import Path
 #   Global variables
 # =================================================================================================
 
-GENERAL_OUTPUT = Path(config["joint_datasets_output"])
-OUTDIR= GENERAL_OUTPUT / "samples"
-DATASET_OUTDIR = GENERAL_OUTPUT / "dataset"
-REFDIR = GENERAL_OUTPUT / "references"
-TEMP_S = GENERAL_OUTPUT / "sample_names"
-TEMP_L = GENERAL_OUTPUT / "lineage_names"
+OUTPUT = Path(config["joint_datasets_output"])
+SAMPLES_DIR = OUTPUT / "1.Samples"
+DATASET_DIR = OUTPUT / "2.Dataset"
+REFS_DIR = OUTPUT / "3.References"
+INTDIR = OUTPUT / "4.Intermediate_files"
+TEMP_S = OUTPUT / "sample_names"
+TEMP_L = OUTPUT / "lineage_names"
 
 INPUT_PATHS = config["datasets_paths"].split(",")
 LIST_INPUTS = [Path(dir) for dir in INPUT_PATHS]
 
-CHROM_NAMES = GENERAL_OUTPUT / "chromosomes.csv"
-LOCI_FILE = GENERAL_OUTPUT / "loci.csv"
-SAMPLEFILE = GENERAL_OUTPUT / "metadata.csv"
+CHROM_NAMES = INTDIR / "chromosomes.csv"
+LOCI_FILE = INTDIR / "loci.csv"
+SAMPLEFILE = INTDIR / "metadata.csv"
 
 # =================================================================================================
 #   Define final output
 # =================================================================================================
 
 def get_final_output():
-    final_output = DATASET_OUTDIR / "database.db"
+    final_output = DATASET_DIR / "database.db"
     return final_output
 
 # =================================================================================================
@@ -43,9 +44,9 @@ rule join_results:
         chromosomes_files = expand(os.path.join("{dir}", "chromosomes.csv"), dir = LIST_INPUTS),
         loci_files = expand(os.path.join("{dir}", "loci.csv"), dir = LIST_INPUTS)
     output:
-        metadata = GENERAL_OUTPUT / "metadata.csv",
-        chromosomes = GENERAL_OUTPUT / "chromosomes.csv",
-        loci = GENERAL_OUTPUT / "loci.csv"
+        metadata = INTDIR / "metadata.csv",
+        chromosomes = INTDIR / "chromosomes.csv",
+        loci = INTDIR / "loci.csv"
     params:
         dataset_names = config["datasets_names"].split(",")
     run:
@@ -131,7 +132,7 @@ rule join_sequences:
         cds=get_input_cds,
         prots=get_input_prots
     output:
-        sequences = DATASET_OUTDIR / "sequences.csv"
+        sequences = DATASET_DIR / "sequences.csv"
     run:
         cds = pd.concat([pd.read_csv(f, sep="\t") for f in input.cds])
         prots = pd.concat([pd.read_csv(f, sep="\t") for f in input.prots])
@@ -142,7 +143,7 @@ rule join_cnv:
     input:
         cnv=get_input_cnv,
     output:
-        cnv = DATASET_OUTDIR / "cnv" / "cnv_calls.tsv"
+        cnv = DATASET_DIR / "cnv" / "cnv_calls.tsv"
     run:
         cnv = pd.concat([pd.read_csv(f, sep="\t") for f in input.cnv])
         cnv.to_csv(output.cnv, sep="\t", index=False)
@@ -151,7 +152,7 @@ rule join_mapq_depth:
     input:
         mapq_depth=get_input_mapq_depth,
     output:
-        mapq_depth = DATASET_OUTDIR / "depth_quality" / "feature_mapq_depth.tsv",
+        mapq_depth = DATASET_DIR / "depth_quality" / "feature_mapq_depth.tsv",
     run: 
         mapq_depth = pd.concat([pd.read_csv(f, sep="\t") for f in input.mapq_depth])
         mapq_depth.to_csv(output.mapq_depth, sep="\t", index=False)
@@ -171,7 +172,7 @@ rule join_gffs:
     input:
         input_gffs
     output:
-        REFDIR / "all_lineages.gff.tsv"
+        REFS_DIR / "all_lineages.gff.tsv"
     log: 
         "logs/references/join_gffs.log"
     shell:
@@ -197,9 +198,9 @@ rule copy_snpeff_data:
     input:
         input_copy_speff_data
     output:
-        REFDIR / "snpeff_data" / "copy.done"
+        REFS_DIR / "snpeff_data" / "copy.done"
     params:
-        dir = REFDIR / "snpeff_data"
+        dir = REFS_DIR / "snpeff_data"
     shell:
         """
         ln -sf {input} {params.dir} && touch {output}
@@ -210,7 +211,7 @@ rule copy_snpeff_config:
         data = rules.copy_snpeff_data.output,
         config = expand(os.path.join("{dir}","references", "snpeff_data", "snpEff.config"), dir = LIST_INPUTS)
     output:
-        REFDIR / "snpeff_data" / "snpEff.config"
+        REFS_DIR / "snpeff_data" / "snpEff.config"
     shell:
         "cat {input.config} > {output}"
 
@@ -236,8 +237,8 @@ rule intersect_vcfs:
     input:
         unpack(intersect_vcfs_input)
     output:
-        vcf = DATASET_OUTDIR / "snps" / "{lineage}_intersection.vcf",
-        tsv = DATASET_OUTDIR / "snps" / "{lineage}_presence.tsv"
+        vcf = DATASET_DIR / "snps" / "{lineage}_intersection.vcf",
+        tsv = DATASET_DIR / "snps" / "{lineage}_presence.tsv"
     params:
         tmp_dir = "tmp_{lineage}"
     conda:
@@ -256,12 +257,12 @@ rule intersect_vcfs:
 rule snpeff:
     input:
         vcf = rules.intersect_vcfs.output.vcf,
-        config = REFDIR / "snpeff_data" / "snpEff.config"
+        config = REFS_DIR / "snpeff_data" / "snpEff.config"
     output:
-        vcf = DATASET_OUTDIR / "snps" / "{lineage}_snpeff.vcf",
-        html = DATASET_OUTDIR / "snps" / "{lineage}_snpeff.html"
+        vcf = DATASET_DIR / "snps" / "{lineage}_snpeff.vcf",
+        html = DATASET_DIR / "snps" / "{lineage}_snpeff.html"
     params:
-        dir = os.getcwd() / REFDIR / "snpeff_data",
+        dir = os.getcwd() / REFS_DIR / "snpeff_data",
         name = config["species_name"] + "_{lineage}"
     conda:
         "../envs/variants.yaml"
@@ -280,10 +281,10 @@ rule extract_vcf_annotation:
     input:
         vcf = rules.snpeff.output.vcf
     output:
-        effects = DATASET_OUTDIR / "snps" / "{lineage}_effects.tsv",
-        variants = DATASET_OUTDIR / "snps" / "{lineage}_variants.tsv",
-        lofs = DATASET_OUTDIR / "snps" / "{lineage}_lofs.tsv",
-        nmds = DATASET_OUTDIR / "snps" / "{lineage}_nmds.tsv"
+        effects = DATASET_DIR / "snps" / "{lineage}_effects.tsv",
+        variants = DATASET_DIR / "snps" / "{lineage}_variants.tsv",
+        lofs = DATASET_DIR / "snps" / "{lineage}_lofs.tsv",
+        nmds = DATASET_DIR / "snps" / "{lineage}_nmds.tsv"
     conda:
         "../envs/variants.yaml"
     log:
@@ -303,17 +304,17 @@ rule extract_vcf_annotation:
 # =================================================================================================
 rule join_variant_annotation:
     input:
-        effects = expand(DATASET_OUTDIR / "snps" / "{lineage}_effects.tsv", lineage=LINEAGES),
-        variants = expand(DATASET_OUTDIR / "snps" / "{lineage}_variants.tsv", lineage=LINEAGES),
-        lofs = expand(DATASET_OUTDIR / "snps" / "{lineage}_lofs.tsv", lineage=LINEAGES),
-        nmds = expand(DATASET_OUTDIR / "snps" / "{lineage}_nmds.tsv", lineage=LINEAGES),
-        presence = expand(DATASET_OUTDIR / "snps" / "{lineage}_presence.tsv", lineage=LINEAGES)
+        effects = expand(DATASET_DIR / "snps" / "{lineage}_effects.tsv", lineage=LINEAGES),
+        variants = expand(DATASET_DIR / "snps" / "{lineage}_variants.tsv", lineage=LINEAGES),
+        lofs = expand(DATASET_DIR / "snps" / "{lineage}_lofs.tsv", lineage=LINEAGES),
+        nmds = expand(DATASET_DIR / "snps" / "{lineage}_nmds.tsv", lineage=LINEAGES),
+        presence = expand(DATASET_DIR / "snps" / "{lineage}_presence.tsv", lineage=LINEAGES)
     output:
-        effects = DATASET_OUTDIR / "snps" / "all_effects.tsv",
-        variants = DATASET_OUTDIR / "snps" / "all_variants.tsv",
-        lofs = DATASET_OUTDIR / "snps" / "all_lofs.tsv",
-        nmds = DATASET_OUTDIR / "snps" / "all_nmds.tsv",
-        presence = DATASET_OUTDIR / "snps" / "all_presence.tsv"
+        effects = DATASET_DIR / "snps" / "all_effects.tsv",
+        variants = DATASET_DIR / "snps" / "all_variants.tsv",
+        lofs = DATASET_DIR / "snps" / "all_lofs.tsv",
+        nmds = DATASET_DIR / "snps" / "all_nmds.tsv",
+        presence = DATASET_DIR / "snps" / "all_presence.tsv"
     run:
         effects = pd.concat([pd.read_csv(f, sep="\t") for f in input.effects])
         variants = pd.concat([pd.read_csv(f, sep="\t") for f in input.variants])
@@ -328,8 +329,8 @@ rule join_variant_annotation:
 
 rule complete_db:
     input:
-        metadata = GENERAL_OUTPUT / "metadata.csv",
-        chrom_names = GENERAL_OUTPUT / "chromosomes.csv",
+        metadata = INTDIR / "metadata.csv",
+        chrom_names = INTDIR / "chromosomes.csv",
         cnv = rules.join_cnv.output.cnv,
         md = rules.join_mapq_depth.output.mapq_depth,
         gffs = rules.join_gffs.output,
@@ -340,7 +341,7 @@ rule complete_db:
         nmds = rules.join_variant_annotation.output.nmds,
         seqs = rules.join_sequences.output.sequences
     output:
-        DATASET_OUTDIR / "database.db"
+        DATASET_DIR / "database.db"
     conda:
         "../envs/variants.yaml"
     log:

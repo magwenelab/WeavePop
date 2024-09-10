@@ -8,10 +8,10 @@ rule agat_fix_gff:
         gff = REF_DATA / "{lineage}.gff",
         config = rules.agat_config.output
     output:
-        fixed_ID = temp(REFDIR / "{lineage}" / "{lineage}.fixed.gff"),
-        fixed_locus = temp(REFDIR / "{lineage}" / "{lineage}.fixed_locus.gff"),
-        fixed_description = temp(REFDIR / "{lineage}" / "{lineage}.fixed_description.gff"),
-        tsv = temp(REFDIR / "{lineage}" / "{lineage}.tsv")
+        fixed_ID = temp(REFS_DIR / "{lineage}" / "{lineage}.fixed.gff"),
+        fixed_locus = temp(REFS_DIR / "{lineage}" / "{lineage}.fixed_locus.gff"),
+        fixed_description = temp(REFS_DIR / "{lineage}" / "{lineage}.fixed_description.gff"),
+        tsv = temp(REFS_DIR / "{lineage}" / "{lineage}.tsv")
     conda:
         "../envs/agat.yaml"
     log:
@@ -29,8 +29,8 @@ rule fix_gff_tsv:
     input:
         tsv = rules.agat_fix_gff.output.tsv
     output:
-        gff = REFDIR / "{lineage}" / "{lineage}.gff",
-        tsv = REFDIR / "{lineage}" / "{lineage}.gff.tsv"
+        gff = REFS_DIR / "{lineage}" / "{lineage}.gff",
+        tsv = REFS_DIR / "{lineage}" / "{lineage}.gff.tsv"
     log:
         "logs/references/fix_gff_tsv_{lineage}.log"
     shell:

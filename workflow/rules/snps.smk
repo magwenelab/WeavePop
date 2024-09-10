@@ -5,12 +5,12 @@
 # Extract cds and protein sequences from reference genomes
 rule extract_ref_seqs:
     input:
-        gff = REFDIR / "{lineage}" / "{lineage}.gff",
-        fasta = REFDIR / "{lineage}" / "{lineage}.fasta",
+        gff = REFS_DIR / "{lineage}" / "{lineage}.gff",
+        fasta = INT_REFS_DIR / "{lineage}" / "{lineage}.fasta",
         config = rules.agat_config.output
     output:
-        cds = REFDIR / "{lineage}" / "{lineage}.cds.fa",
-        prots = REFDIR / "{lineage}" / "{lineage}.prots.fa"
+        cds = INT_REFS_DIR / "{lineage}" / "{lineage}.cds.fa",
+        prots = INT_REFS_DIR / "{lineage}" / "{lineage}.prots.fa"
     conda:
         "../envs/agat.yaml"
     log:
@@ -28,15 +28,15 @@ rule prepare_refs_db:
         cds = rules.extract_ref_seqs.output.cds,
         prots = rules.extract_ref_seqs.output.prots
     output:
-        gff = REFDIR / "snpeff_data" / str(config["species_name"] + "_{lineage}") / "genes.gff",
-        fasta = REFDIR / "snpeff_data" / str(config["species_name"] + "_{lineage}") / "sequences.fa",
-        cds = REFDIR / "snpeff_data" / str(config["species_name"] + "_{lineage}") / "cds.fa",
-        prots = REFDIR / "snpeff_data" / str(config["species_name"] + "_{lineage}") / "protein.fa"
+        gff = INT_REFS_DIR / "snpeff_data" / str(config["species_name"] + "_{lineage}") / "genes.gff",
+        fasta = INT_REFS_DIR / "snpeff_data" / str(config["species_name"] + "_{lineage}") / "sequences.fa",
+        cds = INT_REFS_DIR / "snpeff_data" / str(config["species_name"] + "_{lineage}") / "cds.fa",
+        prots = INT_REFS_DIR / "snpeff_data" / str(config["species_name"] + "_{lineage}") / "protein.fa"
     conda:
         "../envs/variants.yaml"
     params:
         name = config["species_name"] + "_{lineage}",
-        config = REFDIR / "snpeff_data" / "snpEff.config",
+        config = INT_REFS_DIR / "snpeff_data" / "snpEff.config",
     log:
         "logs/references/prepare_dbs_{lineage}.log"
     shell:
@@ -56,12 +56,12 @@ rule build_refs_db:
         cds = rules.prepare_refs_db.output.cds,
         prots = rules.prepare_refs_db.output.prots
     output:
-        touch(REFDIR / "snpeff_data" / "{lineage}.done")
+        touch(INT_REFS_DIR / "snpeff_data" / "{lineage}.done")
     conda:
         "../envs/variants.yaml"
     params:
-        config = REFDIR/ "snpeff_data" / "snpEff.config",
-        dir = os.getcwd() / REFDIR / "snpeff_data",
+        config = INT_REFS_DIR/ "snpeff_data" / "snpEff.config",
+        dir = os.getcwd() / INT_REFS_DIR / "snpeff_data",
         name = config["species_name"] + "_{lineage}"
     log:
         "logs/references/build_dbs_{lineage}.log"
@@ -79,15 +79,15 @@ def intersect_vcfs_input(wildcards):
     l = LINEAGE_REFERENCE[LINEAGE_REFERENCE["sample"].isin(sample_wildcards)] 
     l = l.loc[wildcards.lineage,]
     return {
-        "vcfs" : expand(OUTDIR / "snippy" / "{sample}" / "snps.vcf.gz", sample=l["sample"])
+        "vcfs" : expand(SAMPLES_DIR / "snippy" / "{sample}" / "snps.vcf.gz", sample=l["sample"])
     }
     
 rule intersect_vcfs:
     input:
         unpack(intersect_vcfs_input)
     output:
-        vcf = DATASET_OUTDIR / "snps" / "{lineage}_intersection.vcf",
-        tsv = DATASET_OUTDIR / "snps" / "{lineage}_presence.tsv"
+        vcf = INT_DATASET_DIR / "snps" / "{lineage}_intersection.vcf",
+        tsv = INT_DATASET_DIR / "snps" / "{lineage}_presence.tsv"
     params:
         tmp_dir = "tmp_{lineage}"
     conda:
@@ -108,11 +108,11 @@ rule snpeff:
         vcf = rules.intersect_vcfs.output.vcf,
         db_done = rules.build_refs_db.output
     output:
-        vcf = DATASET_OUTDIR / "snps" / "{lineage}_snpeff.vcf",
-        html = DATASET_OUTDIR / "snps" / "{lineage}_snpeff.html"
+        vcf = INT_DATASET_DIR / "snps" / "{lineage}_snpeff.vcf",
+        html = INT_DATASET_DIR / "snps" / "{lineage}_snpeff.html"
     params:
-       dir = os.getcwd() / REFDIR / "snpeff_data",
-       config = REFDIR / "snpeff_data" / "snpEff.config",
+       dir = os.getcwd() / INT_REFS_DIR / "snpeff_data",
+       config = INT_REFS_DIR / "snpeff_data" / "snpEff.config",
        name = config["species_name"] + "_{lineage}"
     conda:
         "../envs/variants.yaml"
@@ -131,10 +131,10 @@ rule extract_vcf_annotation:
     input:
         vcf = rules.snpeff.output.vcf
     output:
-        effects = DATASET_OUTDIR / "snps" / "{lineage}_effects.tsv",
-        variants = DATASET_OUTDIR / "snps" / "{lineage}_variants.tsv",
-        lofs = DATASET_OUTDIR / "snps" / "{lineage}_lofs.tsv",
-        nmds = DATASET_OUTDIR / "snps" / "{lineage}_nmds.tsv"
+        effects = INT_DATASET_DIR / "snps" / "{lineage}_effects.tsv",
+        variants = INT_DATASET_DIR / "snps" / "{lineage}_variants.tsv",
+        lofs = INT_DATASET_DIR / "snps" / "{lineage}_lofs.tsv",
+        nmds = INT_DATASET_DIR / "snps" / "{lineage}_nmds.tsv"
     conda:
         "../envs/variants.yaml"
     log:

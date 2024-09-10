@@ -4,15 +4,15 @@
 
 rule mosdepth_good:
     input:
-        bam = OUTDIR / "snippy" / "{sample}" / "snps.bam",
-        bai = OUTDIR / "snippy" / "{sample}" / "snps.bam.bai"
+        bam = SAMPLES_DIR / "snippy" / "{sample}" / "snps.bam",
+        bai = SAMPLES_DIR / "snippy" / "{sample}" / "snps.bam.bai"
     output:
-        bed = OUTDIR / "mosdepth" / "{sample}" / "coverage_good.regions.bed.gz"
+        bed = INT_SAMPLES_DIR / "mosdepth" / "{sample}" / "coverage_good.regions.bed.gz"
     params:
         window = config["depth_quality"]["mosdepth"]["window"],
         extra = config["depth_quality"]["mosdepth"]["extra"],
         min_mapq = config["depth_quality"]["mosdepth"]["min_mapq"],
-        outdir = OUTDIR / "mosdepth"
+        outdir = INT_SAMPLES_DIR / "mosdepth"
     conda: 
         "../envs/depth.yaml"
     threads:
@@ -31,9 +31,9 @@ rule mosdepth_good:
 rule depth_by_windows:
     input:
         depth = rules.mosdepth_good.output.bed,
-        global_mode = OUTDIR / "depth_quality" / "{sample}" / "depth_by_chrom_good.tsv"
+        global_mode = INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom_good.tsv"
     output:
-        OUTDIR / "depth_quality" / "{sample}" / "depth_by_windows.tsv"
+        INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_windows.tsv"
     conda:
         "../envs/samtools.yaml"
     params:
@@ -52,8 +52,8 @@ rule repeat_modeler:
     input:
         rules.links.output
     output:
-        known = REFDIR / "{lineage}" / "repeats" / "{lineage}_known.fa",
-        unknown = REFDIR / "{lineage}" / "repeats" / "{lineage}_unknown.fa"
+        known = INT_REFS_DIR / "{lineage}" / "repeats" / "{lineage}_known.fa",
+        unknown = INT_REFS_DIR / "{lineage}" / "repeats" / "{lineage}_unknown.fa"
     params:
         repdir = "repeats"
     threads:
@@ -72,7 +72,7 @@ rule repeat_masker:
         known = rules.repeat_modeler.output.known,
         unknown = rules.repeat_modeler.output.unknown
     output:
-        REFDIR / "{lineage}" / "repeats" / "{lineage}_repeats.bed"
+        REFS_DIR / "{lineage}" / "{lineage}_repeats.bed"
     threads:
         config["cnv"]["repeats"]["repeats_threads"]
     conda:
@@ -80,7 +80,13 @@ rule repeat_masker:
     log:
         "logs/references/repeats/repeatmasker_{lineage}.log"
     shell:
-        "bash workflow/scripts/repeat-masker.sh {threads} {input.database} {input.fasta} {input.known} {input.unknown} {output} &> {log}"
+        "bash workflow/scripts/repeat-masker.sh "
+        "{threads} "
+        "{input.database} "
+        "{input.fasta} "
+        "{input.known} "
+        "{input.unknown} "
+        "{output} &> {log}"
 
 # =================================================================================================
 #   Per sample | Intercept depth by windows with repeats and call CNVs
@@ -89,14 +95,14 @@ rule repeat_masker:
 def cnv_calling_input(wildcards):
     s = SAMPLE_REFERENCE.loc[wildcards.sample,]
     return {
-        "depth": OUTDIR / "depth_quality" / s["sample"] / "depth_by_windows.tsv",
-        "repeats": REFDIR / s["lineage"]  / "repeats" / (s["lineage"] + "_repeats.bed")
+        "depth": INT_SAMPLES_DIR / "depth_quality" / s["sample"] / "depth_by_windows.tsv",
+        "repeats": REFS_DIR / s["lineage"]  / (s["lineage"] + "_repeats.bed")
         }
 rule cnv_calling:
     input:
         unpack(cnv_calling_input)
     output:
-        OUTDIR / "cnv" / "{sample}" / "cnv_calls.tsv"
+        SAMPLES_DIR / "cnv" / "{sample}" / "cnv_calls.tsv"
     conda:
         "../envs/samtools.yaml"
     params:

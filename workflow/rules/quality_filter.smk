@@ -6,8 +6,8 @@ rule bam_good:
     input:
         bam = rules.snippy.output.bam
     output:
-        bam_good = OUTDIR / "depth_quality" / "{unf_sample}" / "snps_good.bam",
-        bai_good = OUTDIR / "depth_quality" / "{unf_sample}" / "snps_good.bam.bai"
+        bam_good = INT_SAMPLES_DIR / "depth_quality" / "{unf_sample}" / "snps_good.bam",
+        bai_good = INT_SAMPLES_DIR/ "depth_quality" / "{unf_sample}" / "snps_good.bam.bai"
     conda:
         "../envs/samtools.yaml"
     params:
@@ -21,18 +21,18 @@ rule bam_good:
 def depth_distribution_input(wildcards):
     s = SAMPLE_REFERENCE.loc[wildcards.unf_sample,]
     return {
-        "bam": OUTDIR / "snippy" / s["sample"] / "snps.bam" ,
-        "bai": OUTDIR / "snippy" / s["sample"] / "snps.bam.bai",
-        "bam_good": OUTDIR / "depth_quality" / s["sample"] / "snps_good.bam",
-        "bai_good": OUTDIR / "depth_quality" / s["sample"] / "snps_good.bam.bai"
+        "bam": SAMPLES_DIR / "snippy" / s["sample"] / "snps.bam" ,
+        "bai": SAMPLES_DIR / "snippy" / s["sample"] / "snps.bam.bai",
+        "bam_good": INT_SAMPLES_DIR / "depth_quality" / s["sample"] / "snps_good.bam",
+        "bai_good": INT_SAMPLES_DIR / "depth_quality" / s["sample"] / "snps_good.bam.bai"
         }
 rule depth_distribution:
     input:
         unpack(depth_distribution_input)
     output:
-        distrib = OUTDIR / "depth_quality" / "{unf_sample}" / "depth_distribution.tsv",
-        by_chrom_good = OUTDIR / "depth_quality" / "{unf_sample}" / "depth_by_chrom_good.tsv",
-        by_chrom_raw = OUTDIR / "depth_quality" / "{unf_sample}" / "depth_by_chrom_raw.tsv"
+        distrib = INT_SAMPLES_DIR / "depth_quality" / "{unf_sample}" / "depth_distribution.tsv",
+        by_chrom_good = INT_SAMPLES_DIR / "depth_quality" / "{unf_sample}" / "depth_by_chrom_good.tsv",
+        by_chrom_raw = INT_SAMPLES_DIR / "depth_quality" / "{unf_sample}" / "depth_by_chrom_raw.tsv"
     conda: 
         "../envs/samtools.yaml"
     log:
@@ -56,7 +56,7 @@ rule mapping_stats:
         bai = rules.snippy.output.bai,
         global_mode = rules.depth_distribution.output.by_chrom_good
     output:
-        OUTDIR / "depth_quality" / "{unf_sample}" / "mapping_stats.tsv"
+        SAMPLES_DIR / "depth_quality" / "{unf_sample}" / "mapping_stats.tsv"
     params:
         low_mapq = config["depth_quality"]["flag_quality"]["low_MAPQ_limit"],
         high_mapq = config["depth_quality"]["flag_quality"]["high_MAPQ_limit"],
@@ -89,9 +89,9 @@ rule mapping_stats:
 
 rule join_mapping_stats:
     input:
-        expand(OUTDIR / "depth_quality" / "{unf_sample}" / "mapping_stats.tsv",unf_sample=UNFILTERED_SAMPLES),
+        expand(SAMPLES_DIR / "depth_quality" / "{unf_sample}" / "mapping_stats.tsv",unf_sample=UNFILTERED_SAMPLES),
     output:
-        DATASET_OUTDIR / "depth_quality" / "mapping_stats.tsv",
+        INT_DATASET_DIR / "depth_quality" / "unfiltered_mapping_stats.tsv",
     log:
         "logs/dataset/depth_quality/join_mapping_stats.log"
     shell:
@@ -111,8 +111,8 @@ rule quality_filter:
         rules.join_mapping_stats.output,
         UNFILTERED_SAMPLE_FILE
     output:
-        stats = DATASET_OUTDIR / "depth_quality" / "filtered_mapping_stats.tsv",
-        metadata = GENERAL_OUTPUT / "metadata.csv"
+        stats = DATASET_DIR / "depth_quality" / "mapping_stats.tsv",
+        metadata = INTDIR / "metadata.csv"
     params:
         exclude = config["depth_quality"]["flag_quality"]["exclude_samples"]
     run:
@@ -132,12 +132,12 @@ checkpoint filtered_samples:
     input:
         rules.quality_filter.output.metadata
     output:
-        directory(GENERAL_OUTPUT / "filtered_samples")
+        directory(INT_SAMPLES_DIR / "filtered_samples")
     run: 
         metadata = pd.read_csv(input[0], header=0)
         sample_names = list(metadata["sample"])
         for sample_name in sample_names:
-            path_s = GENERAL_OUTPUT / "filtered_samples" / f"{sample_name}.txt"
+            path_s = INT_SAMPLES_DIR / "filtered_samples" / f"{sample_name}.txt"
             path_s.parent.mkdir(parents=True, exist_ok=True)
             path_s.touch()
         
@@ -145,11 +145,11 @@ checkpoint filtered_lineages:
     input:
         rules.quality_filter.output.metadata
     output:
-        directory(GENERAL_OUTPUT / "filtered_lineages")
+        directory(INT_REFS_DIR / "filtered_lineages")
     run: 
         lineages = list(pd.read_csv(input[0], header=0)["lineage"])
         for lineage in lineages:
-            path_l = GENERAL_OUTPUT / "filtered_lineages" / f"{lineage}.txt"
+            path_l = INT_REFS_DIR / "filtered_lineages" / f"{lineage}.txt"
             path_l.parent.mkdir(parents=True, exist_ok=True)
             path_l.touch()
 
@@ -159,9 +159,9 @@ checkpoint filtered_lineages:
 
 rule join_depth_by_chrom_raw:
     input:
-        expand(OUTDIR / "depth_quality" / "{sample}" / "depth_by_chrom_raw.tsv",sample=SAMPLES),
+        expand(INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom_raw.tsv",sample=SAMPLES),
     output:
-        DATASET_OUTDIR / "depth_quality" / "depth_by_chrom_raw.tsv",
+        DATASET_DIR / "depth_quality" / "depth_by_chrom_raw.tsv",
     log:
         "logs/dataset/depth_quality/join_depth_by_chrom_raw.log"
     shell:
@@ -174,9 +174,9 @@ rule join_depth_by_chrom_raw:
 
 rule join_depth_by_chrom_good:
     input:
-        expand(OUTDIR / "depth_quality" / "{sample}" / "depth_by_chrom_good.tsv",sample=SAMPLES),
+        expand(INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom_good.tsv",sample=SAMPLES),
     output:
-        DATASET_OUTDIR / "depth_quality" / "depth_by_chrom_good.tsv",
+        DATASET_DIR / "depth_quality" / "depth_by_chrom_good.tsv",
     log:
         "logs/dataset/depth_quality/join_depth_by_chrom_good.log"
     shell:

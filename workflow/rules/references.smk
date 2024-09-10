@@ -8,10 +8,10 @@ rule agat_fix_gff:
         gff= MAIN_GFF,
         config = rules.agat_config.output
     output:
-        fixed_ID = REFDIR / str(MAIN_NAME + "_fixed_ID.gff"),
-        fixed_locus = REFDIR / str(MAIN_NAME + "_fixed_locus.gff"),
-        fixed_description = REFDIR / str(MAIN_NAME + "_fixed_description.gff"),
-        tsv = REFDIR / str(MAIN_NAME + "_fixed.tsv")
+        fixed_ID = INT_REFS_DIR / str(MAIN_NAME + "_fixed_ID.gff"),
+        fixed_locus = INT_REFS_DIR / str(MAIN_NAME + "_fixed_locus.gff"),
+        fixed_description = INT_REFS_DIR / str(MAIN_NAME + "_fixed_description.gff"),
+        tsv = INT_REFS_DIR / str(MAIN_NAME + "_fixed.tsv")
     conda:
         "../envs/agat.yaml"
     params:
@@ -31,8 +31,8 @@ rule fix_gff_tsv:
     input:
         tsv = rules.agat_fix_gff.output.tsv
     output:
-        gff = REFDIR / str(MAIN_NAME + ".gff"),
-        tsv = REFDIR / str(MAIN_NAME + ".tsv")
+        gff = INT_REFS_DIR / str(MAIN_NAME + ".gff"),
+        tsv = INT_REFS_DIR / str(MAIN_NAME + ".tsv")
     log:
         "logs/references/fix_gff_tsv.log"
     shell:
@@ -46,8 +46,8 @@ rule main_links:
         fasta = MAIN_FASTA,
         gff = rules.fix_gff_tsv.output.gff
     output:
-        fasta = REFDIR / "{lineage}" / str(MAIN_NAME + ".fasta"),
-        gff = REFDIR / "{lineage}" / str(MAIN_NAME + ".gff")
+        fasta = INT_REFS_DIR / "{lineage}" / str(MAIN_NAME + ".fasta"),
+        gff = INT_REFS_DIR / "{lineage}" / str(MAIN_NAME + ".gff")
     log:
         "logs/references/main_liks_{lineage}.log"
     shell:
@@ -62,16 +62,16 @@ rule main_links:
 # Run Lifotff to annotate reference genomes with main reference
 rule ref2ref_liftoff:
     input:
-        target_refs = REFDIR / "{lineage}" / "{lineage}.fasta",
+        target_refs = INT_REFS_DIR / "{lineage}" / "{lineage}.fasta",
         fasta = rules.main_links.output.fasta,
         gff = rules.main_links.output.gff
     output:
-        target_gff = REFDIR / "{lineage}" / "{lineage}.gff",
-        unmapped = REFDIR / "{lineage}" / "unmapped_features.txt",
-        intermediate = directory(REFDIR / "{lineage}" / "intermediate_files"),
-        fai_main = REFDIR / "{lineage}" / str(MAIN_NAME + ".fasta.fai"),
-        fai = REFDIR / "{lineage}" / "{lineage}.fasta.fai",
-        mmi = REFDIR / "{lineage}" / "{lineage}.fasta.mmi"
+        target_gff = REFS_DIR / "{lineage}" / "{lineage}.gff",
+        unmapped = INT_REFS_DIR / "{lineage}" / "unmapped_features.txt",
+        intermediate = directory(INT_REFS_DIR / "{lineage}" / "intermediate_liftoff"),
+        fai_main = INT_REFS_DIR / "{lineage}" / str(MAIN_NAME + ".fasta.fai"),
+        fai = INT_REFS_DIR / "{lineage}" / "{lineage}.fasta.fai",
+        mmi = INT_REFS_DIR / "{lineage}" / "{lineage}.fasta.mmi"
     threads: 
         config["annotate_references"]["liftoff"]["threads"]
     conda:
@@ -79,7 +79,7 @@ rule ref2ref_liftoff:
     log:
         "logs/references/ref2ref_liftoff_{lineage}.log"
     params:
-        refdir = REFDIR,
+        refdir = INT_REFS_DIR,
         extra = config["annotate_references"]["liftoff"]["extra"]
     shell:
         "liftoff "
@@ -101,7 +101,7 @@ rule gff2tsv:
         target = rules.ref2ref_liftoff.output.target_gff,
         config = rules.agat_config.output
     output:
-        REFDIR / "{lineage}" / "{lineage}.gff.tsv"
+        INT_REFS_DIR / "{lineage}" / "{lineage}.gff.tsv"
     conda:
         "../envs/agat.yaml"
     log:

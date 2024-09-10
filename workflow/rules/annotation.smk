@@ -5,7 +5,7 @@
 def liftoff_input(wildcards):
     s = SAMPLE_REFERENCE.loc[wildcards.sample,]
     return {
-        "target": OUTDIR / "snippy" / s["sample"] / "snps.consensus.fa" ,
+        "target": SAMPLES_DIR / "snippy" / s["sample"] / "snps.consensus.fa" ,
         "refgff": s["refgff"],
         "refgenome": s["refgenome"],
     }
@@ -13,18 +13,18 @@ rule liftoff:
     input:
         unpack(liftoff_input)
     output:
-        ref_gff = OUTDIR / "liftoff" / "{sample}" / "ref.gff",
-        gff = OUTDIR / "liftoff" / "{sample}" / "lifted.gff",
-        polished = OUTDIR / "liftoff" / "{sample}" / "lifted.gff_polished",
-        unmapped = OUTDIR / "liftoff" / "{sample}" / "unmapped_features.txt",
-        intermediate = directory(OUTDIR / "liftoff" / "{sample}" / "intermediate_files"),
-        fai = OUTDIR / "snippy" / "{sample}" / "snps.consensus.fa.fai",
-        mmi = OUTDIR / "snippy" / "{sample}" / "snps.consensus.fa.mmi"
+        ref_gff = INT_SAMPLES_DIR / "liftoff" / "{sample}" / "ref.gff",
+        gff = INT_SAMPLES_DIR / "liftoff" / "{sample}" / "lifted.gff",
+        polished = INT_SAMPLES_DIR / "liftoff" / "{sample}" / "lifted.gff_polished",
+        unmapped = INT_SAMPLES_DIR / "liftoff" / "{sample}" / "unmapped_features.txt",
+        intermediate = directory(INT_SAMPLES_DIR / "liftoff" / "{sample}" / "intermediate_liftoff"),
+        fai = SAMPLES_DIR / "snippy" / "{sample}" / "snps.consensus.fa.fai",
+        mmi = SAMPLES_DIR / "snippy" / "{sample}" / "snps.consensus.fa.mmi"
     threads: 
         config["liftoff"]["threads"]
     params:
         extra = config["liftoff"]["extra"],
-        outpath =  OUTDIR / "liftoff" / "{sample}"
+        outpath =  INT_SAMPLES_DIR / "liftoff" / "{sample}"
     conda:
         "../envs/liftoff.yaml"
     log:
@@ -43,23 +43,30 @@ rule liftoff:
         "{input.target} "
         "{input.refgenome} &>> {log}"
 
+rule move_liftoff:
+    input:
+        rules.liftoff.output.polished
+    output:
+        SAMPLES_DIR / "annotation" / "{sample}" / "annotation.gff"
+    shell:
+        "mv {input} {output}"
 # =================================================================================================
 # Per sample | Run AGAT to extract CDS and protein sequences
 # =================================================================================================
 
 rule agat_cds:
     input:
-        gff = rules.liftoff.output.polished,
-        fa = OUTDIR / "snippy" / "{sample}" / "snps.consensus.fa",
+        gff = rules.move_liftoff.output,
+        fa = SAMPLES_DIR / "snippy" / "{sample}" / "snps.consensus.fa",
         config = rules.agat_config.output
     output:
-        cds = OUTDIR / "agat" / "{sample}" / "cds.fa",
+        cds = SAMPLES_DIR / "annotation" / "{sample}" / "cds.fa",
     conda:
         "../envs/agat.yaml"
     params:
         extra = config["agat"]["extra"]
     log: 
-        "logs/samples/agat/agat_cds_{sample}.log",
+        "logs/samples/annotation/agat_cds_{sample}.log",
     shell:
         "agat_sp_extract_sequences.pl "
         "-g {input.gff} " 
@@ -71,18 +78,18 @@ rule agat_cds:
 
 rule agat_prots:
     input:
-        gff = rules.liftoff.output.polished,
-        fa = OUTDIR / "snippy" / "{sample}" / "snps.consensus.fa",
+        gff = rules.move_liftoff.output,
+        fa = SAMPLES_DIR / "snippy" / "{sample}" / "snps.consensus.fa",
         config = rules.agat_config.output,
         cds = rules.agat_cds.output.cds
     output:
-        prots = OUTDIR / "agat" / "{sample}" / "proteins.fa"
+        prots = SAMPLES_DIR / "annotation" / "{sample}" / "proteins.fa"
     conda:
         "../envs/agat.yaml"
     params:
         extra = config["agat"]["extra"]
     log: 
-        "logs/samples/agat/agat_prots_{sample}.log"
+        "logs/samples/annotation/agat_prots_{sample}.log"
     shell:
         "agat_sp_extract_sequences.pl "
         "-g {input.gff} " 
@@ -100,13 +107,13 @@ rule agat_prots:
 
 rule cds2csv:
     input: 
-        cds = OUTDIR / "agat" / "{sample}" / "cds.fa"
+        cds = SAMPLES_DIR / "annotation" / "{sample}" / "cds.fa"
     output:
-        cds = OUTDIR / "agat" / "{sample}" / "cds.csv"
+        cds = INT_SAMPLES_DIR / "annotation" / "{sample}" / "cds.csv"
     conda:
         "../envs/variants.yaml"
     log:
-        "logs/dataset/sequences/cds2csv_{sample}.log"
+        "logs/samples/annotation/cds2csv_{sample}.log"
     shell:
         "python workflow/scripts/fasta_to_csv.py "
         "-f {input.cds} "
@@ -117,13 +124,13 @@ rule cds2csv:
 
 rule prots2csv:
     input: 
-        prots = OUTDIR / "agat" / "{sample}" / "proteins.fa"
+        prots = SAMPLES_DIR / "annotation" / "{sample}" / "proteins.fa"
     output:
-        prots = OUTDIR / "agat" / "{sample}" / "proteins.csv"
+        prots = INT_SAMPLES_DIR / "annotation" / "{sample}" / "proteins.csv"
     conda:
         "../envs/variants.yaml"
     log:
-        "logs/dataset/sequences/prots2db_{sample}.log"
+        "logs/samples/annotation/prots2db_{sample}.log"
     shell:
         "python workflow/scripts/fasta_to_csv.py "
         "-f {input.prots} "

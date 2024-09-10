@@ -4,19 +4,19 @@
 
 rule unmapped_samples_plot:
     input:
-        GENERAL_OUTPUT / "metadata.csv",
+        INTDIR / "metadata.csv",
         expand(rules.fix_gff_tsv.output.tsv, lineage=LINEAGES),
         expand(rules.liftoff.output.unmapped, sample=SAMPLES)        
     output:
-        expand(DATASET_OUTDIR / "liftoff" / "{lineage}_unmapped_count.tsv", lineage=LINEAGES),
-        expand(DATASET_OUTDIR / "plots" / "{lineage}_unmapped.svg", lineage=LINEAGES)
+        expand(DATASET_DIR / "liftoff" / "{lineage}_unmapped_count.tsv", lineage=LINEAGES),
+        expand(DATASET_DIR / "plots" / "{lineage}_unmapped.svg", lineage=LINEAGES)
     conda:
         "../envs/r.yaml"
     params:
-        dir = REFDIR,
-        sampledir = OUTDIR / "liftoff",
-        datasetplots = DATASET_OUTDIR / "plots",
-        datasetfiles = DATASET_OUTDIR / "liftoff"
+        dir = REFS_DIR,
+        sampledir = SAMPLES_DIR / "liftoff",
+        datasetplots = DATASET_DIR / "plots",
+        datasetfiles = DATASET_DIR / "liftoff"
     log:
         "logs/datset/plots/unmapped_samples_plot.log"
     script:
