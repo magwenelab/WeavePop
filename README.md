@@ -75,8 +75,8 @@ The environments for particular software used in Snakemake rules are installed b
 
 | Path | Description | Column names |
 | :---------------- | ----: |----: |
-| 3.References/{lineage}/{lineage}.gff
-| 3.References/{lineage}/{lineage}_repeats.bed
+| 3.References/{lineage}/{lineage}.gff | Ploished GFF file from Liftoff between the main reference and a reference genome. Positions are 1-Based. ||
+| 3.References/{lineage}/{lineage}_repeats.bed | BED file of regions with repetitive sequences identified by RepeatMasker. Each region is the intersection of diferent types of repetitive sequences identified. Positions are 0-Based.| Accession, Start, End, Types (comma separated list of types in the region).
 
 <details>
 <summary> Intermediate files </summary> 
@@ -119,24 +119,24 @@ The environments for particular software used in Snakemake rules are installed b
 
 ### Snippy
 
-| Path | Description | Column names |
-| :---------------- | ----: |----: |
-| 1.Samples/snippy/{sample}/snps.bam
-| 1.Samples/snippy/{sample}/snps.consensus.fa
-| 1.Samples/snippy/{sample}/snps.vcf
-| 1.Samples/snippy/{sample}/reference/(see snippy output)
-| 1.Samples/snippy/{sample}/(see snippy output)
+| Path | Description |
+| :---------------- | ----: |
+| 1.Samples/snippy/{sample}/snps.bam | BAM file of alignment between short reads of sample and corresponding reference genome. |
+| 1.Samples/snippy/{sample}/snps.consensus.fa | FASTA file of the reference genome with all variants instantiated. |
+| 1.Samples/snippy/{sample}/snps.vcf | Called variants in VCF format. Positions are 1-Based.|
+| 1.Samples/snippy/{sample}/* | Other files from the [Snippy output](https://github.com/tseemann/snippy?tab=readme-ov-file#output-files).|
 
 
 ### Depth and quality
 
 | Path | Description | Column names |
 | :---------------- | ----: |----: |
+| 1.Samples/depth_quality/{sample}/depth_by_chrom_good.tsv
+| 1.Samples/depth_quality/{sample}/depth_by_chrom_raw.tsv
 | 1.Samples/depth_quality/{sample}/mapping_stats.tsv
-| 1.Samples/depth_quality/{sample}/mapq_depth_window.bed
+| 1.Samples/depth_quality/{sample}/mapq_depth_window.bed | Positions are 0-Based.
 | 2.Dataset/depth_quality/depth_by_chrom_good.tsv
 | 2.Dataset/depth_quality/depth_by_chrom_raw.tsv
-| 2.Dataset/depth_quality/feature_mapq_depth.tsv
 | 2.Dataset/depth_quality/mapping_stats.tsv
 
 <details>
@@ -154,8 +154,6 @@ The environments for particular software used in Snakemake rules are installed b
 | 4.Intermediate_files/1.Samples/mosdepth/{sample}/coverage.mosdepth.summary.txt
 | 4.Intermediate_files/1.Samples/mosdepth/{sample}/coverage.regions.bed.gz
 | 4.Intermediate_files/1.Samples/mosdepth/{sample}/coverage.regions.bed.gz.csi
-| 4.Intermediate_files/1.Samples/depth_quality/{sample}/depth_by_chrom_good.tsv
-| 4.Intermediate_files/1.Samples/depth_quality/{sample}/depth_by_chrom_raw.tsv
 | 4.Intermediate_files/1.Samples/depth_quality/{sample}/depth_by_windows.tsv
 | 4.Intermediate_files/1.Samples/depth_quality/{sample}/depth_distribution.tsv
 | 4.Intermediate_files/1.Samples/depth_quality/{sample}/mapq.bed
@@ -172,7 +170,7 @@ The environments for particular software used in Snakemake rules are installed b
 
 | Path | Description | Column names |
 | :---------------- | ----: |----: |
-| 1.Samples/annotation/{sample}/annotation.gff
+| 1.Samples/annotation/{sample}/annotation.gff | Positions are 1-Based.
 | 1.Samples/annotation/{sample}/cds.fa
 | 1.Samples/annotation/{sample}/proteins.fa
 
@@ -190,8 +188,21 @@ The environments for particular software used in Snakemake rules are installed b
 | 4.Intermediate_files/2.Dataset/sequences.csv
 | 4.Intermediate_files/agat_config.yaml
 
-
 </details>
+
+### Depth and quality of genes
+
+| Path | Description | Column names |
+| :---------------- | ----: |----: |
+| 1.Samples/depth_quality/{sample}/feature_mapq_depth.tsv
+| 2.Dataset/depth_quality/feature_mapq_depth.tsv
+
+### CNV calling
+
+| Path | Description | Column names |
+| :---------------- | ----: |----: |
+| 1.Samples/cnv/{sample}/cnv_calls.tsv | Positions are 0-Based.|
+| 2.Dataset/cnv/cnv_calls.tsv | Positions are 0-Based.|
 
 ### SNP effects
 
@@ -201,7 +212,7 @@ The environments for particular software used in Snakemake rules are installed b
 | 2.Dataset/snps/lofs.tsv
 | 2.Dataset/snps/nmds.tsv
 | 2.Dataset/snps/presence.tsv
-| 2.Dataset/snps/variants.tsv
+| 2.Dataset/snps/variants.tsv | Positions are 1-Based.
 
 <details>
 <summary> Intermediate files </summary> 
@@ -209,34 +220,19 @@ The environments for particular software used in Snakemake rules are installed b
 | Path | Description | Column names |
 | :---------------- | ----: |----: |
 | 4.Intermediate_files/2.Dataset/snps/{lineage}_effects.tsv
-| 4.Intermediate_files/2.Dataset/snps/{lineage}_intersection.vcf
+| 4.Intermediate_files/2.Dataset/snps/{lineage}_intersection.vcf | Positions are 1-Based.
 | 4.Intermediate_files/2.Dataset/snps/{lineage}_lofs.tsv
 | 4.Intermediate_files/2.Dataset/snps/{lineage}_nmds.tsv
 | 4.Intermediate_files/2.Dataset/snps/{lineage}_presence.tsv
 | 4.Intermediate_files/2.Dataset/snps/{lineage}_snpeff.genes.txt
 | 4.Intermediate_files/2.Dataset/snps/{lineage}_snpeff.html
 | 4.Intermediate_files/2.Dataset/snps/{lineage}_snpeff.vcf
-| 4.Intermediate_files/2.Dataset/snps/{lineage}_variants.tsv
+| 4.Intermediate_files/2.Dataset/snps/{lineage}_variants.tsv | Positions are 1-Based.
 | 4.Intermediate_files/3.References/snpeff_data/Cryptococcus_neoformans_{lineage}/
 | 4.Intermediate_files/3.References/snpeff_data/{lineage}.done
 | 4.Intermediate_files/3.References/snpeff_data/snpEff.config
 
-
 </details>
-
-### Depth and quality of genes
-
-| Path | Description | Column names |
-| :---------------- | ----: |----: |
-| 1.Samples/depth_quality/{sample}/feature_mapq_depth.tsv
-
-
-### CNV calling
-
-| Path | Description | Column names |
-| :---------------- | ----: |----: |
-| 1.Samples/cnv/{sample}/cnv_calls.tsv
-| 2.Dataset/cnv/cnv_calls.tsv
 
 ### Database
 
@@ -261,7 +257,7 @@ The environments for particular software used in Snakemake rules are installed b
 
 | Path | Description | Column names |
 | :---------------- | ----: |----: |
-| 4.Intermediate_files/3.References/loci_to_plot.tsv
+| 4.Intermediate_files/3.References/loci_to_plot.tsv | Positions are 1-Based.
 
 </details>
 
