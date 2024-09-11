@@ -31,8 +31,8 @@ rule depth_distribution:
         unpack(depth_distribution_input)
     output:
         distrib = INT_SAMPLES_DIR / "depth_quality" / "{unf_sample}" / "depth_distribution.tsv",
-        by_chrom_good = INT_SAMPLES_DIR / "depth_quality" / "{unf_sample}" / "depth_by_chrom_good.tsv",
-        by_chrom_raw = INT_SAMPLES_DIR / "depth_quality" / "{unf_sample}" / "depth_by_chrom_raw.tsv"
+        by_chrom_good = SAMPLES_DIR / "depth_quality" / "{unf_sample}" / "depth_by_chrom_good.tsv",
+        by_chrom_raw = SAMPLES_DIR / "depth_quality" / "{unf_sample}" / "depth_by_chrom_raw.tsv"
     conda: 
         "../envs/samtools.yaml"
     log:
@@ -159,7 +159,7 @@ checkpoint filtered_lineages:
 
 rule join_depth_by_chrom_raw:
     input:
-        expand(INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom_raw.tsv",sample=SAMPLES),
+        expand(SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom_raw.tsv",sample=SAMPLES),
     output:
         DATASET_DIR / "depth_quality" / "depth_by_chrom_raw.tsv",
     log:
@@ -174,7 +174,7 @@ rule join_depth_by_chrom_raw:
 
 rule join_depth_by_chrom_good:
     input:
-        expand(INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom_good.tsv",sample=SAMPLES),
+        expand(SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom_good.tsv",sample=SAMPLES),
     output:
         DATASET_DIR / "depth_quality" / "depth_by_chrom_good.tsv",
     log:
