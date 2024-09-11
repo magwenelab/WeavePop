@@ -71,199 +71,199 @@ The environments for particular software used in Snakemake rules are installed b
 
 ## Output
 
-### Main
+### Processing of reference genomes
 
 | Path | Description | Column names |
 | :---------------- | ----: |----: |
-| **results/samples/snippy/{sample}/snps.bam**
-| **results/samples/snippy/{sample}/snps.consensus.fa**
-| **results/samples/snippy/{sample}/snps.vcf**
-| **results/samples/liftoff/{sample}/lifted.gff_polished**
-| results/dataset/plots/unmapped.svg
-| **results/samples/agat/{sample}/cds.fa**
-| **results/samples/agat/{sample}/proteins.fa**
+| results/3.References/{lineage}/{lineage}.gff
+| results/3.References/{lineage}/{lineage}_repeats.bed
 
 <details>
 <summary> Intermediate files </summary> 
 
 | Path | Description | Column names |
 | :---------------- | ----: |----: |
-| results/samples/snippy/{sample}/ref.fa
-| results/samples/snippy/{sample}/ref.fa.fai
-| results/samples/snippy/{sample}/snps.aligned.fa
-| results/samples/snippy/{sample}/snps.bam.bai
-| results/samples/snippy/{sample}/snps.bed
-| results/samples/snippy/{sample}/snps.consensus.fa.fai
-| results/samples/snippy/{sample}/snps.consensus.fa.index
-| results/samples/snippy/{sample}/snps.consensus.fa.mmi
-| results/samples/snippy/{sample}/snps.consensus.subs.fa
-| results/samples/snippy/{sample}/snps.csv
-| results/samples/snippy/{sample}/snps.filt.vcf
-| results/samples/snippy/{sample}/snps.gff
-| results/samples/snippy/{sample}/snps.html
-| results/samples/snippy/{sample}/snps.log
-| results/samples/snippy/{sample}/snps.raw.vcf
-| results/samples/snippy/{sample}/snps.subs.vcf
-| results/samples/snippy/{sample}/snps.tab
-| results/samples/snippy/{sample}/snps.txt
-| results/samples/snippy/{sample}/snps.vcf.gz
-| results/samples/snippy/{sample}/snps.vcf.gz.csi
-| results/samples/liftoff/{sample}/intermediate_files/
-| results/samples/liftoff/{sample}/lifted.gff
-| results/samples/liftoff/{sample}/ref.gff
-| results/samples/liftoff/{sample}/ref.gff_db
-| results/samples/liftoff/{sample}/unmapped_features.txt
-| results/samples/agat/{sample}/cds.tsv
-| results/samples/agat/{sample}/proteins.tsv
+| results/4.Intermediate_files/3.References/all_lineages.gff.tsv
+| results/4.Intermediate_files/3.References/FungiDB-65_CneoformansH99_fixed_description.gff
+| results/4.Intermediate_files/3.References/FungiDB-65_CneoformansH99_fixed_ID.gff
+| results/4.Intermediate_files/3.References/FungiDB-65_CneoformansH99_fixed_locus.gff
+| results/4.Intermediate_files/3.References/FungiDB-65_CneoformansH99_fixed.tsv
+| results/4.Intermediate_files/3.References/FungiDB-65_CneoformansH99.gff
+| results/4.Intermediate_files/3.References/FungiDB-65_CneoformansH99.tsv
+| results/4.Intermediate_files/3.References/{lineage}/FungiDB-65_CneoformansH99.fasta.fai
+| results/4.Intermediate_files/3.References/{lineage}/FungiDB-65_CneoformansH99.gff_db
+| results/4.Intermediate_files/3.References/{lineage}/intermediate_liftoff/(see lifotff output)
+| results/4.Intermediate_files/3.References/{lineage}/liftoff.gff
+| results/4.Intermediate_files/3.References/{lineage}/{lineage}.cds.fa
+| results/4.Intermediate_files/3.References/{lineage}/{lineage}.fasta.fai
+| results/4.Intermediate_files/3.References/{lineage}/{lineage}.fasta.index
+| results/4.Intermediate_files/3.References/{lineage}/{lineage}.fasta.mmi
+| results/4.Intermediate_files/3.References/{lineage}/{lineage}.gff.tsv
+| results/4.Intermediate_files/3.References/{lineage}/{lineage}.prots.fa
+| results/4.Intermediate_files/3.References/{lineage}/repeats/01_simple/{lineage}.bed
+| results/4.Intermediate_files/3.References/{lineage}/repeats/01_simple/ (see RepeatMasker output)
+| results/4.Intermediate_files/3.References/{lineage}/repeats/02_complex/{lineage}.bed
+| results/4.Intermediate_files/3.References/{lineage}/repeats/02_complex/ (see RepeatMasker output)
+| results/4.Intermediate_files/3.References/{lineage}/repeats/03_known/{lineage}.bed
+| results/4.Intermediate_files/3.References/{lineage}/repeats/03_known/ (see RepeatMasker output)
+| results/4.Intermediate_files/3.References/{lineage}/repeats/04_unknown/{lineage}.bed
+| results/4.Intermediate_files/3.References/{lineage}/repeats/04_unknown/ (see RepeatMasker output)
+| results/4.Intermediate_files/3.References/{lineage}/repeats/{lineage}_db/ (see RepeatMasker output)
+| results/4.Intermediate_files/3.References/{lineage}/repeats/{lineage}_known.fa
+| results/4.Intermediate_files/3.References/{lineage}/repeats/{lineage}_unknown.fa
+| results/4.Intermediate_files/3.References/{lineage}/repeats/RModeler/(see RepeatModeler output)
+| results/4.Intermediate_files/3.References/{lineage}/unmapped_features.txt
+
+
 </details>
 
-### Quality and read depth
+### Snippy
 
 | Path | Description | Column names |
 | :---------------- | ----: |----: |
-| **results/samples/plots/{sample}/depth_by_chrom.png**
-| **results/samples/plots/{sample}/depth_chrom_distribution.png**
-| **results/samples/plots/{sample}/depth_global_distribution.png**
-| **results/dataset/plots/dataset_depth_by_chrom.png**
-| **results/dataset/plots/dataset_summary.png**
-| results/samples/depth_quality/{sample}/depth_by_chrom_good.tsv
-| results/samples/depth_quality/{sample}/depth_by_chrom_raw.tsv
-| results/samples/depth_quality/{sample}/depth_distribution.tsv
-| results/samples/depth_quality/{sample}/mapping_stats.tsv
-| results/dataset/depth_quality/depth_by_chrom_good.tsv
-| results/dataset/depth_quality/depth_by_chrom_raw.tsv
-| results/dataset/depth_quality/mapping_stats.tsv
+| results/1.Samples/snippy/{sample}/snps.bam
+| results/1.Samples/snippy/{sample}/snps.consensus.fa
+| results/1.Samples/snippy/{sample}/snps.vcf
+| results/1.Samples/snippy/{sample}/reference/(see snippy output)
+| results/1.Samples/snippy/{sample}/(see snippy output)
+
+
+### Depth and quality
+
+| Path | Description | Column names |
+| :---------------- | ----: |----: |
+| results/1.Samples/depth_quality/{sample}/mapping_stats.tsv
+| results/1.Samples/depth_quality/{sample}/mapq_depth_window.bed
+| results/2.Dataset/depth_quality/depth_by_chrom_good.tsv
+| results/2.Dataset/depth_quality/depth_by_chrom_raw.tsv
+| results/2.Dataset/depth_quality/feature_mapq_depth.tsv
+| results/2.Dataset/depth_quality/mapping_stats.tsv
 
 <details>
 <summary> Intermediate files </summary> 
 
 | Path | Description | Column names |
 | :---------------- | ----: |----: |
-| results/samples/mosdepth/{sample}/coverage_good.mosdepth.global.dist.txt
-| results/samples/mosdepth/{sample}/coverage_good.mosdepth.region.dist.txt
-| results/samples/mosdepth/{sample}/coverage_good.mosdepth.summary.txt
-| results/samples/mosdepth/{sample}/coverage_good.regions.bed.gz
-| results/samples/mosdepth/{sample}/coverage_good.regions.bed.gz.csi
-| results/samples/mosdepth/{sample}/coverage.mosdepth.global.dist.txt
-| results/samples/mosdepth/{sample}/coverage.mosdepth.region.dist.txt
-| results/samples/mosdepth/{sample}/coverage.mosdepth.summary.txt
-| results/samples/mosdepth/{sample}/coverage.regions.bed.gz
-| results/samples/mosdepth/{sample}/coverage.regions.bed.gz.csi
+| results/4.Intermediate_files/1.Samples/mosdepth/{sample}/coverage_good.mosdepth.global.dist.txt
+| results/4.Intermediate_files/1.Samples/mosdepth/{sample}/coverage_good.mosdepth.region.dist.txt
+| results/4.Intermediate_files/1.Samples/mosdepth/{sample}/coverage_good.mosdepth.summary.txt
+| results/4.Intermediate_files/1.Samples/mosdepth/{sample}/coverage_good.regions.bed.gz
+| results/4.Intermediate_files/1.Samples/mosdepth/{sample}/coverage_good.regions.bed.gz.csi
+| results/4.Intermediate_files/1.Samples/mosdepth/{sample}/coverage.mosdepth.global.dist.txt
+| results/4.Intermediate_files/1.Samples/mosdepth/{sample}/coverage.mosdepth.region.dist.txt
+| results/4.Intermediate_files/1.Samples/mosdepth/{sample}/coverage.mosdepth.summary.txt
+| results/4.Intermediate_files/1.Samples/mosdepth/{sample}/coverage.regions.bed.gz
+| results/4.Intermediate_files/1.Samples/mosdepth/{sample}/coverage.regions.bed.gz.csi
+| results/4.Intermediate_files/1.Samples/depth_quality/{sample}/depth_by_chrom_good.tsv
+| results/4.Intermediate_files/1.Samples/depth_quality/{sample}/depth_by_chrom_raw.tsv
+| results/4.Intermediate_files/1.Samples/depth_quality/{sample}/depth_by_windows.tsv
+| results/4.Intermediate_files/1.Samples/depth_quality/{sample}/depth_distribution.tsv
+| results/4.Intermediate_files/1.Samples/depth_quality/{sample}/mapq.bed
+| results/4.Intermediate_files/1.Samples/depth_quality/{sample}/mapq_window.bed
+| results/4.Intermediate_files/1.Samples/depth_quality/{sample}/snps_good.bam
+| results/4.Intermediate_files/1.Samples/depth_quality/{sample}/snps_good.bam.bai
+| results/4.Intermediate_files/1.Samples/filtered_samples/{sample}.txt
+| results/4.Intermediate_files/2.Dataset/depth_quality/unfiltered_mapping_stats.tsv
+| results/4.Intermediate_files/3.References/filtered_lineages/{lineage}.txt
 
 </details>
 
-### Copy-number variants
+### Annotation
 
 | Path | Description | Column names |
 | :---------------- | ----: |----: |
-| **results/samples/cnv/{sample}/cnv_calls.tsv** | Position index 0
-| **results/samples/depth_quality/{sample}/depth_by_regions.tsv** | Position index 0
-| **results/samples/plots/{sample}/depth_by_regions.png**
-| **results/samples/plots/{sample}/mapq.png**
-| results/dataset/depth_quality/cnv_calls.tsv | Position index 0
+| results/1.Samples/annotation/{sample}/annotation.gff
+| results/1.Samples/annotation/{sample}/cds.fa
+| results/1.Samples/annotation/{sample}/proteins.fa
 
 <details>
 <summary> Intermediate files </summary> 
 
 | Path | Description | Column names |
 | :---------------- | ----: |----: |
-| results/references/{lineage}/repeats/
-| results/references/{lineage}/repeats/{lineage}_repeats.bed
+| results/4.Intermediate_files/1.Samples/liftoff/{sample}/intermediate_liftoff/(see liftoff output)
+| results/4.Intermediate_files/1.Samples/liftoff/{sample}/lifted.gff
+| results/4.Intermediate_files/1.Samples/liftoff/{sample}/ref.gff_db
+| results/4.Intermediate_files/1.Samples/liftoff/{sample}/unmapped_features.txt
+| results/4.Intermediate_files/1.Samples/annotation/{sample}/cds.csv
+| results/4.Intermediate_files/1.Samples/annotation/{sample}/proteins.csv
+| results/4.Intermediate_files/2.Dataset/sequences.csv
+| results/4.Intermediate_files/agat_config.yaml
+
+
 </details>
 
-### Quality and read depth of genetic features
+### SNP effects
 
 | Path | Description | Column names |
 | :---------------- | ----: |----: |
-| **results/samples/depth_quality/{sample}/feature_mapq_depth.tsv**
-| results/dataset/depth_quality/feature_mapq_depth.tsv
-
+| results/2.Dataset/snps/effects.tsv
+| results/2.Dataset/snps/lofs.tsv
+| results/2.Dataset/snps/nmds.tsv
+| results/2.Dataset/snps/presence.tsv
+| results/2.Dataset/snps/variants.tsv
 
 <details>
 <summary> Intermediate files </summary> 
 
 | Path | Description | Column names |
 | :---------------- | ----: |----: |
-| results/samples/depth_quality/{sample}/mapq_depth_region.bed | Position index 0
+| results/4.Intermediate_files/2.Dataset/snps/{lineage}_effects.tsv
+| results/4.Intermediate_files/2.Dataset/snps/{lineage}_intersection.vcf
+| results/4.Intermediate_files/2.Dataset/snps/{lineage}_lofs.tsv
+| results/4.Intermediate_files/2.Dataset/snps/{lineage}_nmds.tsv
+| results/4.Intermediate_files/2.Dataset/snps/{lineage}_presence.tsv
+| results/4.Intermediate_files/2.Dataset/snps/{lineage}_snpeff.genes.txt
+| results/4.Intermediate_files/2.Dataset/snps/{lineage}_snpeff.html
+| results/4.Intermediate_files/2.Dataset/snps/{lineage}_snpeff.vcf
+| results/4.Intermediate_files/2.Dataset/snps/{lineage}_variants.tsv
+| results/4.Intermediate_files/3.References/snpeff_data/Cryptococcus_neoformans_{lineage}/
+| results/4.Intermediate_files/3.References/snpeff_data/{lineage}.done
+| results/4.Intermediate_files/3.References/snpeff_data/snpEff.config
 
 
 </details>
 
-### Variant effect annotation module
+### Depth and quality of genes
 
 | Path | Description | Column names |
 | :---------------- | ----: |----: |
-| results/dataset/snps/{lineage}_effects.tsv
-| results/dataset/snps/{lineage}_lofs.tsv
-| results/dataset/snps/{lineage}_nmds.tsv
-| results/dataset/snps/{lineage}_presence.tsv
-| results/dataset/snps/{lineage}_variants.tsv
+| results/1.Samples/depth_quality/{sample}/feature_mapq_depth.tsv
 
-<details>
-<summary> Intermediate files </summary> 
+
+### CNV calling
 
 | Path | Description | Column names |
 | :---------------- | ----: |----: |
-| results/dataset/snps/{lineage}_intersection.vcf
-| results/dataset/snps/{lineage}_snpeff.genes.txt
-| results/dataset/snps/{lineage}_snpeff.html
-| results/dataset/snps/{lineage}_snpeff.vcf
-| results/references/snpeff_data/
-| results/references/{lineage}/{lineage}.cds.fa
-| results/references/{lineage}/{lineage}.prots.fa
-
-</details>
+| results/1.Samples/cnv/{sample}/cnv_calls.tsv
+| results/2.Dataset/cnv/cnv_calls.tsv
 
 ### Database
 
 | Path | Description | Column names |
 | :---------------- | ----: |----: |
-| **results/dataset/database.db**
+| results/2.Dataset/database.db
+
+### Plots
+
+| Path | Description |
+| :---------------- | ----: |
+| results/1.Samples/plots/{sample}/depth_by_chrom.png
+| results/1.Samples/plots/{sample}/depth_by_windows.png
+| results/1.Samples/plots/{sample}/depth_chrom_distribution.png
+| results/1.Samples/plots/{sample}/depth_global_distribution.png
+| results/1.Samples/plots/{sample}/mapq.png
+| results/2.Dataset/plots/dataset_depth_by_chrom.png
+| results/2.Dataset/plots/dataset_summary.png
 
 <details>
 <summary> Intermediate files </summary> 
 
 | Path | Description | Column names |
 | :---------------- | ----: |----: |
-| results/dataset/snps/all_effects.tsv
-| results/dataset/snps/all_lofs.tsv
-| results/dataset/snps/all_nmds.tsv
-| results/dataset/snps/all_presence.tsv
-| results/dataset/snps/all_variants.tsv
-</details>
-
-### Reference annotation
-
-| Path | Description | Column names |
-| :---------------- | ----: |----: |
-| results/references/{lineage}/{lineage}.gff
-| results/references/{lineage}/{lineage}.gff.tsv
-| results/references/unmapped.svg
-
-<details>
-<summary> Intermediate files </summary> 
-
-| Path | Description | Column names |
-| :---------------- | ----: |----: |
-| results/dataset/liftoff/unmapped_count.tsv
-| results/references/{lineage}/intermediate_files
-| results/references/{lineage}/{main_reference}.fasta
-| results/references/{lineage}/{main_reference}.fasta.fai
-| results/references/{lineage}/{main_reference}.gff
-| results/references/{lineage}/{main_reference}.gff_db
-| results/references/{lineage}/liftoff.gff
-| results/references/{lineage}/unmapped_features.txt
-| results/references/{lineage}/{lineage}.fasta
-| results/references/{lineage}/{lineage}.fasta.fai
-| results/references/{lineage}/{lineage}.fasta.index
-| results/references/{lineage}/{lineage}.fasta.mmi
-| results/references/agat_config.yaml
-| results/references/{main_reference}.gff
-| results/references/{main_reference}.tsv
-| results/references/unmapped_count.tsv
+| results/4.Intermediate_files/3.References/loci_to_plot.tsv
 
 </details>
-
 
 ## Filegraph
 
