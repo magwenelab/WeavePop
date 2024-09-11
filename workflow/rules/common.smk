@@ -30,23 +30,14 @@ FQ_DATA = Path(config["fastqs"]["directory"])
 FQ1 = config["fastqs"]["fastq_suffix1"]
 FQ2 = config["fastqs"]["fastq_suffix2"]
 
-# GENERAL_OUTPUT = Path(config["output_directory"])
-# OUTDIR= GENERAL_OUTPUT / "samples"
-# DATASET_DIR = GENERAL_OUTPUT / "dataset"
-# REFDIR = GENERAL_OUTPUT / "references"
-# INTERDIR = GENERAL_OUTPUT / "intermediate_files"
-# INTER_OUTDIR = INTERDIR / "samples"
-# INTER_DATASET = INTERDIR / "dataset"
-# INTER_REFDIR = INTERDIR / "references"
-
 OUTPUT = Path(config["output_directory"])
-SAMPLES_DIR = OUTPUT / "1.Samples"
-DATASET_DIR = OUTPUT / "2.Dataset"
-REFS_DIR = OUTPUT / "3.References"
-INTDIR = OUTPUT / "4.Intermediate_files"
-INT_SAMPLES_DIR = INTDIR / "a.Samples"
-INT_DATASET_DIR = INTDIR / "b.Dataset"
-INT_REFS_DIR = INTDIR / "c.References"
+SAMPLES_DIR = OUTPUT / SAMPLES_DIR_NAME
+DATASET_DIR = OUTPUT / DATASET_DIR_NAME
+REFS_DIR = OUTPUT / REFS_DIR_NAME
+INTDIR = OUTPUT / INTDIR_NAME
+INT_SAMPLES_DIR = INTDIR / SAMPLES_DIR_NAME
+INT_DATASET_DIR = INTDIR / DATASET_DIR_NAME
+INT_REFS_DIR = INTDIR / REFS_DIR_NAME
 
 CHROM_NAMES = config["chromosomes"]
 CHROM_NAMES_TABLE = pd.read_csv(CHROM_NAMES, header=0, dtype={"chromosome": "string"})

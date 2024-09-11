@@ -41,7 +41,7 @@ annotate_references:
 depth_quality: 
   mosdepth: 
     threads: 12  
-    window: 10 # Window size for mosdepth
+    window: 500 # Window size for mosdepth
     min_mapq: 20 # Minimum mapping quality for mosdepth
     extra: ""
   flag_quality: # Minimum values for a sample to be considered to have a good quality read mapping
@@ -78,11 +78,7 @@ plotting:
   activate: True
   loci: "config/loci.csv" # Relative path to table with loci to add to plots
   metadata2color : "source" # Column name in the samples table to color the samples in the plots
-  scale : 0.3 # Ggsave scale parameter to adjust the size of the dataset plots. Use lower values for fewer samples and bigger values for more samples.
-
-# ------------------Join sample results into dataset-wide files------------------------------------
-dataset: 
-  activate: True
+  scale : 0.7 # Ggsave scale parameter to adjust the size of the dataset plots. Use lower values for fewer samples and bigger values for more samples.
 
 # ------------------Database-----------------------------------------------------------------------
 database:
@@ -93,10 +89,12 @@ database:
 # =================================================================================================
 # This workflow joins the results of running the sample_workflow in different datasets. It assumes that
 # if the same lineage is present in the different datasets, the same reference genome was used.
-# datasets_paths: "results_1,results_2"
-datasets_paths: "/FastData/czirion/DiversityPipeline/results_1,/FastData/czirion/DiversityPipeline/results_2" # Comma-separated list of directories with datasets to join.
-datasets_names: "R1,R2" # Comma-separated list of names for the datasets.
-joint_datasets_output: "results_joined_R1R2" # Name for the output directory with joined datasets.
+datasets_paths: "results_1,results_2"
+datasets_names: "R1,R2"
+joint_output_directory: "results_joined_R1R2"
+# datasets_paths: "/FastData/czirion/Crypto_Desjardins/results_2024-09-06,/FastData/czirion/ashton/results_2024-08-27" # Comma-separated list of directories with datasets to join.
+# datasets_names: "Desjardins,Ashton" # Comma-separated list of names for the datasets.
+# joint_output_directory: "results_joined" # Name for the output directory with joined datasets.
 
 # =================================================================================================
 #   Parameters for individual tools

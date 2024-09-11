@@ -11,20 +11,17 @@ from pathlib import Path
 #   Global variables
 # =================================================================================================
 
-OUTPUT = Path(config["joint_datasets_output"])
-SAMPLES_DIR = OUTPUT / "1.Samples"
-DATASET_DIR = OUTPUT / "2.Dataset"
-REFS_DIR = OUTPUT / "3.References"
-INTDIR = OUTPUT / "4.Intermediate_files"
-TEMP_S = OUTPUT / "sample_names"
-TEMP_L = OUTPUT / "lineage_names"
+OUTPUT = Path(config["joint_output_directory"])
+SAMPLES_DIR = OUTPUT / SAMPLES_DIR_NAME
+DATASET_DIR = OUTPUT / DATASET_DIR_NAME
+REFS_DIR = OUTPUT / REFS_DIR_NAME
+INTDIR = OUTPUT / INTDIR_NAME
+INT_SAMPLES_DIR = INTDIR / SAMPLES_DIR_NAME
+INT_DATASET_DIR = INTDIR / DATASET_DIR_NAME
+INT_REFS_DIR = INTDIR / REFS_DIR_NAME
 
 INPUT_PATHS = config["datasets_paths"].split(",")
-LIST_INPUTS = [Path(dir) for dir in INPUT_PATHS]
-
-CHROM_NAMES = INTDIR / "chromosomes.csv"
-LOCI_FILE = INTDIR / "loci.csv"
-SAMPLEFILE = INTDIR / "metadata.csv"
+LIST_PATHS = [Path(dir) for dir in INPUT_PATHS]
 
 # =================================================================================================
 #   Define final output
@@ -40,9 +37,9 @@ def get_final_output():
 
 rule join_results:
     input:
-        metadata_files = expand(os.path.join("{dir}", "metadata.csv"), dir = LIST_INPUTS),
-        chromosomes_files = expand(os.path.join("{dir}", "chromosomes.csv"), dir = LIST_INPUTS),
-        loci_files = expand(os.path.join("{dir}", "loci.csv"), dir = LIST_INPUTS)
+        metadata_files = expand(os.path.join("{dir}", INTDIR_NAME, "metadata.csv"), dir = LIST_PATHS),
+        chromosomes_files = expand(os.path.join("{dir}", INTDIR_NAME, "chromosomes.csv"), dir = LIST_PATHS),
+        loci_files = expand(os.path.join("{dir}", INTDIR_NAME, "loci.csv"), dir = LIST_PATHS)
     output:
         metadata = INTDIR / "metadata.csv",
         chromosomes = INTDIR / "chromosomes.csv",
@@ -71,12 +68,12 @@ checkpoint make_lineages_dirs:
     input:
         metadata = rules.join_results.output.metadata
     output:
-        directory(TEMP_L)
+        directory(INT_REFS_DIR / "lineage_names")
     run:
         metadata = pd.read_csv(input.metadata, sep=",", header=0)
         lineages = list(set(metadata["lineage"]))
         for lineage in lineages:
-            path = Path(TEMP_L) / f"{lineage}.lineage"
+            path = Path( INT_REFS_DIR / "lineage_names") / f"{lineage}.lineage"
             path.parent.mkdir(parents=True, exist_ok=True)
             path.touch()
 
@@ -95,15 +92,15 @@ def input_joining(wildcards):
     paths_mapq_depth = []
     paths_cds = []
     paths_prots = []
-    for dir in LIST_INPUTS:
-        metadata = os.path.join(dir, "metadata.csv")
+    for dir in LIST_PATHS:
+        metadata = os.path.join(dir, INTDIR_NAME, "metadata.csv")
         samps_dir_df = pd.read_csv(metadata, header=0)
         samps = samps_dir_df["sample"]
         for samp in samps:
-            cnv = os.path.join(dir, "samples", "cnv", samp, "cnv_calls.tsv")
-            mapq_depth = os.path.join(dir, "samples", "depth_quality", samp, "feature_mapq_depth.tsv")
-            cds = os.path.join(dir, "samples", "agat", samp, "cds.csv")
-            prots = os.path.join(dir, "samples", "agat", samp, "proteins.csv")
+            cnv = os.path.join(dir, SAMPLES_DIR_NAME, "cnv", samp, "cnv_calls.tsv")
+            mapq_depth = os.path.join(dir, SAMPLES_DIR_NAME, "depth_quality", samp, "feature_mapq_depth.tsv")
+            cds = os.path.join(dir, INTDIR_NAME, SAMPLES_DIR_NAME, "annotation", samp, "cds.csv")
+            prots = os.path.join(dir, INTDIR_NAME, SAMPLES_DIR_NAME, "annotation", samp, "proteins.csv")
             paths_cnv.append(cnv)
             paths_mapq_depth.append(mapq_depth)
             paths_cds.append(cds)
@@ -132,7 +129,7 @@ rule join_sequences:
         cds=get_input_cds,
         prots=get_input_prots
     output:
-        sequences = DATASET_DIR / "sequences.csv"
+        sequences = INT_DATASET_DIR / "sequences.csv"
     run:
         cds = pd.concat([pd.read_csv(f, sep="\t") for f in input.cds])
         prots = pd.concat([pd.read_csv(f, sep="\t") for f in input.prots])
@@ -159,12 +156,12 @@ rule join_mapq_depth:
 
 def input_gffs(wildcards):
     paths = []
-    for dir in LIST_INPUTS:
-        metadata = os.path.join(dir, "metadata.csv")
+    for dir in LIST_PATHS:
+        metadata = os.path.join(dir, INTDIR_NAME, "metadata.csv")
         lineages_dir_df = pd.read_csv(metadata, header=0)
         lineages = set(lineages_dir_df["lineage"])
         for lineage in lineages:
-            gff = os.path.join(dir, "references", lineage, f"{lineage}.gff.tsv")
+            gff = os.path.join(dir, INTDIR_NAME, REFS_DIR_NAME, lineage, f"{lineage}.gff.tsv")
             paths.append(gff)
     return paths
 
@@ -172,7 +169,7 @@ rule join_gffs:
     input:
         input_gffs
     output:
-        REFS_DIR / "all_lineages.gff.tsv"
+        INT_REFS_DIR / "all_lineages.gff.tsv"
     log: 
         "logs/references/join_gffs.log"
     shell:
@@ -184,12 +181,12 @@ rule join_gffs:
 
 def input_copy_speff_data(wildcards):
     paths_snpeff_Data = {}
-    for dir in LIST_INPUTS:
-        metadata = os.path.join(dir, "metadata.csv")
+    for dir in LIST_PATHS:
+        metadata = os.path.join(dir, INTDIR_NAME, "metadata.csv")
         lins_dir_df = pd.read_csv(metadata, header=0)
         lins = lins_dir_df["lineage"]
         for lin in lins:
-            data_dict = {lin: os.path.join(dir, "references", "snpeff_data", config["species_name"] + f"_{lin}")}
+            data_dict = {lin: os.path.join(dir, INTDIR_NAME, REFS_DIR_NAME, "snpeff_data", config["species_name"] + f"_{lin}")}
             paths_snpeff_Data.update(data_dict)
     list_paths = list(paths_snpeff_Data.values())
     return list_paths
@@ -198,20 +195,20 @@ rule copy_snpeff_data:
     input:
         input_copy_speff_data
     output:
-        REFS_DIR / "snpeff_data" / "copy.done"
+        INT_REFS_DIR / "snpeff_data" / "copy.done"
     params:
-        dir = REFS_DIR / "snpeff_data"
+        dir = INT_REFS_DIR / "snpeff_data"
     shell:
         """
-        ln -sf {input} {params.dir} && touch {output}
+        ln -srf {input} {params.dir} && touch {output}
         """
 
 rule copy_snpeff_config:
     input:
         data = rules.copy_snpeff_data.output,
-        config = expand(os.path.join("{dir}","references", "snpeff_data", "snpEff.config"), dir = LIST_INPUTS)
+        config = expand(os.path.join("{dir}", INTDIR_NAME, REFS_DIR_NAME, "snpeff_data", "snpEff.config"), dir = LIST_PATHS)
     output:
-        REFS_DIR / "snpeff_data" / "snpEff.config"
+        INT_REFS_DIR / "snpeff_data" / "snpEff.config"
     shell:
         "cat {input.config} > {output}"
 
@@ -221,13 +218,13 @@ rule copy_snpeff_config:
 
 def intersect_vcfs_input(wildcards):
     paths = []
-    for dir in LIST_INPUTS:
-        metadata = os.path.join(dir, "metadata.csv")
+    for dir in LIST_PATHS:
+        metadata = os.path.join(dir, INTDIR_NAME, "metadata.csv")
         samps_dir_df = pd.read_csv(metadata, header=0)
         samps_dir_df = samps_dir_df.loc[samps_dir_df["lineage"] == wildcards.lineage]
         samps = samps_dir_df["sample"]
         for samp in samps:
-            vcf = os.path.join(dir, "samples", "snippy", samp , "snps.vcf.gz")
+            vcf = os.path.join(dir, SAMPLES_DIR_NAME, "snippy", samp , "snps.vcf.gz")
             paths.append(vcf)
     return {
         "vcfs" : paths
@@ -237,8 +234,8 @@ rule intersect_vcfs:
     input:
         unpack(intersect_vcfs_input)
     output:
-        vcf = DATASET_DIR / "snps" / "{lineage}_intersection.vcf",
-        tsv = DATASET_DIR / "snps" / "{lineage}_presence.tsv"
+        vcf = INT_DATASET_DIR / "snps" / "{lineage}_intersection.vcf",
+        tsv = INT_DATASET_DIR / "snps" / "{lineage}_presence.tsv"
     params:
         tmp_dir = "tmp_{lineage}"
     conda:
@@ -257,12 +254,12 @@ rule intersect_vcfs:
 rule snpeff:
     input:
         vcf = rules.intersect_vcfs.output.vcf,
-        config = REFS_DIR / "snpeff_data" / "snpEff.config"
+        config = rules.copy_snpeff_config.output
     output:
-        vcf = DATASET_DIR / "snps" / "{lineage}_snpeff.vcf",
-        html = DATASET_DIR / "snps" / "{lineage}_snpeff.html"
+        vcf = INT_DATASET_DIR / "snps" / "{lineage}_snpeff.vcf",
+        html = INT_DATASET_DIR / "snps" / "{lineage}_snpeff.html"
     params:
-        dir = os.getcwd() / REFS_DIR / "snpeff_data",
+        dir = os.getcwd() / INT_REFS_DIR / "snpeff_data",
         name = config["species_name"] + "_{lineage}"
     conda:
         "../envs/variants.yaml"
@@ -281,10 +278,10 @@ rule extract_vcf_annotation:
     input:
         vcf = rules.snpeff.output.vcf
     output:
-        effects = DATASET_DIR / "snps" / "{lineage}_effects.tsv",
-        variants = DATASET_DIR / "snps" / "{lineage}_variants.tsv",
-        lofs = DATASET_DIR / "snps" / "{lineage}_lofs.tsv",
-        nmds = DATASET_DIR / "snps" / "{lineage}_nmds.tsv"
+        effects = INT_DATASET_DIR / "snps" / "{lineage}_effects.tsv",
+        variants = INT_DATASET_DIR / "snps" / "{lineage}_variants.tsv",
+        lofs = INT_DATASET_DIR / "snps" / "{lineage}_lofs.tsv",
+        nmds = INT_DATASET_DIR / "snps" / "{lineage}_nmds.tsv"
     conda:
         "../envs/variants.yaml"
     log:
@@ -304,17 +301,17 @@ rule extract_vcf_annotation:
 # =================================================================================================
 rule join_variant_annotation:
     input:
-        effects = expand(DATASET_DIR / "snps" / "{lineage}_effects.tsv", lineage=LINEAGES),
-        variants = expand(DATASET_DIR / "snps" / "{lineage}_variants.tsv", lineage=LINEAGES),
-        lofs = expand(DATASET_DIR / "snps" / "{lineage}_lofs.tsv", lineage=LINEAGES),
-        nmds = expand(DATASET_DIR / "snps" / "{lineage}_nmds.tsv", lineage=LINEAGES),
-        presence = expand(DATASET_DIR / "snps" / "{lineage}_presence.tsv", lineage=LINEAGES)
+        effects = expand(INT_DATASET_DIR / "snps" / "{lineage}_effects.tsv", lineage=LINEAGES),
+        variants = expand(INT_DATASET_DIR / "snps" / "{lineage}_variants.tsv", lineage=LINEAGES),
+        lofs = expand(INT_DATASET_DIR / "snps" / "{lineage}_lofs.tsv", lineage=LINEAGES),
+        nmds = expand(INT_DATASET_DIR / "snps" / "{lineage}_nmds.tsv", lineage=LINEAGES),
+        presence = expand(INT_DATASET_DIR / "snps" / "{lineage}_presence.tsv", lineage=LINEAGES)
     output:
-        effects = DATASET_DIR / "snps" / "all_effects.tsv",
-        variants = DATASET_DIR / "snps" / "all_variants.tsv",
-        lofs = DATASET_DIR / "snps" / "all_lofs.tsv",
-        nmds = DATASET_DIR / "snps" / "all_nmds.tsv",
-        presence = DATASET_DIR / "snps" / "all_presence.tsv"
+        effects = DATASET_DIR / "snps" / "effects.tsv",
+        variants = DATASET_DIR / "snps" / "variants.tsv",
+        lofs = DATASET_DIR / "snps" / "lofs.tsv",
+        nmds = DATASET_DIR / "snps" / "nmds.tsv",
+        presence = DATASET_DIR / "snps" / "presence.tsv"
     run:
         effects = pd.concat([pd.read_csv(f, sep="\t") for f in input.effects])
         variants = pd.concat([pd.read_csv(f, sep="\t") for f in input.variants])

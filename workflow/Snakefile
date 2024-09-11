@@ -12,6 +12,15 @@ min_version("8.2.1")
 configfile: "config/config.yaml"
 
 # =================================================================================================
+#  Define names of directories
+# =================================================================================================
+
+SAMPLES_DIR_NAME = "1.Samples"
+DATASET_DIR_NAME = "2.Dataset"
+REFS_DIR_NAME = "3.References"
+INTDIR_NAME = "4.Intermediate_files"
+
+# =================================================================================================
 #   Load rules
 # =================================================================================================
 
@@ -107,3 +116,4 @@ elif config["join_datasets_workflow"]:
     rule all:
         input:
             get_final_output()
+

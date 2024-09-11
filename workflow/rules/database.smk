@@ -5,7 +5,7 @@ rule join_gffs:
     input:
         expand(INT_REFS_DIR / "{lineage}" / "{lineage}.gff.tsv", lineage=LINEAGES)
     output:
-        REFS_DIR / "all_lineages.gff.tsv"
+        INT_REFS_DIR / "all_lineages.gff.tsv"
     log:
         "logs/references/join_gffs.log"
     shell:
