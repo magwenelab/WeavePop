@@ -20,6 +20,8 @@ def intersect_repeats(depth_input, repeats_input, sample_name, window_size, dept
     df = pd.read_csv(io.StringIO(intersect), sep='\t', header=None)
     header = ['bed_Accession', 'bed_Start', 'bed_End','bed_Depth', 'bed_Norm_Depth', 'bed_Smooth_Depth', 'r_Accession', 'r_Start', 'r_End', 'r_Type', 'Overlap_bp'] 
     df.columns = header
+
+    print("Calculate overlap in base pairs.")
     df = df.drop(['r_Accession', 'r_Start', 'r_End'], axis=1)
     df['r_Type_mix'] = df.groupby(['bed_Accession', 'bed_Start', 'bed_End', 'bed_Depth', 'bed_Norm_Depth', 'bed_Smooth_Depth'])['r_Type'].transform(lambda x: ','.join(x))
     df['Overlap_bp_sum'] = df.groupby(['bed_Accession', 'bed_Start', 'bed_End', 'bed_Depth', 'bed_Norm_Depth', 'bed_Smooth_Depth'])['Overlap_bp'].transform('sum')
@@ -54,6 +56,7 @@ def intersect_repeats(depth_input, repeats_input, sample_name, window_size, dept
             else:
                 regions_merged.loc[i, 'Region_index'] = regions_merged.loc[i - 1, 'Region_index'] + 1
         regions = regions_merged.groupby('Region_index').agg(Accession = ('Accession', 'first'),Start=('Start', 'first'), End=('End', 'last'), Depth = ('Depth', 'median'),Norm_Depth=('Norm_Depth', 'median'), Smooth_Depth=('Smooth_Depth', 'median'), CNV=('CNV', 'first'), Overlap_bp=('Overlap_bp', 'sum')).reset_index()
+        
         regions['Region_Size'] = regions['End'] - regions['Start']
         regions['Repeat_fraction'] = (regions['Overlap_bp'] / regions['Region_Size']).round(2)
         regions = regions.drop(['Region_index'], axis=1)
@@ -62,6 +65,9 @@ def intersect_repeats(depth_input, repeats_input, sample_name, window_size, dept
     cnv_regions = cnv_regions[cnv_regions['CNV'] != 'HAPLOID']
     cnv_regions = cnv_regions.round(2)
     cnv_regions['Sample'] = sample_name
+
+    print("Convert from 0-based to 1-based coordinates")    
+    cnv_regions['Start'] = cnv_regions['Start'] + 1
     # Make directory if it doesn't exist
     output_path = Path(cnv_output)
     output_path.parent.mkdir(parents=True, exist_ok=True)

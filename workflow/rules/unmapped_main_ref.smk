@@ -4,7 +4,7 @@
 
 rule unmapped_ref_features:
     input:
-        INTDIR / "metadata.csv",
+        INT_DATASET_DIR / "metadata.csv",
         rules.fix_gff_tsv.output.tsv,
         expand(rules.ref2ref_liftoff.output.unmapped, lineage=LINEAGES)        
     output:
@@ -25,7 +25,7 @@ rule unmapped_ref_features:
 
 rule unmapped_samples_plot:
     input:
-        INTDIR / "metadata.csv",
+        INT_DATASET_DIR / "metadata.csv",
         rules.fix_gff_tsv.output.tsv,
         expand(rules.liftoff.output.unmapped, sample=SAMPLES)        
     output:

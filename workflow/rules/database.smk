@@ -97,7 +97,7 @@ rule join_variant_annotation:
 # Create the final database
 rule complete_db:
     input:
-        metadata = INTDIR / "metadata.csv",
+        metadata = INT_DATASET_DIR / "metadata.csv",
         chrom_names = rules.copy_config.output.c,
         cnv = rules.join_cnv_calling.output,
         md = rules.join_mapq_depth.output,

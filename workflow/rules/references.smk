@@ -66,7 +66,7 @@ rule ref2ref_liftoff:
         fasta = rules.main_links.output.fasta,
         gff = rules.main_links.output.gff
     output:
-        target_gff = REFS_DIR / "{lineage}" / "{lineage}.gff",
+        target_gff = REFS_DIR / "{lineage}.gff",
         unmapped = INT_REFS_DIR / "{lineage}" / "unmapped_features.txt",
         intermediate = directory(INT_REFS_DIR / "{lineage}" / "intermediate_liftoff"),
         fai_main = INT_REFS_DIR / "{lineage}" / str(MAIN_NAME + ".fasta.fai"),

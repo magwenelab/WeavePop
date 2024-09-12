@@ -65,10 +65,12 @@ def build_db(metadata, chrom_names, cnvs, mapq_depth, gff, effects, variants, pr
     if all(column in df_gff.columns for column in ref_mutations):
         for column in ref_mutations:
             df_gff[column] = df_gff[column].apply(lambda x: column if x == 'Yes' else x)
-        df_gff['mutation_in_reference'] = df_gff[ref_mutations].apply(lambda x: ', '.join(x.dropna()), axis=1)
+        df_gff['start_stop_mutations'] = df_gff[ref_mutations].apply(lambda x: ', '.join(x.dropna()), axis=1)
         df_gff = df_gff.drop(columns=ref_mutations)
     else:
-        df_gff['mutation_in_reference'] = None
+        df_gff['start_stop_mutationse'] = None
+    
+    df.rename(columns={'matches_ref_protein': 'identical_to_main_ref'}, inplace=True)
 
 
     print("GFF table done!")

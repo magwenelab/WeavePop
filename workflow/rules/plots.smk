@@ -33,8 +33,8 @@ rule depth_distribution_plots:
 
 rule depth_by_chrom_plots:
     input:
-        INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom_raw.tsv",
-        INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom_good.tsv",
+        SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom_raw.tsv",
+        SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom_good.tsv",
         CHROM_NAMES
     output:
         SAMPLES_DIR / "plots" / "{sample}" / "depth_by_chrom.png"
@@ -54,7 +54,7 @@ def depth_by_windows_plots_input(wildcards):
     return {
         "depth": INT_SAMPLES_DIR / "depth_quality" / s["sample"]  / "depth_by_windows.tsv",
         "cnv": SAMPLES_DIR / "cnv" / s["sample"] / "cnv_calls.tsv",
-        "repeats": REFS_DIR / s["lineage"]  / (s["lineage"] + "_repeats.bed")
+        "repeats": REFS_DIR / (s["lineage"] + "_repeats.bed")
     }
 rule depth_by_windows_plots:
     input:
@@ -75,7 +75,7 @@ def mapq_plot_input(wildcards):
     return {
         "mapq": INT_SAMPLES_DIR / "depth_quality" / s["sample"] / "mapq_window.bed",
         "cnv": SAMPLES_DIR / "cnv" / s["sample"] / "cnv_calls.tsv",
-        "repeats": REFS_DIR / s["lineage"] / (s["lineage"] + "_repeats.bed")
+        "repeats": REFS_DIR / (s["lineage"] + "_repeats.bed")
     }
 rule mapq_plot:
     input:

@@ -29,7 +29,7 @@ rule fix_gff_tsv:
     input:
         tsv = rules.agat_fix_gff.output.tsv
     output:
-        gff = REFS_DIR / "{lineage}" / "{lineage}.gff",
+        gff = REFS_DIR / "{lineage}.gff",
         tsv = REFS_DIR / "{lineage}" / "{lineage}.gff.tsv"
     log:
         "logs/references/fix_gff_tsv_{lineage}.log"

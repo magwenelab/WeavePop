@@ -31,7 +31,7 @@ rule mosdepth_good:
 rule depth_by_windows:
     input:
         depth = rules.mosdepth_good.output.bed,
-        global_mode = INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom_good.tsv"
+        global_mode = SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom_good.tsv"
     output:
         INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_windows.tsv"
     conda:
@@ -72,7 +72,7 @@ rule repeat_masker:
         known = rules.repeat_modeler.output.known,
         unknown = rules.repeat_modeler.output.unknown
     output:
-        REFS_DIR / "{lineage}" / "{lineage}_repeats.bed"
+        REFS_DIR / "{lineage}_repeats.bed"
     threads:
         config["cnv"]["repeats"]["repeats_threads"]
     conda:
@@ -96,7 +96,7 @@ def cnv_calling_input(wildcards):
     s = SAMPLE_REFERENCE.loc[wildcards.sample,]
     return {
         "depth": INT_SAMPLES_DIR / "depth_quality" / s["sample"] / "depth_by_windows.tsv",
-        "repeats": REFS_DIR / s["lineage"]  / (s["lineage"] + "_repeats.bed")
+        "repeats": REFS_DIR / (s["lineage"] + "_repeats.bed")
         }
 rule cnv_calling:
     input:

@@ -37,13 +37,11 @@ def get_final_output():
 
 rule join_results:
     input:
-        metadata_files = expand(os.path.join("{dir}", INTDIR_NAME, "metadata.csv"), dir = LIST_PATHS),
-        chromosomes_files = expand(os.path.join("{dir}", INTDIR_NAME, "chromosomes.csv"), dir = LIST_PATHS),
-        loci_files = expand(os.path.join("{dir}", INTDIR_NAME, "loci.csv"), dir = LIST_PATHS)
+        metadata_files = expand(os.path.join("{dir}", INTDIR_NAME, DATASET_DIR_NAME, "metadata.csv"), dir = LIST_PATHS),
+        chromosomes_files = expand(os.path.join("{dir}", INTDIR_NAME, REFS_DIR_NAME, "chromosomes.csv"), dir = LIST_PATHS),
     output:
-        metadata = INTDIR / "metadata.csv",
-        chromosomes = INTDIR / "chromosomes.csv",
-        loci = INTDIR / "loci.csv"
+        metadata = INT_DATASET_DIR / "metadata.csv",
+        chromosomes = INT_REFS_DIR / "chromosomes.csv",
     params:
         dataset_names = config["datasets_names"].split(",")
     run:
@@ -57,11 +55,9 @@ rule join_results:
         metadata = metadata.drop_duplicates()
         chromosomes = pd.concat([pd.read_csv(f, sep=",", header=0) for f in input.chromosomes_files])
         chromosomes = chromosomes.drop_duplicates()
-        loci = pd.concat([pd.read_csv(f, sep=",", header=0) for f in input.loci_files])
-        loci = loci.drop_duplicates()
         metadata.to_csv(str(output.metadata), sep=",", index=False)
         chromosomes.to_csv(str(output.chromosomes), sep=",", index=False)
-        loci.to_csv(str(output.loci), sep=",", index=False)
+
 
 # Make the list of lineages from the joined metadata
 checkpoint make_lineages_dirs:
@@ -93,7 +89,7 @@ def input_joining(wildcards):
     paths_cds = []
     paths_prots = []
     for dir in LIST_PATHS:
-        metadata = os.path.join(dir, INTDIR_NAME, "metadata.csv")
+        metadata = os.path.join(dir, INTDIR_NAME, DATASET_DIR_NAME, "metadata.csv")
         samps_dir_df = pd.read_csv(metadata, header=0)
         samps = samps_dir_df["sample"]
         for samp in samps:
@@ -157,7 +153,7 @@ rule join_mapq_depth:
 def input_gffs(wildcards):
     paths = []
     for dir in LIST_PATHS:
-        metadata = os.path.join(dir, INTDIR_NAME, "metadata.csv")
+        metadata = os.path.join(dir, INTDIR_NAME, DATASET_DIR_NAME, "metadata.csv")
         lineages_dir_df = pd.read_csv(metadata, header=0)
         lineages = set(lineages_dir_df["lineage"])
         for lineage in lineages:
@@ -182,7 +178,7 @@ rule join_gffs:
 def input_copy_speff_data(wildcards):
     paths_snpeff_Data = {}
     for dir in LIST_PATHS:
-        metadata = os.path.join(dir, INTDIR_NAME, "metadata.csv")
+        metadata = os.path.join(dir, INTDIR_NAME, DATASET_DIR_NAME, "metadata.csv")
         lins_dir_df = pd.read_csv(metadata, header=0)
         lins = lins_dir_df["lineage"]
         for lin in lins:
@@ -219,7 +215,7 @@ rule copy_snpeff_config:
 def intersect_vcfs_input(wildcards):
     paths = []
     for dir in LIST_PATHS:
-        metadata = os.path.join(dir, INTDIR_NAME, "metadata.csv")
+        metadata = os.path.join(dir, INTDIR_NAME, DATASET_DIR_NAME, "metadata.csv")
         samps_dir_df = pd.read_csv(metadata, header=0)
         samps_dir_df = samps_dir_df.loc[samps_dir_df["lineage"] == wildcards.lineage]
         samps = samps_dir_df["sample"]
@@ -326,8 +322,8 @@ rule join_variant_annotation:
 
 rule complete_db:
     input:
-        metadata = INTDIR / "metadata.csv",
-        chrom_names = INTDIR / "chromosomes.csv",
+        metadata = INT_DATASET_DIR / "metadata.csv",
+        chrom_names =  INT_REFS_DIR / "chromosomes.csv",
         cnv = rules.join_cnv.output.cnv,
         md = rules.join_mapq_depth.output.mapq_depth,
         gffs = rules.join_gffs.output,

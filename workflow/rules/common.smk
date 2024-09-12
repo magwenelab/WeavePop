@@ -68,7 +68,7 @@ if config["annotate_references"]["activate"]:
 d={'sample': UNFILTERED_SAMPLE_TABLE["sample"],
     'lineage': UNFILTERED_SAMPLE_TABLE["lineage"],
     'refgenome': INT_REFS_DIR / UNFILTERED_SAMPLE_TABLE["lineage"] / (UNFILTERED_SAMPLE_TABLE["lineage"] + ".fasta"),
-    'refgff': REFS_DIR / UNFILTERED_SAMPLE_TABLE["lineage"] / (UNFILTERED_SAMPLE_TABLE["lineage"] + ".gff")}
+    'refgff': REFS_DIR / (UNFILTERED_SAMPLE_TABLE["lineage"] + ".gff")}
 
 SAMPLE_REFERENCE = pd.DataFrame(data=d).set_index("sample", drop=False)
 LINEAGE_REFERENCE = pd.DataFrame(data=d).set_index("lineage", drop=False)
@@ -103,9 +103,9 @@ def get_unfiltered_output():
 
 def get_dataset_output():
     final_output = []
-    final_output.append(INTDIR / "metadata.csv")
-    final_output.append(INTDIR / "chromosomes.csv")
-    final_output.append(INTDIR / "loci.csv")
+    final_output.append(INT_DATASET_DIR / "metadata.csv")
+    final_output.append(INT_REFS_DIR / "chromosomes.csv")
+    final_output.append(INT_REFS_DIR / "loci.csv")
     final_output.append(DATASET_DIR / "depth_quality" / "depth_by_chrom_good.tsv")
     final_output.append(DATASET_DIR / "depth_quality" / "depth_by_chrom_raw.tsv")
     if config["cnv"]["activate"]:
@@ -128,8 +128,8 @@ def get_filtered_output():
     final_output = expand(SAMPLES_DIR / "annotation" / "{sample}" / "annotation.gff",sample=SAMPLES)
     final_output = final_output, expand(SAMPLES_DIR / "annotation" / "{sample}" / "proteins.fa",sample=SAMPLES)
     final_output = final_output, expand(SAMPLES_DIR / "annotation" / "{sample}" / "cds.fa",sample=SAMPLES)
-    final_output = final_output, expand(INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom_good.tsv",sample=SAMPLES)
-    final_output = final_output, expand(INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom_raw.tsv",sample=SAMPLES)
+    final_output = final_output, expand(SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom_good.tsv",sample=SAMPLES)
+    final_output = final_output, expand(SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom_raw.tsv",sample=SAMPLES)
     final_output = final_output, expand(INT_REFS_DIR / "filtered_lineages" / "{lineage}.txt",lineage=LINEAGES)
     if config["cnv"]["activate"]:
         final_output = final_output, expand(SAMPLES_DIR / "cnv" / "{sample}" / "cnv_calls.tsv",sample=SAMPLES)
@@ -167,8 +167,8 @@ rule copy_config:
         c = CHROM_NAMES,
         l = LOCI_FILE
     output:
-        c = INTDIR / "chromosomes.csv",
-        l = INTDIR / "loci.csv"
+        c = INT_REFS_DIR / "chromosomes.csv",
+        l = INT_REFS_DIR / "loci.csv"
     run:
         c = pd.read_csv(input.c, header=0)
         l = pd.read_csv(input.l, header=0)
@@ -178,7 +178,7 @@ rule copy_config:
 # Edit the agat config file to avoid creating log files
 rule agat_config:
     output:
-        INTDIR / "agat_config.yaml"
+        INT_REFS_DIR / "agat_config.yaml"
     conda:
         "../envs/agat.yaml"
     log:

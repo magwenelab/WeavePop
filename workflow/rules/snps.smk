@@ -5,7 +5,7 @@
 # Extract cds and protein sequences from reference genomes
 rule extract_ref_seqs:
     input:
-        gff = REFS_DIR / "{lineage}" / "{lineage}.gff",
+        gff = REFS_DIR / "{lineage}.gff",
         fasta = INT_REFS_DIR / "{lineage}" / "{lineage}.fasta",
         config = rules.agat_config.output
     output:

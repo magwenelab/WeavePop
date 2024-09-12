@@ -4,7 +4,7 @@
 
 rule unmapped_samples_plot:
     input:
-        INTDIR / "metadata.csv",
+        INT_DATASET_DIR / "metadata.csv",
         expand(rules.fix_gff_tsv.output.tsv, lineage=LINEAGES),
         expand(rules.liftoff.output.unmapped, sample=SAMPLES)        
     output:
