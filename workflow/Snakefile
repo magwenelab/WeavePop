@@ -19,6 +19,7 @@ SAMPLES_DIR_NAME = "01.Samples"
 DATASET_DIR_NAME = "02.Dataset"
 REFS_DIR_NAME = "03.References"
 INTDIR_NAME = "04.Intermediate_files"
+TEMPDIR_NAME = "04.Temporary_files"
 
 # =================================================================================================
 #   Load rules

@@ -20,15 +20,17 @@ rule liftoff:
         intermediate = directory(INT_SAMPLES_DIR / "liftoff" / "{sample}" / "intermediate_liftoff"),
         fai = SAMPLES_DIR / "snippy" / "{sample}" / "snps.consensus.fa.fai",
         mmi = SAMPLES_DIR / "snippy" / "{sample}" / "snps.consensus.fa.mmi"
-    threads: 
-        config["liftoff"]["threads"]
     params:
         extra = config["liftoff"]["extra"],
         outpath =  INT_SAMPLES_DIR / "liftoff" / "{sample}"
-    conda:
-        "../envs/liftoff.yaml"
     log:
         "logs/samples/liftoff/liftoff_{sample}.log" 
+    threads: 
+        config["liftoff"]["threads"]
+    resources:
+        tmpdir = TEMPDIR
+    conda:
+        "../envs/liftoff.yaml"
     shell:
         "ln -s -r -f {input.refgff} {output.ref_gff} &> {log} || true "
         "&& "
@@ -60,13 +62,15 @@ rule agat_cds:
         fa = SAMPLES_DIR / "snippy" / "{sample}" / "snps.consensus.fa",
         config = rules.agat_config.output
     output:
-        cds = SAMPLES_DIR / "annotation" / "{sample}" / "cds.fa",
-    conda:
-        "../envs/agat.yaml"
+        cds = SAMPLES_DIR / "annotation" / "{sample}" / "cds.fa"
     params:
         extra = config["agat"]["extra"]
     log: 
-        "logs/samples/annotation/agat_cds_{sample}.log",
+        "logs/samples/annotation/agat_cds_{sample}.log"
+    resources:
+        tmpdir = TEMPDIR
+    conda:
+        "../envs/agat.yaml"
     shell:
         "agat_sp_extract_sequences.pl "
         "-g {input.gff} " 
@@ -84,12 +88,14 @@ rule agat_prots:
         cds = rules.agat_cds.output.cds
     output:
         prots = SAMPLES_DIR / "annotation" / "{sample}" / "proteins.fa"
-    conda:
-        "../envs/agat.yaml"
     params:
         extra = config["agat"]["extra"]
     log: 
         "logs/samples/annotation/agat_prots_{sample}.log"
+    resources:
+        tmpdir = TEMPDIR
+    conda:
+        "../envs/agat.yaml"
     shell:
         "agat_sp_extract_sequences.pl "
         "-g {input.gff} " 
@@ -110,10 +116,12 @@ rule cds2csv:
         cds = SAMPLES_DIR / "annotation" / "{sample}" / "cds.fa"
     output:
         cds = INT_SAMPLES_DIR / "annotation" / "{sample}" / "cds.csv"
-    conda:
-        "../envs/variants.yaml"
     log:
         "logs/samples/annotation/cds2csv_{sample}.log"
+    resources:
+        tmpdir = TEMPDIR
+    conda:
+        "../envs/variants.yaml"
     shell:
         "python workflow/scripts/fasta_to_csv.py "
         "-f {input.cds} "
@@ -127,10 +135,12 @@ rule prots2csv:
         prots = SAMPLES_DIR / "annotation" / "{sample}" / "proteins.fa"
     output:
         prots = INT_SAMPLES_DIR / "annotation" / "{sample}" / "proteins.csv"
-    conda:
-        "../envs/variants.yaml"
     log:
         "logs/samples/annotation/prots2db_{sample}.log"
+    resources:
+        tmpdir = TEMPDIR
+    conda:
+        "../envs/variants.yaml"
     shell:
         "python workflow/scripts/fasta_to_csv.py "
         "-f {input.prots} "

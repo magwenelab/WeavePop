@@ -12,12 +12,14 @@ rule agat_fix_gff:
         fixed_locus = INT_REFS_DIR / str(MAIN_NAME + "_fixed_locus.gff"),
         fixed_description = INT_REFS_DIR / str(MAIN_NAME + "_fixed_description.gff"),
         tsv = INT_REFS_DIR / str(MAIN_NAME + "_fixed.tsv")
-    conda:
-        "../envs/agat.yaml"
     params:
         name = MAIN_NAME
     log:
         "logs/references/agat_fix_gff.log"
+    resources:
+        tmpdir = TEMPDIR
+    conda:
+        "../envs/agat.yaml"
     shell:
         """
         agat_convert_sp_gxf2gxf.pl -g {input.gff} -o {output.fixed_ID} -c {input.config} &> {log} && 
@@ -72,15 +74,17 @@ rule ref2ref_liftoff:
         fai_main = INT_REFS_DIR / "{lineage}" / str(MAIN_NAME + ".fasta.fai"),
         fai = INT_REFS_DIR / "{lineage}" / "{lineage}.fasta.fai",
         mmi = INT_REFS_DIR / "{lineage}" / "{lineage}.fasta.mmi"
-    threads: 
-        config["annotate_references"]["liftoff"]["threads"]
-    conda:
-        "../envs/liftoff.yaml"
-    log:
-        "logs/references/ref2ref_liftoff_{lineage}.log"
     params:
         refdir = INT_REFS_DIR,
         extra = config["annotate_references"]["liftoff"]["extra"]
+    log:
+        "logs/references/ref2ref_liftoff_{lineage}.log"
+    threads: 
+        config["annotate_references"]["liftoff"]["threads"]
+    resources:
+        tmpdir = TEMPDIR
+    conda:
+        "../envs/liftoff.yaml"
     shell:
         "liftoff "
         "-g {input.gff} "
@@ -102,9 +106,11 @@ rule gff2tsv:
         config = rules.agat_config.output
     output:
         INT_REFS_DIR / "{lineage}" / "{lineage}.gff.tsv"
-    conda:
-        "../envs/agat.yaml"
     log:
         "logs/references/gff2tsv_{lineage}.log"
+    resources:
+        tmpdir = TEMPDIR
+    conda:
+        "../envs/agat.yaml"
     shell:
         "agat_convert_sp_gff2tsv.pl -gff {input.target} -c {input.config} -o {output} &> {log} "

@@ -13,12 +13,14 @@ rule mosdepth:
         window = config["depth_quality"]["mosdepth"]["window"],
         extra = config["depth_quality"]["mosdepth"]["extra"],
         outdir = INT_SAMPLES_DIR / "mosdepth"
-    conda: 
-        "../envs/depth.yaml"
-    threads:
-      config["depth_quality"]["mosdepth"]["threads"]    
     log:
         "logs/samples/mosdepth/mosdepth_{sample}.log"
+    threads:
+      config["depth_quality"]["mosdepth"]["threads"]    
+    resources:
+        tmpdir = TEMPDIR
+    conda: 
+        "../envs/depth.yaml"
     shell:
         "mosdepth -n --by {params.window} -t {threads} {params.extra} "
         "{params.outdir}/{wildcards.sample}/coverage {input.bam} "
@@ -35,10 +37,12 @@ rule mapq:
     output:
         bed = INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "mapq.bed",
         window_bed = INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "mapq_window.bed"
-    conda:
-        "../envs/samtools.yaml"
     log:
        "logs/samples/depth_quality/mapq_{sample}.log"
+    resources:
+        tmpdir = TEMPDIR
+    conda:
+        "../envs/samtools.yaml"
     script:
         "../scripts/pileup_mapq.sh"
 # =================================================================================================
@@ -53,10 +57,12 @@ rule mapq_depth:
     output:
         depthmapq = SAMPLES_DIR / "depth_quality" / "{sample}" / "mapq_depth_window.bed",
         tsv = SAMPLES_DIR / "depth_quality" / "{sample}" / "feature_mapq_depth.tsv"
-    conda:
-        "../envs/samtools.yaml"
     log: 
         "logs/samples/depth_quality/mapq_depth_{sample}.log"
+    resources:
+        tmpdir = TEMPDIR
+    conda:
+        "../envs/samtools.yaml"
     shell:
         "xonsh workflow/scripts/mapq_depth.xsh "
         "-mi {input.mapqbed} "

@@ -70,7 +70,7 @@ def build_db(metadata, chrom_names, cnvs, mapq_depth, gff, effects, variants, pr
     else:
         df_gff['start_stop_mutationse'] = None
     
-    df.rename(columns={'matches_ref_protein': 'identical_to_main_ref'}, inplace=True)
+    df_gff.rename(columns={'matches_ref_protein': 'identical_to_main_ref'}, inplace=True)
 
 
     print("GFF table done!")

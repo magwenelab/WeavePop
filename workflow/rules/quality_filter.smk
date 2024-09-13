@@ -8,12 +8,14 @@ rule bam_good:
     output:
         bam_good = INT_SAMPLES_DIR / "depth_quality" / "{unf_sample}" / "snps_good.bam",
         bai_good = INT_SAMPLES_DIR/ "depth_quality" / "{unf_sample}" / "snps_good.bam.bai"
-    conda:
-        "../envs/samtools.yaml"
     params:
         min_mapq = config["depth_quality"]["mosdepth"]["min_mapq"]   
     log:
         "logs/samples/depth_quality/bam_good_{unf_sample}.log"
+    resources:
+        tmpdir = TEMPDIR
+    conda:
+        "../envs/samtools.yaml"
     shell:
         "samtools view -q {params.min_mapq} -b {input} > {output.bam_good} 2> {log} && "
         "samtools index {output.bam_good} -o {output.bai_good} 2>> {log} "
@@ -33,10 +35,12 @@ rule depth_distribution:
         distrib = INT_SAMPLES_DIR / "depth_quality" / "{unf_sample}" / "depth_distribution.tsv",
         by_chrom_good = SAMPLES_DIR / "depth_quality" / "{unf_sample}" / "depth_by_chrom_good.tsv",
         by_chrom_raw = SAMPLES_DIR / "depth_quality" / "{unf_sample}" / "depth_by_chrom_raw.tsv"
-    conda: 
-        "../envs/samtools.yaml"
     log:
         "logs/samples/depth_quality/depth_distribution_{unf_sample}.log"
+    resources:
+        tmpdir = TEMPDIR
+    conda: 
+        "../envs/samtools.yaml"
     shell:
         "xonsh workflow/scripts/depth_distribution.xsh "
         "-s {wildcards.unf_sample} "
@@ -65,10 +69,12 @@ rule mapping_stats:
         min_mapq = config["depth_quality"]["flag_quality"]["min_percent_MAPQ"],    
         min_pp= config["depth_quality"]["flag_quality"]["min_percent_properly_paired_reads"],
         min_coverage = config["depth_quality"]["flag_quality"]["min_percent_coverage"]
-    conda:
-        "../envs/samtools.yaml"
     log:
         "logs/samples/depth_quality/mapping_stats_{unf_sample}.log"
+    resources:
+        tmpdir = TEMPDIR
+    conda:
+        "../envs/samtools.yaml"
     shell:
         "xonsh workflow/scripts/mapping_stats.xsh "
         "-b {input.bam} "
@@ -94,6 +100,8 @@ rule join_mapping_stats:
         INT_DATASET_DIR / "depth_quality" / "unfiltered_mapping_stats.tsv",
     log:
         "logs/dataset/depth_quality/join_mapping_stats.log"
+    resources:
+        tmpdir = TEMPDIR
     shell:
         """
         head -q -n 1 {input} 1> {output}.temp 2>> {log}

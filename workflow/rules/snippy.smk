@@ -19,15 +19,17 @@ rule snippy:
         ref = SAMPLES_DIR / "snippy" / "{unf_sample}" / "ref.fa",
         bai = SAMPLES_DIR / "snippy" / "{unf_sample}" / "snps.bam.bai",
         vcf = SAMPLES_DIR / "snippy" / "{unf_sample}" / "snps.vcf.gz"
-    threads: 
-        config["snippy"]["threads"]
     params:
         outpath = SAMPLES_DIR / "snippy",
         extra = config["snippy"]["extra"]
-    conda:
-        "../envs/snippy.yaml"
     log:
         "logs/samples/snippy/snippy_{unf_sample}.log"
+    threads: 
+        config["snippy"]["threads"]
+    resources:
+        tmpdir = TEMPDIR
+    conda:
+        "../envs/snippy.yaml"
     shell:
         "snippy --outdir {params.outpath}/{wildcards.unf_sample} "
         "--cpus {threads} "

@@ -11,10 +11,12 @@ rule extract_ref_seqs:
     output:
         cds = INT_REFS_DIR / "{lineage}" / "{lineage}.cds.fa",
         prots = INT_REFS_DIR / "{lineage}" / "{lineage}.prots.fa"
-    conda:
-        "../envs/agat.yaml"
     log:
         "logs/references/extract_ref_seqs_{lineage}.log"
+    resources:
+        tmpdir = TEMPDIR
+    conda:
+        "../envs/agat.yaml"
     shell:
         "agat_sp_extract_sequences.pl -g {input.gff} -f {input.fasta} -o {output.cds} -c {input.config} &> {log} "
         "&& "
@@ -57,14 +59,16 @@ rule build_refs_db:
         prots = rules.prepare_refs_db.output.prots
     output:
         touch(INT_REFS_DIR / "snpeff_data" / "{lineage}.done")
-    conda:
-        "../envs/variants.yaml"
     params:
         config = INT_REFS_DIR/ "snpeff_data" / "snpEff.config",
         dir = os.getcwd() / INT_REFS_DIR / "snpeff_data",
         name = config["species_name"] + "_{lineage}"
     log:
         "logs/references/build_dbs_{lineage}.log"
+    resources:
+        tmpdir = TEMPDIR
+    conda:
+        "../envs/variants.yaml"
     shell:
         """
         snpEff build -gff3 -v -dataDir {params.dir} -config {params.config} {params.name} &>> {log}
@@ -89,11 +93,13 @@ rule intersect_vcfs:
         vcf = INT_DATASET_DIR / "snps" / "{lineage}_intersection.vcf",
         tsv = INT_DATASET_DIR / "snps" / "{lineage}_presence.tsv"
     params:
-        tmp_dir = "tmp_{lineage}"
-    conda:
-        "../envs/variants.yaml"
+        tmp_dir = os.path.join(TEMPDIR, "tmp_{lineage}")
     log:
         "logs/dataset/snps/intersect_vcfs_{lineage}.log"
+    resources:
+        tmpdir = TEMPDIR
+    conda:
+        "../envs/variants.yaml"
     shell:
         "xonsh workflow/scripts/intersect_vcfs.xsh "
         "-v {output.vcf} "
@@ -114,10 +120,12 @@ rule snpeff:
        dir = os.getcwd() / INT_REFS_DIR / "snpeff_data",
        config = INT_REFS_DIR / "snpeff_data" / "snpEff.config",
        name = config["species_name"] + "_{lineage}"
-    conda:
-        "../envs/variants.yaml"
     log:
         "logs/dataset/snps/snpeff_{lineage}.log"
+    resources:
+        tmpdir = TEMPDIR
+    conda:
+        "../envs/variants.yaml"
     shell:
         "snpEff ann -v -classic "
         "-dataDir {params.dir} "
@@ -135,10 +143,12 @@ rule extract_vcf_annotation:
         variants = INT_DATASET_DIR / "snps" / "{lineage}_variants.tsv",
         lofs = INT_DATASET_DIR / "snps" / "{lineage}_lofs.tsv",
         nmds = INT_DATASET_DIR / "snps" / "{lineage}_nmds.tsv"
-    conda:
-        "../envs/variants.yaml"
     log:
         "logs/dataset/snps/extract_vcf_annotation_{lineage}.log"
+    resources:
+        tmpdir = TEMPDIR
+    conda:
+        "../envs/variants.yaml"
     shell:
         "xonsh workflow/scripts/extract_vcf_annotation.xsh "
         "-i {input.vcf} "

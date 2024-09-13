@@ -50,7 +50,6 @@ rule join_results:
             df = pd.read_csv(file_path, sep=",", header=0)
             df["dataset"] = string
             dataframes.append(df)
-
         metadata= pd.concat(dataframes, ignore_index=True)
         metadata = metadata.drop_duplicates()
         chromosomes = pd.concat([pd.read_csv(f, sep=",", header=0) for f in input.chromosomes_files])
@@ -168,6 +167,8 @@ rule join_gffs:
         INT_REFS_DIR / "all_lineages.gff.tsv"
     log: 
         "logs/references/join_gffs.log"
+    resources:
+        tmpdir = TEMPDIR
     shell:
         "python workflow/scripts/join_gffs.py -o {output} {input} &> {log}"
 
@@ -233,11 +234,13 @@ rule intersect_vcfs:
         vcf = INT_DATASET_DIR / "snps" / "{lineage}_intersection.vcf",
         tsv = INT_DATASET_DIR / "snps" / "{lineage}_presence.tsv"
     params:
-        tmp_dir = "tmp_{lineage}"
-    conda:
-        "../envs/variants.yaml"
+        tmp_dir = os.path.join(TEMPDIR, "tmp_{lineage}")
     log:
         "logs/dataset/snps/intersect_vcfs_{lineage}.log"
+    resources:
+        tmpdir = TEMPDIR
+    conda:
+        "../envs/variants.yaml"
     shell:
         "xonsh workflow/scripts/intersect_vcfs.xsh "
         "-v {output.vcf} "
@@ -257,10 +260,12 @@ rule snpeff:
     params:
         dir = os.getcwd() / INT_REFS_DIR / "snpeff_data",
         name = config["species_name"] + "_{lineage}"
-    conda:
-        "../envs/variants.yaml"
     log:
         "logs/dataset/snps/snpeff_{lineage}.log"
+    resources:
+        tmpdir = TEMPDIR
+    conda:
+        "../envs/variants.yaml"
     shell:
         "snpEff ann -v -classic "
         "-dataDir {params.dir} "
@@ -278,10 +283,12 @@ rule extract_vcf_annotation:
         variants = INT_DATASET_DIR / "snps" / "{lineage}_variants.tsv",
         lofs = INT_DATASET_DIR / "snps" / "{lineage}_lofs.tsv",
         nmds = INT_DATASET_DIR / "snps" / "{lineage}_nmds.tsv"
-    conda:
-        "../envs/variants.yaml"
     log:
         "logs/dataset/snps/extract_vcf_annotation_{lineage}.log"
+    resources:
+        tmpdir = TEMPDIR
+    conda:
+        "../envs/variants.yaml"
     shell:
         "xonsh workflow/scripts/extract_vcf_annotation.xsh "
         "-i {input.vcf} "
@@ -335,10 +342,12 @@ rule complete_db:
         seqs = rules.join_sequences.output.sequences
     output:
         DATASET_DIR / "database.db"
-    conda:
-        "../envs/variants.yaml"
     log:
         "logs/dataset/complete_db.log"
+    resources:
+        tmpdir = TEMPDIR
+    conda:
+        "../envs/variants.yaml"
     shell:
         "xonsh workflow/scripts/build_database.xsh "
         "-m {input.metadata} "

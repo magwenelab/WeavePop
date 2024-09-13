@@ -8,6 +8,8 @@ rule join_gffs:
         INT_REFS_DIR / "all_lineages.gff.tsv"
     log:
         "logs/references/join_gffs.log"
+    resources:
+        tmpdir = TEMPDIR
     shell:
         "python workflow/scripts/join_gffs.py -o {output} {input} &> {log}"
 
@@ -110,10 +112,12 @@ rule complete_db:
         seqs = rules.join_sequences.output
     output:
         DATASET_DIR / "database.db"
-    conda:
-        "../envs/variants.yaml"
     log:
         "logs/dataset/complete_db.log"
+    resources:
+        tmpdir = TEMPDIR
+    conda:
+        "../envs/variants.yaml"
     shell:
         "xonsh workflow/scripts/build_database.xsh "
         "-m {input.metadata} "
