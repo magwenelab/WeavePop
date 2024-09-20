@@ -1,4 +1,4 @@
-name: diversity
+name: snakemake
 channels:
   - conda-forge
   - bioconda
