@@ -2,13 +2,6 @@
 # Per sample | Run Liftoff to annotate the assembly with the coresponding reference genome
 # =================================================================================================
 
-def liftoff_input(wildcards):
-    s = SAMPLE_REFERENCE.loc[wildcards.sample,]
-    return {
-        "target": SAMPLES_DIR / "snippy" / s["sample"] / "snps.consensus.fa" ,
-        "refgff": s["refgff"],
-        "refgenome": s["refgenome"],
-    }
 rule liftoff:
     input:
         unpack(liftoff_input)
@@ -50,8 +43,12 @@ rule move_liftoff:
         rules.liftoff.output.polished
     output:
         SAMPLES_DIR / "annotation" / "{sample}" / "annotation.gff"
+    log:
+        "logs/samples/annotation/move_liftoff_{sample}.log"
+    conda:
+        "../envs/shell.yaml"
     shell:
-        "mv {input} {output}"
+        "mv {input} {output} 2> {log}"
 # =================================================================================================
 # Per sample | Run AGAT to extract CDS and protein sequences
 # =================================================================================================

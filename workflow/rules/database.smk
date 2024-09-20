@@ -23,12 +23,19 @@ rule join_sequences:
         prots = expand(INT_SAMPLES_DIR / "annotation" / "{sample}" / "proteins.csv", sample=SAMPLES)
     output:
         joined = INT_DATASET_DIR / "sequences.csv"
+    log:
+        "logs/dataset/join_sequences.log"
     run: 
-        cds = pd.concat([pd.read_csv(f) for f in input.cds])
-        prots = pd.concat([pd.read_csv(f) for f in input.prots])
-        sequences = pd.concat([cds, prots])
-        sequences.to_csv(output.joined, sep=",", index=False, header = True)
-    
+        with open(log[0], "w") as log_file:
+            try:
+                cds = pd.concat([pd.read_csv(f) for f in input.cds])
+                prots = pd.concat([pd.read_csv(f) for f in input.prots])
+                sequences = pd.concat([cds, prots])
+                sequences.to_csv(output.joined, sep=",", index=False, header = True)
+                log_file.write("Successfully concatenated sequence tables.\n")
+            except Exception as e:
+                log_file.write(f"Error: {e}\n")
+                raise e
 # =================================================================================================
 #   Per dataset | Join feature MAPQ and Depth
 # =================================================================================================
@@ -40,6 +47,8 @@ rule join_mapq_depth:
         DATASET_DIR / "depth_quality" / "feature_mapq_depth.tsv"
     log:
         "logs/dataset/depth_quality/join_mapq_depth.log"
+    conda:
+        "../envs/shell.yaml"
     shell:
         """
         head -q -n 1 {input} 1> {output}.temp 2>> {log}
@@ -59,6 +68,8 @@ rule join_cnv_calling:
         DATASET_DIR / "cnv" / "cnv_calls.tsv",
     log:
         "logs/dataset/cnv/join_cnv_calls.log"
+    conda:
+        "../envs/shell.yaml"
     shell:
         """
         head -q -n 1 {input} 1> {output}.temp 2>> {log}
@@ -84,17 +95,25 @@ rule join_variant_annotation:
         lofs = DATASET_DIR / "snps" / "lofs.tsv",
         nmds = DATASET_DIR / "snps" / "nmds.tsv",
         presence = DATASET_DIR / "snps" / "presence.tsv"
+    log:
+        "logs/dataset/snps/join_variant_annotation.log"
     run:
-        effects = pd.concat([pd.read_csv(f, sep="\t") for f in input.effects])
-        variants = pd.concat([pd.read_csv(f, sep="\t") for f in input.variants])
-        lofs = pd.concat([pd.read_csv(f, sep="\t") for f in input.lofs])
-        nmds = pd.concat([pd.read_csv(f, sep="\t") for f in input.nmds])
-        presence = pd.concat([pd.read_csv(f, sep="\t") for f in input.presence])
-        effects.to_csv(output.effects, sep = "\t", index=False)
-        variants.to_csv(output.variants, sep="\t", index=False)
-        lofs.to_csv(output.lofs, sep="\t", index=False)
-        nmds.to_csv(output.nmds, sep="\t", index=False)
-        presence.to_csv(output.presence, sep="\t", index=False)
+        with open(log[0], "w") as log_file:
+            try:
+                effects = pd.concat([pd.read_csv(f, sep="\t") for f in input.effects])
+                variants = pd.concat([pd.read_csv(f, sep="\t") for f in input.variants])
+                lofs = pd.concat([pd.read_csv(f, sep="\t") for f in input.lofs])
+                nmds = pd.concat([pd.read_csv(f, sep="\t") for f in input.nmds])
+                presence = pd.concat([pd.read_csv(f, sep="\t") for f in input.presence])
+                effects.to_csv(output.effects, sep = "\t", index=False)
+                variants.to_csv(output.variants, sep="\t", index=False)
+                lofs.to_csv(output.lofs, sep="\t", index=False)
+                nmds.to_csv(output.nmds, sep="\t", index=False)
+                presence.to_csv(output.presence, sep="\t", index=False)
+                log_file.write("Successfully concatenated variant annotation tables.\n")
+            except Exception as e:
+                log_file.write(f"Error: {e}\n")
+                raise e
 
 # Create the final database
 rule complete_db:

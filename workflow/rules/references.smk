@@ -8,10 +8,10 @@ rule agat_fix_gff:
         gff= MAIN_GFF,
         config = rules.agat_config.output
     output:
-        fixed_ID = INT_REFS_DIR / str(MAIN_NAME + "_fixed_ID.gff"),
-        fixed_locus = INT_REFS_DIR / str(MAIN_NAME + "_fixed_locus.gff"),
-        fixed_description = INT_REFS_DIR / str(MAIN_NAME + "_fixed_description.gff"),
-        tsv = INT_REFS_DIR / str(MAIN_NAME + "_fixed.tsv")
+        fixed_ID = os.path.join(INT_REFS_DIR, f"{MAIN_NAME}_fixed_ID.gff"),
+        fixed_locus = os.path.join(INT_REFS_DIR, f"{MAIN_NAME}_fixed_locus.gff"),
+        fixed_description = os.path.join(INT_REFS_DIR, f"{MAIN_NAME}_fixed_description.gff"),
+        tsv = os.path.join(INT_REFS_DIR, f"{MAIN_NAME}_fixed.tsv")
     params:
         name = MAIN_NAME
     log:
@@ -33,8 +33,8 @@ rule fix_gff_tsv:
     input:
         tsv = rules.agat_fix_gff.output.tsv
     output:
-        gff = INT_REFS_DIR / str(MAIN_NAME + ".gff"),
-        tsv = INT_REFS_DIR / str(MAIN_NAME + ".tsv")
+        gff = os.path.join(INT_REFS_DIR, f"{MAIN_NAME}.gff"),
+        tsv = os.path.join(INT_REFS_DIR, f"{MAIN_NAME}.tsv")
     log:
         "logs/references/fix_gff_tsv.log"
     shell:
@@ -48,10 +48,12 @@ rule main_links:
         fasta = MAIN_FASTA,
         gff = rules.fix_gff_tsv.output.gff
     output:
-        fasta = INT_REFS_DIR / "{lineage}" / str(MAIN_NAME + ".fasta"),
-        gff = INT_REFS_DIR / "{lineage}" / str(MAIN_NAME + ".gff")
+        fasta = os.path.join(INT_REFS_DIR, "{lineage}", f"{MAIN_NAME}.fasta"),
+        gff = os.path.join(INT_REFS_DIR, "{lineage}", f"{MAIN_NAME}.gff")
     log:
         "logs/references/main_liks_{lineage}.log"
+    conda:
+        "../envs/shell.yaml"
     shell:
         "ln -s -r {input.fasta} {output.fasta} &>> {log}"
         "&& "
@@ -71,7 +73,7 @@ rule ref2ref_liftoff:
         target_gff = REFS_DIR / "{lineage}.gff",
         unmapped = INT_REFS_DIR / "{lineage}" / "unmapped_features.txt",
         intermediate = directory(INT_REFS_DIR / "{lineage}" / "intermediate_liftoff"),
-        fai_main = INT_REFS_DIR / "{lineage}" / str(MAIN_NAME + ".fasta.fai"),
+        fai_main = os.path.join(INT_REFS_DIR, "{lineage}", f"{MAIN_NAME}.fasta.fai"),
         fai = INT_REFS_DIR / "{lineage}" / "{lineage}.fasta.fai",
         mmi = INT_REFS_DIR / "{lineage}" / "{lineage}.fasta.mmi"
     params:

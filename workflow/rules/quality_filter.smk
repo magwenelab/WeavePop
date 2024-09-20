@@ -20,14 +20,6 @@ rule bam_good:
         "samtools view -q {params.min_mapq} -b {input} > {output.bam_good} 2> {log} && "
         "samtools index {output.bam_good} -o {output.bai_good} 2>> {log} "
 
-def depth_distribution_input(wildcards):
-    s = SAMPLE_REFERENCE.loc[wildcards.unf_sample,]
-    return {
-        "bam": SAMPLES_DIR / "snippy" / s["sample"] / "snps.bam" ,
-        "bai": SAMPLES_DIR / "snippy" / s["sample"] / "snps.bam.bai",
-        "bam_good": INT_SAMPLES_DIR / "depth_quality" / s["sample"] / "snps_good.bam",
-        "bai_good": INT_SAMPLES_DIR / "depth_quality" / s["sample"] / "snps_good.bam.bai"
-        }
 rule depth_distribution:
     input:
         unpack(depth_distribution_input)
@@ -102,6 +94,8 @@ rule join_mapping_stats:
         "logs/dataset/depth_quality/join_mapping_stats.log"
     resources:
         tmpdir = TEMPDIR
+    conda:
+        "../envs/shell.yaml"
     shell:
         """
         head -q -n 1 {input} 1> {output}.temp 2>> {log}
@@ -123,43 +117,66 @@ rule quality_filter:
         metadata = INT_DATASET_DIR / "metadata.csv"
     params:
         exclude = config["depth_quality"]["flag_quality"]["exclude_samples"]
+    log:
+        "logs/dataset/depth_quality/quality_filter.log"
     run:
-        stats = pd.read_csv(input[0], sep="\t", header = 0)
-        metadata = pd.read_csv(input[1], header=0)
-        if params.exclude:
-            stats_filtered = stats[stats["quality_warning"].isna()]
-            metadata_filtered = metadata.loc[metadata["sample"].isin(stats_filtered["sample"]),]
-        else:
-            stats_filtered = stats
-            metadata_filtered = metadata
-        stats_filtered.to_csv(output.stats, index=False, header=True, sep = "\t")
-        metadata_filtered.to_csv(output.metadata, index=False)
-
+        with open(log[0], "w") as log_file:
+            try:
+                stats = pd.read_csv(input[0], sep="\t", header = 0)
+                metadata = pd.read_csv(input[1], header=0)
+                if params.exclude:
+                    stats_filtered = stats[stats["quality_warning"].isna()]
+                    metadata_filtered = metadata.loc[metadata["sample"].isin(stats_filtered["sample"]),]
+                else:
+                    stats_filtered = stats
+                    metadata_filtered = metadata
+                stats_filtered.to_csv(output.stats, index=False, header=True, sep = "\t")
+                metadata_filtered.to_csv(output.metadata, index=False)
+                log_file.write("Successfully filtered samples from tables.\n")
+            except Exception as e:
+                log_file.write(f"Error: {e}\n")
+                raise e
 
 checkpoint filtered_samples:
     input:
         rules.quality_filter.output.metadata
     output:
         directory(INT_SAMPLES_DIR / "filtered_samples")
+    log:
+        "logs/dataset/depth_quality/filtered_samples.log"
     run: 
-        metadata = pd.read_csv(input[0], header=0)
-        sample_names = list(metadata["sample"])
-        for sample_name in sample_names:
-            path_s = INT_SAMPLES_DIR / "filtered_samples" / f"{sample_name}.txt"
-            path_s.parent.mkdir(parents=True, exist_ok=True)
-            path_s.touch()
-        
+        with open(log[0], "w") as log_file:
+            try:
+                metadata = pd.read_csv(input[0], header=0)
+                sample_names = list(metadata["sample"])
+                for sample_name in sample_names:
+                    path_s = INT_SAMPLES_DIR / "filtered_samples" / f"{sample_name}.txt"
+                    path_s.parent.mkdir(parents=True, exist_ok=True)
+                    path_s.touch()
+                log_file.write("Successfully created sample files.\n")
+            except Exception as e:
+                log_file.write(f"Error: {e}\n")
+                raise e
+
 checkpoint filtered_lineages:
     input:
         rules.quality_filter.output.metadata
     output:
         directory(INT_REFS_DIR / "filtered_lineages")
+    log:
+        "logs/dataset/depth_quality/filtered_lineages.log"
     run: 
-        lineages = list(pd.read_csv(input[0], header=0)["lineage"])
-        for lineage in lineages:
-            path_l = INT_REFS_DIR / "filtered_lineages" / f"{lineage}.txt"
-            path_l.parent.mkdir(parents=True, exist_ok=True)
-            path_l.touch()
+        with open(log[0], "w") as log_file:
+            try:
+                lineages = list(pd.read_csv(input[0], header=0)["lineage"])
+                for lineage in lineages:
+                    path_l = INT_REFS_DIR / "filtered_lineages" / f"{lineage}.txt"
+                    path_l.parent.mkdir(parents=True, exist_ok=True)
+                    path_l.touch()
+                log_file.write("Successfully created lineage files.\n")
+            except Exception as e:
+                log_file.write(f"Error: {e}\n")
+                raise e
 
 # =================================================================================================
 #   Per dataset | Join depth by chrom 
@@ -172,12 +189,14 @@ rule join_depth_by_chrom_raw:
         DATASET_DIR / "depth_quality" / "depth_by_chrom_raw.tsv",
     log:
         "logs/dataset/depth_quality/join_depth_by_chrom_raw.log"
+    conda:
+        "../envs/shell.yaml"
     shell:
         """
         head -q -n 1 {input} 1> {output}.temp 2>> {log}
         head -n 1 {output}.temp 1> {output} 2>> {log}
         tail -q -n +2 {input} 1>> {output} 2>> {log}
-        rm {output}.temp
+        rm {output}.temp 2>> {log}
         """
 
 rule join_depth_by_chrom_good:
@@ -187,10 +206,12 @@ rule join_depth_by_chrom_good:
         DATASET_DIR / "depth_quality" / "depth_by_chrom_good.tsv",
     log:
         "logs/dataset/depth_quality/join_depth_by_chrom_good.log"
+    conda:
+        "../envs/shell.yaml"
     shell:
         """
         head -q -n 1 {input} 1> {output}.temp 2>> {log}
         head -n 1 {output}.temp 1> {output} 2>> {log}
         tail -q -n +2 {input} 1>> {output} 2>> {log}
-        rm {output}.temp
+        rm {output}.temp 2>> {log}
         """

@@ -12,12 +12,12 @@ rule dataset_summary_plot:
         rules.join_mapping_stats.output
     output:
         DATASET_DIR / "plots" / "dataset_summary.png"
-    conda:
-        "../envs/r.yaml"
     params:
         config["plotting"]["scale"]
     log:
         "logs/dataset/plots/dataset_summary.log"
+    conda:
+        "../envs/r.yaml"
     script:
         "../scripts/dataset_summary_plot.R"
 
@@ -32,12 +32,12 @@ rule dataset_depth_by_chrom_plot:
         rules.join_depth_by_chrom_good.output
     output:
         DATASET_DIR / "plots" / "dataset_depth_by_chrom.png"
-    conda:
-        "../envs/r.yaml"
     params:
         column = config["plotting"]["metadata2color"],
         scale = config["plotting"]["scale"]
     log:
         "logs/dataset/plots/dataset_depth_by_chrom.log"
+    conda:
+        "../envs/r.yaml"
     script:
         "../scripts/dataset_depth_by_chrom_plot.R"

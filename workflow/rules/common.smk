@@ -75,6 +75,64 @@ SAMPLE_REFERENCE = pd.DataFrame(data=d).set_index("sample", drop=False)
 LINEAGE_REFERENCE = pd.DataFrame(data=d).set_index("lineage", drop=False)
 
 # =================================================================================================
+#   Functions for input functions
+# =================================================================================================
+def snippy_input(wildcards):
+    s = SAMPLE_REFERENCE.loc[wildcards.unf_sample,]
+    return {
+        "fq1": FQ_DATA / (s["sample"] + FQ1),
+        "fq2": FQ_DATA / (s["sample"] + FQ2),
+        "refgenome": s["refgenome"],
+    }
+
+def liftoff_input(wildcards):
+    s = SAMPLE_REFERENCE.loc[wildcards.sample,]
+    return {
+        "target": SAMPLES_DIR / "snippy" / s["sample"] / "snps.consensus.fa" ,
+        "refgff": s["refgff"],
+        "refgenome": s["refgenome"],
+    }
+
+def depth_distribution_input(wildcards):
+    s = SAMPLE_REFERENCE.loc[wildcards.unf_sample,]
+    return {
+        "bam": SAMPLES_DIR / "snippy" / s["sample"] / "snps.bam" ,
+        "bai": SAMPLES_DIR / "snippy" / s["sample"] / "snps.bam.bai",
+        "bam_good": INT_SAMPLES_DIR / "depth_quality" / s["sample"] / "snps_good.bam",
+        "bai_good": INT_SAMPLES_DIR / "depth_quality" / s["sample"] / "snps_good.bam.bai"
+        }
+
+def depth_by_windows_plots_input(wildcards):
+    s = SAMPLE_REFERENCE.loc[wildcards.sample,]
+    return {
+        "depth": INT_SAMPLES_DIR / "depth_quality" / s["sample"]  / "depth_by_windows.tsv",
+        "cnv": SAMPLES_DIR / "cnv" / s["sample"] / "cnv_calls.tsv",
+        "repeats": REFS_DIR / (s["lineage"] + "_repeats.bed")
+    }
+
+def mapq_plot_input(wildcards):
+    s = SAMPLE_REFERENCE.loc[wildcards.sample,]
+    return {
+        "mapq": INT_SAMPLES_DIR / "depth_quality" / s["sample"] / "mapq_window.bed",
+        "cnv": SAMPLES_DIR / "cnv" / s["sample"] / "cnv_calls.tsv",
+        "repeats": REFS_DIR / (s["lineage"] + "_repeats.bed")
+    }
+
+def cnv_calling_input(wildcards):
+    s = SAMPLE_REFERENCE.loc[wildcards.sample,]
+    return {
+        "depth": INT_SAMPLES_DIR / "depth_quality" / s["sample"] / "depth_by_windows.tsv",
+        "repeats": REFS_DIR / (s["lineage"] + "_repeats.bed")
+        }
+
+def intersect_vcfs_input(wildcards):
+    sample_wildcards = listing_samples(wildcards)
+    l = LINEAGE_REFERENCE[LINEAGE_REFERENCE["sample"].isin(sample_wildcards)] 
+    l = l.loc[wildcards.lineage,]
+    return {
+        "vcfs" : expand(SAMPLES_DIR / "snippy" / "{sample}" / "snps.vcf.gz", sample=l["sample"])
+    }
+# =================================================================================================
 #   Checkpoint functions
 # =================================================================================================
 
@@ -92,7 +150,7 @@ def listing_lineages(wildcards):
 LINEAGES = listing_lineages
 
 # =================================================================================================
-#   Final output definition function
+#   Final output definition functions
 # =================================================================================================
 def get_unfiltered_output():
     final_output = expand(SAMPLES_DIR / "snippy" / "{unf_sample}" / "snps.consensus.fa",unf_sample=UNFILTERED_SAMPLES)
@@ -149,43 +207,3 @@ def get_filtered_output():
         #     final_output = final_output, expand(DATASET_DIR / "liftoff" / "{lineage}_unmapped_count.tsv", lineage=LINEAGES)
         #     final_output = final_output, expand(DATASET_DIR / "plots" / "{lineage}_unmapped.svg", lineage=LINEAGES)
     return final_output
-    
-# =================================================================================================
-#   Setup rules
-# =================================================================================================
-
-# Create softlinks to have the reference genomes in the REFS_DIR
-rule links:
-    input:
-        REF_DATA / "{lineage}.fasta"
-    output:
-        INT_REFS_DIR / "{lineage}" / "{lineage}.fasta"
-    shell:
-        "ln -s -r {input} {output}"
-
-rule copy_config:
-    input:
-        c = CHROM_NAMES,
-        l = LOCI_FILE
-    output:
-        c = INT_REFS_DIR / "chromosomes.csv",
-        l = INT_REFS_DIR / "loci.csv"
-    run:
-        c = pd.read_csv(input.c, header=0)
-        l = pd.read_csv(input.l, header=0)
-        c.to_csv(output.c, index=False)
-        l.to_csv(output.l, index=False)
-    
-# Edit the agat config file to avoid creating log files
-rule agat_config:
-    output:
-        INT_REFS_DIR / "agat_config.yaml"
-    conda:
-        "../envs/agat.yaml"
-    log:
-        "logs/references/agat_config.log"
-    shell:
-        "agat config --expose &> {log} && "
-        "mv agat_config.yaml {output} &> {log} && "
-        "sed -i 's/log: true/log: false/g' {output} &>> {log} "
-

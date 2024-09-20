@@ -1,14 +1,61 @@
 # =================================================================================================
-# Per sample | Run Snippy to map reads to reference genome, get assembly and call SNPs
+#   Setup rules
 # =================================================================================================
 
-def snippy_input(wildcards):
-    s = SAMPLE_REFERENCE.loc[wildcards.unf_sample,]
-    return {
-        "fq1": FQ_DATA / (s["sample"] + FQ1),
-        "fq2": FQ_DATA / (s["sample"] + FQ2),
-        "refgenome": s["refgenome"],
-    }
+# Create softlinks to have the reference genomes in the REFS_DIR
+rule links:
+    input:
+        REF_DATA / "{lineage}.fasta"
+    output:
+        INT_REFS_DIR / "{lineage}" / "{lineage}.fasta"
+    log: 
+        "logs/references/links_{lineage}.log"
+    resources:
+        tmpdir = TEMPDIR
+    conda:
+        "../envs/shell.yaml"
+    shell:
+        "ln -s -r {input} {output} 2> {log}"
+
+rule copy_config:
+    input:
+        c = CHROM_NAMES,
+        l = LOCI_FILE
+    output:
+        c = INT_REFS_DIR / "chromosomes.csv",
+        l = INT_REFS_DIR / "loci.csv"
+    log:
+        "logs/references/copy_config.log"
+    resources:
+        tmpdir = TEMPDIR
+    conda:
+        "../envs/shell.yaml"
+    shell:
+        """
+        rsync {input.c} {output.c} 2> {log}
+        rsync {input.l} {output.l} 2> {log}
+        """
+
+    
+# Edit the agat config file to avoid creating log files
+rule agat_config:
+    output:
+        INT_REFS_DIR / "agat_config.yaml"
+    log:
+        "logs/references/agat_config.log"
+    resources:
+        tmpdir = TEMPDIR
+    conda:
+        "../envs/agat.yaml"
+    shell:
+        "agat config --expose &> {log} && "
+        "mv agat_config.yaml {output} &> {log} && "
+        "sed -i 's/log: true/log: false/g' {output} &>> {log} "
+
+
+# =================================================================================================
+# Per sample | Run Snippy to map reads to reference genome, get assembly and call SNPs
+# =================================================================================================
 
 rule snippy:
     input:
@@ -21,13 +68,12 @@ rule snippy:
         vcf = SAMPLES_DIR / "snippy" / "{unf_sample}" / "snps.vcf.gz"
     params:
         outpath = SAMPLES_DIR / "snippy",
+        tmpdir = TEMPDIR,
         extra = config["snippy"]["extra"]
     log:
         "logs/samples/snippy/snippy_{unf_sample}.log"
     threads: 
         config["snippy"]["threads"]
-    resources:
-        tmpdir = TEMPDIR
     conda:
         "../envs/snippy.yaml"
     shell:
@@ -37,4 +83,5 @@ rule snippy:
         "--R1 {input.fq1} "
         "--R2 {input.fq2} "
         "--force "
+        "--tmpdir {params.tmpdir} "
         "{params.extra} &> {log}"

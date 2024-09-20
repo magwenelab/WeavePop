@@ -201,12 +201,6 @@ rule repeat_masker_combine:
 #   Per sample | Intercept depth by windows with repeats and call CNVs
 # =================================================================================================
 
-def cnv_calling_input(wildcards):
-    s = SAMPLE_REFERENCE.loc[wildcards.sample,]
-    return {
-        "depth": INT_SAMPLES_DIR / "depth_quality" / s["sample"] / "depth_by_windows.tsv",
-        "repeats": REFS_DIR / (s["lineage"] + "_repeats.bed")
-        }
 rule cnv_calling:
     input:
         unpack(cnv_calling_input)

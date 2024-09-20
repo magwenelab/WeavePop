@@ -49,13 +49,6 @@ rule depth_by_chrom_plots:
 #   Per sample | Plot depth and mapq by windows
 # =================================================================================================
 
-def depth_by_windows_plots_input(wildcards):
-    s = SAMPLE_REFERENCE.loc[wildcards.sample,]
-    return {
-        "depth": INT_SAMPLES_DIR / "depth_quality" / s["sample"]  / "depth_by_windows.tsv",
-        "cnv": SAMPLES_DIR / "cnv" / s["sample"] / "cnv_calls.tsv",
-        "repeats": REFS_DIR / (s["lineage"] + "_repeats.bed")
-    }
 rule depth_by_windows_plots:
     input:
         unpack(depth_by_windows_plots_input),
@@ -70,13 +63,7 @@ rule depth_by_windows_plots:
     script:
         "../scripts/depth_by_windows_plots.R"
 
-def mapq_plot_input(wildcards):
-    s = SAMPLE_REFERENCE.loc[wildcards.sample,]
-    return {
-        "mapq": INT_SAMPLES_DIR / "depth_quality" / s["sample"] / "mapq_window.bed",
-        "cnv": SAMPLES_DIR / "cnv" / s["sample"] / "cnv_calls.tsv",
-        "repeats": REFS_DIR / (s["lineage"] + "_repeats.bed")
-    }
+
 rule mapq_plot:
     input:
         unpack(mapq_plot_input),
