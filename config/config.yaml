@@ -2,8 +2,7 @@
 #   Choose which workflow to run
 # =================================================================================================
 
-sample_workflow: False
-join_datasets_workflow: True
+workflow: "analysis" # Options: "analysis", "join_datasets"
 
 # =================================================================================================
 # Sample workflow parameters
@@ -18,13 +17,13 @@ fastqs:
 references: 
   directory: "data/references/" # Path to directory with reference genomes.
 
-samples: "config/sample_metadata.csv" # Relative path to metadata CSV table.
+samples: "config/metadata2.csv" # Relative path to metadata CSV table.
 chromosomes: "config/chromosome_names.csv" # Relative path to chromosome names CSV table.
 species_name: "Cryptococcus_neoformans" 
 samples_to_exclude: # Optional: File with list of samples to exclude from all analyses.
 # ------------------Output-------------------------------------------------------------------------
 
-output_directory: "results_1" # Name for the output directory
+output_directory: "results_2" # Name for the output directory
 
 # ------------------Annotation of reference genomes------------------------------------------------
 
