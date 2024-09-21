@@ -1,9 +1,6 @@
 import pandas as pd
 import click
 from Bio import SeqIO
-from Bio.SeqRecord import SeqRecord
-from Bio.Seq import Seq
-from enum import Enum
 
 @click.command()
 @click.option("--fasta", "-f", required=True, type=click.Path(), help="Path to the fasta file")
