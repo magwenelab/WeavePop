@@ -10,6 +10,8 @@ rule join_gffs:
         "logs/references/join_gffs.log"
     resources:
         tmpdir = TEMPDIR
+    conda:
+        "../envs/snakemake.yaml"
     shell:
         "python workflow/scripts/join_gffs.py -o {output} {input} &> {log}"
 

@@ -25,7 +25,7 @@ TEMPDIR_NAME = "04.Temporary_files"
 #   Load rules
 # =================================================================================================
 
-if config["sample_workflow"]:
+if config["workflow"] == "analysis":
     include: "rules/common.smk"
     include: "rules/snippy.smk"
     include: "rules/quality_filter.smk"
@@ -61,7 +61,7 @@ if config["sample_workflow"]:
         include: "rules/cnv.smk"
         include: "rules/snps.smk"
         include: "rules/genes_mapq_depth.smk"
-elif config["join_datasets_workflow"]:
+elif config["workflow"] == "join_datasets":
     include: "rules/join_results.smk"
 
 # =================================================================================================
@@ -107,13 +107,13 @@ onstart:
 #   Define final output
 # =================================================================================================
 
-if config["sample_workflow"]:
+if config["workflow"] == "analysis":
     rule all:
         input:
             get_unfiltered_output(),
             get_filtered_output(),
             get_dataset_output()
-elif config["join_datasets_workflow"]:
+elif config["workflow"] == "join_datasets":
     rule all:
         input:
             get_final_output()

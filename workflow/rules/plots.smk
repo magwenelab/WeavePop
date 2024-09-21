@@ -10,6 +10,8 @@ rule loci:
         locitable = INT_REFS_DIR / "loci_to_plot.tsv"
     log: 
         "logs/dataset/files/loci.log"
+    conda:
+        "../envs/snakemake.yaml"
     shell:
         "xonsh workflow/scripts/loci.xsh -g {input.loci} -o {output} {input.refs} &> {log}"
 

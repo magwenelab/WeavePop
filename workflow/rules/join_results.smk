@@ -19,6 +19,7 @@ INTDIR = OUTPUT / INTDIR_NAME
 INT_SAMPLES_DIR = INTDIR / SAMPLES_DIR_NAME
 INT_DATASET_DIR = INTDIR / DATASET_DIR_NAME
 INT_REFS_DIR = INTDIR / REFS_DIR_NAME
+TEMPDIR = str(INTDIR / TEMPDIR_NAME)
 
 INPUT_PATHS = config["datasets_paths"].split(",")
 LIST_PATHS = [Path(dir) for dir in INPUT_PATHS]
@@ -44,6 +45,8 @@ rule join_results:
         chromosomes = INT_REFS_DIR / "chromosomes.csv",
     params:
         dataset_names = config["datasets_names"].split(",")
+    resources:
+        tmpdir = TEMPDIR
     run:
         dataframes = []
         for file_path, string in zip(input.metadata_files, params.dataset_names):
@@ -64,6 +67,8 @@ checkpoint make_lineages_dirs:
         metadata = rules.join_results.output.metadata
     output:
         directory(INT_REFS_DIR / "lineage_names")
+    resources:
+        tmpdir = TEMPDIR
     run:
         metadata = pd.read_csv(input.metadata, sep=",", header=0)
         lineages = list(set(metadata["lineage"]))
@@ -136,6 +141,8 @@ rule join_cnv:
         cnv=get_input_cnv,
     output:
         cnv = DATASET_DIR / "cnv" / "cnv_calls.tsv"
+    resources:
+        tmpdir = TEMPDIR
     run:
         cnv = pd.concat([pd.read_csv(f, sep="\t") for f in input.cnv])
         cnv.to_csv(output.cnv, sep="\t", index=False)
@@ -145,6 +152,8 @@ rule join_mapq_depth:
         mapq_depth=get_input_mapq_depth,
     output:
         mapq_depth = DATASET_DIR / "depth_quality" / "feature_mapq_depth.tsv",
+    resources:
+        tmpdir = TEMPDIR
     run: 
         mapq_depth = pd.concat([pd.read_csv(f, sep="\t") for f in input.mapq_depth])
         mapq_depth.to_csv(output.mapq_depth, sep="\t", index=False)
@@ -169,6 +178,8 @@ rule join_gffs:
         "logs/references/join_gffs.log"
     resources:
         tmpdir = TEMPDIR
+    conda:
+        "../envs/snakemake.yaml"
     shell:
         "python workflow/scripts/join_gffs.py -o {output} {input} &> {log}"
 
@@ -195,6 +206,8 @@ rule copy_snpeff_data:
         INT_REFS_DIR / "snpeff_data" / "copy.done"
     params:
         dir = INT_REFS_DIR / "snpeff_data"
+    resources:
+        tmpdir = TEMPDIR
     shell:
         """
         ln -srf {input} {params.dir} && touch {output}
@@ -206,6 +219,8 @@ rule copy_snpeff_config:
         config = expand(os.path.join("{dir}", INTDIR_NAME, REFS_DIR_NAME, "snpeff_data", "snpEff.config"), dir = LIST_PATHS)
     output:
         INT_REFS_DIR / "snpeff_data" / "snpEff.config"
+    resources:
+        tmpdir = TEMPDIR
     shell:
         "cat {input.config} > {output}"
 

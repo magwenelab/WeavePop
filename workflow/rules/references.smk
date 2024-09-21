@@ -37,6 +37,8 @@ rule fix_gff_tsv:
         tsv = os.path.join(INT_REFS_DIR, f"{MAIN_NAME}.tsv")
     log:
         "logs/references/fix_gff_tsv.log"
+    conda:
+        "../envs/snakemake.yaml"
     shell:
         """
         python workflow/scripts/fix_gff.py -i {input.tsv} -og {output.gff} -ot {output.tsv} &> {log}

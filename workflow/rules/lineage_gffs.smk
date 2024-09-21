@@ -37,6 +37,8 @@ rule fix_gff_tsv:
         "logs/references/fix_gff_tsv_{lineage}.log"
     resources:
         tmpdir = TEMPDIR
+    conda:
+        "../envs/snakemake.yaml"
     shell:
         """
         python workflow/scripts/fix_gff.py -i {input.tsv} -og {output.gff} -ot {output.tsv} &> {log}
