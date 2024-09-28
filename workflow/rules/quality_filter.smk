@@ -95,14 +95,9 @@ rule join_mapping_stats:
     resources:
         tmpdir = TEMPDIR
     conda:
-        "../envs/shell.yaml"
-    shell:
-        """
-        head -q -n 1 {input} 1> {output}.temp 2>> {log}
-        head -n 1 {output}.temp 1> {output} 2>> {log}
-        tail -q -n +2 {input} 1>> {output} 2>> {log}
-        rm {output}.temp
-        """
+        "../envs/snakemake.yaml"
+    script:
+        "../scripts/join_tables.py"
 
 # =================================================================================================
 #   Per dataset | Checkpoint to filter out low quality samples
@@ -119,23 +114,12 @@ rule quality_filter:
         exclude = config["depth_quality"]["flag_quality"]["exclude_samples"]
     log:
         "logs/dataset/depth_quality/quality_filter.log"
-    run:
-        with open(log[0], "w") as log_file:
-            try:
-                stats = pd.read_csv(input[0], sep="\t", header = 0)
-                metadata = pd.read_csv(input[1], header=0)
-                if params.exclude:
-                    stats_filtered = stats[stats["quality_warning"].isna()]
-                    metadata_filtered = metadata.loc[metadata["sample"].isin(stats_filtered["sample"]),]
-                else:
-                    stats_filtered = stats
-                    metadata_filtered = metadata
-                stats_filtered.to_csv(output.stats, index=False, header=True, sep = "\t")
-                metadata_filtered.to_csv(output.metadata, index=False)
-                log_file.write("Successfully filtered samples from tables.\n")
-            except Exception as e:
-                log_file.write(f"Error: {e}\n")
-                raise e
+    resources:
+        tmpdir = TEMPDIR
+    conda:
+        "../envs/snakemake.yaml"
+    script:
+        "../scripts/quality_filter.py"
 
 checkpoint filtered_samples:
     input:
@@ -144,19 +128,10 @@ checkpoint filtered_samples:
         directory(INT_SAMPLES_DIR / "filtered_samples")
     log:
         "logs/dataset/depth_quality/filtered_samples.log"
-    run: 
-        with open(log[0], "w") as log_file:
-            try:
-                metadata = pd.read_csv(input[0], header=0)
-                sample_names = list(metadata["sample"])
-                for sample_name in sample_names:
-                    path_s = INT_SAMPLES_DIR / "filtered_samples" / f"{sample_name}.txt"
-                    path_s.parent.mkdir(parents=True, exist_ok=True)
-                    path_s.touch()
-                log_file.write("Successfully created sample files.\n")
-            except Exception as e:
-                log_file.write(f"Error: {e}\n")
-                raise e
+    conda:
+        "../envs/snakemake.yaml"
+    script:
+        "../scripts/filtered_samples.py" 
 
 checkpoint filtered_lineages:
     input:
@@ -165,18 +140,10 @@ checkpoint filtered_lineages:
         directory(INT_REFS_DIR / "filtered_lineages")
     log:
         "logs/dataset/depth_quality/filtered_lineages.log"
-    run: 
-        with open(log[0], "w") as log_file:
-            try:
-                lineages = list(pd.read_csv(input[0], header=0)["lineage"])
-                for lineage in lineages:
-                    path_l = INT_REFS_DIR / "filtered_lineages" / f"{lineage}.txt"
-                    path_l.parent.mkdir(parents=True, exist_ok=True)
-                    path_l.touch()
-                log_file.write("Successfully created lineage files.\n")
-            except Exception as e:
-                log_file.write(f"Error: {e}\n")
-                raise e
+    conda:
+        "../envs/snakemake.yaml"
+    script:
+        "../scripts/filtered_lineages.py"
 
 # =================================================================================================
 #   Per dataset | Join depth by chrom 
@@ -191,13 +158,8 @@ rule join_depth_by_chrom_raw:
         "logs/dataset/depth_quality/join_depth_by_chrom_raw.log"
     conda:
         "../envs/shell.yaml"
-    shell:
-        """
-        head -q -n 1 {input} 1> {output}.temp 2>> {log}
-        head -n 1 {output}.temp 1> {output} 2>> {log}
-        tail -q -n +2 {input} 1>> {output} 2>> {log}
-        rm {output}.temp 2>> {log}
-        """
+    script:
+        "../scripts/join_tables.py"
 
 rule join_depth_by_chrom_good:
     input:
@@ -207,11 +169,6 @@ rule join_depth_by_chrom_good:
     log:
         "logs/dataset/depth_quality/join_depth_by_chrom_good.log"
     conda:
-        "../envs/shell.yaml"
-    shell:
-        """
-        head -q -n 1 {input} 1> {output}.temp 2>> {log}
-        head -n 1 {output}.temp 1> {output} 2>> {log}
-        tail -q -n +2 {input} 1>> {output} 2>> {log}
-        rm {output}.temp 2>> {log}
-        """
+        "../envs/snakemake.yaml"
+    script: 
+        "../scripts/join_tables.py"

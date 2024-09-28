@@ -12,8 +12,8 @@ rule join_gffs:
         tmpdir = TEMPDIR
     conda:
         "../envs/snakemake.yaml"
-    shell:
-        "python workflow/scripts/join_gffs.py -o {output} {input} &> {log}"
+    script:
+        "../scripts/join_gffs.py"
 
 # =================================================================================================
 #   Join dataset | Join tables with sequences and convert them to SQL db
@@ -24,20 +24,16 @@ rule join_sequences:
         cds = expand(INT_SAMPLES_DIR / "annotation" / "{sample}" / "cds.csv", sample=SAMPLES),
         prots = expand(INT_SAMPLES_DIR / "annotation" / "{sample}" / "proteins.csv", sample=SAMPLES)
     output:
-        joined = INT_DATASET_DIR / "sequences.csv"
+        sequences = INT_DATASET_DIR / "sequences.csv"
     log:
         "logs/dataset/join_sequences.log"
-    run: 
-        with open(log[0], "w") as log_file:
-            try:
-                cds = pd.concat([pd.read_csv(f) for f in input.cds])
-                prots = pd.concat([pd.read_csv(f) for f in input.prots])
-                sequences = pd.concat([cds, prots])
-                sequences.to_csv(output.joined, sep=",", index=False, header = True)
-                log_file.write("Successfully concatenated sequence tables.\n")
-            except Exception as e:
-                log_file.write(f"Error: {e}\n")
-                raise e
+    resources:
+        tmpdir = TEMPDIR
+    conda:
+        "../envs/snakemake.yaml"
+    script:
+        "../scripts/join_sequences.py"
+
 # =================================================================================================
 #   Per dataset | Join feature MAPQ and Depth
 # =================================================================================================
@@ -50,20 +46,15 @@ rule join_mapq_depth:
     log:
         "logs/dataset/depth_quality/join_mapq_depth.log"
     conda:
-        "../envs/shell.yaml"
-    shell:
-        """
-        head -q -n 1 {input} 1> {output}.temp 2>> {log}
-        head -n 1 {output}.temp 1> {output} 2>> {log}
-        tail -q -n +2 {input} 1>> {output} 2>> {log}
-        rm {output}.temp
-        """
+        "../envs/snakemake.yaml"
+    script:
+        "../scripts/join_tables.py"
 
 # =================================================================================================
 #   Per dataset | Join CNV calls
 # =================================================================================================
 
-rule join_cnv_calling:
+rule join_cnv:
     input:
         expand(SAMPLES_DIR / "cnv" / "{sample}" / "cnv_calls.tsv",sample=SAMPLES),
     output:
@@ -71,19 +62,13 @@ rule join_cnv_calling:
     log:
         "logs/dataset/cnv/join_cnv_calls.log"
     conda:
-        "../envs/shell.yaml"
-    shell:
-        """
-        head -q -n 1 {input} 1> {output}.temp 2>> {log}
-        head -n 1 {output}.temp 1> {output} 2>> {log}
-        tail -q -n +2 {input} 1>> {output} 2>> {log}
-        rm {output}.temp
-        """
+        "../envs/snakemake.yaml"
+    script:
+        "../scripts/join_tables.py"
 
 # =================================================================================================
 #   Per dataset | Create final database
 # =================================================================================================
-# Join all effects, variants, lofs, nmds and presence tables
 rule join_variant_annotation:
     input:
         effects = expand(INT_DATASET_DIR / "snps" / "{lineage}_effects.tsv", lineage=LINEAGES),
@@ -99,30 +84,16 @@ rule join_variant_annotation:
         presence = DATASET_DIR / "snps" / "presence.tsv"
     log:
         "logs/dataset/snps/join_variant_annotation.log"
-    run:
-        with open(log[0], "w") as log_file:
-            try:
-                effects = pd.concat([pd.read_csv(f, sep="\t") for f in input.effects])
-                variants = pd.concat([pd.read_csv(f, sep="\t") for f in input.variants])
-                lofs = pd.concat([pd.read_csv(f, sep="\t") for f in input.lofs])
-                nmds = pd.concat([pd.read_csv(f, sep="\t") for f in input.nmds])
-                presence = pd.concat([pd.read_csv(f, sep="\t") for f in input.presence])
-                effects.to_csv(output.effects, sep = "\t", index=False)
-                variants.to_csv(output.variants, sep="\t", index=False)
-                lofs.to_csv(output.lofs, sep="\t", index=False)
-                nmds.to_csv(output.nmds, sep="\t", index=False)
-                presence.to_csv(output.presence, sep="\t", index=False)
-                log_file.write("Successfully concatenated variant annotation tables.\n")
-            except Exception as e:
-                log_file.write(f"Error: {e}\n")
-                raise e
+    conda:
+        "../envs/snakemake.yaml"
+    script:
+        "../scripts/join_variant_annotation.py"
 
-# Create the final database
 rule complete_db:
     input:
         metadata = INT_DATASET_DIR / "metadata.csv",
         chrom_names = rules.copy_config.output.c,
-        cnv = rules.join_cnv_calling.output,
+        cnv = rules.join_cnv.output,
         md = rules.join_mapq_depth.output,
         gffs = rules.join_gffs.output,
         effects = rules.join_variant_annotation.output.effects,

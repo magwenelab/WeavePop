@@ -24,6 +24,8 @@ rule liftoff:
         tmpdir = TEMPDIR
     conda:
         "../envs/liftoff.yaml"
+    message:
+        "Running Liftoff for {wildcards.sample}"
     shell:
         "ln -s -r -f {input.refgff} {output.ref_gff} &> {log} || true "
         "&& "

@@ -62,7 +62,8 @@ if config["workflow"] == "analysis":
         include: "rules/snps.smk"
         include: "rules/genes_mapq_depth.smk"
 elif config["workflow"] == "join_datasets":
-    include: "rules/join_results.smk"
+    include: "rules/common_join_datasets.smk"
+    include: "rules/join_datasets.smk"
 
 # =================================================================================================
 #   Onstart checks
