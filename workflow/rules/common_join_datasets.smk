@@ -28,15 +28,18 @@ LIST_PATHS = [Path(dir) for dir in INPUT_PATHS]
 #   Checkpoint functions
 # =================================================================================================
 
+
 def listing_lineages(wildcards):
     checkpoint_output = checkpoints.get_lineages.get(**wildcards).output[0]
-    return expand("{i}",
-                i=glob_wildcards(os.path.join(checkpoint_output, "{i}.lineage" )).i)
+    return expand("{i}", i=glob_wildcards(os.path.join(checkpoint_output, "{i}.lineage")).i)
+
+
 LINEAGES = listing_lineages
 
 # =================================================================================================
 #   Define input functions
 # =================================================================================================
+
 
 def input_joining(wildcards):
     paths_cnv = []
@@ -48,10 +51,18 @@ def input_joining(wildcards):
         samps_dir_df = pd.read_csv(metadata, header=0)
         samps = samps_dir_df["sample"]
         for samp in samps:
-            cnv = os.path.join(dir, SAMPLES_DIR_NAME, "cnv", samp, "cnv_calls.tsv")
-            mapq_depth = os.path.join(dir, SAMPLES_DIR_NAME, "depth_quality", samp, "feature_mapq_depth.tsv")
-            cds = os.path.join(dir, INTDIR_NAME, SAMPLES_DIR_NAME, "annotation", samp, "cds.csv")
-            prots = os.path.join(dir, INTDIR_NAME, SAMPLES_DIR_NAME, "annotation", samp, "proteins.csv")
+            cnv = os.path.join(
+                dir, SAMPLES_DIR_NAME, "cnv", samp, "cnv_calls.tsv"
+            )
+            mapq_depth = os.path.join(
+                dir, SAMPLES_DIR_NAME, "depth_quality", samp, "feature_mapq_depth.tsv"
+            )
+            cds = os.path.join(
+                dir, INTDIR_NAME, SAMPLES_DIR_NAME, "annotation", samp, "cds.csv"
+            )
+            prots = os.path.join(
+                dir, INTDIR_NAME, SAMPLES_DIR_NAME, "annotation", samp, "proteins.csv"
+            )
             paths_cnv.append(cnv)
             paths_mapq_depth.append(mapq_depth)
             paths_cds.append(cds)
@@ -60,20 +71,25 @@ def input_joining(wildcards):
         "cnv": paths_cnv,
         "mapq_depth": paths_mapq_depth,
         "cds": paths_cds,
-        "prots": paths_prots
+        "prots": paths_prots,
     }
+
 
 def input_join_cnv(wildcards):
     return input_joining(wildcards)["cnv"]
 
+
 def input_join_mapq_depth(wildcards):
     return input_joining(wildcards)["mapq_depth"]
+
 
 def input_join_cds(wildcards):
     return input_joining(wildcards)["cds"]
 
+
 def input_join_prots(wildcards):
     return input_joining(wildcards)["prots"]
+
 
 def input_join_gffs(wildcards):
     paths = []
@@ -86,6 +102,7 @@ def input_join_gffs(wildcards):
             paths.append(gff)
     return paths
 
+
 def input_copy_speff_data(wildcards):
     paths_snpeff_Data = {}
     for dir in LIST_PATHS:
@@ -93,10 +110,19 @@ def input_copy_speff_data(wildcards):
         lins_dir_df = pd.read_csv(metadata, header=0)
         lins = lins_dir_df["lineage"]
         for lin in lins:
-            data_dict = {lin: os.path.join(dir, INTDIR_NAME, REFS_DIR_NAME, "snpeff_data", config["species_name"] + f"_{lin}")}
+            data_dict = {
+                lin: os.path.join(
+                    dir,
+                    INTDIR_NAME,
+                    REFS_DIR_NAME,
+                    "snpeff_data",
+                    config["species_name"] + f"_{lin}",
+                )
+            }
             paths_snpeff_Data.update(data_dict)
     list_paths = list(paths_snpeff_Data.values())
     return list_paths
+
 
 def input_intersect_vcfs(wildcards):
     paths = []
@@ -106,17 +132,16 @@ def input_intersect_vcfs(wildcards):
         samps_dir_df = samps_dir_df.loc[samps_dir_df["lineage"] == wildcards.lineage]
         samps = samps_dir_df["sample"]
         for samp in samps:
-            vcf = os.path.join(dir, SAMPLES_DIR_NAME, "snippy", samp , "snps.vcf.gz")
+            vcf = os.path.join(dir, SAMPLES_DIR_NAME, "snippy", samp, "snps.vcf.gz")
             paths.append(vcf)
-    return {
-        "vcfs" : paths
-    }
+    return {"vcfs": paths}
+
 
 # =================================================================================================
 #   Define final output
 # =================================================================================================
 
+
 def get_final_output():
     final_output = DATASET_DIR / "database.db"
     return final_output
-

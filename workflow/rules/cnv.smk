@@ -2,24 +2,24 @@
 #   Per sample | Run Mosdepth to get depth per window of  good quality reads
 # =================================================================================================
 
+
 rule mosdepth_good:
     input:
-        bam = SAMPLES_DIR / "snippy" / "{sample}" / "snps.bam",
-        bai = SAMPLES_DIR / "snippy" / "{sample}" / "snps.bam.bai"
+        bam=SAMPLES_DIR / "snippy" / "{sample}" / "snps.bam",
+        bai=SAMPLES_DIR / "snippy" / "{sample}" / "snps.bam.bai",
     output:
-        bed = INT_SAMPLES_DIR / "mosdepth" / "{sample}" / "coverage_good.regions.bed.gz"
+        bed=INT_SAMPLES_DIR / "mosdepth" / "{sample}" / "coverage_good.regions.bed.gz",
     params:
-        window = config["depth_quality"]["mosdepth"]["window"],
-        extra = config["depth_quality"]["mosdepth"]["extra"],
-        min_mapq = config["depth_quality"]["mosdepth"]["min_mapq"],
-        outdir = INT_SAMPLES_DIR / "mosdepth"
+        window=config["depth_quality"]["mosdepth"]["window"],
+        extra=config["depth_quality"]["mosdepth"]["extra"],
+        min_mapq=config["depth_quality"]["mosdepth"]["min_mapq"],
+        outdir=INT_SAMPLES_DIR / "mosdepth",
     log:
-        "logs/samples/mosdepth/mosdepth_good_{sample}.log"
-    threads:
-       config["depth_quality"]["mosdepth"]["threads"] 
+        "logs/samples/mosdepth/mosdepth_good_{sample}.log",
+    threads: config["depth_quality"]["mosdepth"]["threads"]
     resources:
-        tmpdir = TEMPDIR
-    conda: 
+        tmpdir=TEMPDIR,
+    conda:
         "../envs/depth.yaml"
     shell:
         "mosdepth "
@@ -32,22 +32,24 @@ rule mosdepth_good:
         "{input.bam} "
         "&> {log}"
 
+
 # =================================================================================================
 #   Per sample | Normalize depth and by windows
 # =================================================================================================
 
+
 rule depth_by_windows:
     input:
-        depth = rules.mosdepth_good.output.bed,
-        global_mode = SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom_good.tsv"
+        depth=rules.mosdepth_good.output.bed,
+        global_mode=SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom_good.tsv",
     output:
-        INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_windows.tsv"
+        INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_windows.tsv",
     params:
-        smoothing_size = config["cnv"]["smoothing_size"]
+        smoothing_size=config["cnv"]["smoothing_size"],
     log:
-        "logs/samples/depth_quality/depth_by_windows_{sample}.log"
+        "logs/samples/depth_quality/depth_by_windows_{sample}.log",
     resources:
-        tmpdir = TEMPDIR
+        tmpdir=TEMPDIR,
     conda:
         "../envs/samtools.yaml"
     shell:
@@ -58,24 +60,25 @@ rule depth_by_windows:
         "-s {params.smoothing_size} "
         "&> {log}"
 
+
 # =================================================================================================
 #   Per lineage | Run RepeatModeler and RepeatMasker
 # =================================================================================================
 
+
 rule repeat_modeler:
     input:
-        rules.links.output
+        rules.links.output,
     output:
-        known = INT_REFS_DIR / "{lineage}" / "repeats" / "{lineage}_known.fa",
-        unknown = INT_REFS_DIR / "{lineage}" / "repeats" / "{lineage}_unknown.fa"
+        known=INT_REFS_DIR / "{lineage}" / "repeats" / "{lineage}_known.fa",
+        unknown=INT_REFS_DIR / "{lineage}" / "repeats" / "{lineage}_unknown.fa",
     params:
-        repdir = "repeats"
+        repdir="repeats",
     log:
-        "logs/references/repeats/repeatmodeler_{lineage}.log"
-    threads:
-        config["cnv"]["repeats"]["repeats_threads"]
+        "logs/references/repeats/repeatmodeler_{lineage}.log",
+    threads: config["cnv"]["repeats"]["repeats_threads"]
     resources:
-        tmpdir = TEMPDIR
+        tmpdir=TEMPDIR,
     conda:
         "../envs/repeatmasker.yaml"
     shell:
@@ -85,18 +88,18 @@ rule repeat_modeler:
         "{params.repdir} "
         "&> {log}"
 
+
 rule repeat_masker_1:
     input:
-        database = config["cnv"]["repeats"]["repeats_database"],
-        fasta = rules.links.output
-    output: 
-        INT_REFS_DIR / "{lineage}" / "repeats" / "01_simple" / "{lineage}.fasta.out"
+        database=config["cnv"]["repeats"]["repeats_database"],
+        fasta=rules.links.output,
+    output:
+        INT_REFS_DIR / "{lineage}" / "repeats" / "01_simple" / "{lineage}.fasta.out",
     log:
-        "logs/references/repeats/repeatmasker1_{lineage}.log"
-    threads:
-        config["cnv"]["repeats"]["repeats_threads"]
+        "logs/references/repeats/repeatmasker1_{lineage}.log",
+    threads: config["cnv"]["repeats"]["repeats_threads"]
     resources:
-        tmpdir = TEMPDIR
+        tmpdir=TEMPDIR,
     conda:
         "../envs/repeatmasker.yaml"
     shell:
@@ -115,16 +118,15 @@ rule repeat_masker_1:
 
 rule repeat_masker_2:
     input:
-        database = config["cnv"]["repeats"]["repeats_database"],
-        fasta = rules.links.output
-    output: 
-        INT_REFS_DIR / "{lineage}" / "repeats" / "02_complex" / "{lineage}.fasta.out"
+        database=config["cnv"]["repeats"]["repeats_database"],
+        fasta=rules.links.output,
+    output:
+        INT_REFS_DIR / "{lineage}" / "repeats" / "02_complex" / "{lineage}.fasta.out",
     log:
-        "logs/references/repeats/repeatmasker2_{lineage}.log"
-    threads:
-        config["cnv"]["repeats"]["repeats_threads"]
+        "logs/references/repeats/repeatmasker2_{lineage}.log",
+    threads: config["cnv"]["repeats"]["repeats_threads"]
     resources:
-        tmpdir = TEMPDIR
+        tmpdir=TEMPDIR,
     conda:
         "../envs/repeatmasker.yaml"
     shell:
@@ -139,18 +141,18 @@ rule repeat_masker_2:
         "{input.fasta} "
         "&> {log}"
 
+
 rule repeat_masker_3:
     input:
-        known = rules.repeat_modeler.output.known,
-        fasta = rules.links.output
-    output: 
-        INT_REFS_DIR / "{lineage}" / "repeats" / "03_known" / "{lineage}.fasta.out"
+        known=rules.repeat_modeler.output.known,
+        fasta=rules.links.output,
+    output:
+        INT_REFS_DIR / "{lineage}" / "repeats" / "03_known" / "{lineage}.fasta.out",
     log:
-        "logs/references/repeats/repeatmasker3_{lineage}.log"
-    threads:
-        config["cnv"]["repeats"]["repeats_threads"]
+        "logs/references/repeats/repeatmasker3_{lineage}.log",
+    threads: config["cnv"]["repeats"]["repeats_threads"]
     resources:
-        tmpdir = TEMPDIR
+        tmpdir=TEMPDIR,
     conda:
         "../envs/repeatmasker.yaml"
     shell:
@@ -164,18 +166,18 @@ rule repeat_masker_3:
         "-nolow {input.fasta} "
         "&> {log}"
 
+
 rule repeat_masker_4:
     input:
-        unknown = rules.repeat_modeler.output.unknown,
-        fasta = rules.links.output
-    output: 
-        INT_REFS_DIR / "{lineage}" / "repeats" / "04_unknown" / "{lineage}.fasta.out"
+        unknown=rules.repeat_modeler.output.unknown,
+        fasta=rules.links.output,
+    output:
+        INT_REFS_DIR / "{lineage}" / "repeats" / "04_unknown" / "{lineage}.fasta.out",
     log:
-        "logs/references/repeats/repeatmasker4_{lineage}.log"
-    threads:
-        config["cnv"]["repeats"]["repeats_threads"]
+        "logs/references/repeats/repeatmasker4_{lineage}.log",
+    threads: config["cnv"]["repeats"]["repeats_threads"]
     resources:
-        tmpdir = TEMPDIR
+        tmpdir=TEMPDIR,
     conda:
         "../envs/repeatmasker.yaml"
     shell:
@@ -193,19 +195,19 @@ rule repeat_masker_4:
 
 rule repeat_masker_bed:
     input:
-        simple = rules.repeat_masker_1.output,
-        complx = rules.repeat_masker_2.output,
-        known = rules.repeat_masker_3.output,
-        unknown = rules.repeat_masker_4.output
+        simple=rules.repeat_masker_1.output,
+        complx=rules.repeat_masker_2.output,
+        known=rules.repeat_masker_3.output,
+        unknown=rules.repeat_masker_4.output,
     output:
-        simple = INT_REFS_DIR / "{lineage}" / "repeats" / "01_simple" / "{lineage}.bed",
-        complx = INT_REFS_DIR / "{lineage}" / "repeats" / "02_complex" / "{lineage}.bed",
-        known = INT_REFS_DIR / "{lineage}" / "repeats" / "03_known" / "{lineage}.bed",
-        unknown = INT_REFS_DIR / "{lineage}" / "repeats" / "04_unknown" / "{lineage}.bed"
+        simple=INT_REFS_DIR / "{lineage}" / "repeats" / "01_simple" / "{lineage}.bed",
+        complx=INT_REFS_DIR / "{lineage}" / "repeats" / "02_complex" / "{lineage}.bed",
+        known=INT_REFS_DIR / "{lineage}" / "repeats" / "03_known" / "{lineage}.bed",
+        unknown=INT_REFS_DIR / "{lineage}" / "repeats" / "04_unknown" / "{lineage}.bed",
     log:
-        "logs/references/repeats/repeatmasker_combine_{lineage}.log"
+        "logs/references/repeats/repeatmasker_combine_{lineage}.log",
     resources:
-        tmpdir = TEMPDIR
+        tmpdir=TEMPDIR,
     conda:
         "../envs/repeatmasker.yaml"
     shell:
@@ -219,19 +221,20 @@ rule repeat_masker_bed:
         tail -n +4 {input.unknown} | awk '{{print $5"\t"($6-1)"\t"$7"\t"$11}}' \
         1> {output.unknown} 2>> {log}
         """
-    
+
+
 rule repeat_masker_combine:
     input:
-        simple = rules.repeat_masker_bed.output.simple,
-        complx = rules.repeat_masker_bed.output.complx,
-        known = rules.repeat_masker_bed.output.known,
-        unknown = rules.repeat_masker_bed.output.unknown
+        simple=rules.repeat_masker_bed.output.simple,
+        complx=rules.repeat_masker_bed.output.complx,
+        known=rules.repeat_masker_bed.output.known,
+        unknown=rules.repeat_masker_bed.output.unknown,
     output:
-        REFS_DIR / "{lineage}_repeats.bed"    
+        REFS_DIR / "{lineage}_repeats.bed",
     log:
-        "logs/references/repeats/repeatmasker_combine_{lineage}.log"
+        "logs/references/repeats/repeatmasker_combine_{lineage}.log",
     resources:
-        tmpdir = TEMPDIR
+        tmpdir=TEMPDIR,
     conda:
         "../envs/repeatmasker.yaml"
     shell:
@@ -242,22 +245,24 @@ rule repeat_masker_combine:
         | awk '{{print $1"\t"$2"\t"$3"\t"$4}}' > {output} 2> {log}
         """
 
+
 # =================================================================================================
 #   Per sample | Intercept depth by windows with repeats and call CNVs
 # =================================================================================================
 
+
 rule cnv_calling:
     input:
-        unpack(cnv_calling_input)
+        unpack(cnv_calling_input),
     output:
-        SAMPLES_DIR / "cnv" / "{sample}" / "cnv_calls.tsv"
+        SAMPLES_DIR / "cnv" / "{sample}" / "cnv_calls.tsv",
     params:
-        window_size = config["depth_quality"]["mosdepth"]["window"],
-        depth_threshold = config["cnv"]["depth_threshold"]
+        window_size=config["depth_quality"]["mosdepth"]["window"],
+        depth_threshold=config["cnv"]["depth_threshold"],
     log:
-        "logs/samples/cnv/cnv_calling_{sample}.log"
+        "logs/samples/cnv/cnv_calling_{sample}.log",
     resources:
-        tmpdir = TEMPDIR
+        tmpdir=TEMPDIR,
     conda:
         "../envs/samtools.yaml"
     shell:

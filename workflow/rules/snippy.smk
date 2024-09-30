@@ -2,32 +2,34 @@
 #   Setup rules
 # =================================================================================================
 
+
 # Create softlinks to have the reference genomes in the REFS_DIR
 rule links:
     input:
-        REF_DATA / "{lineage}.fasta"
+        REF_DATA / "{lineage}.fasta",
     output:
-        INT_REFS_DIR / "{lineage}" / "{lineage}.fasta"
-    log: 
-        "logs/references/links_{lineage}.log"
+        INT_REFS_DIR / "{lineage}" / "{lineage}.fasta",
+    log:
+        "logs/references/links_{lineage}.log",
     resources:
-        tmpdir = TEMPDIR
+        tmpdir=TEMPDIR,
     conda:
         "../envs/shell.yaml"
     shell:
         "ln -s -r {input} {output} 2> {log}"
 
+
 rule copy_config:
     input:
-        c = CHROM_NAMES,
-        l = LOCI_FILE
+        c=CHROM_NAMES,
+        l=LOCI_FILE,
     output:
-        c = INT_REFS_DIR / "chromosomes.csv",
-        l = INT_REFS_DIR / "loci.csv"
+        c=INT_REFS_DIR / "chromosomes.csv",
+        l=INT_REFS_DIR / "loci.csv",
     log:
-        "logs/references/copy_config.log"
+        "logs/references/copy_config.log",
     resources:
-        tmpdir = TEMPDIR
+        tmpdir=TEMPDIR,
     conda:
         "../envs/shell.yaml"
     shell:
@@ -36,15 +38,15 @@ rule copy_config:
         rsync {input.l} {output.l} 2> {log}
         """
 
-    
+
 # Edit the agat config file to avoid creating log files
 rule agat_config:
     output:
-        INT_REFS_DIR / "agat_config.yaml"
+        INT_REFS_DIR / "agat_config.yaml",
     log:
-        "logs/references/agat_config.log"
+        "logs/references/agat_config.log",
     resources:
-        tmpdir = TEMPDIR
+        tmpdir=TEMPDIR,
     conda:
         "../envs/agat.yaml"
     shell:
@@ -57,23 +59,23 @@ rule agat_config:
 # Per sample | Run Snippy to map reads to reference genome, get assembly and call SNPs
 # =================================================================================================
 
+
 rule snippy:
     input:
-        unpack(snippy_input)
+        unpack(snippy_input),
     output:
-        fa = SAMPLES_DIR / "snippy" / "{unf_sample}" / "snps.consensus.fa",
-        bam = SAMPLES_DIR / "snippy" / "{unf_sample}" / "snps.bam",
-        ref = SAMPLES_DIR / "snippy" / "{unf_sample}" / "ref.fa",
-        bai = SAMPLES_DIR / "snippy" / "{unf_sample}" / "snps.bam.bai",
-        vcf = SAMPLES_DIR / "snippy" / "{unf_sample}" / "snps.vcf.gz"
+        fa=SAMPLES_DIR / "snippy" / "{unf_sample}" / "snps.consensus.fa",
+        bam=SAMPLES_DIR / "snippy" / "{unf_sample}" / "snps.bam",
+        ref=SAMPLES_DIR / "snippy" / "{unf_sample}" / "ref.fa",
+        bai=SAMPLES_DIR / "snippy" / "{unf_sample}" / "snps.bam.bai",
+        vcf=SAMPLES_DIR / "snippy" / "{unf_sample}" / "snps.vcf.gz",
     params:
-        outpath = SAMPLES_DIR / "snippy",
-        tmpdir = TEMPDIR,
-        extra = config["snippy"]["extra"]
+        outpath=SAMPLES_DIR / "snippy",
+        tmpdir=TEMPDIR,
+        extra=config["snippy"]["extra"],
     log:
-        "logs/samples/snippy/snippy_{unf_sample}.log"
-    threads: 
-        config["snippy"]["threads"]
+        "logs/samples/snippy/snippy_{unf_sample}.log",
+    threads: config["snippy"]["threads"]
     conda:
         "../envs/snippy.yaml"
     shell:

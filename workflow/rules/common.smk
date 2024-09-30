@@ -12,18 +12,18 @@ from snakemake.utils import validate
 #   Global variables
 # =================================================================================================
 
-UNFILTERED_SAMPLE_FILE=config["samples"]
-EXCLUDE_FILE=config["samples_to_exclude"]
+UNFILT_SAMPLE_FILE = config["samples"]
+EXCLUDE_FILE = config["samples_to_exclude"]
 if EXCLUDE_FILE:
-    EXCLUDE_SAMPLES=set(list(pd.read_csv(EXCLUDE_FILE, header=None, names = ["sample"])["sample"]))
-    SAMPLE_ORIGINAL=(pd.read_csv(UNFILTERED_SAMPLE_FILE, sep=",", header=0))
-    UNFILTERED_SAMPLE_TABLE=SAMPLE_ORIGINAL[~SAMPLE_ORIGINAL["sample"].isin(EXCLUDE_SAMPLES)]
+    EXCLUDE_SAMPLES = set(list(pd.read_csv(EXCLUDE_FILE, header=None, names=["sample"])["sample"]))
+    SAMPLE_ORIGINAL = pd.read_csv(UNFILT_SAMPLE_FILE, sep=",", header=0)
+    UNFILT_SAMPLE_TABLE = SAMPLE_ORIGINAL[~SAMPLE_ORIGINAL["sample"].isin(EXCLUDE_SAMPLES)]
 else:
-    UNFILTERED_SAMPLE_TABLE=(pd.read_csv(UNFILTERED_SAMPLE_FILE, sep=",", header=0))
+    UNFILT_SAMPLE_TABLE = pd.read_csv(UNFILT_SAMPLE_FILE, sep=",", header=0)
 
-validate(UNFILTERED_SAMPLE_TABLE, schema="../schemas/metadata.schema.yaml")
+validate(UNFILT_SAMPLE_TABLE, schema="../schemas/metadata.schema.yaml")
 
-UNFILTERED_SAMPLES=list(set(UNFILTERED_SAMPLE_TABLE["sample"]))
+UNFILT_SAMPLES = list(set(UNFILT_SAMPLE_TABLE["sample"]))
 
 REF_DATA = Path(config["references"]["directory"])
 FQ_DATA = Path(config["fastqs"]["directory"])
@@ -66,13 +66,18 @@ if config["annotate_references"]["activate"]:
 #   Tables for input functions
 # =================================================================================================
 
-d={'sample': UNFILTERED_SAMPLE_TABLE["sample"],
-    'lineage': UNFILTERED_SAMPLE_TABLE["lineage"],
-    'refgenome': INT_REFS_DIR / UNFILTERED_SAMPLE_TABLE["lineage"] / (UNFILTERED_SAMPLE_TABLE["lineage"] + ".fasta"),
-    'refgff': REFS_DIR / (UNFILTERED_SAMPLE_TABLE["lineage"] + ".gff")}
+d = {
+    "sample": UNFILT_SAMPLE_TABLE["sample"],
+    "lineage": UNFILT_SAMPLE_TABLE["lineage"],
+    "refgenome": INT_REFS_DIR
+    / UNFILT_SAMPLE_TABLE["lineage"]
+    / (UNFILT_SAMPLE_TABLE["lineage"] + ".fasta"),
+    "refgff": REFS_DIR / (UNFILT_SAMPLE_TABLE["lineage"] + ".gff"),
+}
 
 SAMPLE_REFERENCE = pd.DataFrame(data=d).set_index("sample", drop=False)
 LINEAGE_REFERENCE = pd.DataFrame(data=d).set_index("lineage", drop=False)
+
 
 # =================================================================================================
 #   Functions for input functions
@@ -85,80 +90,114 @@ def snippy_input(wildcards):
         "refgenome": s["refgenome"],
     }
 
+
 def liftoff_input(wildcards):
     s = SAMPLE_REFERENCE.loc[wildcards.sample,]
     return {
-        "target": SAMPLES_DIR / "snippy" / s["sample"] / "snps.consensus.fa" ,
+        "target": SAMPLES_DIR / "snippy" / s["sample"] / "snps.consensus.fa",
         "refgff": s["refgff"],
         "refgenome": s["refgenome"],
     }
 
+
 def depth_distribution_input(wildcards):
     s = SAMPLE_REFERENCE.loc[wildcards.unf_sample,]
     return {
-        "bam": SAMPLES_DIR / "snippy" / s["sample"] / "snps.bam" ,
+        "bam": SAMPLES_DIR / "snippy" / s["sample"] / "snps.bam",
         "bai": SAMPLES_DIR / "snippy" / s["sample"] / "snps.bam.bai",
         "bam_good": INT_SAMPLES_DIR / "depth_quality" / s["sample"] / "snps_good.bam",
-        "bai_good": INT_SAMPLES_DIR / "depth_quality" / s["sample"] / "snps_good.bam.bai"
-        }
+        "bai_good": INT_SAMPLES_DIR / "depth_quality" / s["sample"] / "snps_good.bam.bai",
+    }
+
 
 def depth_by_windows_plots_input(wildcards):
     s = SAMPLE_REFERENCE.loc[wildcards.sample,]
     return {
-        "depth": INT_SAMPLES_DIR / "depth_quality" / s["sample"]  / "depth_by_windows.tsv",
+        "depth": INT_SAMPLES_DIR / "depth_quality" / s["sample"] / "depth_by_windows.tsv",
         "cnv": SAMPLES_DIR / "cnv" / s["sample"] / "cnv_calls.tsv",
-        "repeats": REFS_DIR / (s["lineage"] + "_repeats.bed")
+        "repeats": REFS_DIR / (s["lineage"] + "_repeats.bed"),
     }
+
 
 def mapq_plot_input(wildcards):
     s = SAMPLE_REFERENCE.loc[wildcards.sample,]
     return {
         "mapq": INT_SAMPLES_DIR / "depth_quality" / s["sample"] / "mapq_window.bed",
         "cnv": SAMPLES_DIR / "cnv" / s["sample"] / "cnv_calls.tsv",
-        "repeats": REFS_DIR / (s["lineage"] + "_repeats.bed")
+        "repeats": REFS_DIR / (s["lineage"] + "_repeats.bed"),
     }
+
 
 def cnv_calling_input(wildcards):
     s = SAMPLE_REFERENCE.loc[wildcards.sample,]
     return {
         "depth": INT_SAMPLES_DIR / "depth_quality" / s["sample"] / "depth_by_windows.tsv",
-        "repeats": REFS_DIR / (s["lineage"] + "_repeats.bed")
-        }
+        "repeats": REFS_DIR / (s["lineage"] + "_repeats.bed"),
+    }
+
 
 def intersect_vcfs_input(wildcards):
     sample_wildcards = listing_samples(wildcards)
-    l = LINEAGE_REFERENCE[LINEAGE_REFERENCE["sample"].isin(sample_wildcards)] 
+    l = LINEAGE_REFERENCE[LINEAGE_REFERENCE["sample"].isin(sample_wildcards)]
     l = l.loc[wildcards.lineage,]
-    return {
-        "vcfs" : expand(SAMPLES_DIR / "snippy" / "{sample}" / "snps.vcf.gz", sample=l["sample"])
-    }
+    return {"vcfs": expand(SAMPLES_DIR / "snippy" / "{sample}" / "snps.vcf.gz", sample=l["sample"])}
+
+
 # =================================================================================================
 #   Checkpoint functions
 # =================================================================================================
 
+
 def listing_samples(wildcards):
     checkpoint_output = checkpoints.filtered_samples.get(**wildcards).output[0]
-    return expand("{sample}", sample=glob_wildcards(os.path.join(checkpoint_output, "{sample}.txt")).sample)
+    return expand(
+        "{sample}", sample=glob_wildcards(os.path.join(checkpoint_output, "{sample}.txt")).sample
+    )
+
 
 SAMPLES = listing_samples
 
+
 def listing_lineages(wildcards):
     checkpoint_output = checkpoints.filtered_lineages.get(**wildcards).output[0]
-    return expand("{lineage}",
-                lineage=glob_wildcards(os.path.join(checkpoint_output, "{lineage}.txt" )).lineage)
+    return expand(
+        "{lineage}",
+        lineage=glob_wildcards(os.path.join(checkpoint_output, "{lineage}.txt")).lineage,
+    )
+
 
 LINEAGES = listing_lineages
+
 
 # =================================================================================================
 #   Final output definition functions
 # =================================================================================================
 def get_unfiltered_output():
-    final_output = expand(SAMPLES_DIR / "snippy" / "{unf_sample}" / "snps.consensus.fa",unf_sample=UNFILTERED_SAMPLES)
-    final_output.extend(expand(SAMPLES_DIR / "snippy" / "{unf_sample}" / "snps.bam",unf_sample=UNFILTERED_SAMPLES))
-    final_output.extend(expand(SAMPLES_DIR / "snippy" / "{unf_sample}" / "snps.vcf.gz",unf_sample=UNFILTERED_SAMPLES))
-    final_output.extend(expand(SAMPLES_DIR / "depth_quality" / "{unf_sample}" / "mapping_stats.tsv",unf_sample=UNFILTERED_SAMPLES))
+    final_output = expand(
+        SAMPLES_DIR / "snippy" / "{unf_sample}" / "snps.consensus.fa",
+        unf_sample=UNFILT_SAMPLES
+    )
+    final_output.extend(
+        expand(
+            SAMPLES_DIR / "snippy" / "{unf_sample}" / "snps.bam",
+            unf_sample=UNFILT_SAMPLES
+        )
+    )
+    final_output.extend(
+        expand(
+            SAMPLES_DIR / "snippy" / "{unf_sample}" / "snps.vcf.gz",
+            unf_sample=UNFILT_SAMPLES
+        )
+    )
+    final_output.extend(
+        expand(
+            SAMPLES_DIR / "depth_quality" / "{unf_sample}" / "mapping_stats.tsv",
+            unf_sample=UNFILT_SAMPLES,
+        )
+    )
     final_output.append(DATASET_DIR / "depth_quality" / "mapping_stats.tsv")
     return final_output
+
 
 def get_dataset_output():
     final_output = []
@@ -183,26 +222,55 @@ def get_dataset_output():
         final_output.append(expand(DATASET_DIR / "database.db"))
     return final_output
 
+
 def get_filtered_output():
-    final_output = expand(SAMPLES_DIR / "annotation" / "{sample}" / "annotation.gff",sample=SAMPLES)
-    final_output = final_output, expand(SAMPLES_DIR / "annotation" / "{sample}" / "proteins.fa",sample=SAMPLES)
-    final_output = final_output, expand(SAMPLES_DIR / "annotation" / "{sample}" / "cds.fa",sample=SAMPLES)
-    final_output = final_output, expand(SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom_good.tsv",sample=SAMPLES)
-    final_output = final_output, expand(SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom_raw.tsv",sample=SAMPLES)
-    final_output = final_output, expand(INT_REFS_DIR / "filtered_lineages" / "{lineage}.txt",lineage=LINEAGES)
+    final_output = expand(
+        SAMPLES_DIR / "annotation" / "{sample}" / "annotation.gff", sample=SAMPLES
+    )
+    final_output = final_output, expand(
+        SAMPLES_DIR / "annotation" / "{sample}" / "proteins.fa", sample=SAMPLES
+    )
+    final_output = final_output, expand(
+        SAMPLES_DIR / "annotation" / "{sample}" / "cds.fa", sample=SAMPLES
+    )
+    final_output = final_output, expand(
+        SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom_good.tsv", sample=SAMPLES
+    )
+    final_output = final_output, expand(
+        SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom_raw.tsv", sample=SAMPLES
+    )
+    final_output = final_output, expand(
+        INT_REFS_DIR / "filtered_lineages" / "{lineage}.txt", lineage=LINEAGES
+    )
     if config["cnv"]["activate"]:
-        final_output = final_output, expand(SAMPLES_DIR / "cnv" / "{sample}" / "cnv_calls.tsv",sample=SAMPLES)
+        final_output = final_output, expand(
+            SAMPLES_DIR / "cnv" / "{sample}" / "cnv_calls.tsv", sample=SAMPLES
+        )
         if config["plotting"]["activate"]:
-            final_output = final_output, expand(SAMPLES_DIR / "plots" / "{sample}" / "depth_by_windows.png",sample=SAMPLES)
-            final_output = final_output, expand(SAMPLES_DIR / "plots" / "{sample}" / "mapq.png",sample=SAMPLES)
+            final_output = final_output, expand(
+                SAMPLES_DIR / "plots" / "{sample}" / "depth_by_windows.png", sample=SAMPLES
+            )
+            final_output = final_output, expand(
+                SAMPLES_DIR / "plots" / "{sample}" / "mapq.png", sample=SAMPLES
+            )
     if config["genes_mapq_depth"]["activate"]:
-        final_output = final_output, expand(SAMPLES_DIR / "depth_quality" / "{sample}" / "feature_mapq_depth.tsv",sample=SAMPLES)
+        final_output = final_output, expand(
+            SAMPLES_DIR / "depth_quality" / "{sample}" / "feature_mapq_depth.tsv", sample=SAMPLES
+        )
     if config["snpeff"]["activate"]:
-        final_output = final_output, expand(INT_DATASET_DIR / "snps" / "{lineage}_effects.tsv",lineage=LINEAGES)
+        final_output = final_output, expand(
+            INT_DATASET_DIR / "snps" / "{lineage}_effects.tsv", lineage=LINEAGES
+        )
     if config["plotting"]["activate"]:
-        final_output = final_output, expand(SAMPLES_DIR / "plots" / "{sample}" / "depth_chrom_distribution.png",sample=SAMPLES)
-        final_output = final_output, expand(SAMPLES_DIR / "plots" / "{sample}" / "depth_global_distribution.png",sample=SAMPLES)
-        final_output = final_output, expand(SAMPLES_DIR / "plots" / "{sample}" / "depth_by_chrom.png",sample=SAMPLES)
+        final_output = final_output, expand(
+            SAMPLES_DIR / "plots" / "{sample}" / "depth_chrom_distribution.png", sample=SAMPLES
+        )
+        final_output = final_output, expand(
+            SAMPLES_DIR / "plots" / "{sample}" / "depth_global_distribution.png", sample=SAMPLES
+        )
+        final_output = final_output, expand(
+            SAMPLES_DIR / "plots" / "{sample}" / "depth_by_chrom.png", sample=SAMPLES
+        )
         # if not config["annotate_references"]["activate"]:
         #     final_output = final_output, expand(DATASET_DIR / "liftoff" / "{lineage}_unmapped_count.tsv", lineage=LINEAGES)
         #     final_output = final_output, expand(DATASET_DIR / "plots" / "{lineage}_unmapped.svg", lineage=LINEAGES)
