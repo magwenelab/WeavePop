@@ -126,7 +126,8 @@ rule copy_snpeff_data:
         "../envs/shell.yaml"
     shell:
         """
-        ln -srf {input} {params.dir} 2> {log} && touch {output} 2>> {log}
+        ln -srf {input} {params.dir} 2> {log} && 
+        touch {output} 2>> {log}
         """
 
 rule copy_snpeff_config:
@@ -188,13 +189,16 @@ rule snpeff:
     conda:
         "../envs/variants.yaml"
     shell:
-        "snpEff ann -v -classic "
+        "snpEff ann "
+        "-v "
+        "-classic "
         "-dataDir {params.dir} "
         "-config {input.config} "
         "-s {output.html} "
         "{params.name} "
         "{input.vcf} "
-        "1> {output.vcf} 2> {log}"
+        "1> {output.vcf} "
+        "2> {log}"
 
 rule extract_vcf_annotation:
     input:
@@ -280,5 +284,6 @@ rule complete_db:
         "-l {input.lofs} "
         "-n {input.nmds} "
         "-s {input.seqs} "
-        "-o {output} &> {log}"
+        "-o {output} "
+        "&> {log}"
 

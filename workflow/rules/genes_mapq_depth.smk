@@ -22,8 +22,13 @@ rule mosdepth:
     conda: 
         "../envs/depth.yaml"
     shell:
-        "mosdepth -n --by {params.window} -t {threads} {params.extra} "
-        "{params.outdir}/{wildcards.sample}/coverage {input.bam} "
+        "mosdepth "
+        "-n "
+        "--by {params.window} "
+        "-t {threads} "
+        "{params.extra} "
+        "{params.outdir}/{wildcards.sample}/coverage "
+        "{input.bam} "
         "&> {log}"
 
 # =================================================================================================

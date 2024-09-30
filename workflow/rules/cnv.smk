@@ -22,8 +22,14 @@ rule mosdepth_good:
     conda: 
         "../envs/depth.yaml"
     shell:
-        "mosdepth -n --by {params.window} --mapq {params.min_mapq} -t {threads} {params.extra} "
-        "{params.outdir}/{wildcards.sample}/coverage_good {input.bam} "
+        "mosdepth "
+        "-n "
+        "--by {params.window} "
+        "--mapq {params.min_mapq} "
+        "-t {threads} "
+        "{params.extra} "
+        "{params.outdir}/{wildcards.sample}/coverage_good "
+        "{input.bam} "
         "&> {log}"
 
 # =================================================================================================
@@ -45,7 +51,12 @@ rule depth_by_windows:
     conda:
         "../envs/samtools.yaml"
     shell:
-        "xonsh workflow/scripts/depth_by_windows.xsh -di {input.depth} -gi {input.global_mode} -do {output} -s {params.smoothing_size} &> {log}"
+        "xonsh workflow/scripts/depth_by_windows.xsh "
+        "-di {input.depth} "
+        "-gi {input.global_mode} "
+        "-do {output} "
+        "-s {params.smoothing_size} "
+        "&> {log}"
 
 # =================================================================================================
 #   Per lineage | Run RepeatModeler and RepeatMasker
@@ -68,7 +79,11 @@ rule repeat_modeler:
     conda:
         "../envs/repeatmasker.yaml"
     shell:
-        "bash workflow/scripts/repeat-modeler.sh {threads} {input} {params.repdir} &> {log}"
+        "bash workflow/scripts/repeat-modeler.sh "
+        "{threads} "
+        "{input} "
+        "{params.repdir} "
+        "&> {log}"
 
 rule repeat_masker_1:
     input:
@@ -85,10 +100,18 @@ rule repeat_masker_1:
     conda:
         "../envs/repeatmasker.yaml"
     shell:
-        """
-        outdir=$(dirname {output})
-        RepeatMasker -pa {threads} -lib {input.database} -a -e ncbi -dir $outdir -noint -xsmall {input.fasta} &> {log}
-        """
+        "outdir=$(dirname {output}) && "
+        "RepeatMasker "
+        "-pa {threads} "
+        "-lib {input.database} "
+        "-a "
+        "-e ncbi "
+        "-dir $outdir "
+        "-noint "
+        "-xsmall "
+        "{input.fasta} "
+        "&> {log}"
+
 
 rule repeat_masker_2:
     input:
@@ -105,10 +128,16 @@ rule repeat_masker_2:
     conda:
         "../envs/repeatmasker.yaml"
     shell:
-        """
-        outdir=$(dirname {output})
-        RepeatMasker -pa {threads} -lib {input.database} -a -e ncbi -dir $outdir -nolow {input.fasta} &> {log}
-        """
+        "outdir=$(dirname {output}) && "
+        "RepeatMasker "
+        "-pa {threads} "
+        "-lib {input.database} "
+        "-a "
+        "-e ncbi "
+        "-dir $outdir "
+        "-nolow "
+        "{input.fasta} "
+        "&> {log}"
 
 rule repeat_masker_3:
     input:
@@ -125,10 +154,15 @@ rule repeat_masker_3:
     conda:
         "../envs/repeatmasker.yaml"
     shell:
-        """
-        outdir=$(dirname {output})
-        RepeatMasker -pa {threads} -lib {input.known} -a -e ncbi -dir $outdir -nolow {input.fasta} &> {log}
-        """
+        "outdir=$(dirname {output}) && "
+        "RepeatMasker "
+        "-pa {threads} "
+        "-lib {input.known} "
+        "-a "
+        "-e ncbi "
+        "-dir $outdir "
+        "-nolow {input.fasta} "
+        "&> {log}"
 
 rule repeat_masker_4:
     input:
@@ -145,10 +179,17 @@ rule repeat_masker_4:
     conda:
         "../envs/repeatmasker.yaml"
     shell:
-        """
-        outdir=$(dirname {output})
-        RepeatMasker -pa {threads} -lib {input.unknown} -a -e ncbi -dir $outdir -nolow {input.fasta} &> {log}
-        """
+        "outdir=$(dirname {output}) && "
+        "RepeatMasker "
+        "-pa {threads} "
+        "-lib {input.unknown} "
+        "-a "
+        "-e ncbi "
+        "-dir $outdir "
+        "-nolow "
+        "{input.fasta} "
+        "&> {log}"
+
 
 rule repeat_masker_bed:
     input:
@@ -169,10 +210,14 @@ rule repeat_masker_bed:
         "../envs/repeatmasker.yaml"
     shell:
         """
-        tail -n +4 {input.simple} | awk '{{print $5"\t"($6-1)"\t"$7"\t"$11}}' 1> {output.simple} 2> {log}
-        tail -n +4 {input.complx} | awk '{{print $5"\t"($6-1)"\t"$7"\t"$11}}' 1> {output.complx} 2>> {log}
-        tail -n +4 {input.known} | awk '{{print $5"\t"($6-1)"\t"$7"\t"$11}}' 1> {output.known} 2>> {log}
-        tail -n +4 {input.unknown} | awk '{{print $5"\t"($6-1)"\t"$7"\t"$11}}' 1> {output.unknown} 2>> {log}
+        tail -n +4 {input.simple} | awk '{{print $5"\t"($6-1)"\t"$7"\t"$11}}' \
+        1> {output.simple} 2> {log}
+        tail -n +4 {input.complx} | awk '{{print $5"\t"($6-1)"\t"$7"\t"$11}}' \
+        1> {output.complx} 2>> {log}
+        tail -n +4 {input.known} | awk '{{print $5"\t"($6-1)"\t"$7"\t"$11}}' \
+        1> {output.known} 2>> {log}
+        tail -n +4 {input.unknown} | awk '{{print $5"\t"($6-1)"\t"$7"\t"$11}}' \
+        1> {output.unknown} 2>> {log}
         """
     
 rule repeat_masker_combine:

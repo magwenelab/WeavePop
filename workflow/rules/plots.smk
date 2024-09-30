@@ -13,7 +13,11 @@ rule loci:
     conda:
         "../envs/snakemake.yaml"
     shell:
-        "xonsh workflow/scripts/loci.xsh -g {input.loci} -o {output} {input.refs} &> {log}"
+        "xonsh workflow/scripts/loci.xsh "
+        "-g {input.loci} "
+        "-o {output} "
+        "{input.refs} "
+        "&> {log}"
 
 # =================================================================================================
 #   Per sample | Plot depth distribution and depth by chromosome 

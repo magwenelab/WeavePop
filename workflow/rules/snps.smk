@@ -3,32 +3,57 @@
 #   Per lineage | Extract CDS and protein sequences from reference genomes
 # =================================================================================================
 # Extract cds and protein sequences from reference genomes
-rule extract_ref_seqs:
+rule extract_cds_seqs:
     input:
         gff = REFS_DIR / "{lineage}.gff",
         fasta = INT_REFS_DIR / "{lineage}" / "{lineage}.fasta",
         config = rules.agat_config.output
     output:
-        cds = INT_REFS_DIR / "{lineage}" / "{lineage}.cds.fa",
-        prots = INT_REFS_DIR / "{lineage}" / "{lineage}.prots.fa"
+        cds = INT_REFS_DIR / "{lineage}" / "{lineage}.cds.fa"
     log:
-        "logs/references/extract_ref_seqs_{lineage}.log"
+        "logs/references/extract_cds_seqs_{lineage}.log"
     resources:
         tmpdir = TEMPDIR
     conda:
         "../envs/agat.yaml"
     shell:
-        "agat_sp_extract_sequences.pl -g {input.gff} -f {input.fasta} -o {output.cds} -c {input.config} &> {log} "
-        "&& "
-        "agat_sp_extract_sequences.pl -g {input.gff} -f {input.fasta} -o {output.prots} -p -c {input.config} &>> {log} "
+        "agat_sp_extract_sequences.pl "
+        "-g {input.gff} "
+        "-f {input.fasta} "
+        "-o {output.cds} "
+        "-c {input.config} "
+        "&> {log}"
+
+rule extract_protein_seqs:
+    input:
+        gff = REFS_DIR / "{lineage}.gff",
+        fasta = INT_REFS_DIR / "{lineage}" / "{lineage}.fasta",
+        config = rules.agat_config.output,
+        cds = rules.extract_cds_seqs.output.cds
+    output:
+        prots = INT_REFS_DIR / "{lineage}" / "{lineage}.prots.fa"
+    log:
+        "logs/references/extract_protein_seqs_{lineage}.log"
+    resources:
+        tmpdir = TEMPDIR
+    conda:
+        "../envs/agat.yaml"
+    shell:
+        "agat_sp_extract_sequences.pl "
+        "-g {input.gff} "
+        "-f {input.fasta} "
+        "-o {output.prots} "
+        "-p "
+        "-c {input.config} "
+        "&> {log}"
 
 # Make symbolic links in the snpeff_data directory and create config file
 rule prepare_refs_db:
     input:
-        gff = rules.extract_ref_seqs.input.gff,
-        fasta = rules.extract_ref_seqs.input.fasta,
-        cds = rules.extract_ref_seqs.output.cds,
-        prots = rules.extract_ref_seqs.output.prots
+        gff = rules.extract_cds_seqs.input.gff,
+        fasta = rules.extract_cds_seqs.input.fasta,
+        cds = rules.extract_cds_seqs.output.cds,
+        prots = rules.extract_protein_seqs.output.prots
     output:
         gff = INT_REFS_DIR / "snpeff_data" / str(config["species_name"] + "_{lineage}") / "genes.gff",
         fasta = INT_REFS_DIR / "snpeff_data" / str(config["species_name"] + "_{lineage}") / "sequences.fa",
@@ -70,9 +95,13 @@ rule build_refs_db:
     conda:
         "../envs/variants.yaml"
     shell:
-        """
-        snpEff build -gff3 -v -dataDir {params.dir} -config {params.config} {params.name} &>> {log}
-        """
+        "snpEff build "
+        "-gff3 "
+        "-v "
+        "-dataDir {params.dir} "
+        "-config {params.config} "
+        "{params.name} "
+        "&>> {log}"
 
 # =================================================================================================
 #   Join samples per lineage | Intersect VCF files of all samples from each lineage and annotate
