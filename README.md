@@ -73,47 +73,50 @@ The environments for particular software used in Snakemake rules are installed b
 
 ### Processing of reference genomes
 
-| Path | Description | Column names |
-| :---------------- | ----: |----: |
-| 3.References/{lineage}/{lineage}.gff | Ploished GFF file from Liftoff between the main reference and a reference genome. Positions are 1-Based. ||
-| 3.References/{lineage}/{lineage}_repeats.bed | BED file of regions with repetitive sequences identified by RepeatMasker. Each region is the intersection of diferent types of repetitive sequences identified. Positions are 0-Based.| Accession, Start, End, Types (comma separated list of types in the region).
+| Path | Description |
+| :---------------- | ----: |
+| 03.References/{lineage}.gff | Polished GFF file of the reference genome, result of Liftoff annotation using the main reference. Positions are 1-Based. ||
+| 03.References/{lineage}_repeats.bed | BED file of regions with repetitive sequences identified by RepeatMasker. Each region is the intersection of diferent types of repetitive sequences identified. Positions are 0-Based. Columns are Accession, Start, End, Types (comma separated list of types in the region).
 
 <details>
 <summary> Intermediate files </summary> 
 
-| Path | Description | Column names |
-| :---------------- | ----: |----: |
-| 4.Intermediate_files/3.References/all_lineages.gff.tsv
-| 4.Intermediate_files/3.References/FungiDB-65_CneoformansH99_fixed_description.gff
-| 4.Intermediate_files/3.References/FungiDB-65_CneoformansH99_fixed_ID.gff
-| 4.Intermediate_files/3.References/FungiDB-65_CneoformansH99_fixed_locus.gff
-| 4.Intermediate_files/3.References/FungiDB-65_CneoformansH99_fixed.tsv
-| 4.Intermediate_files/3.References/FungiDB-65_CneoformansH99.gff
-| 4.Intermediate_files/3.References/FungiDB-65_CneoformansH99.tsv
-| 4.Intermediate_files/3.References/{lineage}/FungiDB-65_CneoformansH99.fasta.fai
-| 4.Intermediate_files/3.References/{lineage}/FungiDB-65_CneoformansH99.gff_db
-| 4.Intermediate_files/3.References/{lineage}/intermediate_liftoff/(see lifotff output)
-| 4.Intermediate_files/3.References/{lineage}/liftoff.gff
-| 4.Intermediate_files/3.References/{lineage}/{lineage}.cds.fa
-| 4.Intermediate_files/3.References/{lineage}/{lineage}.fasta.fai
-| 4.Intermediate_files/3.References/{lineage}/{lineage}.fasta.index
-| 4.Intermediate_files/3.References/{lineage}/{lineage}.fasta.mmi
-| 4.Intermediate_files/3.References/{lineage}/{lineage}.gff.tsv
-| 4.Intermediate_files/3.References/{lineage}/{lineage}.prots.fa
-| 4.Intermediate_files/3.References/{lineage}/repeats/01_simple/{lineage}.bed
-| 4.Intermediate_files/3.References/{lineage}/repeats/01_simple/ (see RepeatMasker output)
-| 4.Intermediate_files/3.References/{lineage}/repeats/02_complex/{lineage}.bed
-| 4.Intermediate_files/3.References/{lineage}/repeats/02_complex/ (see RepeatMasker output)
-| 4.Intermediate_files/3.References/{lineage}/repeats/03_known/{lineage}.bed
-| 4.Intermediate_files/3.References/{lineage}/repeats/03_known/ (see RepeatMasker output)
-| 4.Intermediate_files/3.References/{lineage}/repeats/04_unknown/{lineage}.bed
-| 4.Intermediate_files/3.References/{lineage}/repeats/04_unknown/ (see RepeatMasker output)
-| 4.Intermediate_files/3.References/{lineage}/repeats/{lineage}_db/ (see RepeatMasker output)
-| 4.Intermediate_files/3.References/{lineage}/repeats/{lineage}_known.fa
-| 4.Intermediate_files/3.References/{lineage}/repeats/{lineage}_unknown.fa
-| 4.Intermediate_files/3.References/{lineage}/repeats/RModeler/(see RepeatModeler output)
-| 4.Intermediate_files/3.References/{lineage}/unmapped_features.txt
-
+| Path | Description |
+| :---------------- | ----: |
+| 04.Intermediate_files/03.References/agat_config.yaml | Config file for AGAT
+| 04.Intermediate_files/03.References/all_lineages.gff.tsv | Table version of GFF files of all the reference genomes concatenated. Positions are 1-Based. Column names different from standard GFF:         accession (seq_id), feature_id (ID), gene_name (Name), gene_id (locus), old_feature_id (original ID before fixing), lineage, and matches_ref_protein,	missing_start_codon,	missing_stop_codon,	inframe_stop_codon (see Liftoff output for last 4).|
+| 04.Intermediate_files/03.References/chromosomes.csv | Same as chromosome.csv provided by the user.|
+| 04.Intermediate_files/03.References/{main_reference}_fixed_description.gff | GFF with description tag instead of product tag|
+| 04.Intermediate_files/03.References/{main_reference}_fixed_ID.gff | GFF with fixed IDs |
+| 04.Intermediate_files/03.References/{main_reference}_fixed_locus.gff | GFF with locus tag added |
+| 04.Intermediate_files/03.References/{main_reference}_fixed.tsv | Table version of fixed_description GFF |
+| 04.Intermediate_files/03.References/{main_reference}.gff | Final fixed GFF with new IDs in the shape of `<locus>-<level2 tag_level2 number>-<level3 tag and number>` |
+| 04.Intermediate_files/03.References/{main_reference}.tsv | TSV version of fixed GFF |
+| 04.Intermediate_files/03.References/{lineage}/{main_reference}.fasta | Symlink to original FASTA |
+| 04.Intermediate_files/03.References/{lineage}/{main_reference}.fasta.fai | FASTA index created by Liftoff |
+| 04.Intermediate_files/03.References/{lineage}/{main_reference}.gff | Symlink to fixed GFF |
+| 04.Intermediate_files/03.References/{lineage}/{main_reference}.gff_db | DB of GFF created by Liftoff |
+| 04.Intermediate_files/03.References/{lineage}/intermediate_liftoff/ | See [Liftoff output](https://github.com/agshumate/Liftoff?tab=readme-ov-file#usage) |
+| 04.Intermediate_files/03.References/{lineage}/liftoff.gff | GFF from Liftoff before polishing |
+| 04.Intermediate_files/03.References/{lineage}/unmapped_features.txt | List of features not found in reference genome |
+| 04.Intermediate_files/03.References/{lineage}/{lineage}.cds.fa | Nucleotide sequences of all isoforms in reference genome |
+| 04.Intermediate_files/03.References/{lineage}/{lineage}.fasta.fai 
+| 04.Intermediate_files/03.References/{lineage}/{lineage}.fasta.index
+| 04.Intermediate_files/03.References/{lineage}/{lineage}.fasta.mmi
+| 04.Intermediate_files/03.References/{lineage}/{lineage}.gff.tsv | Table version of polished GFF of reference genome |
+| 04.Intermediate_files/03.References/{lineage}/{lineage}.prots.fa | Protein sequences of all isoforms in reference genome |
+| 04.Intermediate_files/03.References/{lineage}/repeats/01_simple/{lineage}.bed | BED file of simple repetitive sequences. Positions are 0-Based. |
+| 04.Intermediate_files/03.References/{lineage}/repeats/01_simple/ | See [RepeatMasker output](https://www.repeatmasker.org/webrepeatmaskerhelp.html)|
+| 04.Intermediate_files/03.References/{lineage}/repeats/02_complex/{lineage}.bed | BED file of complex repetitive sequences. Positions are 0-Based. |
+| 04.Intermediate_files/03.References/{lineage}/repeats/02_complex/ | See [RepeatMasker output](https://www.repeatmasker.org/webrepeatmaskerhelp.html)|
+| 04.Intermediate_files/03.References/{lineage}/repeats/03_known/{lineage}.bed| BED file of known repetitive sequences. Positions are 0-Based. |
+| 04.Intermediate_files/03.References/{lineage}/repeats/03_known/ | See [RepeatMasker output](https://www.repeatmasker.org/webrepeatmaskerhelp.html)|
+| 04.Intermediate_files/03.References/{lineage}/repeats/04_unknown/{lineage}.bed | BED file of unknown repetitive sequences. Positions are 0-Based. |
+| 04.Intermediate_files/03.References/{lineage}/repeats/04_unknown/ | See [RepeatMasker output](https://www.repeatmasker.org/webrepeatmaskerhelp.html)|
+| 04.Intermediate_files/03.References/{lineage}/repeats/{lineage}_db/ | Database created with RepeatModeler's BuildDatabase |
+| 04.Intermediate_files/03.References/{lineage}/repeats/{lineage}_known.fa | FASTA file of known families of repetitive sequences identified by RepeatModeler |
+| 04.Intermediate_files/03.References/{lineage}/repeats/{lineage}_unknown.fa | FASTA file of unknown families of repetitive sequences identified by RepeatModeler |
+| 04.Intermediate_files/03.References/{lineage}/repeats/RModeler/ | See [RepeatModeler output](https://www.repeatmasker.org/RepeatModeler/)|
 
 </details>
 
@@ -121,48 +124,48 @@ The environments for particular software used in Snakemake rules are installed b
 
 | Path | Description |
 | :---------------- | ----: |
-| 1.Samples/snippy/{sample}/snps.bam | BAM file of alignment between short reads of sample and corresponding reference genome. |
-| 1.Samples/snippy/{sample}/snps.consensus.fa | FASTA file of the reference genome with all variants instantiated. |
-| 1.Samples/snippy/{sample}/snps.vcf | Called variants in VCF format. Positions are 1-Based.|
-| 1.Samples/snippy/{sample}/* | Other files from the [Snippy output](https://github.com/tseemann/snippy?tab=readme-ov-file#output-files).|
+| 01.Samples/snippy/{sample}/snps.bam | BAM file of alignment between short reads of sample and corresponding reference genome. |
+| 01.Samples/snippy/{sample}/snps.consensus.fa | FASTA file of the reference genome with all variants instantiated. |
+| 01.Samples/snippy/{sample}/snps.vcf | Called variants in VCF format. Positions are 01-Based.|
+| 01.Samples/snippy/{sample}/* | Other files from the [Snippy output](https://github.com/tseemann/snippy?tab=readme-ov-file#output-files).|
 
 
 ### Depth and quality
 
 | Path | Description | Column names |
 | :---------------- | ----: |----: |
-| 1.Samples/depth_quality/{sample}/depth_by_chrom_good.tsv
-| 1.Samples/depth_quality/{sample}/depth_by_chrom_raw.tsv
-| 1.Samples/depth_quality/{sample}/mapping_stats.tsv
-| 1.Samples/depth_quality/{sample}/mapq_depth_window.bed | Positions are 0-Based.
-| 2.Dataset/depth_quality/depth_by_chrom_good.tsv
-| 2.Dataset/depth_quality/depth_by_chrom_raw.tsv
-| 2.Dataset/depth_quality/mapping_stats.tsv
+| 01.Samples/depth_quality/{sample}/depth_by_chrom_good.tsv
+| 01.Samples/depth_quality/{sample}/depth_by_chrom_raw.tsv
+| 01.Samples/depth_quality/{sample}/mapping_stats.tsv
+| 01.Samples/depth_quality/{sample}/mapq_depth_window.bed | Positions are 0-Based.
+| 02.Dataset/depth_quality/depth_by_chrom_good.tsv
+| 02.Dataset/depth_quality/depth_by_chrom_raw.tsv
+| 02.Dataset/depth_quality/mapping_stats.tsv
 
 <details>
 <summary> Intermediate files </summary> 
 
 | Path | Description | Column names |
 | :---------------- | ----: |----: |
-| 4.Intermediate_files/1.Samples/mosdepth/{sample}/coverage_good.mosdepth.global.dist.txt
-| 4.Intermediate_files/1.Samples/mosdepth/{sample}/coverage_good.mosdepth.region.dist.txt
-| 4.Intermediate_files/1.Samples/mosdepth/{sample}/coverage_good.mosdepth.summary.txt
-| 4.Intermediate_files/1.Samples/mosdepth/{sample}/coverage_good.regions.bed.gz
-| 4.Intermediate_files/1.Samples/mosdepth/{sample}/coverage_good.regions.bed.gz.csi
-| 4.Intermediate_files/1.Samples/mosdepth/{sample}/coverage.mosdepth.global.dist.txt
-| 4.Intermediate_files/1.Samples/mosdepth/{sample}/coverage.mosdepth.region.dist.txt
-| 4.Intermediate_files/1.Samples/mosdepth/{sample}/coverage.mosdepth.summary.txt
-| 4.Intermediate_files/1.Samples/mosdepth/{sample}/coverage.regions.bed.gz
-| 4.Intermediate_files/1.Samples/mosdepth/{sample}/coverage.regions.bed.gz.csi
-| 4.Intermediate_files/1.Samples/depth_quality/{sample}/depth_by_windows.tsv
-| 4.Intermediate_files/1.Samples/depth_quality/{sample}/depth_distribution.tsv
-| 4.Intermediate_files/1.Samples/depth_quality/{sample}/mapq.bed
-| 4.Intermediate_files/1.Samples/depth_quality/{sample}/mapq_window.bed
-| 4.Intermediate_files/1.Samples/depth_quality/{sample}/snps_good.bam
-| 4.Intermediate_files/1.Samples/depth_quality/{sample}/snps_good.bam.bai
-| 4.Intermediate_files/1.Samples/filtered_samples/{sample}.txt
-| 4.Intermediate_files/2.Dataset/depth_quality/unfiltered_mapping_stats.tsv
-| 4.Intermediate_files/3.References/filtered_lineages/{lineage}.txt
+| 04.Intermediate_files/01.Samples/mosdepth/{sample}/coverage_good.mosdepth.global.dist.txt
+| 04.Intermediate_files/01.Samples/mosdepth/{sample}/coverage_good.mosdepth.region.dist.txt
+| 04.Intermediate_files/01.Samples/mosdepth/{sample}/coverage_good.mosdepth.summary.txt
+| 04.Intermediate_files/01.Samples/mosdepth/{sample}/coverage_good.regions.bed.gz
+| 04.Intermediate_files/01.Samples/mosdepth/{sample}/coverage_good.regions.bed.gz.csi
+| 04.Intermediate_files/01.Samples/mosdepth/{sample}/coverage.mosdepth.global.dist.txt
+| 04.Intermediate_files/01.Samples/mosdepth/{sample}/coverage.mosdepth.region.dist.txt
+| 04.Intermediate_files/01.Samples/mosdepth/{sample}/coverage.mosdepth.summary.txt
+| 04.Intermediate_files/01.Samples/mosdepth/{sample}/coverage.regions.bed.gz
+| 04.Intermediate_files/01.Samples/mosdepth/{sample}/coverage.regions.bed.gz.csi
+| 04.Intermediate_files/01.Samples/depth_quality/{sample}/depth_by_windows.tsv
+| 04.Intermediate_files/01.Samples/depth_quality/{sample}/depth_distribution.tsv
+| 04.Intermediate_files/01.Samples/depth_quality/{sample}/mapq.bed
+| 04.Intermediate_files/01.Samples/depth_quality/{sample}/mapq_window.bed
+| 04.Intermediate_files/01.Samples/depth_quality/{sample}/snps_good.bam
+| 04.Intermediate_files/01.Samples/depth_quality/{sample}/snps_good.bam.bai
+| 04.Intermediate_files/01.Samples/filtered_samples/{sample}.txt
+| 04.Intermediate_files/02.Dataset/depth_quality/unfiltered_mapping_stats.tsv
+| 04.Intermediate_files/03.References/filtered_lineages/{lineage}.txt
 
 </details>
 
@@ -170,23 +173,23 @@ The environments for particular software used in Snakemake rules are installed b
 
 | Path | Description | Column names |
 | :---------------- | ----: |----: |
-| 1.Samples/annotation/{sample}/annotation.gff | Positions are 1-Based.
-| 1.Samples/annotation/{sample}/cds.fa
-| 1.Samples/annotation/{sample}/proteins.fa
+| 01.Samples/annotation/{sample}/annotation.gff | Positions are 1-Based.
+| 01.Samples/annotation/{sample}/cds.fa
+| 01.Samples/annotation/{sample}/proteins.fa
 
 <details>
 <summary> Intermediate files </summary> 
 
 | Path | Description | Column names |
 | :---------------- | ----: |----: |
-| 4.Intermediate_files/1.Samples/liftoff/{sample}/intermediate_liftoff/(see liftoff output)
-| 4.Intermediate_files/1.Samples/liftoff/{sample}/lifted.gff
-| 4.Intermediate_files/1.Samples/liftoff/{sample}/ref.gff_db
-| 4.Intermediate_files/1.Samples/liftoff/{sample}/unmapped_features.txt
-| 4.Intermediate_files/1.Samples/annotation/{sample}/cds.csv
-| 4.Intermediate_files/1.Samples/annotation/{sample}/proteins.csv
-| 4.Intermediate_files/2.Dataset/sequences.csv
-| 4.Intermediate_files/agat_config.yaml
+| 04.Intermediate_files/01.Samples/liftoff/{sample}/intermediate_liftoff/(see liftoff output)
+| 04.Intermediate_files/01.Samples/liftoff/{sample}/lifted.gff
+| 04.Intermediate_files/01.Samples/liftoff/{sample}/ref.gff_db
+| 04.Intermediate_files/01.Samples/liftoff/{sample}/unmapped_features.txt
+| 04.Intermediate_files/01.Samples/annotation/{sample}/cds.csv
+| 04.Intermediate_files/01.Samples/annotation/{sample}/proteins.csv
+| 04.Intermediate_files/02.Dataset/sequences.csv
+| 04.Intermediate_files/agat_config.yaml
 
 </details>
 
@@ -194,43 +197,43 @@ The environments for particular software used in Snakemake rules are installed b
 
 | Path | Description | Column names |
 | :---------------- | ----: |----: |
-| 1.Samples/depth_quality/{sample}/feature_mapq_depth.tsv
-| 2.Dataset/depth_quality/feature_mapq_depth.tsv
+| 01.Samples/depth_quality/{sample}/feature_mapq_depth.tsv
+| 02.Dataset/depth_quality/feature_mapq_depth.tsv
 
 ### CNV calling
 
 | Path | Description | Column names |
 | :---------------- | ----: |----: |
-| 1.Samples/cnv/{sample}/cnv_calls.tsv | Positions are 0-Based.|
-| 2.Dataset/cnv/cnv_calls.tsv | Positions are 0-Based.|
+| 01.Samples/cnv/{sample}/cnv_calls.tsv | Positions are 0-Based.|
+| 02.Dataset/cnv/cnv_calls.tsv | Positions are 0-Based.|
 
 ### SNP effects
 
 | Path | Description | Column names |
 | :---------------- | ----: |----: |
-| 2.Dataset/snps/effects.tsv
-| 2.Dataset/snps/lofs.tsv
-| 2.Dataset/snps/nmds.tsv
-| 2.Dataset/snps/presence.tsv
-| 2.Dataset/snps/variants.tsv | Positions are 1-Based.
+| 02.Dataset/snps/effects.tsv
+| 02.Dataset/snps/lofs.tsv
+| 02.Dataset/snps/nmds.tsv
+| 02.Dataset/snps/presence.tsv
+| 02.Dataset/snps/variants.tsv | Positions are 1-Based.
 
 <details>
 <summary> Intermediate files </summary> 
 
 | Path | Description | Column names |
 | :---------------- | ----: |----: |
-| 4.Intermediate_files/2.Dataset/snps/{lineage}_effects.tsv
-| 4.Intermediate_files/2.Dataset/snps/{lineage}_intersection.vcf | Positions are 1-Based.
-| 4.Intermediate_files/2.Dataset/snps/{lineage}_lofs.tsv
-| 4.Intermediate_files/2.Dataset/snps/{lineage}_nmds.tsv
-| 4.Intermediate_files/2.Dataset/snps/{lineage}_presence.tsv
-| 4.Intermediate_files/2.Dataset/snps/{lineage}_snpeff.genes.txt
-| 4.Intermediate_files/2.Dataset/snps/{lineage}_snpeff.html
-| 4.Intermediate_files/2.Dataset/snps/{lineage}_snpeff.vcf
-| 4.Intermediate_files/2.Dataset/snps/{lineage}_variants.tsv | Positions are 1-Based.
-| 4.Intermediate_files/3.References/snpeff_data/Cryptococcus_neoformans_{lineage}/
-| 4.Intermediate_files/3.References/snpeff_data/{lineage}.done
-| 4.Intermediate_files/3.References/snpeff_data/snpEff.config
+| 04.Intermediate_files/02.Dataset/snps/{lineage}_effects.tsv
+| 04.Intermediate_files/02.Dataset/snps/{lineage}_intersection.vcf | Positions are 1-Based.
+| 04.Intermediate_files/02.Dataset/snps/{lineage}_lofs.tsv
+| 04.Intermediate_files/02.Dataset/snps/{lineage}_nmds.tsv
+| 04.Intermediate_files/02.Dataset/snps/{lineage}_presence.tsv
+| 04.Intermediate_files/02.Dataset/snps/{lineage}_snpeff.genes.txt
+| 04.Intermediate_files/02.Dataset/snps/{lineage}_snpeff.html
+| 04.Intermediate_files/02.Dataset/snps/{lineage}_snpeff.vcf
+| 04.Intermediate_files/02.Dataset/snps/{lineage}_variants.tsv | Positions are 1-Based.
+| 04.Intermediate_files/03.References/snpeff_data/Cryptococcus_neoformans_{lineage}/
+| 04.Intermediate_files/03.References/snpeff_data/{lineage}.done
+| 04.Intermediate_files/03.References/snpeff_data/snpEff.config
 
 </details>
 
@@ -238,26 +241,27 @@ The environments for particular software used in Snakemake rules are installed b
 
 | Path | Description | Column names |
 | :---------------- | ----: |----: |
-| 2.Dataset/database.db
+| 02.Dataset/database.db
 
 ### Plots
 
 | Path | Description |
 | :---------------- | ----: |
-| 1.Samples/plots/{sample}/depth_by_chrom.png
-| 1.Samples/plots/{sample}/depth_by_windows.png
-| 1.Samples/plots/{sample}/depth_chrom_distribution.png
-| 1.Samples/plots/{sample}/depth_global_distribution.png
-| 1.Samples/plots/{sample}/mapq.png
-| 2.Dataset/plots/dataset_depth_by_chrom.png
-| 2.Dataset/plots/dataset_summary.png
+| 01.Samples/plots/{sample}/depth_by_chrom.png
+| 01.Samples/plots/{sample}/depth_by_windows.png
+| 01.Samples/plots/{sample}/depth_chrom_distribution.png
+| 01.Samples/plots/{sample}/depth_global_distribution.png
+| 01.Samples/plots/{sample}/mapq.png
+| 02.Dataset/plots/dataset_depth_by_chrom.png
+| 02.Dataset/plots/dataset_summary.png
 
 <details>
 <summary> Intermediate files </summary> 
 
 | Path | Description | Column names |
 | :---------------- | ----: |----: |
-| 4.Intermediate_files/3.References/loci_to_plot.tsv | Positions are 1-Based.
+| 04.Intermediate_files/03.References/loci.csv
+| 04.Intermediate_files/03.References/loci_to_plot.tsv | Positions are 1-Based.
 
 </details>
 
