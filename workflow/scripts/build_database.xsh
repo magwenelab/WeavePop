@@ -19,9 +19,10 @@ import sqlite3
 @click.option('--lofs', '-l', type=click.Path(), help='Path to the lofs file of all lineages.')
 @click.option('--nmds', '-n', type=click.Path(), help='Path to the nmds file of all lineages.')
 @click.option('--sequences', '-s', type=click.Path(), help='Path to the sequences table.')
+@click.option('--intergenic', '-i', type=click.Path(), help='Path to the intergenic sequences table.')
 @click.option('--output', '-o', type=click.Path(), help='Output database file.')
 
-def build_db(metadata, chrom_names, cnvs, mapq_depth, gff, effects, variants, presence, lofs, nmds, sequences, output):
+def build_db(metadata, chrom_names, cnvs, mapq_depth, gff, effects, variants, presence, lofs, nmds, sequences, intergenic, output):
     print("Using the following arguments:")
     print(f"1. metadata: {metadata}")
     print(f"2. chrom_names: {chrom_names}")
@@ -34,7 +35,8 @@ def build_db(metadata, chrom_names, cnvs, mapq_depth, gff, effects, variants, pr
     print(f"9. lofs: {lofs}")
     print(f"10. nmds: {nmds}")
     print(f"11. sequences: {sequences}")
-    print(f"12. output: {output}")
+    print(f"12. intergenic: {intergenic}")
+    print(f"13. output: {output}")
     
     print("Reading and adjusting dataset files")
     df_samples = pd.read_csv(metadata)
@@ -137,6 +139,9 @@ def build_db(metadata, chrom_names, cnvs, mapq_depth, gff, effects, variants, pr
     df_sequences = pd.read_csv(sequences, header = 0, sep=',')
     print("Sequences table done!")
 
+    df_intergenic = pd.read_csv(intergenic, header = 0, sep=',')
+    print("Intergenic sequences table done!")
+
     print("Formatting dataframes done!")
 
     print("Connecting to database")
@@ -153,6 +158,7 @@ def build_db(metadata, chrom_names, cnvs, mapq_depth, gff, effects, variants, pr
     con.register('df_lofs', df_lofs)
     con.register('df_nmds', df_nmds)
     con.register('df_sequences', df_sequences)
+    con.register('df_intergenic', df_intergenic)
     
     print("Adding dataframes to database")
     con.execute("CREATE TABLE IF NOT EXISTS samples AS SELECT * FROM df_samples")   
@@ -166,6 +172,7 @@ def build_db(metadata, chrom_names, cnvs, mapq_depth, gff, effects, variants, pr
     con.execute("CREATE TABLE IF NOT EXISTS lofs AS SELECT * FROM df_lofs")
     con.execute("CREATE TABLE IF NOT EXISTS nmds AS SELECT * FROM df_nmds")
     con.execute("CREATE TABLE IF NOT EXISTS sequences AS SELECT * FROM df_sequences")
+    con.execute("CREATE TABLE IF NOT EXISTS intergenic AS SELECT * FROM df_intergenic")
 
     print("Closing connection to database")
     con.close()

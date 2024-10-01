@@ -207,3 +207,54 @@ rule agat_extract_intergenic:
         "-c {input.config} "
         "{params.extra} "
         "&> {log} "
+
+rule intergenic2csv:
+    input:
+        inter=SAMPLES_DIR / "annotation" / "{sample}" / "intergenic.fa",
+    output:
+        inter=INT_SAMPLES_DIR / "annotation" / "{sample}" / "intergenic.csv",
+    log:
+        "logs/samples/annotation/intergenic2csv_{sample}.log",
+    resources:
+        tmpdir=TEMPDIR,
+    conda:
+        "../envs/variants.yaml"
+    shell:
+        "python workflow/scripts/fasta_to_csv.py "
+        "-f {input.inter} "
+        "-s {wildcards.sample} "
+        "-t INTERGENIC "
+        "-o {output.inter} "
+        "&> {log}"
+
+rule intergenic_gff2tsv:
+    input:
+        gff=rules.agat_intergenic.output.gff,
+        config=rules.agat_config.output,
+    output:
+        tsv=INT_SAMPLES_DIR / "annotation" / "{sample}" / "intergenic.gff.tsv",
+    log:
+        "logs/samples/annotation/intergenic_gff2tsv_{sample}.log",
+    resources:
+        tmpdir=TEMPDIR,
+    conda:
+        "../envs/agat.yaml"
+    shell:
+        "agat_convert_sp_gff2tsv.pl "
+        "--gff {input.gff} "
+        "-o {output.tsv} "
+        "-c {input.config} "
+        "&> {log} "
+
+rule intergenic_coords:
+    input:
+        csv=rules.intergenic2csv.output,
+        gff=rules.intergenic_gff2tsv.output,
+    output:
+        csv=INT_SAMPLES_DIR / "annotation" / "{sample}" / "intergenic_coords.csv",
+    log:
+        "logs/samples/annotation/intergenic_coords_{sample}.log",
+    conda:
+        "../envs/shell.yaml"
+    script:
+        "../scripts/intergenic_coords.py"
