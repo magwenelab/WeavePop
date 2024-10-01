@@ -15,7 +15,7 @@ configfile: "config/config.yaml"
 
 
 # =================================================================================================
-#  Define names of directories
+#   Define names of directories
 # =================================================================================================
 
 SAMPLES_DIR_NAME = "01.Samples"
@@ -28,6 +28,7 @@ TEMPDIR_NAME = "04.Temporary_files"
 #   Load rules
 # =================================================================================================
 
+# ------------------Analysis workflow--------------------------------------------------------------
 if config["workflow"] == "analysis":
 
     include: "rules/common.smk"
@@ -36,7 +37,7 @@ if config["workflow"] == "analysis":
     include: "rules/annotation.smk"
     include: "rules/database.smk"
 
-    # ------------------Reference annotation rules-----------------------------------------------------
+    # ------------------Reference annotation rules-------------------------------------------------
     if config["annotate_references"]["activate"]:
 
         include: "rules/references.smk"
@@ -52,7 +53,7 @@ if config["workflow"] == "analysis":
     # if config["plotting"]["activate"]:
     #     include: "rules/unmapped_per_lineage.smk"
 
-    # ------------------Module rules-------------------------------------------------------------------
+    # ------------------Module rules---------------------------------------------------------------
     if config["plotting"]["activate"]:
 
         include: "rules/plots.smk"
@@ -76,6 +77,7 @@ if config["workflow"] == "analysis":
         include: "rules/snps.smk"
         include: "rules/genes_mapq_depth.smk"
 
+# ------------------Join datasets workflow---------------------------------------------------------
 elif config["workflow"] == "join_datasets":
 
     include: "rules/common_join_datasets.smk"
@@ -95,11 +97,11 @@ onstart:
             config["chromosomes"], header=0, names=["lineage", "accession", "chromosome"]
         )
         if chrom_names.isnull().values.any():
-            raise ValueError("Bad: Chromosome names file has missing values.")
+            raise ValueError("Chromosome names file has missing values.")
         if set(sample_table["lineage"].unique()) == set(chrom_names["lineage"].unique()):
-            print("Good: All lineages are in the chromosome names file.", flush=True)
+            print("All lineages are in the chromosome names file.", flush=True)
         else:
-            raise ValueError("Bad: Lineages in metadata and chromosome names file do not match.")
+            raise ValueError("Lineages in metadata and chromosome names file do not match.")
 
         chromosome_ids = []
         reference_dir = config["references"]["directory"]
@@ -114,10 +116,10 @@ onstart:
                         ]
                         if chrom not in seq_ids:
                             raise ValueError(
-                                f"Bad: Chromosome {chrom} not found in reference {ref_file}"
+                                f"Chromosome {chrom} not found in reference {ref_file}"
                             )
             else:
-                raise ValueError(f"Bad: Reference {ref_file} not found")
+                raise ValueError(f"Reference {ref_file} not found")
 
     except Exception as e:
         print("Error in input files:", flush=True)
