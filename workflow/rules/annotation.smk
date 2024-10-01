@@ -155,3 +155,55 @@ rule prots2csv:
         "-t PROTEIN "
         "-o {output.prots} "
         "&> {log}"
+
+# =================================================================================================
+# Per sample | Annotate and extract intergenic regions
+# =================================================================================================
+
+
+rule agat_intergenic:
+    input:
+        gff=rules.move_liftoff.output,
+        config=rules.agat_config.output,
+    output:
+        gff=SAMPLES_DIR / "annotation" / "{sample}" / "intergenic.gff",
+    params:
+        extra=config["agat"]["extra"],
+    log:
+        "logs/samples/annotation/agat_intergenic_{sample}.log",
+    resources:
+        tmpdir=TEMPDIR,
+    conda:
+        "../envs/agat.yaml"
+    shell:
+        "agat_sp_add_intergenic_regions.pl "
+        "-g {input.gff} "
+        "-o {output.gff} "
+        "-c {input.config} "
+        "{params.extra} "
+        "&> {log} "
+
+rule agat_extract_intergenic:
+    input:
+        gff=rules.agat_intergenic.output.gff,
+        fa=SAMPLES_DIR / "snippy" / "{sample}" / "snps.consensus.fa",
+        config=rules.agat_config.output,
+    output:
+        fa=SAMPLES_DIR / "annotation" / "{sample}" / "intergenic.fa",
+    params:
+        extra=config["agat"]["extra"],
+    log:
+        "logs/samples/annotation/agat_intergenic_{sample}.log",
+    resources:
+        tmpdir=TEMPDIR,
+    conda:
+        "../envs/agat.yaml"
+    shell:
+        "agat_sp_extract_sequences.pl "
+        "-g {input.gff} "
+        "-f {input.fa} "
+        "-t intergenic_region "
+        "-o {output.fa} "
+        "-c {input.config} "
+        "{params.extra} "
+        "&> {log} "

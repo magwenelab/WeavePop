@@ -234,6 +234,9 @@ def get_filtered_output():
         SAMPLES_DIR / "annotation" / "{sample}" / "cds.fa", sample=SAMPLES
     )
     final_output = final_output, expand(
+        SAMPLES_DIR / "annotation" / "{sample}" / "intergenic.fa", sample=SAMPLES
+    )
+    final_output = final_output, expand(
         SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom_good.tsv", sample=SAMPLES
     )
     final_output = final_output, expand(
