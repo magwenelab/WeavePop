@@ -76,7 +76,7 @@ rule depth_by_windows_plots:
         "../scripts/depth_by_windows_plots.R"
 
 
-rule mapq_plot:
+rule mapq_plots:
     input:
         unpack(mapq_plot_input),
         chrom_names=CHROM_NAMES,
@@ -86,6 +86,6 @@ rule mapq_plot:
     conda:
         "../envs/r.yaml"
     log:
-        "logs/samples/plots/mapq_plot_{sample}.log",
+        "logs/samples/plots/mapq_plots_{sample}.log",
     script:
-        "../scripts/mapq.R"
+        "../scripts/mapq_plots.R"
