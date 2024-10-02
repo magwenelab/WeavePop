@@ -62,6 +62,7 @@ if config["workflow"] == "analysis":
     if config["cnv"]["activate"]:
 
         include: "rules/cnv.smk"
+        include: "rules/repeatmasker.smk"
 
     if config["genes_mapq_depth"]["activate"]:
 
@@ -74,6 +75,7 @@ if config["workflow"] == "analysis":
     if config["database"]["activate"]:
 
         include: "rules/cnv.smk"
+        include: "rules/repeatmasker.smk"
         include: "rules/snps.smk"
         include: "rules/genes_mapq_depth.smk"
 
