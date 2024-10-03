@@ -36,21 +36,6 @@ rule join_sequences:
     script:
         "../scripts/join_sequences.py"
 
-rule join_intergenic:
-    input:
-        expand(INT_SAMPLES_DIR / "annotation" / "{sample}" / "intergenic_coords.csv", sample=SAMPLES),
-    output:
-        INT_DATASET_DIR / "intergenic.csv",
-    log:
-        "logs/dataset/join_intergenic.log",
-    resources: 
-        tmpdir=TEMPDIR,
-    conda:
-        "../envs/snakemake.yaml"
-    script:
-        "../scripts/join_tables.py"
-
-
 # =================================================================================================
 #   Per dataset | Join feature MAPQ and Depth
 # =================================================================================================
@@ -126,7 +111,6 @@ rule complete_db:
         lofs=rules.join_variant_annotation.output.lofs,
         nmds=rules.join_variant_annotation.output.nmds,
         seqs=rules.join_sequences.output,
-        intergenic=rules.join_intergenic.output,
     output:
         DATASET_DIR / "database.db",
     log:
@@ -148,5 +132,4 @@ rule complete_db:
         "-l {input.lofs} "
         "-n {input.nmds} "
         "-s {input.seqs} "
-        "-i {input.intergenic} "
         "-o {output} &> {log}"
