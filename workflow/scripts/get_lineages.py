@@ -3,17 +3,18 @@ import pandas as pd
 from pathlib import Path
 import logging
 
-log_file = snakemake.log[0]
+log_file=snakemake.log[0]
+input=snakemake.input[0]
+output=snakemake.output[0]
 
-# Configure logging
 logging.basicConfig(filename=log_file, level=logging.INFO, format='%(message)s')
 
 try:
     logging.info("Reading metadata file...")
-    metadata = pd.read_csv(snakemake.input[0], sep=",", header=0)
+    metadata = pd.read_csv(input, sep=",", header=0)
     lineages = list(set(metadata["lineage"]))
     for lineage in lineages:
-        path = Path(snakemake.output[0], f"{lineage}.lineage")
+        path = Path(output, f"{lineage}.lineage")
         logging.info(f"Creating file: {path}")
         path.parent.mkdir(parents=True, exist_ok=True)
         path.touch()

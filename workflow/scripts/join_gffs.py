@@ -2,15 +2,16 @@ from pathlib import Path
 import pandas as pd
 import logging
 
-log_file = snakemake.log[0]
+log_file=snakemake.log[0]
+input=snakemake.input
+output=snakemake.output[0]
 
-# Configure logging
 logging.basicConfig(filename=log_file, level=logging.INFO, format='%(message)s')
 
 try:
     logging.info("Create dictionary with lineage and path...")
     paths = {}
-    for path in snakemake.input:
+    for path in input:
         lineage = Path(Path(path).stem).stem
         paths[lineage] = path   
         logging.info("Available lineages and paths:") 
@@ -43,7 +44,7 @@ try:
         'locus': 'gene_id',
         'old_ID': 'old_feature_id'})
     logging.info("Saving...")
-    df.to_csv(snakemake.output[0], sep='\t', index=False)
+    df.to_csv(output, sep='\t', index=False)
     logging.info("Done!")
 except Exception as e:
     logging.error(f"Error: {e}")

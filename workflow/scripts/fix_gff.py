@@ -23,7 +23,7 @@ def fix_gff(input, output_tsv, output_gff):
         if row['ID'] == row['locus']:
             df.at[index, 'new_ID'] = row['ID']
         elif row['Parent'] == row['locus']:
-            df.at[index, 'new_ID'] = row['locus'] + '-' + row['suffix'] + '_' + str(row['feature_number'])
+            df.at[index, 'new_ID'] = row['locus'] + '-' + row['suffix'] + str(row['feature_number'])
         else:       
             new_Parent = df.loc[df['ID'] == row['Parent'], 'new_ID'].values[0]
             new_ID = new_Parent + '-' + row['suffix'] + str(row['feature_number'])
