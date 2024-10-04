@@ -1,18 +1,18 @@
 
 import pandas as pd
-from pathlib import Path
 import logging
 
-logging.basicConfig(filename=log_file, level=logging.INFO, format='%(message)s')
 
 log_file=snakemake.log[0]
 input_tsv=snakemake.input.tsv
 output_tsv=snakemake.output.tsv
 output_gff=snakemake.output.gff
 
+logging.basicConfig(filename=log_file, level=logging.INFO, format='%(message)s')
+
 try:
     logging.info("Reading GFF table...")
-    df=pd.read_csv(input_tsv, sep='\t', header=[0])
+    df = pd.read_csv(input_tsv, sep='\t', header=[0], dtype=str)
     logging.info("Defining feature number and suffix...")
     intron_mask = df['primary_tag'] == 'intron'
     df.loc[intron_mask, 'feature_number'] = df[intron_mask].groupby(['primary_tag', 'Parent']).cumcount() + 1
@@ -28,30 +28,32 @@ try:
     
     logging.info("Making GFF...")
     attribute_columns = [
+        "ID",
+        "locus",
+        "Parent",
+        "Name",
+        "description",
+        "old_ID",
+        "sequence_ID",
         "copy_num_ID",
         "coverage",
-        "description",
         "extra_copy_number",
-        "ID",
         "inframe_stop_codon",
-        "locus",
         "matches_ref_protein",
         "missing_start_codon",
         "missing_stop_codon",
-        "Name",
-        "old_ID",
-        "Parent",
-        "sequence_ID",
         "valid_ORF",
         "valid_ORFs"
     ]
     existing_attributes = [column for column in attribute_columns if column in df.columns]
     df_gff = df.copy()
+    # df_gff= df_gff.astype(str)
+    # df_gff.replace('nan', pd.NA, inplace=True)
     for column in existing_attributes:
         df_gff[column] = df_gff[column].apply(lambda x: column + '=' + x if pd.notnull(x) else x)
     df_gff['attributes'] = df_gff[existing_attributes].apply(lambda x: ';'.join(x.dropna()), axis=1)
     df_gff.drop(existing_attributes, axis=1, inplace=True)
-    df_gff['strand'] = df_gff['strand'].replace(-1,'-').replace(1,'+')
+    df_gff['strand'] = df_gff['strand'].replace('-1','-').replace('1','+').replace('0','.')
     logging.info("Saving GFF...")
     df_gff.to_csv(output_gff, sep='\t', index=False, header=False)
 except Exception as e:

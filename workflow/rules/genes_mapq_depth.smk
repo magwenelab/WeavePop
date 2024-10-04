@@ -60,7 +60,7 @@ rule mapq_depth:
     input:
         mapqbed=rules.mapq.output.window_bed,
         depthbed=rules.mosdepth.output.bed,
-        gff=rules.add_introns.output.gff,
+        gff=rules.sort_gff.output.gff,
         global_mode=SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom_good.tsv",
     output:
         depthmapq=SAMPLES_DIR / "depth_quality" / "{sample}" / "mapq_depth_window.bed",
