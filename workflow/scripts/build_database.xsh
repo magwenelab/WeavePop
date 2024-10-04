@@ -68,7 +68,7 @@ def build_db(metadata, chrom_names, cnvs, mapq_depth, gff, effects, variants, pr
         df_gff['start_stop_mutations'] = df_gff[ref_mutations].apply(lambda x: ', '.join(x.dropna()), axis=1)
         df_gff = df_gff.drop(columns=ref_mutations)
     else:
-        df_gff['start_stop_mutationse'] = None
+        df_gff['start_stop_mutations'] = None
     
     df_gff.rename(columns={'matches_ref_protein': 'identical_to_main_ref'}, inplace=True)
 
@@ -92,9 +92,11 @@ def build_db(metadata, chrom_names, cnvs, mapq_depth, gff, effects, variants, pr
     df_gene_no_transcript = effects_pre[(effects_pre['gene_name'].notnull()) & (effects_pre['transcript_id'].isnull())].copy()
     df_no_gene_no_transcript = effects_pre[(effects_pre['gene_name'].isnull()) & (effects_pre['transcript_id'].isnull())].copy()
 
-    if '+' in df_gene_no_transcript['gene_name'].values:
+    print("Getting variant effects with fused gene names")
+    df_fused_genes = df_gene_no_transcript[df_gene_no_transcript['gene_name'].str.contains('\\+')].copy()
+
+    if df_fused_genes.shape[0] > 0:
         print("Fused gene names found")
-        df_fused_genes = df_gene_no_transcript[df_gene_no_transcript['gene_name'].str.contains('+')]
         print("Separating fused gene names")
         df_fused_genes[['part1', 'part2']] = df_fused_genes['gene_name'].str.split('+', expand=True)
         print("Replacing gene names with gene IDs in part1")
