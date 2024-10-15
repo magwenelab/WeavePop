@@ -64,7 +64,7 @@ rule mapq_depth:
         global_mode=SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom_good.tsv",
     output:
         depthmapq=SAMPLES_DIR / "depth_quality" / "{sample}" / "mapq_depth_window.bed",
-        tsv=SAMPLES_DIR / "depth_quality" / "{sample}" / "feature_mapq_depth.tsv",
+        tsv=INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "feature_mapq_depth.tsv",
     log:
         "logs/samples/depth_quality/mapq_depth_{sample}.log",
     resources:
@@ -80,3 +80,16 @@ rule mapq_depth:
         "-sp {wildcards.sample} "
         "-dmo {output.depthmapq} "
         "-o {output.tsv} &> {log}"
+
+
+rule merge_mapqdepth_repeats:
+    input:
+        unpack(mapqdepth_repeats_input)
+    output:
+        SAMPLES_DIR / "depth_quality" / "{sample}" / "feature_mapq_depth.tsv",
+    log:
+        "logs/samples/depth_quality/merge_mapqdepth_repeats_{sample}.log",
+    conda:
+        "../envs/snakemake.yaml"
+    script:
+        "../scripts/merge_mapqdepth_repeats.py"

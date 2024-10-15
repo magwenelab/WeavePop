@@ -46,7 +46,7 @@ def mapqdepth2gff(mapqbed, depthbed, gff, depthmapq, global_mode, sample, output
     tsv['mean_depth_normalized'] = tsv['mean_depth_normalized'].round(2)
     
     print("Add sample name")
-    tsv['sample'] = sample
+    tsv.insert(0, 'sample', sample)
 
     print("Save TSV")
     filepath = Path(output)  

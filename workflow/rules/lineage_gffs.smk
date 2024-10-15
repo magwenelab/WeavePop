@@ -104,3 +104,39 @@ rule fix_gff_tsv:
         "-og {output.gff} "
         "-ot {output.tsv} "
         "&> {log}"
+
+rule gff2bed:
+    input:
+        rules.agat_convert_gff2tsv.output,
+    output:
+        INT_REFS_DIR / "{lineage}" / "{lineage}.gff.bed",
+    log:
+        "logs/references/gff2bed_{lineage}.log",
+    conda:
+        "../envs/shell.yaml"
+    shell:
+        """
+        tail -n +2 {input} | awk -F '\t' -v OFS='\t' '{{print $1"\t"($4-1)"\t"$5"\t"$13}}'  1> {output} 2> {log}
+        """
+
+
+# Intersect repetitive sequences with genetic features
+
+rule intersect_features_repeats:
+    input:
+        features=rules.gff2bed.output,
+        repeats=REFS_DIR / "{lineage}_repeats.bed",
+    output:
+        INT_REFS_DIR / "{lineage}" / "feature_repeats.tsv",
+    log:
+        "logs/references/intersect_features_repeats_{lineage}.log",
+    resources:
+        tmpdir=TEMPDIR,
+    conda:
+        "../envs/samtools.yaml"
+    shell:
+        "xonsh workflow/scripts/intersect_features_repeats.xsh "
+        "-f {input.features} "
+        "-r {input.repeats} "
+        "-o {output} "
+        "&> {log}"

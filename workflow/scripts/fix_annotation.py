@@ -25,7 +25,7 @@ try:
     df.drop(['feature_number', 'suffix', 'new_ID'], axis=1, inplace=True)
     logging.info("Saving TSV...")
     df.to_csv(output_tsv, sep='\t', index=False, header=True, na_rep='')
-    
+
     logging.info("Making GFF...")
     attribute_columns = [
         "ID",
@@ -52,8 +52,9 @@ try:
     for column in existing_attributes:
         df_gff[column] = df_gff[column].apply(lambda x: column + '=' + x if pd.notnull(x) else x)
     df_gff['attributes'] = df_gff[existing_attributes].apply(lambda x: ';'.join(x.dropna()), axis=1)
-    df_gff.drop(existing_attributes, axis=1, inplace=True)
     df_gff['strand'] = df_gff['strand'].replace('-1','-').replace('1','+').replace('0','.')
+    keep_columns = ['seq_id', 'source_tag', 'primary_tag', 'start', 'end', 'score', 'strand', 'frame', 'attributes']
+    df_gff = df_gff[keep_columns]
     logging.info("Saving GFF...")
     df_gff.to_csv(output_gff, sep='\t', index=False, header=False)
 except Exception as e:

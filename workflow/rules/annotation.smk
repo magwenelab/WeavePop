@@ -38,19 +38,6 @@ rule liftoff:
         "{input.target} "
         "{input.refgenome} &>> {log}"
 
-
-# rule move_liftoff:
-#     input:
-#         rules.liftoff.output.polished,
-#     output:
-#         SAMPLES_DIR / "annotation" / "{sample}" / "annotation.gff",
-#     log:
-#         "logs/samples/annotation/move_liftoff_{sample}.log",
-#     conda:
-#         "../envs/shell.yaml"
-#     shell:
-#         "mv {input} {output} 2> {log}"
-
 # =================================================================================================
 # Per sample | Annotate intergenic regions and introns
 # =================================================================================================
