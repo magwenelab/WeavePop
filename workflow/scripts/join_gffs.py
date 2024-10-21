@@ -28,7 +28,7 @@ try:
     df = pd.concat(dfs)
     keep_columns = [
         'seq_id', 'source_tag', 'primary_tag', 'start', 'end', 'score', 'strand', 
-        'frame', 'ID', 'Parent', 'locus', 'Name', 'description', 'old_ID', 'lineage',
+        'frame', 'ID', 'Parent', 'locus', 'Name', 'description', 'old_ID', 'repeat_fraction', 'lineage',
         'matches_ref_protein','missing_start_codon', 'missing_stop_codon', 'inframe_stop_codon']
     existing_columns = [column for column in keep_columns if column in df.columns]
     logging.info("Keeping columns:")

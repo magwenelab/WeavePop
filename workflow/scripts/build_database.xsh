@@ -41,27 +41,28 @@ def build_db(metadata, chrom_names, cnvs, mapq_depth, gff, effects, variants, pr
     df_samples.columns = df_samples.columns.str.lower()
     df_samples.columns = df_samples.columns.str.replace(' ', '_')
     if 'dataset' not in df_samples.columns:
-        df_samples['dataset'] = "X" 
-        
+        df_samples['dataset'] = "X"    
     print("Metadata table done!")
 
+    print("Reading Copy-number variants table")
     df_cnv = pd.read_csv(cnvs, sep='\t')
     df_cnv.columns = df_cnv.columns.str.lower()
     print("Copy-number variants table done!")
 
+    print("Reading MAPQ-depth table")
     df_mapq_depth = pd.read_csv(mapq_depth, sep='\t')
     df_mapq_depth.rename(columns={'ID' : 'feature_id'}, inplace=True)
-    print("MapQ Depth table done!")
+    print("MAPQ Depth table done!")
 
+    print("Reading chromosome names table")
     df_chroms = pd.read_csv(chrom_names, header = 0, dtype = str)
     print("Chromosome names table done!")
+
     print("Formatting GFF table")
     df_gff = pd.read_csv(gff, sep='\t', header = 0, low_memory=False)
     df_gff['feature_id_lineage'] = df_gff['feature_id'] + '_' + df_gff['lineage']
     df_gff.columns = df_gff.columns.str.lower()
-
     ref_mutations = ['missing_start_codon', 'missing_stop_codon', 'inframe_stop_codon']
-
     if all(column in df_gff.columns for column in ref_mutations):
         for column in ref_mutations:
             df_gff[column] = df_gff[column].apply(lambda x: column if x == 'Yes' else x)
@@ -69,11 +70,9 @@ def build_db(metadata, chrom_names, cnvs, mapq_depth, gff, effects, variants, pr
         df_gff = df_gff.drop(columns=ref_mutations)
     else:
         df_gff['start_stop_mutations'] = None
-    
     df_gff.rename(columns={'matches_ref_protein': 'identical_to_main_ref'}, inplace=True)
-
-
     print("GFF table done!")
+
     print("Formatting effects table")
     print("Getting gene IDs from GFF file")
     gff_ids = df_gff[['gene_id', 'gene_name', 'feature_id']].copy()
@@ -113,7 +112,6 @@ def build_db(metadata, chrom_names, cnvs, mapq_depth, gff, effects, variants, pr
         df_gene_no_transcript_fixed = df_gene_no_transcript.copy()
         df_gene_no_transcript_fixed['gene_id'] = df_gene_no_transcript_fixed['gene_name'].apply(replace_with_gene_id)
 
-
     print("Getting unique gene IDs from GFF")
     gff_ids_unique = gff_ids.drop_duplicates(subset='feature_id', keep='first')
     print("Creating dictionary to map feature IDs to gene IDs")
@@ -124,18 +122,23 @@ def build_db(metadata, chrom_names, cnvs, mapq_depth, gff, effects, variants, pr
     df_effects = pd.concat([df_gene_transcript, df_gene_no_transcript_fixed, df_no_gene_no_transcript])
     print("Effects table done!")
 
+    print("Reading variants table")
     df_variants = pd.read_csv(variants, header = 0, sep='\t')
     print("Variants table done!")
 
+    print("Reading presence table")
     df_presence = pd.read_csv(presence, header = 0, sep='\t')
     print("Presence table done!")
 
+    print("Reading lofs table")
     df_lofs = pd.read_csv(lofs, header = 0, sep='\t')
     print("Loss of function table done!")
 
+    print("Reading nonsense-mediated decay table")
     df_nmds = pd.read_csv(nmds, header = 0, sep='\t')
     print("Nonsense-mediated decay table done!")
 
+    print("Reading sequences table")
     df_sequences = pd.read_csv(sequences, header = 0, sep=',')
     print("Sequences table done!")
 
