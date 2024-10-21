@@ -11,7 +11,7 @@ If you want to have a common naming scheme of your genes and/or you don't have G
 
 * Mamba/Conda [Microforge3](https://mamba.readthedocs.io/en/latest/installation/mamba-installation.html)
 
-The environment from which the workflow must be run has the following software and you can install it with: `mamba env create --file workflow/envs/diversity.yml`
+The environment from which the workflow must be run has the following software and you can install it with: `mamba env create --file workflow/envs/snakemake.yml`
 * Python
 * Python modules -- [Pandas](https://pandas.pydata.org/), [Click](https://click.palletsprojects.com/en/8.1.x/), Biopython
 * [Xonsh](https://xon.sh/)
@@ -38,8 +38,8 @@ The environments for particular software used in Snakemake rules are installed b
   * Gather your starting files (see below) and check that they are in the correct format.
   * Edit the `config/config.yaml` to match your files and desired parameters.
   * Install Mamba/Conda [Microforge3](https://mamba.readthedocs.io/en/latest/installation/mamba-installation.html)
-  * Install the `diversity` enviroment: `mamba env create --file workflow/envs/diversity.yaml`
-  * `conda activate diversity`
+  * Install the `snakemake` enviroment: `mamba env create --file workflow/envs/snakemake.yaml`
+  * `conda activate snakemake`
   * Run the pipeline: `snakemake --cores <n> --sdm conda -p`
     * Snakemake options:  
       * `--cores <n>`: Number of cores you want to use. Mandatory.
@@ -55,10 +55,10 @@ The environments for particular software used in Snakemake rules are installed b
   * `config/` has the file `config.yaml`(provided [here](https://github.com/magwenelab/DiversityPipeline/blob/main/config/config.yaml)) that **you must edit** to adapt to your dataset.
   * A directory of results with the name specified in `config/config.yaml` will hold all the output.
   * `logs/` will hold the log files of all runs.  
-  * Additionally you need to provide the **starting files** described bellow. It's recommended to put the data files in `data/` and the tables in `config/`.
+  * Additionally you need to provide the **starting files** described below. It's recommended to put the data files in `data/` and the tables in `config/`.
 
 ## Starting files:
-  * Metadata CSV table: A comma-separated table with one sample per row. Specify the path to it in `config/config.yaml`. Mandatory columns: `sample` (sample ID used in the FASTQ file names), `lineage` (lineage or group name that associates the sample with a reference genome), `strain` (strain name, it can be the same as `sample`). If the plotting will be activated you need  one metadata column to color your samples, specify the name of this column in the `config/config.yaml`. More columns with free format are allowed. [Example](https://github.com/magwenelab/DiversityPipeline/blob/main/config/sample_metadata.csv)  
+  * Metadata CSV table: A comma-separated table with one sample per row. Specify the path to it in `config/config.yaml`. Mandatory columns: `sample` (sample ID used in the FASTQ file names), `lineage` (lineage or group name that associates the sample with a reference genome), `strain` (strain name, it can be the same as `sample`). If the plotting will be activated you need  one metadata column to color your samples, specify the name of this column in the `config/config.yaml`. More columns with free format are allowed. [Example](https://github.com/magwenelab/DiversityPipeline/blob/main/config/metadata1.csv)  
   * FASTQ files: Paired end short-read FASTQ files, one forward and one reverse file for each sample. The names of these files should be the names used in the metadata `sample` column, followed by an extension specified in the `config/config.yaml`. Files can be gzip compressed. The FASTQ files for all samples should be in the same directory (e.g., `data/samples/`, specified in the `config.yaml`).  
   * Reference genomes:    
     * If you will use reference genomes with annotation: Provide the FASTA and GFF files for each reference genome. The names of the files must be the ones in the `lineage` column of the metadata (e.g. `VNI.fasta` and `VNI.gff`). Put all the files in the same directory (e.g. `data/references`) and specify the path to it in the `config/config.yaml`.  
