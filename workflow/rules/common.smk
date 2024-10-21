@@ -135,13 +135,6 @@ def cnv_calling_input(wildcards):
         "repeats": REFS_DIR / (s["lineage"] + "_repeats.bed"),
     }
 
-def mapqdepth_repeats_input(wildcards):
-    s = SAMPLE_REFERENCE.loc[wildcards.sample,]
-    return {
-        "depth": INT_SAMPLES_DIR / "depth_quality" / s["sample"] / "feature_mapq_depth.tsv",
-        "repeats": INT_REFS_DIR / s["lineage"] / "feature_repeats.tsv",
-    }
-
 def intersect_vcfs_input(wildcards):
     sample_wildcards = listing_samples(wildcards)
     l = LINEAGE_REFERENCE[LINEAGE_REFERENCE["sample"].isin(sample_wildcards)]

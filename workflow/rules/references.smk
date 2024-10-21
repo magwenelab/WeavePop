@@ -135,7 +135,7 @@ rule ref2ref_liftoff:
         fasta=rules.main_links.output.fasta,
         gff=rules.main_links.output.gff,
     output:
-        target_gff=REFS_DIR / "{lineage}.gff",
+        target_gff=INT_REFS_DIR / "{lineage}" / "liftoff.gff_polished",
         unmapped=INT_REFS_DIR / "{lineage}" / "unmapped_features.txt",
         intermediate=directory(INT_REFS_DIR / "{lineage}" / "intermediate_liftoff"),
         fai_main=os.path.join(INT_REFS_DIR, "{lineage}", f"{MAIN_NAME}.fasta.fai"),
@@ -161,15 +161,32 @@ rule ref2ref_liftoff:
         "-polish "
         "{params.extra} "
         "{input.target_refs} {input.fasta} "
-        "&> {log} "
-        "&& "
-        "mv {params.refdir}/{wildcards.lineage}/liftoff.gff_polished {output.target_gff} &>> {log}"
+        "&> {log}"
 
+# Intersect repetitive sequences with gff
+rule intersect_gff_repeats:
+    input:
+        gff=rules.ref2ref_liftoff.output.target_gff,
+        repeats=REFS_DIR / "{lineage}_repeats.bed",
+    output:
+        REFS_DIR / "{lineage}.gff",
+    log:
+        "logs/references/intersect_gff_repeats_{lineage}.log",
+    resources:
+        tmpdir=TEMPDIR,
+    conda:
+        "../envs/samtools.yaml"
+    shell:
+        "xonsh workflow/scripts/intersect_gff_repeats.xsh "
+        "-g {input.gff} "
+        "-r {input.repeats} "
+        "-o {output} "
+        "&> {log}"
 
 # Convert GFF file to TSV format
 rule gff2tsv:
     input:
-        target=rules.ref2ref_liftoff.output.target_gff,
+        target=rules.intersect_gff_repeats.output,
         config=rules.agat_config.output,
     output:
         INT_REFS_DIR / "{lineage}" / "{lineage}.gff.tsv",
@@ -183,41 +200,5 @@ rule gff2tsv:
         "agat_convert_sp_gff2tsv.pl "
         "-gff {input.target} "
         "-c {input.config} "
-        "-o {output} "
-        "&> {log}"
-
-rule gff2bed:
-    input:
-        rules.gff2tsv.output,
-    output:
-        INT_REFS_DIR / "{lineage}" / "{lineage}.gff.bed",
-    log:
-        "logs/references/gff2bed_{lineage}.log",
-    conda:
-        "../envs/shell.yaml"
-    shell:
-        """
-        tail -n +2 {input} | awk -F '\t' -v OFS='\t' '{{print $1"\t"($4-1)"\t"$5"\t"$13}}'  1> {output} 2> {log}
-        """
-
-
-# Intersect repetitive sequences with genetic features
-
-rule intersect_features_repeats:
-    input:
-        features=rules.gff2bed.output,
-        repeats=REFS_DIR / "{lineage}_repeats.bed",
-    output:
-        INT_REFS_DIR / "{lineage}" / "feature_repeats.tsv",
-    log:
-        "logs/references/intersect_features_repeats_{lineage}.log",
-    resources:
-        tmpdir=TEMPDIR,
-    conda:
-        "../envs/samtools.yaml"
-    shell:
-        "xonsh workflow/scripts/intersect_features_repeats.xsh "
-        "-f {input.features} "
-        "-r {input.repeats} "
         "-o {output} "
         "&> {log}"
