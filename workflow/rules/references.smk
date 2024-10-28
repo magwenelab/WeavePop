@@ -169,7 +169,7 @@ rule intersect_gff_repeats:
         gff=rules.ref2ref_liftoff.output.target_gff,
         repeats=REFS_DIR / "{lineage}_repeats.bed",
     output:
-        REFS_DIR / "{lineage}.gff",
+        INT_REFS_DIR / "{lineage}.gff",
     log:
         "logs/references/intersect_gff_repeats_{lineage}.log",
     resources:
@@ -183,10 +183,27 @@ rule intersect_gff_repeats:
         "-o {output} "
         "&> {log}"
 
+rule standardize_gff:
+    input:
+        gff=rules.intersect_gff_repeats.output,
+        config=rules.agat_config.output,
+    output:
+        REFS_DIR / "{lineage}.gff",
+    log:
+        "logs/references/standardize_gff_{lineage}.log",
+    conda:
+        "../envs/agat.yaml"
+    shell:
+        "agat_convert_sp_gxf2gxf.pl "
+        "--gff {input.gff} "
+        "-c {input.config} "
+        "-o {output} "
+        "&> {log}"
+
 # Convert GFF file to TSV format
 rule gff2tsv:
     input:
-        target=rules.intersect_gff_repeats.output,
+        target=rules.standardize_gff.output,
         config=rules.agat_config.output,
     output:
         INT_REFS_DIR / "{lineage}" / "{lineage}.gff.tsv",
