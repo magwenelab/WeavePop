@@ -48,7 +48,7 @@ def stats(sample, bamfile,  global_mode, low_mapq, high_mapq, min_position_depth
     quality_wider = quality_sum.pivot(index='sample', columns='low_mapq', values='count_bins').reset_index()
 
     print("Getting mapped reads metrics")
-    stats = $(samtools stats @(bamfile))
+    stats = $(samtools stats @(bamfile) -c 1,1000000000,1)
     sn_lines = [line.split('#')[0] for line in stats.split('\n') if line.startswith('SN')]
     sn_stats = '\n'.join(sn_lines)
     sn_stats = sn_stats.replace("SN", "")

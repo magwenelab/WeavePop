@@ -22,12 +22,12 @@ def stats(sample, bamfile, bamgood, distribution_out, chromosome_good_out, chrom
     print("Getting depth distribution")
     for chromosome in chromosomes:
         print("Analysing chromosome", chromosome)
-        depth_raw = $(samtools stats @(bamfile) @(chromosome) | grep ^COV | cut -f 2-)
+        depth_raw = $(samtools stats @(bamfile) @(chromosome) -c 1,1000000000,1| grep ^COV | cut -f 2-)
         depth_raw = pd.Series(list(depth_raw.split("\n")))
         depth_raw = chromosome + "\t" + depth_raw
         depth_raw = depth_raw.str.split("\t", expand = True)
         out_depth_raw.append(depth_raw)
-        depth_good = $(samtools stats @(bamgood) @(chromosome) | grep ^COV | cut -f 2-)
+        depth_good = $(samtools stats @(bamgood) @(chromosome) -c 1,1000000000,1| grep ^COV | cut -f 2-)
         depth_good = pd.Series(list(depth_good.split("\n")))
         depth_good = chromosome + "\t" + depth_good
         depth_good= depth_good.str.split("\t", expand = True)

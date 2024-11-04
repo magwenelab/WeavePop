@@ -66,21 +66,21 @@ rule agat_manage_attributes:
 
 # Intersect repetitive sequences with genetic features
 
-rule intersect_features_repeats:
+rule intersect_gff_repeats:
     input:
-        features=rules.agat_manage_attributes.output.fixed_description,
+        gff=rules.agat_manage_attributes.output.fixed_description,
         repeats=REFS_DIR / "{lineage}_repeats.bed",
     output:
         INT_REFS_DIR / "{lineage}.gff",
     log:
-        "logs/references/intersect_features_repeats_{lineage}.log",
+        "logs/references/intersect_gff_repeats_{lineage}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
         "../envs/samtools.yaml"
     shell:
-        "xonsh workflow/scripts/intersect_features_repeats.xsh "
-        "-g {input.features} "
+        "xonsh workflow/scripts/intersect_gff_repeats.xsh "
+        "-g {input.gff} "
         "-r {input.repeats} "
         "-o {output} "
         "&> {log}"
@@ -88,7 +88,7 @@ rule intersect_features_repeats:
 
 rule agat_convert_gff2tsv:
     input:
-        gff=rules.intersect_features_repeats.output,
+        gff=rules.intersect_gff_repeats.output,
         config=rules.agat_config.output,
     output:
         tsv=INT_REFS_DIR / "{lineage}" / "{lineage}.tsv",
@@ -100,7 +100,7 @@ rule agat_convert_gff2tsv:
         "../envs/agat.yaml"
     shell:
         "agat_convert_sp_gff2tsv.pl "
-        "--gff {input.fixed_description} "
+        "--gff {input.gff} "
         "-o {output.tsv} "
         "-c {input.config} "
         "&> {log}"
