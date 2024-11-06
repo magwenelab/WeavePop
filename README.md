@@ -84,7 +84,7 @@ The environments for particular software used in Snakemake rules are installed b
 | Path | Description |
 | :---------------- | ----: |
 | 04.Intermediate_files/03.References/agat_config.yaml | Config file for AGAT
-| 04.Intermediate_files/03.References/all_lineages.gff.tsv | Table version of GFF files of all the reference genomes concatenated. Positions are 1-Based. Column names different from standard GFF:         accession (seq_id), feature_id (ID), gene_name (Name), gene_id (locus), old_feature_id (original ID before fixing), lineage, and matches_ref_protein,	missing_start_codon,	missing_stop_codon,	inframe_stop_codon (see Liftoff output for last 4).|
+| 04.Intermediate_files/03.References/all_lineages.gff.tsv | Table version of GFF files of all the reference genomes concatenated. Positions are 1-Based. Features are not sorted like in the GFF. Column names different from standard GFF:         accession (seq_id), feature_id (ID), gene_name (Name), gene_id (locus), old_feature_id (original ID before fixing), lineage, and matches_ref_protein,	missing_start_codon,	missing_stop_codon,	inframe_stop_codon (see Liftoff output for last 4).|
 | 04.Intermediate_files/03.References/chromosomes.csv | Same as chromosome.csv provided by the user.|
 | 04.Intermediate_files/03.References/{main_reference}_fixed_description.gff | GFF with description tag instead of product tag|
 | 04.Intermediate_files/03.References/{main_reference}_fixed_ID.gff | GFF with fixed IDs |
@@ -103,7 +103,7 @@ The environments for particular software used in Snakemake rules are installed b
 | 04.Intermediate_files/03.References/{lineage}/{lineage}.fasta.fai 
 | 04.Intermediate_files/03.References/{lineage}/{lineage}.fasta.index
 | 04.Intermediate_files/03.References/{lineage}/{lineage}.fasta.mmi
-| 04.Intermediate_files/03.References/{lineage}/{lineage}.gff.tsv | Table version of polished GFF of reference genome |
+| 04.Intermediate_files/03.References/{lineage}/{lineage}.gff.tsv | Table version of polished GFF of reference genome. Positions are 1-Based. Features are not sorted like in the GFF. |
 | 04.Intermediate_files/03.References/{lineage}/{lineage}.prots.fa | Protein sequences of all isoforms in reference genome |
 | 04.Intermediate_files/03.References/{lineage}/repeats/01_simple/{lineage}.bed | BED file of simple repetitive sequences. Positions are 0-Based. |
 | 04.Intermediate_files/03.References/{lineage}/repeats/01_simple/ | See [RepeatMasker output](https://www.repeatmasker.org/webrepeatmaskerhelp.html)|
