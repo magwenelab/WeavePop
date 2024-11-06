@@ -39,8 +39,8 @@ raw_stats_long <- raw_stats_chroms %>%
 print("Getting plot parameters")
 toplim <- max(raw_stats_long$Value) + max(raw_stats_long$Value)/10
 lineage <- unique(good_stats_chroms$Lineage)
-raw_color = "#B3B3B3"
-good_color = "#666666" 
+raw_color = "gray50"
+good_color = "black" 
 color_quality = c("Good quality alignments" = good_color, "All alignments" = raw_color)
 
 print("Ploting good quality Read depth")            

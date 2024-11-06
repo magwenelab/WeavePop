@@ -39,8 +39,8 @@ depth <- left_join(depth, chrom_names, by = "Accession")
 lineage <- levels(as.factor(depth$Lineage))
 
 print("Getting plot parameters")
-raw_color = "#B3B3B3"
-good_color = "#666666" 
+raw_color = "gray50"
+good_color = "black" 
 color_quality = c("Good quality alignments" = good_color, "All alignments" = raw_color)
 
 print("Plotting depth distribution by chromosome")
