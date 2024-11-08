@@ -3,14 +3,14 @@
 # =================================================================================================
 
 
-rule agat_convert_gxf2gxf:
+rule ref_fix_ids:
     input:
         gff=REF_DATA / "{lineage}.gff",
         config=rules.agat_config.output,
     output:
         fixed_ID=INT_REFS_DIR / "{lineage}" / "{lineage}.fixed.gff",
     log:
-        "logs/references/agat_convert_gxf2gxf_{lineage}.log",
+        "logs/references/ref_fix_ids_{lineage}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -23,14 +23,14 @@ rule agat_convert_gxf2gxf:
         "&> {log}"
 
 
-rule agat_add_locus_tag:
+rule ref_add_locus_tag:
     input:
-        fixed_ID=rules.agat_convert_gxf2gxf.output.fixed_ID,
+        fixed_ID=rules.ref_fix_ids.output.fixed_ID,
         config=rules.agat_config.output,
     output:
         fixed_locus=INT_REFS_DIR / "{lineage}" / "{lineage}.fixed_locus.gff",
     log:
-        "logs/references/agat_add_locus_tag_{lineage}.log",
+        "logs/references/ref_add_locus_tag_{lineage}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -44,14 +44,14 @@ rule agat_add_locus_tag:
         "&> {log}"
 
 
-rule agat_manage_attributes:
+rule ref_fix_descriptions:
     input:
-        fixed_locus=rules.agat_add_locus_tag.output.fixed_locus,
+        fixed_locus=rules.ref_add_locus_tag.output.fixed_locus,
         config=rules.agat_config.output,
     output:
         fixed_description=INT_REFS_DIR / "{lineage}" / "{lineage}.fixed_description.gff",
     log:
-        "logs/references/agat_manage_attributes_{lineage}.log",
+        "logs/references/ref_fix_descriptions_{lineage}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -64,36 +64,14 @@ rule agat_manage_attributes:
         "-c {input.config} "
         "&> {log}"
 
-# Intersect repetitive sequences with genetic features
-
-rule intersect_gff_repeats:
+rule ref_gff2tsv_1:
     input:
-        gff=rules.agat_manage_attributes.output.fixed_description,
-        repeats=REFS_DIR / "{lineage}_repeats.bed",
-    output:
-        INT_REFS_DIR / "{lineage}.gff",
-    log:
-        "logs/references/intersect_gff_repeats_{lineage}.log",
-    resources:
-        tmpdir=TEMPDIR,
-    conda:
-        "../envs/samtools.yaml"
-    shell:
-        "xonsh workflow/scripts/intersect_gff_repeats.xsh "
-        "-g {input.gff} "
-        "-r {input.repeats} "
-        "-o {output} "
-        "&> {log}"
-
-
-rule agat_convert_gff2tsv:
-    input:
-        gff=rules.intersect_gff_repeats.output,
+        gff=rules.ref_fix_descriptions.output.fixed_description,
         config=rules.agat_config.output,
     output:
-        tsv=INT_REFS_DIR / "{lineage}" / "{lineage}.tsv",
+        tsv=INT_REFS_DIR / "{lineage}" / "{lineage}_1.gff.tsv",
     log:
-        "logs/references/agat_convert_gff2tsv_{lineage}.log",
+        "logs/references/ref_gff2tsv_1_{lineage}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -106,15 +84,14 @@ rule agat_convert_gff2tsv:
         "&> {log}"
 
 
-# Recreate IDs
-rule fix_gff_tsv:
+rule ref_recreate_ids:
     input:
-        tsv=rules.agat_convert_gff2tsv.output.tsv,
+        tsv=rules.ref_gff2tsv_1.output.tsv,
     output:
-        gff=REFS_DIR / "{lineage}.gff",
-        tsv=INT_REFS_DIR / "{lineage}" / "{lineage}.gff.tsv",
+        gff=INT_REFS_DIR /  "{lineage}" / "{lineage}_2.gff",
+        tsv=INT_REFS_DIR / "{lineage}" / "{lineage}_2.gff.tsv",
     log:
-        "logs/references/fix_gff_tsv_{lineage}.log",
+        "logs/references/ref_recreate_ids_{lineage}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -125,3 +102,105 @@ rule fix_gff_tsv:
         "-og {output.gff} "
         "-ot {output.tsv} "
         "&> {log}"
+
+rule ref_add_introns:
+    input:
+        gff=rules.ref_recreate_ids.output.gff,
+        config=rules.agat_config.output,
+    output:
+        INT_REFS_DIR / "{lineage}" / "{lineage}_introns.gff",
+    params:
+        extra=config["agat"]["extra"],
+    log:
+        "logs/references/ref_add_introns_{lineage}.log",
+    resources:
+        tmpdir=TEMPDIR,
+    conda:
+        "../envs/agat.yaml"
+    shell:
+        "agat_sp_add_introns.pl "
+        "-g {input.gff} "
+        "-o {output} "
+        "-c {input.config} "
+        "{params.extra} "
+        "&> {log}"
+
+
+rule ref_add_intergenic:
+    input:
+        gff=rules.ref_add_introns.output,
+        config=rules.agat_config.output,
+    output:
+        INT_REFS_DIR / "{lineage}" / "{lineage}_intergenic.gff",
+    params:
+        extra=config["agat"]["extra"],
+    log:
+        "logs/references/ref_add_intergenic_{lineage}.log",
+    resources:
+        tmpdir=TEMPDIR,
+    conda:
+        "../envs/agat.yaml"
+    shell:
+        "agat_sp_add_intergenic_regions.pl "
+        "-g {input.gff} "
+        "-o {output} "
+        "-c {input.config} "
+        "{params.extra} "
+        "&> {log}"
+
+
+rule ref_add_repeats:
+    input:
+        gff=rules.ref_add_intergenic.output,
+        repeats=REFS_DIR / "{lineage}" / "{lineage}_repeats.bed",
+    output:
+        INT_REFS_DIR / "{lineage}" / "{lineage}_repeats.gff",
+    log:
+        "logs/references/ref_add_repeats_{lineage}.log",
+    resources:
+        tmpdir=TEMPDIR,
+    conda:
+        "../envs/samtools.yaml"
+    shell:
+        "xonsh workflow/scripts/ref_add_repeats.xsh "
+        "-g {input.gff} "
+        "-r {input.repeats} "
+        "-o {output} "
+        "&> {log}"
+
+
+rule ref_gff2tsv:
+    input:
+        target=rules.ref_add_repeats.output,
+        config=rules.agat_config.output,
+    output:
+        tsv=INT_REFS_DIR / "{lineage}" / "{lineage}.gff.tsv",
+    log:
+        "logs/references/gff2tsv_{lineage}.log",
+    resources:
+        tmpdir=TEMPDIR,
+    conda:
+        "../envs/agat.yaml"
+    shell:
+        "agat_convert_sp_gff2tsv.pl "
+        "-gff {input.target} "
+        "-c {input.config} "
+        "-o {output.tsv} "
+        "&> {log}"
+
+
+rule ref_recreate_intron_ids:
+    input:
+        tsv=rules.ref_gff2tsv.output.tsv,
+    output:
+        tsv=REFS_DIR / "{lineage}" / "{lineage}.gff.tsv",
+        gff=REFS_DIR / "{lineage}" / "{lineage}.gff",
+    params:
+        files="reference",
+    log:
+        "logs/references/ref_recreate_intron_ids_{lineage}.log",
+    conda:
+        "../envs/snakemake.yaml"
+    script:
+        "../scripts/recreate_intron_ids.py"
+

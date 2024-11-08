@@ -6,7 +6,7 @@
 rule unmapped_samples_plot:
     input:
         INT_DATASET_DIR / "metadata.csv",
-        expand(rules.fix_gff_tsv.output.tsv, lineage=LINEAGES),
+        expand(rules.ref_recreate_ids.output.tsv, lineage=LINEAGES),
         expand(rules.liftoff.output.unmapped, sample=SAMPLES),
     output:
         expand(DATASET_DIR / "liftoff" / "{lineage}_unmapped_count.tsv", lineage=LINEAGES),

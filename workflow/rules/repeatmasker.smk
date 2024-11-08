@@ -233,7 +233,7 @@ rule repeat_masker_combine:
         known=rules.repeat_masker_bed.output.known,
         unknown=rules.repeat_masker_bed.output.unknown,
     output:
-        REFS_DIR / "{lineage}_repeats.bed",
+        REFS_DIR / "{lineage}" / "{lineage}_repeats.bed",
     log:
         "logs/references/repeats/repeatmasker_combine_{lineage}.log",
     resources:

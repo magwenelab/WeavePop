@@ -72,7 +72,7 @@ d = {
     "refgenome": INT_REFS_DIR
     / UNFILT_SAMPLE_TABLE["lineage"]
     / (UNFILT_SAMPLE_TABLE["lineage"] + ".fasta"),
-    "refgff": REFS_DIR / (UNFILT_SAMPLE_TABLE["lineage"] + ".gff"),
+    "refgff": REFS_DIR / UNFILT_SAMPLE_TABLE["lineage"] / (UNFILT_SAMPLE_TABLE["lineage"] + ".gff"),
 }
 
 SAMPLE_REFERENCE = pd.DataFrame(data=d).set_index("sample", drop=False)

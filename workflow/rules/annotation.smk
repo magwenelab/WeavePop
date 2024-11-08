@@ -106,22 +106,24 @@ rule annotation_gff2tsv:
         "-c {input.config} "
         "&> {log} "
 
-rule fix_annotation:
+rule recreate_intron_ids:
     input:
         tsv=rules.annotation_gff2tsv.output.tsv,
     output:
         tsv=SAMPLES_DIR / "annotation" / "{sample}" / "annotation.gff.tsv",
         gff=INT_SAMPLES_DIR / "annotation" / "{sample}" / "annotation.gff",
+    params:
+        files="sample",
     log:
-        "logs/samples/annotation/fix_annotation_{sample}.log",
+        "logs/samples/annotation/recreate_intron_ids_{sample}.log",
     conda:
         "../envs/shell.yaml"
     script:
-        "../scripts/fix_annotation.py"    
+        "../scripts/recreate_intron_ids.py"    
 
 rule sort_gff:
     input:
-        gff=rules.fix_annotation.output.gff,
+        gff=rules.recreate_intron_ids.output.gff,
         config=rules.agat_config.output,
     output:
         gff=SAMPLES_DIR / "annotation" / "{sample}" / "annotation.gff",

@@ -8,6 +8,11 @@ input_tsv=snakemake.input.tsv
 output_tsv=snakemake.output.tsv
 output_gff=snakemake.output.gff
 
+if snakemake.params.files == "reference":
+    reference = True
+else:
+    reference = None
+
 logging.basicConfig(filename=log_file, level=logging.INFO, format='%(message)s')
 
 try:
@@ -42,9 +47,13 @@ try:
         "matches_ref_protein",
         "missing_start_codon",
         "missing_stop_codon",
+        "low_identity",
+        "partial_mapping",
         "valid_ORF",
         "valid_ORFs"
     ]
+    if reference:
+        attribute_columns.append('repeat_fraction')
     existing_attributes = [column for column in attribute_columns if column in df.columns]
     df_gff = df.copy()
     # df_gff= df_gff.astype(str)

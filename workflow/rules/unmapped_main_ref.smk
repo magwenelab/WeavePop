@@ -6,7 +6,7 @@
 rule unmapped_ref_features:
     input:
         INT_DATASET_DIR / "metadata.csv",
-        rules.fix_gff_tsv.output.tsv,
+        rules.main_ref_recreate_ids.output.tsv,
         expand(rules.ref2ref_liftoff.output.unmapped, lineage=LINEAGES),
     output:
         REFS_DIR / "lifotff" / "unmapped_count.tsv",
@@ -29,7 +29,7 @@ rule unmapped_ref_features:
 rule unmapped_samples_plot:
     input:
         INT_DATASET_DIR / "metadata.csv",
-        rules.fix_gff_tsv.output.tsv,
+        rules.main_ref_recreate_ids.output.tsv,
         expand(rules.liftoff.output.unmapped, sample=SAMPLES),
     output:
         DATASET_DIR / "liftoff" / "unmapped_count.tsv",

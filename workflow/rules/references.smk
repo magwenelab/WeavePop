@@ -3,15 +3,14 @@
 # =================================================================================================
 
 
-# Run AGAT to add and modify tags and convert to TSV
-rule agat_convert_gxf2gxf:
+rule main_ref_fix_ids:
     input:
         gff=MAIN_GFF,
         config=rules.agat_config.output,
     output:
         fixed_ID=os.path.join(INT_REFS_DIR, f"{MAIN_NAME}_fixed_ID.gff"),
     log:
-        "logs/references/agat_convert_gxf2gxf.log",
+        "logs/references/main_ref_fix_ids.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -24,14 +23,14 @@ rule agat_convert_gxf2gxf:
         "&> {log}"
 
 
-rule agat_add_locus_tag:
+rule main_ref_add_locus_tag:
     input:
-        fixed_ID=rules.agat_convert_gxf2gxf.output.fixed_ID,
+        fixed_ID=rules.main_ref_fix_ids.output.fixed_ID,
         config=rules.agat_config.output,
     output:
         fixed_locus=os.path.join(INT_REFS_DIR, f"{MAIN_NAME}_fixed_locus.gff"),
     log:
-        "logs/references/agat_add_locus_tag.log",
+        "logs/references/main_ref_add_locus_tag.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -45,14 +44,14 @@ rule agat_add_locus_tag:
         "&> {log}"
 
 
-rule agat_manage_attributes:
+rule main_ref_fix_descriptions:
     input:
-        fixed_locus=rules.agat_add_locus_tag.output.fixed_locus,
+        fixed_locus=rules.main_ref_add_locus_tag.output.fixed_locus,
         config=rules.agat_config.output,
     output:
         fixed_description=os.path.join(INT_REFS_DIR, f"{MAIN_NAME}_fixed_description.gff"),
     log:
-        "logs/references/agat_manage_attributes.log",
+        "logs/references/main_ref_fix_descriptions.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -66,14 +65,14 @@ rule agat_manage_attributes:
         "&> {log}"
 
 
-rule agat_convert_gff2tsv:
+rule main_ref_gff2tsv:
     input:
-        fixed_description=rules.agat_manage_attributes.output.fixed_description,
+        fixed_description=rules.main_ref_fix_descriptions.output.fixed_description,
         config=rules.agat_config.output,
     output:
         tsv=os.path.join(INT_REFS_DIR, f"{MAIN_NAME}_fixed.tsv"),
     log:
-        "logs/references/agat_convert_gff2tsv.log",
+        "logs/references/main_ref_gff2tsv.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -86,15 +85,14 @@ rule agat_convert_gff2tsv:
         "&> {log}"
 
 
-# Recreate IDs
-rule fix_gff_tsv:
+rule main_ref_recreate_ids:
     input:
-        tsv=rules.agat_convert_gff2tsv.output.tsv,
+        tsv=rules.main_ref_gff2tsv.output.tsv,
     output:
         gff=os.path.join(INT_REFS_DIR, f"{MAIN_NAME}.gff"),
         tsv=os.path.join(INT_REFS_DIR, f"{MAIN_NAME}.tsv"),
     log:
-        "logs/references/fix_gff_tsv.log",
+        "logs/references/main_ref_recreate_ids.log",
     conda:
         "../envs/snakemake.yaml"
     shell:
@@ -105,11 +103,10 @@ rule fix_gff_tsv:
         "&> {log}"
 
 
-# Generate softlinks of main reference
-rule main_links:
+rule main_ref_symlinks:
     input:
         fasta=MAIN_FASTA,
-        gff=rules.fix_gff_tsv.output.gff,
+        gff=rules.main_ref_recreate_ids.output.gff,
     output:
         fasta=os.path.join(INT_REFS_DIR, "{lineage}", f"{MAIN_NAME}.fasta"),
         gff=os.path.join(INT_REFS_DIR, "{lineage}", f"{MAIN_NAME}.gff"),
@@ -124,16 +121,15 @@ rule main_links:
 
 
 # ==================================================================================================
-#   Per lineage | Annotate reference genomes
+#   Per lineage | Annotate reference genomes using main reference
 # ==================================================================================================
 
 
-# Run Lifotff to annotate reference genomes with main reference
 rule ref2ref_liftoff:
     input:
         target_refs=INT_REFS_DIR / "{lineage}" / "{lineage}.fasta",
-        fasta=rules.main_links.output.fasta,
-        gff=rules.main_links.output.gff,
+        fasta=rules.main_ref_symlinks.output.fasta,
+        gff=rules.main_ref_symlinks.output.gff,
     output:
         target_gff=INT_REFS_DIR / "{lineage}" / "liftoff.gff_polished",
         unmapped=INT_REFS_DIR / "{lineage}" / "unmapped_features.txt",
@@ -163,50 +159,84 @@ rule ref2ref_liftoff:
         "{input.target_refs} {input.fasta} "
         "&> {log}"
 
-# Intersect repetitive sequences with gff
-rule intersect_gff_repeats:
+
+# ==================================================================================================
+#   Per lineage | Add repetitive sequences, introns, intergenic regions, and convert to TSV
+# ==================================================================================================
+
+
+rule ref_add_introns:
     input:
         gff=rules.ref2ref_liftoff.output.target_gff,
-        repeats=REFS_DIR / "{lineage}_repeats.bed",
+        config=rules.agat_config.output,
     output:
-        INT_REFS_DIR / "{lineage}.gff",
+        INT_REFS_DIR / "{lineage}" / "{lineage}_introns.gff",
+    params:
+        extra=config["agat"]["extra"],
     log:
-        "logs/references/intersect_gff_repeats_{lineage}.log",
+        "logs/references/ref_add_introns_{lineage}.log",
+    resources:
+        tmpdir=TEMPDIR,
+    conda:
+        "../envs/agat.yaml"
+    shell:
+        "agat_sp_add_introns.pl "
+        "-g {input.gff} "
+        "-o {output} "
+        "-c {input.config} "
+        "{params.extra} "
+        "&> {log}"
+
+
+rule ref_add_intergenic:
+    input:
+        gff=rules.ref_add_introns.output,
+        config=rules.agat_config.output,
+    output:
+        INT_REFS_DIR / "{lineage}" / "{lineage}_intergenic.gff",
+    params:
+        extra=config["agat"]["extra"],
+    log:
+        "logs/references/ref_add_intergenic_{lineage}.log",
+    resources:
+        tmpdir=TEMPDIR,
+    conda:
+        "../envs/agat.yaml"
+    shell:
+        "agat_sp_add_intergenic_regions.pl "
+        "-g {input.gff} "
+        "-o {output} "
+        "-c {input.config} "
+        "{params.extra} "
+        "&> {log}"
+
+    
+rule ref_add_repeats:
+    input:
+        gff=rules.ref_add_intergenic.output,
+        repeats=REFS_DIR / "{lineage}" / "{lineage}_repeats.bed",
+    output:
+        INT_REFS_DIR / "{lineage}" / "{lineage}_repeats.gff",
+    log:
+        "logs/references/ref_add_repeats_{lineage}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
         "../envs/samtools.yaml"
     shell:
-        "xonsh workflow/scripts/intersect_gff_repeats.xsh "
+        "xonsh workflow/scripts/ref_add_repeats.xsh "
         "-g {input.gff} "
         "-r {input.repeats} "
         "-o {output} "
         "&> {log}"
 
-rule standardize_gff:
-    input:
-        gff=rules.intersect_gff_repeats.output,
-        config=rules.agat_config.output,
-    output:
-        REFS_DIR / "{lineage}.gff",
-    log:
-        "logs/references/standardize_gff_{lineage}.log",
-    conda:
-        "../envs/agat.yaml"
-    shell:
-        "agat_convert_sp_gxf2gxf.pl "
-        "--gff {input.gff} "
-        "-c {input.config} "
-        "-o {output} "
-        "&> {log}"
 
-# Convert GFF file to TSV format
-rule gff2tsv:
+rule ref_gff2tsv:
     input:
-        target=rules.standardize_gff.output,
+        target=rules.ref_add_repeats.output,
         config=rules.agat_config.output,
     output:
-        INT_REFS_DIR / "{lineage}" / "{lineage}.gff.tsv",
+        tsv=INT_REFS_DIR / "{lineage}" / "{lineage}.gff.tsv",
     log:
         "logs/references/gff2tsv_{lineage}.log",
     resources:
@@ -217,5 +247,21 @@ rule gff2tsv:
         "agat_convert_sp_gff2tsv.pl "
         "-gff {input.target} "
         "-c {input.config} "
-        "-o {output} "
+        "-o {output.tsv} "
         "&> {log}"
+
+
+rule ref_recreate_intron_ids:
+    input:
+        tsv=rules.ref_gff2tsv.output.tsv,
+    output:
+        tsv=REFS_DIR / "{lineage}" / "{lineage}.gff.tsv",
+        gff=REFS_DIR / "{lineage}" / "{lineage}.gff",
+    params:
+        files="reference",
+    log:
+        "logs/references/ref_recreate_intron_ids_{lineage}.log",
+    conda:
+        "../envs/snakemake.yaml"
+    script:
+        "../scripts/recreate_intron_ids.py"
