@@ -12,7 +12,7 @@ import sqlite3
 @click.option('--chrom_names', '-ch', type=click.Path(), help='Path to the chromosome names file.')
 @click.option('--cnvs', '-cnv', type=click.Path(), help='Path to the copy-number variants file.')
 @click.option('--mapq_depth', '-md', type=click.Path(), help='Path to the mapq and depth of features file.')
-@click.option('--gff', '-g', type=click.Path(), help='Path to the GFF file.')
+@click.option('--gff_tsv', '-g', type=click.Path(), help='Path to the GFF file.')
 @click.option('--effects', '-e', type=click.Path(), help='Path to the effects file of all lineages.')
 @click.option('--variants', '-v', type=click.Path(), help='Path to the variants file of all lineages.')
 @click.option('--presence', '-p', type=click.Path(), help='Path to the presence file of all lineages.')
@@ -21,13 +21,13 @@ import sqlite3
 @click.option('--sequences', '-s', type=click.Path(), help='Path to the sequences table.')
 @click.option('--output', '-o', type=click.Path(), help='Output database file.')
 
-def build_db(metadata, chrom_names, cnvs, mapq_depth, gff, effects, variants, presence, lofs, nmds, sequences, output):
+def build_db(metadata, chrom_names, cnvs, mapq_depth, gff_tsv, effects, variants, presence, lofs, nmds, sequences, output):
     print("Using the following arguments:")
     print(f"1. metadata: {metadata}")
     print(f"2. chrom_names: {chrom_names}")
     print(f"3. cnvs: {cnvs}")
     print(f"4. mapq_depth: {mapq_depth}")
-    print(f"5. gff: {gff}")
+    print(f"5. gff: {gff_tsv}")
     print(f"6. effects: {effects}")
     print(f"7. variants: {variants}")
     print(f"8. presence: {presence}")
@@ -58,57 +58,12 @@ def build_db(metadata, chrom_names, cnvs, mapq_depth, gff, effects, variants, pr
     df_chroms = pd.read_csv(chrom_names, header = 0, dtype = str)
     print("Chromosome names table done!")
 
-    print("Formatting GFF table")
-    df_gff = pd.read_csv(gff, sep='\t', header = 0, low_memory=False)
+    print("Reading GFF table")
+    df_gff = pd.read_csv(gff_tsv, sep='\t', header = 0, low_memory=False)
     print("GFF table done!")
 
-    print("Formatting effects table")
-    print("Getting gene IDs from GFF file")
-    gff_ids = df_gff[['gene_id', 'gene_name', 'feature_id']].copy()
-    gff_ids.drop_duplicates(inplace=True)
-    print("Defining function to replace gene names with gene IDs")
-    def replace_with_gene_id(part):
-        if part in gff_ids['gene_id'].values:
-            return part
-        elif part in gff_ids['gene_name'].values:
-            return gff_ids.loc[gff_ids['gene_name'] == part, 'gene_id'].values[0]
-        return part
     print("Reading effects table")
-    effects_pre = pd.read_csv(effects, header = 0, sep='\t')
-    print("Subsetting effects table")
-    df_gene_transcript = effects_pre[(effects_pre['gene_name'].notnull()) & (effects_pre['transcript_id'].notnull())].copy()
-    df_gene_no_transcript = effects_pre[(effects_pre['gene_name'].notnull()) & (effects_pre['transcript_id'].isnull())].copy()
-    df_no_gene_no_transcript = effects_pre[(effects_pre['gene_name'].isnull()) & (effects_pre['transcript_id'].isnull())].copy()
-
-    print("Getting variant effects with fused gene names")
-    df_fused_genes = df_gene_no_transcript[df_gene_no_transcript['gene_name'].str.contains('\\+')].copy()
-
-    if df_fused_genes.shape[0] > 0:
-        print("Fused gene names found")
-        print("Separating fused gene names")
-        df_fused_genes[['part1', 'part2']] = df_fused_genes['gene_name'].str.split('+', expand=True)
-        print("Replacing gene names with gene IDs in part1")
-        df_fused_genes['gene_tag_id1'] = df_fused_genes['part1'].apply(replace_with_gene_id)
-        print("Replacing gene names with gene IDs in part2")
-        df_fused_genes.loc[df_fused_genes['part2'].notnull(), 'gene_tag_id2'] = df_fused_genes.loc[df_fused_genes['part2'].notnull(), 'part2'].apply(replace_with_gene_id)
-        print("Joining part1 with part2")
-        df_fused_genes['gene_id'] = df_fused_genes.apply(lambda row: row['gene_tag_id1'] + '+' + row['gene_tag_id2'] if pd.notnull(row['part2']) else row['gene_tag_id1'], axis=1)
-        print("Removing unnecessary columns")
-        df_fused_genes.drop(['part1', 'part2', 'gene_tag_id1', 'gene_tag_id2'], axis=1, inplace=True)
-        df_gene_no_transcript_fixed = df_fused_genes.copy()
-    else:
-        print("No fused gene names found")
-        df_gene_no_transcript_fixed = df_gene_no_transcript.copy()
-        df_gene_no_transcript_fixed['gene_id'] = df_gene_no_transcript_fixed['gene_name'].apply(replace_with_gene_id)
-
-    print("Getting unique gene IDs from GFF")
-    gff_ids_unique = gff_ids.drop_duplicates(subset='feature_id', keep='first')
-    print("Creating dictionary to map feature IDs to gene IDs")
-    feature_to_gene = gff_ids_unique.set_index('feature_id')['gene_id']
-    print("Mapping transcript IDs to gene IDs")
-    df_gene_transcript['gene_id'] = df_gene_transcript['transcript_id'].map(feature_to_gene)
-    print("Concatenating dataframes")
-    df_effects = pd.concat([df_gene_transcript, df_gene_no_transcript_fixed, df_no_gene_no_transcript])
+    df_effects = pd.read_csv(effects, header = 0, sep='\t')
     print("Effects table done!")
 
     print("Reading variants table")

@@ -177,6 +177,7 @@ rule snpeff:
 rule extract_vcf_annotation:
     input:
         vcf=rules.snpeff.output.vcf,
+        gff=rules.ref_reformat_annotation.output.tsv,
     output:
         effects=INT_DATASET_DIR / "snps" / "{lineage}_effects.tsv",
         variants=INT_DATASET_DIR / "snps" / "{lineage}_variants.tsv",
@@ -191,6 +192,7 @@ rule extract_vcf_annotation:
     shell:
         "xonsh workflow/scripts/extract_vcf_annotation.xsh "
         "-i {input.vcf} "
+        "-g {input.gff} "
         "-e {output.effects} "
         "-v {output.variants} "
         "-f {output.lofs} "

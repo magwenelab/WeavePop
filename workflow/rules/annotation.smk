@@ -70,7 +70,7 @@ rule add_introns:
         gff=rules.add_intergenic.output.gff,
         config=rules.agat_config.output,
     output:
-        gff=INT_SAMPLES_DIR / "annotation" / "{sample}" / "intergenic_and_introns.gff",
+        gff=INT_SAMPLES_DIR / "annotation" / "{sample}" / "introns.gff",
     params:
         extra=config["agat"]["extra"],
     log:
@@ -106,7 +106,7 @@ rule annotation_gff2tsv:
         "-c {input.config} "
         "&> {log} "
 
-rule recreate_intron_ids:
+rule reformat_annotation:
     input:
         tsv=rules.annotation_gff2tsv.output.tsv,
     output:
@@ -115,15 +115,15 @@ rule recreate_intron_ids:
     params:
         files="sample",
     log:
-        "logs/samples/annotation/recreate_intron_ids_{sample}.log",
+        "logs/samples/annotation/reformat_annotation_{sample}.log",
     conda:
         "../envs/shell.yaml"
     script:
-        "../scripts/recreate_intron_ids.py"    
+        "../scripts/reformat_annotation.py"    
 
 rule sort_gff:
     input:
-        gff=rules.recreate_intron_ids.output.gff,
+        gff=rules.reformat_annotation.output.gff,
         config=rules.agat_config.output,
     output:
         gff=SAMPLES_DIR / "annotation" / "{sample}" / "annotation.gff",

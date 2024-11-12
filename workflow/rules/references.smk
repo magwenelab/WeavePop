@@ -251,17 +251,35 @@ rule ref_gff2tsv:
         "&> {log}"
 
 
-rule ref_recreate_intron_ids:
+rule ref_reformat_annotation:
     input:
         tsv=rules.ref_gff2tsv.output.tsv,
     output:
         tsv=REFS_DIR / "{lineage}" / "{lineage}.gff.tsv",
-        gff=REFS_DIR / "{lineage}" / "{lineage}.gff",
+        gff=INT_REFS_DIR / "{lineage}" / "{lineage}.gff",
     params:
         files="reference",
     log:
-        "logs/references/ref_recreate_intron_ids_{lineage}.log",
+        "logs/references/ref_reformat_annotation_{lineage}.log",
     conda:
         "../envs/snakemake.yaml"
     script:
-        "../scripts/recreate_intron_ids.py"
+        "../scripts/reformat_annotation.py"
+
+
+rule ref_sort_gff:
+    input:
+        gff=rules.ref_reformat_annotation.output.gff,
+        config=rules.agat_config.output,
+    output:
+        gff=REFS_DIR / "{lineage}" / "{lineage}.gff",
+    log:
+        "logs/references/ref_sort_gff_{lineage}.log",
+    conda:
+        "../envs/agat.yaml"
+    shell:
+        "agat_convert_sp_gxf2gxf.pl "
+        "-g {input.gff} "
+        "-o {output.gff} "
+        "-c {input.config} "
+        "&> {log} "

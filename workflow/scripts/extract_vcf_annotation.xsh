@@ -7,13 +7,14 @@ import vcf
 
 @click.command()
 @click.option("--vcf_path", "-i", type = click.Path(exists=True), help="Path to the VCF file")
+@click.option("--gff_tsv", "-g", type = click.Path(), help="Path to the table with annotation of the references")
 @click.option("--effects_out", "-e", type = click.Path(), help="Path to the effects output file")
 @click.option("--variants_out", "-v", type = click.Path(), help="Path to the variants output file")
 @click.option("--lofs_out", "-f", type = click.Path(), help="Path to the lofs output file")
 @click.option("--nmds_out", "-n", type = click.Path(), help="Path to the nmds output file")
 @click.option("--lineage", "-l", type = str, help="Lineage")
 
-def extract_annotation(vcf_path, effects_out, variants_out, lofs_out, nmds_out, lineage):
+def extract_annotation(vcf_path, gff_tsv, effects_out, variants_out, lofs_out, nmds_out, lineage):
     print("Getting tables from SnpEff result")
     data_effects = []
     data_variants = []
@@ -74,14 +75,69 @@ def extract_annotation(vcf_path, effects_out, variants_out, lofs_out, nmds_out, 
                 data_nmds.append([var_id, gene_name, num_transcripts, percent_affected])
 
     print("Creating dataframes")
+    print("Variants dataframe")
     df_variants = pd.DataFrame(data_variants, columns=['var_id', 'accession', 'pos', 'ref', 'alt'])
     df_variants['alt'] = df_variants['alt'].astype(str)
     df_variants['alt'] = df_variants['alt'].str.replace('[', '').str.replace(']', '')
-    df_effects = pd.DataFrame(data_effects, columns=['var_id', 'effect_type', 'impact','effect', 'codon_change', 'amino_acid_change', 'amino_acid_length', 'gene_name', 'transcript_biotype', 'gene_coding', 'transcript_id', 'exon_rank'])
-    df_effects['effect_id'] = 'eff_' + lineage + '_' + (df_effects.index + 1).astype(str)
-    df_effects.insert(0, 'effect_id', df_effects.pop('effect_id'))
+
+    print("LOFs dataframe")
     df_lofs = pd.DataFrame(data_lofs, columns=['var_id', 'gene_name', 'num_transcripts', 'percent_affected'])
+    print("NMDs dataframe")
     df_nmds = pd.DataFrame(data_nmds, columns=['var_id', 'gene_name', 'num_transcripts', 'percent_affected'])
+
+    print("Effects dataframe")
+    effects_pre = pd.DataFrame(data_effects, columns=['var_id', 'effect_type', 'impact','effect', 'codon_change', 'amino_acid_change', 'amino_acid_length', 'gene_name', 'transcript_biotype', 'gene_coding', 'transcript_id', 'exon_rank'])
+    print("Formating effects dataframe and adding gene IDs from reference GFF")
+    print("Reading GFF file")
+    df_gff = pd.read_csv(gff_tsv, sep='\t', header = 0, low_memory=False)
+    print("Getting gene IDs from GFF file")
+    id_cols = ['gene_id', 'gene_name', 'feature_id']
+    existing_id_cols = [col for col in id_cols if col in df_gff.columns]
+    gff_ids = df_gff[existing_id_cols].copy()
+    gff_ids.drop_duplicates(inplace=True)
+    print("Defining function to replace gene names with gene IDs")
+    def replace_with_gene_id(part):
+        if part in gff_ids['gene_id'].values:
+            return part
+        elif part in gff_ids['gene_name'].values:
+            return gff_ids.loc[gff_ids['gene_name'] == part, 'gene_id'].values[0]
+        return part
+
+    print("Subsetting effects table")
+    df_gene_transcript = effects_pre[(effects_pre['gene_name'].notnull()) & (effects_pre['transcript_id'].notnull())].copy()
+    df_gene_no_transcript = effects_pre[(effects_pre['gene_name'].notnull()) & (effects_pre['transcript_id'].isnull())].copy()
+    df_no_gene_no_transcript = effects_pre[(effects_pre['gene_name'].isnull()) & (effects_pre['transcript_id'].isnull())].copy()
+
+    print("Getting variant effects with fused gene names")
+    df_fused_genes = df_gene_no_transcript[df_gene_no_transcript['gene_name'].str.contains('\\+')].copy()
+
+    if df_fused_genes.shape[0] > 0:
+        print("Fused gene names found")
+        print("Separating fused gene names")
+        df_fused_genes[['part1', 'part2']] = df_fused_genes['gene_name'].str.split('+', expand=True)
+        print("Replacing gene names with gene IDs in part1")
+        df_fused_genes['gene_tag_id1'] = df_fused_genes['part1'].apply(replace_with_gene_id)
+        print("Replacing gene names with gene IDs in part2")
+        df_fused_genes.loc[df_fused_genes['part2'].notnull(), 'gene_tag_id2'] = df_fused_genes.loc[df_fused_genes['part2'].notnull(), 'part2'].apply(replace_with_gene_id)
+        print("Joining part1 with part2")
+        df_fused_genes['gene_id'] = df_fused_genes.apply(lambda row: row['gene_tag_id1'] + '+' + row['gene_tag_id2'] if pd.notnull(row['part2']) else row['gene_tag_id1'], axis=1)
+        print("Removing unnecessary columns")
+        df_fused_genes.drop(['part1', 'part2', 'gene_tag_id1', 'gene_tag_id2'], axis=1, inplace=True)
+        df_gene_no_transcript_fixed = df_fused_genes.copy()
+    else:
+        print("No fused gene names found")
+        df_gene_no_transcript_fixed = df_gene_no_transcript.copy()
+        df_gene_no_transcript_fixed['gene_id'] = df_gene_no_transcript_fixed['gene_name'].apply(replace_with_gene_id)
+
+    print("Getting unique gene IDs from GFF")
+    gff_ids_unique = gff_ids.drop_duplicates(subset='feature_id', keep='first')
+    print("Creating dictionary to map feature IDs to gene IDs")
+    feature_to_gene = gff_ids_unique.set_index('feature_id')['gene_id']
+    print("Mapping transcript IDs to gene IDs")
+    df_gene_transcript['gene_id'] = df_gene_transcript['transcript_id'].map(feature_to_gene)
+    print("Concatenating dataframes")
+    df_effects = pd.concat([df_gene_transcript, df_gene_no_transcript_fixed, df_no_gene_no_transcript])
+    print("Finished formatting effects dataframe")
 
     print("Adding lineage to dataframes")
     df_variants['lineage'] = lineage
