@@ -97,7 +97,7 @@ rule ref_recreate_ids:
     conda:
         "../envs/snakemake.yaml"
     shell:
-        "python workflow/scripts/fix_gff.py "
+        "python workflow/scripts/recreate_ids.py "
         "-i {input.tsv} "
         "-og {output.gff} "
         "-ot {output.tsv} "

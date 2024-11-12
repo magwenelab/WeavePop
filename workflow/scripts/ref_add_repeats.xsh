@@ -13,7 +13,7 @@ def intersect_repeats(gff_input, repeats_input, output):
 
     print("Reorganize intersection.")
     df = pd.read_csv(io.StringIO(intersect), sep='\t', header=None)
-    header = ['seq_id', 'source', 'feature', 'start', 'end', 'score', 'strand', 'frame', 'attributes', 'r_Accession', 'r_Start', 'r_End', 'r_Type', 'Overlap_bp']
+    header = ['seq_id', 'source_tag', 'primary_tag', 'start', 'end', 'score', 'strand', 'frame', 'attributes', 'r_Accession', 'r_Start', 'r_End', 'r_Type', 'Overlap_bp']
     df.columns = header
 
     print("Calculate overlap in base pairs.")
@@ -29,7 +29,7 @@ def intersect_repeats(gff_input, repeats_input, output):
     df['Size'] = df['end'] - df['start'] + 1
     df['repeat_fraction'] = (df['Overlap_bp'] / df['Size']).round(2)
     df['attributes'] = df['attributes'] + ";repeat_fraction=" + df['repeat_fraction'].astype(str)
-    df = df.loc[:, ['seq_id', 'source', 'feature', 'start', 'end', 'score', 'strand', 'frame', 'attributes']]
+    df = df.loc[:, ['seq_id', 'source_tag', 'primary_tag', 'start', 'end', 'score', 'strand', 'frame', 'attributes']]
 
     print("Save df")
     filepath = Path(output)

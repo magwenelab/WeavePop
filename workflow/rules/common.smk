@@ -115,7 +115,7 @@ def depth_by_windows_plots_input(wildcards):
     return {
         "depth": INT_SAMPLES_DIR / "depth_quality" / s["sample"] / "depth_by_windows.tsv",
         "cnv": SAMPLES_DIR / "cnv" / s["sample"] / "cnv_calls.tsv",
-        "repeats": REFS_DIR / (s["lineage"] + "_repeats.bed"),
+        "repeats": REFS_DIR / s["lineage"] / (s["lineage"] + "_repeats.bed"),
     }
 
 
@@ -124,7 +124,7 @@ def mapq_plot_input(wildcards):
     return {
         "mapq": INT_SAMPLES_DIR / "depth_quality" / s["sample"] / "mapq_window.bed",
         "cnv": SAMPLES_DIR / "cnv" / s["sample"] / "cnv_calls.tsv",
-        "repeats": REFS_DIR / (s["lineage"] + "_repeats.bed"),
+        "repeats": REFS_DIR / s["lineage"] / (s["lineage"] + "_repeats.bed"),
     }
 
 
@@ -132,7 +132,7 @@ def cnv_calling_input(wildcards):
     s = SAMPLE_REFERENCE.loc[wildcards.sample,]
     return {
         "depth": INT_SAMPLES_DIR / "depth_quality" / s["sample"] / "depth_by_windows.tsv",
-        "repeats": REFS_DIR / (s["lineage"] + "_repeats.bed"),
+        "repeats": REFS_DIR / s["lineage"] / (s["lineage"] + "_repeats.bed"),
     }
 
 def intersect_vcfs_input(wildcards):
