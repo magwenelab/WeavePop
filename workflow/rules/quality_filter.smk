@@ -120,7 +120,7 @@ rule quality_filter:
         UNFILT_SAMPLE_FILE,
     output:
         stats=DATASET_DIR / "depth_quality" / "mapping_stats.tsv",
-        metadata=INT_DATASET_DIR / "metadata.csv",
+        metadata=DATASET_DIR / "metadata.csv",
     params:
         exclude=config["depth_quality"]["flag_quality"]["exclude_samples"],
     log:

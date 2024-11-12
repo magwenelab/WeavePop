@@ -100,7 +100,7 @@ rule join_variant_annotation:
 
 rule complete_db:
     input:
-        metadata=INT_DATASET_DIR / "metadata.csv",
+        metadata=rules.quality_filter.output.metadata,
         chrom_names=rules.copy_config.output.c,
         cnv=rules.join_cnv.output,
         md=rules.join_mapq_depth.output,

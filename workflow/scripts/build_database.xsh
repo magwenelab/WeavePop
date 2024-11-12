@@ -12,7 +12,7 @@ import sqlite3
 @click.option('--chrom_names', '-ch', type=click.Path(), help='Path to the chromosome names file.')
 @click.option('--cnvs', '-cnv', type=click.Path(), help='Path to the copy-number variants file.')
 @click.option('--mapq_depth', '-md', type=click.Path(), help='Path to the mapq and depth of features file.')
-@click.option('--gff_tsv', '-g', type=click.Path(), help='Path to the GFF file.')
+@click.option('--gff_tsv', '-g', type=click.Path(), help='Path to the TSV version of the GFF file.')
 @click.option('--effects', '-e', type=click.Path(), help='Path to the effects file of all lineages.')
 @click.option('--variants', '-v', type=click.Path(), help='Path to the variants file of all lineages.')
 @click.option('--presence', '-p', type=click.Path(), help='Path to the presence file of all lineages.')
@@ -36,53 +36,47 @@ def build_db(metadata, chrom_names, cnvs, mapq_depth, gff_tsv, effects, variants
     print(f"11. sequences: {sequences}")
     print(f"12. output: {output}")
     
-    print("Reading and adjusting dataset files")
-    df_samples = pd.read_csv(metadata)
-    df_samples.columns = df_samples.columns.str.lower()
-    df_samples.columns = df_samples.columns.str.replace(' ', '_')
-    if 'dataset' not in df_samples.columns:
-        df_samples['dataset'] = "X"    
+    print("Reading metadata table...")
+    df_samples = pd.read_csv(metadata) 
     print("Metadata table done!")
 
-    print("Reading Copy-number variants table")
+    print("Reading Copy-number variants table...")
     df_cnv = pd.read_csv(cnvs, sep='\t')
-    df_cnv.columns = df_cnv.columns.str.lower()
     print("Copy-number variants table done!")
 
-    print("Reading MAPQ-depth table")
+    print("Reading MAPQ-depth table...")
     df_mapq_depth = pd.read_csv(mapq_depth, sep='\t')
-    df_mapq_depth.rename(columns={'ID' : 'feature_id'}, inplace=True)
     print("MAPQ Depth table done!")
 
-    print("Reading chromosome names table")
+    print("Reading chromosome names table...")
     df_chroms = pd.read_csv(chrom_names, header = 0, dtype = str)
     print("Chromosome names table done!")
 
-    print("Reading GFF table")
+    print("Reading GFF table...")
     df_gff = pd.read_csv(gff_tsv, sep='\t', header = 0, low_memory=False)
     print("GFF table done!")
 
-    print("Reading effects table")
+    print("Reading effects table...")
     df_effects = pd.read_csv(effects, header = 0, sep='\t')
     print("Effects table done!")
 
-    print("Reading variants table")
+    print("Reading variants table...")
     df_variants = pd.read_csv(variants, header = 0, sep='\t')
     print("Variants table done!")
 
-    print("Reading presence table")
+    print("Reading presence table...")
     df_presence = pd.read_csv(presence, header = 0, sep='\t')
     print("Presence table done!")
 
-    print("Reading lofs table")
+    print("Reading lofs table...")
     df_lofs = pd.read_csv(lofs, header = 0, sep='\t')
     print("Loss of function table done!")
 
-    print("Reading nonsense-mediated decay table")
+    print("Reading nonsense-mediated decay table...")
     df_nmds = pd.read_csv(nmds, header = 0, sep='\t')
     print("Nonsense-mediated decay table done!")
 
-    print("Reading sequences table")
+    print("Reading sequences table...")
     df_sequences = pd.read_csv(sequences, header = 0, sep=',')
     print("Sequences table done!")
 

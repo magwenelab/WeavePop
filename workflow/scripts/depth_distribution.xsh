@@ -36,59 +36,59 @@ def stats(sample, bamfile, bamgood, distribution_out, chromosome_good_out, chrom
     print("Merging depth distributions")
     distribution_raw = pd.concat(out_depth_raw)
     distribution_raw = distribution_raw.dropna()
-    distribution_raw.columns = ["Accession", "Range", "Depth", "Count_Raw"]
-    distribution_raw.drop('Range', axis = 1, inplace = True)
+    distribution_raw.columns = ["accession", "range", "depth", "count_raw"]
+    distribution_raw.drop('range', axis = 1, inplace = True)
     
     distribution_good = pd.concat(out_depth_good)
     distribution_good = distribution_good.dropna()
-    distribution_good.columns = ["Accession", "Range", "Depth", "Count_Good"]
-    distribution_good.drop('Range', axis = 1, inplace = True)
+    distribution_good.columns = ["accession", "range", "depth", "count_good"]
+    distribution_good.drop('range', axis = 1, inplace = True)
 
-    distribution = pd.merge(distribution_good, distribution_raw, on = ['Depth', 'Accession'], how = 'outer')
+    distribution = pd.merge(distribution_good, distribution_raw, on = ['depth', 'accession'], how = 'outer')
     distribution.drop_duplicates( inplace=True)
     distribution.fillna(0, inplace=True)
     distribution.to_csv(distribution_out, index=False, sep = "\t")
 
     print("Get global depth mode")
-    distribution['Count_Raw'] = distribution['Count_Raw'].astype(int)
-    distribution['Count_Good'] = distribution['Count_Good'].astype(int)
-    distribution['Depth'] = distribution['Depth'].astype(int)
-    global_cov = distribution.groupby('Depth').agg({'Count_Good': 'sum'}).reset_index()
-    global_mode = global_cov.loc[global_cov['Count_Good'].idxmax()]['Depth']
+    distribution['count_raw'] = distribution['count_raw'].astype(int)
+    distribution['count_good'] = distribution['count_good'].astype(int)
+    distribution['depth'] = distribution['depth'].astype(int)
+    global_cov = distribution.groupby('depth').agg({'count_good': 'sum'}).reset_index()
+    global_mode = global_cov.loc[global_cov['count_good'].idxmax()]['depth']
 
     print("Get mean and median depth by chromosome")
     def calculate_mean_median(group, quality):
-        total_depth = (group['Depth'] * group[quality]).sum()
+        total_depth = (group['depth'] * group[quality]).sum()
         total_count = group[quality].sum()
         mean_depth = (total_depth / total_count).round(2)
-        sorted_group = group.sort_values('Depth')
+        sorted_group = group.sort_values('depth')
         cutoff = sorted_group[quality].sum() / 2
-        median_depth = sorted_group[sorted_group[quality].cumsum() >= cutoff].iloc[0]['Depth']
+        median_depth = sorted_group[sorted_group[quality].cumsum() >= cutoff].iloc[0]['depth']
         
-        return pd.Series({'Chrom_Mean': mean_depth, 'Chrom_Median': median_depth})
+        return pd.Series({'chrom_mean': mean_depth, 'chrom_median': median_depth})
 
-    depth_by_chrom_good = distribution.groupby('Accession').apply(calculate_mean_median, 'Count_Good', include_groups=False).reset_index()
-    global_good = calculate_mean_median(distribution, 'Count_Good').reset_index()
+    depth_by_chrom_good = distribution.groupby('accession').apply(calculate_mean_median, 'count_good', include_groups=False).reset_index()
+    global_good = calculate_mean_median(distribution, 'count_good').reset_index()
 
-    depth_by_chrom_good['Global_Mean'] = global_good[0][0]
-    depth_by_chrom_good['Global_Median'] = global_good[0][1]
-    depth_by_chrom_good['Global_Mode'] = global_mode
-    depth_by_chrom_good['Norm_Chrom_Mean'] = depth_by_chrom_good['Chrom_Mean'] / global_mode
-    depth_by_chrom_good['Norm_Chrom_Median'] = depth_by_chrom_good['Chrom_Median'] / global_mode
-    depth_by_chrom_good['Norm_Global_Mean'] = depth_by_chrom_good['Global_Mean'] / global_mode
-    depth_by_chrom_good['Norm_Global_Median'] = depth_by_chrom_good['Global_Median'] / global_mode
-    depth_by_chrom_good['Sample'] = sample
+    depth_by_chrom_good['global_mean'] = global_good[0][0]
+    depth_by_chrom_good['global_median'] = global_good[0][1]
+    depth_by_chrom_good['global_mode'] = global_mode
+    depth_by_chrom_good['norm_chrom_mean'] = depth_by_chrom_good['chrom_mean'] / global_mode
+    depth_by_chrom_good['norm_chrom_median'] = depth_by_chrom_good['chrom_median'] / global_mode
+    depth_by_chrom_good['norm_global_mean'] = depth_by_chrom_good['global_mean'] / global_mode
+    depth_by_chrom_good['norm_global_median'] = depth_by_chrom_good['global_median'] / global_mode
+    depth_by_chrom_good['sample'] = sample
     depth_by_chrom_good = depth_by_chrom_good.round(2)
-    depth_by_chrom_good = depth_by_chrom_good[ ['Sample'] + [ col for col in depth_by_chrom_good.columns if col != 'Sample' ] ]
+    depth_by_chrom_good = depth_by_chrom_good[ ['sample'] + [ col for col in depth_by_chrom_good.columns if col != 'sample' ] ]
 
 
-    depth_by_chrom_raw = distribution.groupby('Accession').apply(calculate_mean_median, 'Count_Raw', include_groups=False).reset_index()
-    global_raw = calculate_mean_median(distribution, 'Count_Raw').reset_index()
+    depth_by_chrom_raw = distribution.groupby('accession').apply(calculate_mean_median, 'count_raw', include_groups=False).reset_index()
+    global_raw = calculate_mean_median(distribution, 'count_raw').reset_index()
 
-    depth_by_chrom_raw['Global_Mean'] = global_raw[0][0]
-    depth_by_chrom_raw['Global_Median'] = global_raw[0][1]
-    depth_by_chrom_raw['Sample'] = sample
-    depth_by_chrom_raw = depth_by_chrom_raw[ ['Sample'] + [ col for col in depth_by_chrom_raw.columns if col != 'Sample' ] ]
+    depth_by_chrom_raw['global_mean'] = global_raw[0][0]
+    depth_by_chrom_raw['global_median'] = global_raw[0][1]
+    depth_by_chrom_raw['sample'] = sample
+    depth_by_chrom_raw = depth_by_chrom_raw[ ['sample'] + [ col for col in depth_by_chrom_raw.columns if col != 'sample' ] ]
 
 
     depth_by_chrom_good.to_csv(chromosome_good_out, index=False, sep = "\t")

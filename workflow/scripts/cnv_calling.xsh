@@ -12,66 +12,66 @@ from pathlib import Path
 @click.option('-wp', '--window_size', help='Size of windows in the depth BED file.', type=int)
 @click.option('-dp', '--depth_threshold', help='Threshold to define copy number variation in smoothed normalzed depth.', type=click.types.FloatRange(min=0.0))
 @click.option('-co', '--cnv_output', help='Path to output table of CNV calling.', type=click.Path())
-def intersect_repeats(depth_input, repeats_input, sample_name, window_size, depth_threshold, cnv_output):
+def cnv_calling(depth_input, repeats_input, sample_name, window_size, depth_threshold, cnv_output):
     print("Merge overlapping repeats and intersect with windows.")
     intersect = $(bedtools intersect -a @(depth_input) -b @(repeats_input) -wao)
 
     print("Reorganize intersection.")
     df = pd.read_csv(io.StringIO(intersect), sep='\t', header=None)
-    header = ['bed_Accession', 'bed_Start', 'bed_End','bed_Depth', 'bed_Norm_Depth', 'bed_Smooth_Depth', 'r_Accession', 'r_Start', 'r_End', 'r_Type', 'Overlap_bp'] 
+    header = ['bed_accession', 'bed_start', 'bed_end','bed_depth', 'bed_norm_depth', 'bed_smooth_depth', 'r_accession', 'r_start', 'r_end', 'r_type', 'overlap_bp'] 
     df.columns = header
 
     print("Calculate overlap in base pairs.")
-    df = df.drop(['r_Accession', 'r_Start', 'r_End'], axis=1)
-    df['r_Type_mix'] = df.groupby(['bed_Accession', 'bed_Start', 'bed_End', 'bed_Depth', 'bed_Norm_Depth', 'bed_Smooth_Depth'])['r_Type'].transform(lambda x: ','.join(x))
-    df['Overlap_bp_sum'] = df.groupby(['bed_Accession', 'bed_Start', 'bed_End', 'bed_Depth', 'bed_Norm_Depth', 'bed_Smooth_Depth'])['Overlap_bp'].transform('sum')
-    df = df.drop(['r_Type', 'Overlap_bp'], axis=1)
+    df = df.drop(['r_accession', 'r_start', 'r_end'], axis=1)
+    df['r_type_mix'] = df.groupby(['bed_accession', 'bed_start', 'bed_end', 'bed_depth', 'bed_norm_depth', 'bed_smooth_depth'])['r_type'].transform(lambda x: ','.join(x))
+    df['overlap_bp_sum'] = df.groupby(['bed_accession', 'bed_start', 'bed_end', 'bed_depth', 'bed_norm_depth', 'bed_smooth_depth'])['overlap_bp'].transform('sum')
+    df = df.drop(['r_type', 'overlap_bp'], axis=1)
     df = df.drop_duplicates()
-    df.rename(columns={'r_Type_mix': 'r_Type', 'Overlap_bp_sum': 'Overlap_bp'}, inplace=True)    
+    df.rename(columns={'r_type_mix': 'r_type', 'overlap_bp_sum': 'overlap_bp'}, inplace=True)    
     df = df.reset_index(drop=True)
 
     print("Calculate fraction of window with repetitive sequences.")
     repeats_fragments = df.copy()
-    repeats_fragments['Repeat_fraction'] = (repeats_fragments['Overlap_bp'] / window_size).round(2)
+    repeats_fragments['repeat_fraction'] = (repeats_fragments['overlap_bp'] / window_size).round(2)
     repeats_fragments.columns = repeats_fragments.columns.str.replace('bed_', '')
-    repeats_fragments['Sample'] = sample_name
+    repeats_fragments['sample'] = sample_name
 
     print("Define copy-number of regions.")
     cnv_regions = pd.DataFrame()
-    for accession in repeats_fragments['Accession'].unique():
-        regions_merged = repeats_fragments[repeats_fragments['Accession'] == accession].copy()
-        regions_merged.loc[:, 'CNV'] = 'HAPLOID'
+    for accession in repeats_fragments['accession'].unique():
+        regions_merged = repeats_fragments[repeats_fragments['accession'] == accession].copy()
+        regions_merged.loc[:, 'cnv'] = 'haploid'
         regions_merged = regions_merged.reset_index(drop=True)
         for i in range(len(regions_merged)):
-            if regions_merged.loc[i, 'Smooth_Depth'] > 1 + depth_threshold:
-                regions_merged.loc[i, 'CNV'] = "DUPLICATION"
-            elif regions_merged.loc[i, 'Smooth_Depth'] < 1 - depth_threshold:
-                regions_merged.loc[i, 'CNV'] = "DELETION"
+            if regions_merged.loc[i, 'smooth_depth'] > 1 + depth_threshold:
+                regions_merged.loc[i, 'cnv'] = "duplication"
+            elif regions_merged.loc[i, 'smooth_depth'] < 1 - depth_threshold:
+                regions_merged.loc[i, 'cnv'] = "deletion"
             else:
-                regions_merged.loc[i, 'CNV'] = "HAPLOID"
-        regions_merged.loc[:,'Region_index'] = 1
+                regions_merged.loc[i, 'cnv'] = "haploid"
+        regions_merged.loc[:,'region_index'] = 1
         for i in range(1, len(regions_merged)):
-            if regions_merged.loc[i, 'CNV'] == regions_merged.loc[i - 1, 'CNV']:
-                regions_merged.loc[i, 'Region_index'] = regions_merged.loc[i - 1, 'Region_index']
+            if regions_merged.loc[i, 'cnv'] == regions_merged.loc[i - 1, 'cnv']:
+                regions_merged.loc[i, 'region_index'] = regions_merged.loc[i - 1, 'region_index']
             else:
-                regions_merged.loc[i, 'Region_index'] = regions_merged.loc[i - 1, 'Region_index'] + 1
-        regions = regions_merged.groupby('Region_index').agg(Accession = ('Accession', 'first'),Start=('Start', 'first'), End=('End', 'last'), Depth = ('Depth', 'median'),Norm_Depth=('Norm_Depth', 'median'), Smooth_Depth=('Smooth_Depth', 'median'), CNV=('CNV', 'first'), Overlap_bp=('Overlap_bp', 'sum')).reset_index()
+                regions_merged.loc[i, 'region_index'] = regions_merged.loc[i - 1, 'region_index'] + 1
+        regions = regions_merged.groupby('region_index').agg(accession = ('accession', 'first'),start=('start', 'first'), end=('end', 'last'), depth = ('depth', 'median'),norm_depth=('norm_depth', 'median'), smooth_depth=('smooth_depth', 'median'), cnv=('cnv', 'first'), overlap_bp=('overlap_bp', 'sum')).reset_index()
         
-        regions['Region_Size'] = regions['End'] - regions['Start']
-        regions['Repeat_fraction'] = (regions['Overlap_bp'] / regions['Region_Size']).round(2)
-        regions = regions.drop(['Region_index'], axis=1)
+        regions['region_size'] = regions['end'] - regions['start']
+        regions['repeat_fraction'] = (regions['overlap_bp'] / regions['region_size']).round(2)
+        regions = regions.drop(['region_index'], axis=1)
         cnv_regions = pd.concat([cnv_regions, regions], ignore_index=True)
     print("Join regions with copy-number variants of all chromosomes.")
-    cnv_regions = cnv_regions[cnv_regions['CNV'] != 'HAPLOID']
+    cnv_regions = cnv_regions[cnv_regions['cnv'] != 'haploid']
     cnv_regions = cnv_regions.round(2)
-    cnv_regions['Sample'] = sample_name
+    cnv_regions['sample'] = sample_name
 
     print("Convert from 0-based to 1-based coordinates")    
-    cnv_regions['Start'] = cnv_regions['Start'] + 1
-    # Make directory if it doesn't exist
+    cnv_regions['start'] = cnv_regions['start'] + 1
+    print("Save CNV regions to file.")
     output_path = Path(cnv_output)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     cnv_regions.to_csv(output_path, sep='\t', index=False, header=True)
     
 if __name__ == '__main__':
-    intersect_repeats()
+    cnv_calling()
