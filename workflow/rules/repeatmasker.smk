@@ -7,23 +7,21 @@ rule repeat_modeler_build:
     input:
         rules.links.output,
     output:
-        INT_REFS_DIR / "{lineage}" / "repeats" / "RM_db" / "{lineage}.nsq",
+        INT_REFS_DIR / "{lineage}" / "repeats" / "db_rmodeler" / "{lineage}.nsq",
     params:
         repdir=lambda wildcards: INT_REFS_DIR / wildcards.lineage / "repeats",
         name=lambda wildcards: INT_REFS_DIR
         / wildcards.lineage
         / "repeats"
-        / "RM_db"
+        / "db_rmodeler"
         / wildcards.lineage,
     log:
         "logs/references/repeats/repeatmodeler_build_{lineage}.log",
     threads: config["cnv"]["repeats"]["repeats_threads"]
-    resources:
-        tmpdir=TEMPDIR,
     conda:
         "../envs/repeatmasker.yaml"
     shell:
-        "mkdir -p {params.repdir}/RM_db && "
+        "mkdir -p {params.repdir}/db_rmodeler && "
         "BuildDatabase "
         "-name {params.name} "
         "-engine ncbi "
@@ -36,31 +34,25 @@ rule repeat_modeler:
         database=rules.repeat_modeler_build.output,
         fasta=rules.links.output,
     output:
-        INT_REFS_DIR / "{lineage}" / "repeats" / "RM_db" / "{lineage}-families.fa",
+        INT_REFS_DIR / "{lineage}" / "repeats" / "db_rmodeler" / "{lineage}-families.fa",
     params:
-        repdir=lambda wildcards: INT_REFS_DIR
+        dir=lambda wildcards: INT_REFS_DIR
         / wildcards.lineage
         / "repeats"
-        / "RModeler",
-        db=lambda wildcards: INT_REFS_DIR
-        / wildcards.lineage
-        / "repeats"
-        / "RM_db"
-        / wildcards.lineage,
     log:
         "logs/references/repeats/repeatmodeler_{lineage}.log",
     threads: config["cnv"]["repeats"]["repeats_threads"]
-    resources:
-        tmpdir=TEMPDIR,
     conda:
         "../envs/repeatmasker.yaml"
     shell:
+        "wd=$(pwd) && "
+        "cd {params.dir} && "
         "RepeatModeler "
-        "-database {params.db} "
+        "-database db_rmodeler/{wildcards.lineage} "
         "-engine ncbi "
         "-pa {threads} "
-        "-dir {params.repdir} "
-        "&> {log}"
+        "&> $wd/{log} && "
+        "rm -r RM_* &>> $wd/{log}"
 
 
 rule repeat_modeler_separate:
@@ -71,8 +63,6 @@ rule repeat_modeler_separate:
         unknown=INT_REFS_DIR / "{lineage}" / "repeats" / "unknown.fasta",
     log:
         "logs/references/repeats/repeatmodeler_separate_{lineage}.log",
-    resources:
-        tmpdir=TEMPDIR,
     conda:
         "../envs/repeatmasker.yaml"
     shell:
@@ -90,24 +80,25 @@ rule repeat_masker_1:
         INT_REFS_DIR / "{lineage}" / "repeats" / "01_simple" / "{lineage}.fasta.out",
     params:
         dir=lambda wildcards: INT_REFS_DIR / wildcards.lineage / "repeats" / "01_simple",
+        tmp=lambda wildcards: INT_REFS_DIR / wildcards.lineage / "repeats"
     log:
         "logs/references/repeats/repeatmasker1_{lineage}.log",
     threads: config["cnv"]["repeats"]["repeats_threads"]
-    resources:
-        tmpdir=TEMPDIR,
     conda:
         "../envs/repeatmasker.yaml"
     shell:
+        "wd=$(pwd) && "
+        "cd {params.tmp} && "
         "RepeatMasker "
         "-pa {threads} "
-        "-lib {input.database} "
+        "-lib $wd/{input.database} "
         "-a "
         "-e ncbi "
-        "-dir {params.dir} "
+        "-dir $wd/{params.dir} "
         "-noint "
         "-xsmall "
-        "{input.fasta} "
-        "&> {log}"
+        "$wd/{input.fasta} "
+        "&> $wd/{log}"
 
 
 rule repeat_masker_2:
@@ -121,23 +112,24 @@ rule repeat_masker_2:
         / wildcards.lineage
         / "repeats"
         / "02_complex",
+        tmp=lambda wildcards: INT_REFS_DIR / wildcards.lineage / "repeats"
     log:
         "logs/references/repeats/repeatmasker2_{lineage}.log",
     threads: config["cnv"]["repeats"]["repeats_threads"]
-    resources:
-        tmpdir=TEMPDIR,
     conda:
         "../envs/repeatmasker.yaml"
     shell:
+        "wd=$(pwd) && "
+        "cd {params.tmp} && "
         "RepeatMasker "
         "-pa {threads} "
-        "-lib {input.database} "
+        "-lib $wd/{input.database} "
         "-a "
         "-e ncbi "
-        "-dir {params.dir} "
+        "-dir $wd/{params.dir} "
         "-nolow "
-        "{input.fasta} "
-        "&> {log}"
+        "$wd/{input.fasta} "
+        "&> $wd/{log}"
 
 
 rule repeat_masker_3:
@@ -148,22 +140,23 @@ rule repeat_masker_3:
         INT_REFS_DIR / "{lineage}" / "repeats" / "03_known" / "{lineage}.fasta.out",
     params:
         dir=lambda wildcards: INT_REFS_DIR / wildcards.lineage / "repeats" / "03_known",
+        tmp=lambda wildcards: INT_REFS_DIR / wildcards.lineage / "repeats"
     log:
         "logs/references/repeats/repeatmasker3_{lineage}.log",
     threads: config["cnv"]["repeats"]["repeats_threads"]
-    resources:
-        tmpdir=TEMPDIR,
     conda:
         "../envs/repeatmasker.yaml"
     shell:
+        "wd=$(pwd) && "
+        "cd {params.tmp} && "
         "RepeatMasker "
         "-pa {threads} "
-        "-lib {input.known} "
+        "-lib $wd/{input.known} "
         "-a "
         "-e ncbi "
-        "-dir {params.dir} "
-        "-nolow {input.fasta} "
-        "&> {log}"
+        "-dir $wd/{params.dir} "
+        "-nolow $wd/{input.fasta} "
+        "&> $wd/{log}"
 
 
 rule repeat_masker_4:
@@ -177,23 +170,24 @@ rule repeat_masker_4:
         / wildcards.lineage
         / "repeats"
         / "04_unknown",
+        tmp=lambda wildcards: INT_REFS_DIR / wildcards.lineage / "repeats"
     log:
         "logs/references/repeats/repeatmasker4_{lineage}.log",
     threads: config["cnv"]["repeats"]["repeats_threads"]
-    resources:
-        tmpdir=TEMPDIR,
     conda:
         "../envs/repeatmasker.yaml"
     shell:
+        "wd=$(pwd) && "
+        "cd {params.tmp} && "
         "RepeatMasker "
         "-pa {threads} "
-        "-lib {input.unknown} "
+        "-lib $wd/{input.unknown} "
         "-a "
         "-e ncbi "
-        "-dir {params.dir} "
+        "-dir $wd/{params.dir} "
         "-nolow "
-        "{input.fasta} "
-        "&> {log}"
+        "$wd/{input.fasta} "
+        "&> $wd/{log}"
 
 
 rule repeat_masker_bed:
@@ -209,8 +203,6 @@ rule repeat_masker_bed:
         unknown=INT_REFS_DIR / "{lineage}" / "repeats" / "04_unknown" / "{lineage}.bed",
     log:
         "logs/references/repeats/repeatmasker_combine_{lineage}.log",
-    resources:
-        tmpdir=TEMPDIR,
     conda:
         "../envs/repeatmasker.yaml"
     shell:
@@ -236,8 +228,6 @@ rule repeat_masker_combine:
         REFS_DIR / "{lineage}" / "{lineage}_repeats.bed",
     log:
         "logs/references/repeats/repeatmasker_combine_{lineage}.log",
-    resources:
-        tmpdir=TEMPDIR,
     conda:
         "../envs/repeatmasker.yaml"
     shell:
