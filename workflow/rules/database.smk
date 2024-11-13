@@ -1,19 +1,19 @@
 # =================================================================================================
 #   Join lineages | Create a single GFF file with all lineages
 # =================================================================================================
-rule join_gffs:
+rule join_ref_annotations:
     input:
         expand(REFS_DIR / "{lineage}" / "{lineage}.gff.tsv", lineage=LINEAGES),
     output:
         REFS_DIR / "all_lineages.gff.tsv",
     log:
-        "logs/references/join_gffs.log",
+        "logs/references/join_ref_annotations.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
         "../envs/snakemake.yaml"
     script:
-        "../scripts/join_gffs.py"
+        "../scripts/join_ref_annotations.py"
 
 
 # =================================================================================================
@@ -104,7 +104,7 @@ rule complete_db:
         chrom_names=rules.copy_config.output.c,
         cnv=rules.join_cnv.output,
         md=rules.join_mapq_depth.output,
-        gffs=rules.join_gffs.output,
+        gffs=rules.join_ref_annotations.output,
         effects=rules.join_variant_annotation.output.effects,
         variants=rules.join_variant_annotation.output.variants,
         presence=rules.join_variant_annotation.output.presence,
