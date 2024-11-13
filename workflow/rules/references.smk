@@ -160,6 +160,23 @@ rule ref2ref_liftoff:
         "&> {log}"
 
 
+rule refs_unmapped_features:
+    input:
+        DATASET_DIR / "metadata.csv",
+        rules.main_ref_recreate_ids.output.tsv,
+        expand(rules.ref2ref_liftoff.output.unmapped, lineage=LINEAGES),
+    output:
+        REFS_DIR / "refs_unmapped_features.tsv",
+    conda:
+        "../envs/r.yaml"
+    params:
+        refdir=REFS_DIR,
+    log:
+        "logs/references/refs_unmapped_features.log",
+    script:
+        "../scripts/refs_unmapped_features.R"
+
+
 # ==================================================================================================
 #   Per lineage | Add repetitive sequences, introns, intergenic regions, and convert to TSV
 # ==================================================================================================

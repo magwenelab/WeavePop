@@ -80,7 +80,7 @@ LINEAGE_REFERENCE = pd.DataFrame(data=d).set_index("lineage", drop=False)
 
 
 # =================================================================================================
-#   Functions for input functions
+#   Input functions
 # =================================================================================================
 def snippy_input(wildcards):
     s = SAMPLE_REFERENCE.loc[wildcards.unf_sample,]
@@ -172,6 +172,8 @@ LINEAGES = listing_lineages
 # =================================================================================================
 #   Final output definition functions
 # =================================================================================================
+
+
 def get_unfiltered_output():
     final_output = expand(
         SAMPLES_DIR / "snippy" / "{unf_sample}" / "snps.consensus.fa", unf_sample=UNFILT_SAMPLES
@@ -189,12 +191,14 @@ def get_unfiltered_output():
         )
     )
     final_output.append(DATASET_DIR / "depth_quality" / "mapping_stats.tsv")
+    if config["annotate_references"]["activate"]:
+        final_output.append(REFS_DIR / "refs_unmapped_features.tsv")
     return final_output
 
 
 def get_dataset_output():
     final_output = []
-    final_output.append(INT_DATASET_DIR / "metadata.csv")
+    final_output.append(DATASET_DIR / "metadata.csv")
     final_output.append(INT_REFS_DIR / "chromosomes.csv")
     final_output.append(INT_REFS_DIR / "loci.csv")
     final_output.append(DATASET_DIR / "depth_quality" / "depth_by_chrom_good.tsv")
@@ -206,11 +210,6 @@ def get_dataset_output():
     if config["plotting"]["activate"]:
         final_output.append(DATASET_DIR / "plots" / "dataset_depth_by_chrom.png")
         final_output.append(DATASET_DIR / "plots" / "dataset_summary.png")
-        # if config["annotate_references"]["activate"]:
-        #     final_output.append(REFS_DIR / "lifotff" / "unmapped_count.tsv")
-        #     final_output.append(REFS_DIR / "lifotff" / "unmapped.svg")
-        #     final_output.append(DATASET_DIR / "liftoff" / "unmapped_count.tsv")
-        #     final_output.append(DATASET_DIR / "liftoff" / "unmapped.svg")
     if config["database"]["activate"]:
         final_output.append(expand(DATASET_DIR / "database.db"))
     return final_output
@@ -264,7 +263,4 @@ def get_filtered_output():
         final_output = final_output, expand(
             SAMPLES_DIR / "plots" / "{sample}" / "depth_by_chrom.png", sample=SAMPLES
         )
-        # if not config["annotate_references"]["activate"]:
-        #     final_output = final_output, expand(DATASET_DIR / "liftoff" / "{lineage}_unmapped_count.tsv", lineage=LINEAGES)
-        #     final_output = final_output, expand(DATASET_DIR / "plots" / "{lineage}_unmapped.svg", lineage=LINEAGES)
     return final_output

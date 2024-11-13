@@ -5,7 +5,7 @@
 
 rule dataset_summary_plot:
     input:
-        INT_DATASET_DIR / "metadata.csv",
+        DATASET_DIR / "metadata.csv",
         rules.copy_config.output.c,
         rules.join_depth_by_chrom_good.output,
         rules.join_depth_by_chrom_raw.output,
@@ -29,7 +29,7 @@ rule dataset_summary_plot:
 
 rule dataset_depth_by_chrom_plot:
     input:
-        INT_DATASET_DIR / "metadata.csv",
+        DATASET_DIR / "metadata.csv",
         rules.copy_config.output.c,
         rules.join_depth_by_chrom_good.output,
     output:
