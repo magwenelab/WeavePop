@@ -135,6 +135,7 @@ def cnv_calling_input(wildcards):
         "repeats": REFS_DIR / s["lineage"] / (s["lineage"] + "_repeats.bed"),
     }
 
+
 def intersect_vcfs_input(wildcards):
     sample_wildcards = listing_samples(wildcards)
     l = LINEAGE_REFERENCE[LINEAGE_REFERENCE["sample"].isin(sample_wildcards)]
@@ -173,20 +174,13 @@ LINEAGES = listing_lineages
 # =================================================================================================
 def get_unfiltered_output():
     final_output = expand(
-        SAMPLES_DIR / "snippy" / "{unf_sample}" / "snps.consensus.fa",
-        unf_sample=UNFILT_SAMPLES
+        SAMPLES_DIR / "snippy" / "{unf_sample}" / "snps.consensus.fa", unf_sample=UNFILT_SAMPLES
     )
     final_output.extend(
-        expand(
-            SAMPLES_DIR / "snippy" / "{unf_sample}" / "snps.bam",
-            unf_sample=UNFILT_SAMPLES
-        )
+        expand(SAMPLES_DIR / "snippy" / "{unf_sample}" / "snps.bam", unf_sample=UNFILT_SAMPLES)
     )
     final_output.extend(
-        expand(
-            SAMPLES_DIR / "snippy" / "{unf_sample}" / "snps.vcf.gz",
-            unf_sample=UNFILT_SAMPLES
-        )
+        expand(SAMPLES_DIR / "snippy" / "{unf_sample}" / "snps.vcf.gz", unf_sample=UNFILT_SAMPLES)
     )
     final_output.extend(
         expand(

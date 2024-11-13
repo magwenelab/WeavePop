@@ -64,6 +64,7 @@ rule ref_fix_descriptions:
         "-c {input.config} "
         "&> {log}"
 
+
 rule ref_gff2tsv_1:
     input:
         gff=rules.ref_fix_descriptions.output.fixed_description,
@@ -88,7 +89,7 @@ rule ref_recreate_ids:
     input:
         tsv=rules.ref_gff2tsv_1.output.tsv,
     output:
-        gff=INT_REFS_DIR /  "{lineage}" / "{lineage}_2.gff",
+        gff=INT_REFS_DIR / "{lineage}" / "{lineage}_2.gff",
         tsv=INT_REFS_DIR / "{lineage}" / "{lineage}_2.gff.tsv",
     log:
         "logs/references/ref_recreate_ids_{lineage}.log",
@@ -102,6 +103,7 @@ rule ref_recreate_ids:
         "-og {output.gff} "
         "-ot {output.tsv} "
         "&> {log}"
+
 
 rule ref_add_introns:
     input:
@@ -203,7 +205,8 @@ rule ref_reformat_annotation:
         "../envs/snakemake.yaml"
     script:
         "../scripts/reformat_annotation.py"
-    
+
+
 rule ref_sort_gff:
     input:
         gff=rules.ref_reformat_annotation.output.gff,
@@ -220,4 +223,3 @@ rule ref_sort_gff:
         "-o {output.gff} "
         "-c {input.config} "
         "&> {log} "
-

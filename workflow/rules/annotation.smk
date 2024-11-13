@@ -38,6 +38,7 @@ rule liftoff:
         "{input.target} "
         "{input.refgenome} &>> {log}"
 
+
 # =================================================================================================
 # Per sample | Annotate intergenic regions and introns
 # =================================================================================================
@@ -65,6 +66,7 @@ rule add_intergenic:
         "{params.extra} "
         "&> {log} "
 
+
 rule add_introns:
     input:
         gff=rules.add_intergenic.output.gff,
@@ -86,7 +88,8 @@ rule add_introns:
         "-c {input.config} "
         "{params.extra} "
         "&> {log} "
-    
+
+
 rule annotation_gff2tsv:
     input:
         gff=rules.add_introns.output.gff,
@@ -106,6 +109,7 @@ rule annotation_gff2tsv:
         "-c {input.config} "
         "&> {log} "
 
+
 rule reformat_annotation:
     input:
         tsv=rules.annotation_gff2tsv.output.tsv,
@@ -119,7 +123,8 @@ rule reformat_annotation:
     conda:
         "../envs/shell.yaml"
     script:
-        "../scripts/reformat_annotation.py"    
+        "../scripts/reformat_annotation.py"
+
 
 rule sort_gff:
     input:
@@ -240,4 +245,3 @@ rule prots2csv:
         "-t PROTEIN "
         "-o {output.csv} "
         "&> {log}"
-

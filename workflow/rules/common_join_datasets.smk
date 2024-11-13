@@ -51,15 +51,11 @@ def input_joining(wildcards):
         samps_dir_df = pd.read_csv(metadata, header=0)
         samps = samps_dir_df["sample"]
         for samp in samps:
-            cnv = os.path.join(
-                dir, SAMPLES_DIR_NAME, "cnv", samp, "cnv_calls.tsv"
-            )
+            cnv = os.path.join(dir, SAMPLES_DIR_NAME, "cnv", samp, "cnv_calls.tsv")
             mapq_depth = os.path.join(
                 dir, SAMPLES_DIR_NAME, "depth_quality", samp, "feature_mapq_depth.tsv"
             )
-            cds = os.path.join(
-                dir, INTDIR_NAME, SAMPLES_DIR_NAME, "annotation", samp, "cds.csv"
-            )
+            cds = os.path.join(dir, INTDIR_NAME, SAMPLES_DIR_NAME, "annotation", samp, "cds.csv")
             prots = os.path.join(
                 dir, INTDIR_NAME, SAMPLES_DIR_NAME, "annotation", samp, "proteins.csv"
             )

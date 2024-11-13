@@ -56,18 +56,12 @@ rule prepare_refs_db:
         cds=rules.extract_cds_seqs.output.cds,
         prots=rules.extract_protein_seqs.output.prots,
     output:
-        gff=INT_REFS_DIR
-        / "snpeff_data"
-        / str(config["species_name"] + "_{lineage}")
-        / "genes.gff",
+        gff=INT_REFS_DIR / "snpeff_data" / str(config["species_name"] + "_{lineage}") / "genes.gff",
         fasta=INT_REFS_DIR
         / "snpeff_data"
         / str(config["species_name"] + "_{lineage}")
         / "sequences.fa",
-        cds=INT_REFS_DIR
-        / "snpeff_data"
-        / str(config["species_name"] + "_{lineage}")
-        / "cds.fa",
+        cds=INT_REFS_DIR / "snpeff_data" / str(config["species_name"] + "_{lineage}") / "cds.fa",
         prots=INT_REFS_DIR
         / "snpeff_data"
         / str(config["species_name"] + "_{lineage}")

@@ -210,7 +210,7 @@ rule ref_add_intergenic:
         "{params.extra} "
         "&> {log}"
 
-    
+
 rule ref_add_repeats:
     input:
         gff=rules.ref_add_intergenic.output,

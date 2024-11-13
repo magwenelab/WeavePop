@@ -36,9 +36,7 @@ rule repeat_modeler:
     output:
         INT_REFS_DIR / "{lineage}" / "repeats" / "db_rmodeler" / "{lineage}-families.fa",
     params:
-        dir=lambda wildcards: INT_REFS_DIR
-        / wildcards.lineage
-        / "repeats"
+        dir=lambda wildcards: INT_REFS_DIR / wildcards.lineage / "repeats",
     log:
         "logs/references/repeats/repeatmodeler_{lineage}.log",
     threads: config["cnv"]["repeats"]["repeats_threads"]
@@ -80,7 +78,7 @@ rule repeat_masker_1:
         INT_REFS_DIR / "{lineage}" / "repeats" / "01_simple" / "{lineage}.fasta.out",
     params:
         dir=lambda wildcards: INT_REFS_DIR / wildcards.lineage / "repeats" / "01_simple",
-        tmp=lambda wildcards: INT_REFS_DIR / wildcards.lineage / "repeats"
+        tmp=lambda wildcards: INT_REFS_DIR / wildcards.lineage / "repeats",
     log:
         "logs/references/repeats/repeatmasker1_{lineage}.log",
     threads: config["cnv"]["repeats"]["repeats_threads"]
@@ -108,11 +106,8 @@ rule repeat_masker_2:
     output:
         INT_REFS_DIR / "{lineage}" / "repeats" / "02_complex" / "{lineage}.fasta.out",
     params:
-        dir=lambda wildcards: INT_REFS_DIR
-        / wildcards.lineage
-        / "repeats"
-        / "02_complex",
-        tmp=lambda wildcards: INT_REFS_DIR / wildcards.lineage / "repeats"
+        dir=lambda wildcards: INT_REFS_DIR / wildcards.lineage / "repeats" / "02_complex",
+        tmp=lambda wildcards: INT_REFS_DIR / wildcards.lineage / "repeats",
     log:
         "logs/references/repeats/repeatmasker2_{lineage}.log",
     threads: config["cnv"]["repeats"]["repeats_threads"]
@@ -140,7 +135,7 @@ rule repeat_masker_3:
         INT_REFS_DIR / "{lineage}" / "repeats" / "03_known" / "{lineage}.fasta.out",
     params:
         dir=lambda wildcards: INT_REFS_DIR / wildcards.lineage / "repeats" / "03_known",
-        tmp=lambda wildcards: INT_REFS_DIR / wildcards.lineage / "repeats"
+        tmp=lambda wildcards: INT_REFS_DIR / wildcards.lineage / "repeats",
     log:
         "logs/references/repeats/repeatmasker3_{lineage}.log",
     threads: config["cnv"]["repeats"]["repeats_threads"]
@@ -166,11 +161,8 @@ rule repeat_masker_4:
     output:
         INT_REFS_DIR / "{lineage}" / "repeats" / "04_unknown" / "{lineage}.fasta.out",
     params:
-        dir=lambda wildcards: INT_REFS_DIR
-        / wildcards.lineage
-        / "repeats"
-        / "04_unknown",
-        tmp=lambda wildcards: INT_REFS_DIR / wildcards.lineage / "repeats"
+        dir=lambda wildcards: INT_REFS_DIR / wildcards.lineage / "repeats" / "04_unknown",
+        tmp=lambda wildcards: INT_REFS_DIR / wildcards.lineage / "repeats",
     log:
         "logs/references/repeats/repeatmasker4_{lineage}.log",
     threads: config["cnv"]["repeats"]["repeats_threads"]
