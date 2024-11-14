@@ -9,7 +9,7 @@ from pathlib import Path
 from snakemake.utils import validate
 
 # =================================================================================================
-#   Global variables
+#   Define global variables and validate input files using schemas
 # =================================================================================================
 
 UNFILT_SAMPLE_FILE = config["samples"]
@@ -52,8 +52,9 @@ else:
     LOCI_FILE = SAMPLES_DIR / "loci_empty.txt"
     with open(LOCI_FILE, "w") as f:
         f.write("")
+
 # =================================================================================================
-#   Variables for the Module: Reference genomes annotation
+#   Variables for the module Reference annotation
 # =================================================================================================
 
 if config["annotate_references"]["activate"]:
@@ -78,10 +79,10 @@ d = {
 SAMPLE_REFERENCE = pd.DataFrame(data=d).set_index("sample", drop=False)
 LINEAGE_REFERENCE = pd.DataFrame(data=d).set_index("lineage", drop=False)
 
+# =================================================================================================
+#   Input functions for rules
+# =================================================================================================
 
-# =================================================================================================
-#   Input functions
-# =================================================================================================
 def snippy_input(wildcards):
     s = SAMPLE_REFERENCE.loc[wildcards.unf_sample,]
     return {
@@ -147,13 +148,11 @@ def intersect_vcfs_input(wildcards):
 #   Checkpoint functions
 # =================================================================================================
 
-
 def listing_samples(wildcards):
     checkpoint_output = checkpoints.filtered_samples.get(**wildcards).output[0]
     return expand(
         "{sample}", sample=glob_wildcards(os.path.join(checkpoint_output, "{sample}.txt")).sample
     )
-
 
 SAMPLES = listing_samples
 
@@ -165,7 +164,6 @@ def listing_lineages(wildcards):
         lineage=glob_wildcards(os.path.join(checkpoint_output, "{lineage}.txt")).lineage,
     )
 
-
 LINEAGES = listing_lineages
 
 
@@ -173,7 +171,7 @@ LINEAGES = listing_lineages
 #   Final output definition functions
 # =================================================================================================
 
-
+# --Output previous to sample filtering------------------------------------------------------------
 def get_unfiltered_output():
     final_output = expand(
         SAMPLES_DIR / "snippy" / "{unf_sample}" / "snps.consensus.fa", unf_sample=UNFILT_SAMPLES
@@ -190,9 +188,6 @@ def get_unfiltered_output():
             unf_sample=UNFILT_SAMPLES,
         )
     )
-    final_output.append(DATASET_DIR / "depth_quality" / "mapping_stats.tsv")
-    if config["annotate_references"]["activate"]:
-        final_output.append(REFS_DIR / "refs_unmapped_features.tsv")
     return final_output
 
 
@@ -203,15 +198,20 @@ def get_dataset_output():
     final_output.append(INT_REFS_DIR / "loci.csv")
     final_output.append(DATASET_DIR / "depth_quality" / "depth_by_chrom_good.tsv")
     final_output.append(DATASET_DIR / "depth_quality" / "depth_by_chrom_raw.tsv")
+    final_output.append(DATASET_DIR / "depth_quality" / "mapping_stats.tsv")
     if config["cnv"]["activate"]:
         final_output.append(DATASET_DIR / "cnv" / "cnv_calls.tsv")
     if config["genes_mapq_depth"]["activate"]:
         final_output.append(DATASET_DIR / "depth_quality" / "feature_mapq_depth.tsv")
+    if config["snpeff"]["activate"]:
+        final_output.append(DATASET_DIR / "snps" / "effects.tsv")
     if config["plotting"]["activate"]:
         final_output.append(DATASET_DIR / "plots" / "dataset_depth_by_chrom.png")
         final_output.append(DATASET_DIR / "plots" / "dataset_summary.png")
     if config["database"]["activate"]:
         final_output.append(expand(DATASET_DIR / "database.db"))
+    if config["annotate_references"]["activate"]:
+        final_output.append(REFS_DIR / "refs_unmapped_features.tsv")
     return final_output
 
 
@@ -248,10 +248,6 @@ def get_filtered_output():
     if config["genes_mapq_depth"]["activate"]:
         final_output = final_output, expand(
             SAMPLES_DIR / "depth_quality" / "{sample}" / "feature_mapq_depth.tsv", sample=SAMPLES
-        )
-    if config["snpeff"]["activate"]:
-        final_output = final_output, expand(
-            INT_DATASET_DIR / "snps" / "{lineage}_effects.tsv", lineage=LINEAGES
         )
     if config["plotting"]["activate"]:
         final_output = final_output, expand(
