@@ -128,18 +128,23 @@ onstart:
 
 
 onsuccess:
-    original_metadata = pd.read_csv(UNFILT_SAMPLE_FILE, header=0)
-    filtered_metadata = pd.read_csv(rules.quality_filter.output.metadata, header=0)
-    if original_metadata["sample"].nunique() == filtered_metadata["sample"].nunique():
-        print("All samples passed the quality filter.", flush=True)
-    else:
-        print(
-            f"The quality filter removed "
-            f"{original_metadata['sample'].nunique()- filtered_metadata['sample'].nunique()} "
-            f"samples. See 04.Intermediate_files/02.Dataset/depth_quality/"
-            f"unfiltered_mapping_stats.tsv to check the quality warning of the removed samples.",
-            flush=True,
-        )
+    if config["workflow"] == "analysis":
+        print("Analysis workflow finished successfully!", flush=True)
+        original_metadata = pd.read_csv(UNFILT_SAMPLE_FILE, header=0)
+        filtered_metadata = pd.read_csv(rules.quality_filter.output.metadata, header=0)
+        if original_metadata["sample"].nunique() == filtered_metadata["sample"].nunique():
+            print("All samples passed the quality filter.", flush=True)
+        else:
+            print(
+                f"The quality filter removed "
+                f"{original_metadata['sample'].nunique()- filtered_metadata['sample'].nunique()} "
+                f"samples. See 04.Intermediate_files/02.Dataset/depth_quality/"
+                f"unfiltered_mapping_stats.tsv to check the quality warning of the removed samples.",
+                flush=True,
+            )
+    elif config["workflow"] == "join_datasets":
+        print("Join datasets workflow finished successfully!", flush=True)
+
 
 
 # =================================================================================================

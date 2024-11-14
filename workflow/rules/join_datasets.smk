@@ -5,9 +5,9 @@
 
 rule join_metadata:
     input:
-        expand(os.path.join("{dir}", INTDIR_NAME, DATASET_DIR_NAME, "metadata.csv"), dir=LIST_PATHS),
+        expand(os.path.join("{dir}", DATASET_DIR_NAME, "metadata.csv"), dir=LIST_PATHS),
     output:
-        INT_DATASET_DIR / "metadata.csv",
+        DATASET_DIR / "metadata.csv",
     params:
         config["datasets_names"].split(","),
     log:
@@ -99,19 +99,19 @@ rule join_mapq_depth:
         "../scripts/join_tables.py"
 
 
-rule join_gffs:
+rule join_ref_annotations:
     input:
-        input_join_gffs,
+        input_join_ref_annotations,
     output:
         INT_REFS_DIR / "all_lineages.gff.tsv",
     log:
-        "logs/join_datasets/join_gffs.log",
+        "logs/join_datasets/join_ref_annotations.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
         "../envs/snakemake.yaml"
     script:
-        "../scripts/join_gffs.py"
+        "../scripts/join_ref_annotations.py"
 
 
 # =================================================================================================
@@ -216,9 +216,20 @@ rule snpeff:
         "2> {log}"
 
 
+rule symlink_ref_gff:
+    input:
+        input_symlink_ref_gff,
+    output:
+        INT_REFS_DIR / "{lineage}.gff.tsv",
+    log:
+        "logs/join_datasets/symlink_ref_gff_{lineage}.log",
+    shell:
+        "ln -sr {input} {output} &> {log}"
+
 rule extract_vcf_annotation:
     input:
         vcf=rules.snpeff.output.vcf,
+        gff=rules.symlink_ref_gff.output,
     output:
         effects=INT_DATASET_DIR / "snps" / "{lineage}_effects.tsv",
         variants=INT_DATASET_DIR / "snps" / "{lineage}_variants.tsv",
@@ -233,6 +244,7 @@ rule extract_vcf_annotation:
     shell:
         "xonsh workflow/scripts/extract_vcf_annotation.xsh "
         "-i {input.vcf} "
+        "-g {input.gff} "
         "-e {output.effects} "
         "-v {output.variants} "
         "-f {output.lofs} "
@@ -269,11 +281,11 @@ rule join_variant_annotation:
 
 rule complete_db:
     input:
-        metadata=INT_DATASET_DIR / "metadata.csv",
+        metadata=DATASET_DIR / "metadata.csv",
         chrom_names=INT_REFS_DIR / "chromosomes.csv",
         cnv=rules.join_cnv.output,
         md=rules.join_mapq_depth.output,
-        gffs=rules.join_gffs.output,
+        gffs=rules.join_ref_annotations.output,
         effects=rules.join_variant_annotation.output.effects,
         variants=rules.join_variant_annotation.output.variants,
         presence=rules.join_variant_annotation.output.presence,

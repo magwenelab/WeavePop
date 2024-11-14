@@ -47,7 +47,7 @@ def input_joining(wildcards):
     paths_cds = []
     paths_prots = []
     for dir in LIST_PATHS:
-        metadata = os.path.join(dir, INTDIR_NAME, DATASET_DIR_NAME, "metadata.csv")
+        metadata = os.path.join(dir, DATASET_DIR_NAME, "metadata.csv")
         samps_dir_df = pd.read_csv(metadata, header=0)
         samps = samps_dir_df["sample"]
         for samp in samps:
@@ -87,14 +87,14 @@ def input_join_prots(wildcards):
     return input_joining(wildcards)["prots"]
 
 
-def input_join_gffs(wildcards):
+def input_join_ref_annotations(wildcards):
     paths = []
     for dir in LIST_PATHS:
-        metadata = os.path.join(dir, INTDIR_NAME, DATASET_DIR_NAME, "metadata.csv")
+        metadata = os.path.join(dir, DATASET_DIR_NAME, "metadata.csv")
         lineages_dir_df = pd.read_csv(metadata, header=0)
         lineages = set(lineages_dir_df["lineage"])
         for lineage in lineages:
-            gff = os.path.join(dir, INTDIR_NAME, REFS_DIR_NAME, lineage, f"{lineage}.gff.tsv")
+            gff = os.path.join(dir, REFS_DIR_NAME, lineage, f"{lineage}.gff.tsv")
             paths.append(gff)
     return paths
 
@@ -102,7 +102,7 @@ def input_join_gffs(wildcards):
 def input_copy_speff_data(wildcards):
     paths_snpeff_Data = {}
     for dir in LIST_PATHS:
-        metadata = os.path.join(dir, INTDIR_NAME, DATASET_DIR_NAME, "metadata.csv")
+        metadata = os.path.join(dir, DATASET_DIR_NAME, "metadata.csv")
         lins_dir_df = pd.read_csv(metadata, header=0)
         lins = lins_dir_df["lineage"]
         for lin in lins:
@@ -123,7 +123,7 @@ def input_copy_speff_data(wildcards):
 def input_intersect_vcfs(wildcards):
     paths = []
     for dir in LIST_PATHS:
-        metadata = os.path.join(dir, INTDIR_NAME, DATASET_DIR_NAME, "metadata.csv")
+        metadata = os.path.join(dir, DATASET_DIR_NAME, "metadata.csv")
         samps_dir_df = pd.read_csv(metadata, header=0)
         samps_dir_df = samps_dir_df.loc[samps_dir_df["lineage"] == wildcards.lineage]
         samps = samps_dir_df["sample"]
@@ -131,6 +131,18 @@ def input_intersect_vcfs(wildcards):
             vcf = os.path.join(dir, SAMPLES_DIR_NAME, "snippy", samp, "snps.vcf.gz")
             paths.append(vcf)
     return {"vcfs": paths}
+
+
+def input_symlink_ref_gff(wildcards):
+    paths = []
+    for dir in LIST_PATHS:
+        path = os.path.join(
+            dir, REFS_DIR_NAME, wildcards.lineage, f"{wildcards.lineage}.gff.tsv"
+        )
+        paths.append(path)
+    path = paths[0]
+    return path
+
 
 
 # =================================================================================================
