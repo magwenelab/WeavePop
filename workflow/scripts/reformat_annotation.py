@@ -8,11 +8,6 @@ input_tsv=snakemake.input.tsv
 output_tsv=snakemake.output.tsv
 output_gff=snakemake.output.gff
 
-if snakemake.params.files == "reference":
-    reference = True
-else:
-    reference = None
-
 logging.basicConfig(filename=log_file, level=logging.INFO, format='%(message)s')
 
 try:
@@ -52,9 +47,6 @@ try:
         "valid_ORF",
         "valid_ORFs"
     ]
-    if reference:
-        logging.info("Adding repeat_fraction column...")
-        attribute_columns.append('repeat_fraction')
     
     logging.info("Converting to GFF format...")
     df_gff = df.copy()
@@ -102,16 +94,10 @@ try:
         'feature_id', 'gene_id', 'parent', 'gene_name',  'description', 'old_feature_id',
         'identical_to_main_ref', 'start_stop_mutations']
     
-    if reference:
-        priority_columns.append('repeat_fraction')
-    
     existing_priority_columns = [column for column in priority_columns if column in existing_columns]
     
     other_columns = [column for column in existing_columns if column not in existing_priority_columns]
     df = df[existing_priority_columns + other_columns]
-    
-    if reference == None:
-        df = df.drop(columns=['repeat_fraction'])
     
     logging.info("Final column names:")
     logging.info(df.columns.tolist())

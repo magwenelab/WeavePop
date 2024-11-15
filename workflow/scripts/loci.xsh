@@ -20,12 +20,12 @@ def getloci(genefile, referencetsv, output):
     level1_bool = annotations.primary_tag.str.contains("gene")     
     level1 = annotations[level1_bool]
 
-    if not 'locus_tag' in level1.columns:
-        level1 = level1.assign(locus_tag = level1.ID)
+    # if not 'locus_tag' in level1.columns:
+    #     level1 = level1.assign(locus_tag = level1.ID)
 
-    mygenes= pd.read_csv(Path(genefile), sep=',', header=0,  names=("locus_tag", "loci"))
-    myloci=level1.set_index('locus_tag').join(mygenes.set_index('locus_tag'))
-    myloci['locus_tag'] = myloci.index
+    mygenes= pd.read_csv(Path(genefile), sep=',', header=0,  names=("gene_id", "loci"))
+    myloci=level1.set_index('gene_id').join(mygenes.set_index('gene_id'))
+    myloci['gene_id'] = myloci.index
     myloci.dropna(subset=['loci'], inplace=True)
 
     myloci.to_csv(output,index= False, sep ='\t')

@@ -102,7 +102,7 @@ rule join_variant_annotation:
 rule complete_db:
     input:
         metadata=rules.quality_filter.output.metadata,
-        chrom_names=rules.copy_config.output.c,
+        chrom_names=rules.copy_chromosomes.output,
         cnv=rules.join_cnv.output,
         md=rules.join_mapq_depth.output,
         gffs=rules.join_ref_annotations.output,

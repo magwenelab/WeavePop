@@ -22,9 +22,9 @@ rule join_metadata:
 
 rule join_chromosomes:
     input:
-        expand(os.path.join("{dir}", INTDIR_NAME, REFS_DIR_NAME, "chromosomes.csv"), dir=LIST_PATHS),
+        expand(os.path.join("{dir}", DATSET_DIR_NAME, "chromosomes.csv"), dir=LIST_PATHS),
     output:
-        INT_REFS_DIR / "chromosomes.csv",
+        DATASET_DIR / "chromosomes.csv",
     log:
         "logs/join_datasets/join_chromosomes.log",
     resources:

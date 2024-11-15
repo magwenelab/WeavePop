@@ -3,7 +3,7 @@
 # =================================================================================================
 
 
-# Create softlinks to have the reference genomes in the REFS_DIR
+# Create softlinks to have the reference genomes in the INT_REFS_DIR
 rule links:
     input:
         REF_DATA / "{lineage}.fasta",
@@ -19,25 +19,22 @@ rule links:
         "ln -s -r {input} {output} 2> {log}"
 
 
-rule copy_config:
+rule copy_chromosomes:
     input:
-        c=CHROM_NAMES,
-        l=LOCI_FILE,
+        CHROM_NAMES,
     output:
-        c=INT_REFS_DIR / "chromosomes.csv",
-        l=INT_REFS_DIR / "loci.csv",
+        DATASET_DIR / "chromosomes.csv",
     log:
-        "logs/references/copy_config.log",
+        "logs/references/copy_chromosomes.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
         "../envs/shell.yaml"
     shell:
         """
-        rsync {input.c} {output.c} 2> {log}
-        rsync {input.l} {output.l} 2> {log}
+        rsync {input} {output} 2> {log}
         """
-
+        
 
 # Edit the agat config file to avoid creating log files
 rule agat_config:

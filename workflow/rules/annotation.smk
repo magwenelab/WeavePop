@@ -116,8 +116,6 @@ rule reformat_annotation:
     output:
         tsv=SAMPLES_DIR / "annotation" / "{sample}" / "annotation.gff.tsv",
         gff=INT_SAMPLES_DIR / "annotation" / "{sample}" / "annotation.gff",
-    params:
-        files="sample",
     log:
         "logs/samples/annotation/reformat_annotation_{sample}.log",
     conda:

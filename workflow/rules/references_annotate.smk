@@ -182,32 +182,9 @@ rule refs_unmapped_features:
 # ==================================================================================================
 
 
-rule ref_add_introns:
-    input:
-        gff=rules.ref2ref_liftoff.output.target_gff,
-        config=rules.agat_config.output,
-    output:
-        INT_REFS_DIR / "{lineage}" / "{lineage}_introns.gff",
-    params:
-        extra=config["agat"]["extra"],
-    log:
-        "logs/references/ref_add_introns_{lineage}.log",
-    resources:
-        tmpdir=TEMPDIR,
-    conda:
-        "../envs/agat.yaml"
-    shell:
-        "agat_sp_add_introns.pl "
-        "-g {input.gff} "
-        "-o {output} "
-        "-c {input.config} "
-        "{params.extra} "
-        "&> {log}"
-
-
 rule ref_add_intergenic:
     input:
-        gff=rules.ref_add_introns.output,
+        gff=rules.ref2ref_liftoff.output.target_gff,
         config=rules.agat_config.output,
     output:
         INT_REFS_DIR / "{lineage}" / "{lineage}_intergenic.gff",
@@ -228,32 +205,35 @@ rule ref_add_intergenic:
         "&> {log}"
 
 
-rule ref_add_repeats:
+rule ref_add_introns:
     input:
         gff=rules.ref_add_intergenic.output,
-        repeats=REFS_DIR / "{lineage}" / "{lineage}_repeats.bed",
+        config=rules.agat_config.output,
     output:
-        INT_REFS_DIR / "{lineage}" / "{lineage}_repeats.gff",
+        gff=INT_REFS_DIR / "{lineage}" / "{lineage}_introns.gff",
+    params:
+        extra=config["agat"]["extra"],
     log:
-        "logs/references/ref_add_repeats_{lineage}.log",
+        "logs/references/ref_add_introns_{lineage}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
-        "../envs/samtools.yaml"
+        "../envs/agat.yaml"
     shell:
-        "xonsh workflow/scripts/ref_add_repeats.xsh "
+        "agat_sp_add_introns.pl "
         "-g {input.gff} "
-        "-r {input.repeats} "
-        "-o {output} "
+        "-o {output.gff} "
+        "-c {input.config} "
+        "{params.extra} "
         "&> {log}"
 
 
 rule ref_gff2tsv:
     input:
-        target=rules.ref_add_repeats.output,
+        target=rules.ref_add_introns.output.gff,
         config=rules.agat_config.output,
     output:
-        tsv=INT_REFS_DIR / "{lineage}" / "{lineage}.gff.tsv",
+        tsv=INT_REFS_DIR / "{lineage}" / "{lineage}_interg_introns.gff.tsv",
     log:
         "logs/references/gff2tsv_{lineage}.log",
     resources:
@@ -272,10 +252,8 @@ rule ref_reformat_annotation:
     input:
         tsv=rules.ref_gff2tsv.output.tsv,
     output:
-        tsv=REFS_DIR / "{lineage}" / "{lineage}.gff.tsv",
-        gff=INT_REFS_DIR / "{lineage}" / "{lineage}.gff",
-    params:
-        files="reference",
+        tsv=INT_REFS_DIR / "{lineage}" / "{lineage}_reformated_.gff.tsv",
+        gff=INT_REFS_DIR / "{lineage}" / "{lineage}_reformated_.gff",
     log:
         "logs/references/ref_reformat_annotation_{lineage}.log",
     conda:
@@ -289,7 +267,7 @@ rule ref_sort_gff:
         gff=rules.ref_reformat_annotation.output.gff,
         config=rules.agat_config.output,
     output:
-        gff=REFS_DIR / "{lineage}" / "{lineage}.gff",
+        gff=INT_REFS_DIR / "{lineage}" / "{lineage}_reformated_sorted.gff",
     log:
         "logs/references/ref_sort_gff_{lineage}.log",
     conda:
@@ -300,3 +278,43 @@ rule ref_sort_gff:
         "-o {output.gff} "
         "-c {input.config} "
         "&> {log} "
+
+
+rule ref_add_repeats:
+    input:
+        gff=rules.ref_sort_gff.output.gff,
+        repeats=REFS_DIR / "{lineage}" / "{lineage}_repeats.bed",
+    output:
+        REFS_DIR / "{lineage}" / "{lineage}.gff",
+    log:
+        "logs/references/ref_add_repeats_{lineage}.log",
+    resources:
+        tmpdir=TEMPDIR,
+    conda:
+        "../envs/samtools.yaml"
+    shell:
+        "xonsh workflow/scripts/ref_add_repeats.xsh "
+        "-g {input.gff} "
+        "-r {input.repeats} "
+        "-o {output} "
+        "&> {log}"
+
+
+rule ref_gff2tsv_2:
+    input:
+        target=rules.ref_add_repeats.output,
+        config=rules.agat_config.output,
+    output:
+        tsv=REFS_DIR / "{lineage}" / "{lineage}.gff.tsv",
+    log:
+        "logs/references/gff2tsv_{lineage}.log",
+    resources:
+        tmpdir=TEMPDIR,
+    conda:
+        "../envs/agat.yaml"
+    shell:
+        "agat_convert_sp_gff2tsv.pl "
+        "-gff {input.target} "
+        "-c {input.config} "
+        "-o {output.tsv} "
+        "&> {log}"

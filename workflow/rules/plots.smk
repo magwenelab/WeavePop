@@ -5,8 +5,8 @@
 
 rule loci:
     input:
-        refs=expand(INT_REFS_DIR / "{lineage}" / "{lineage}.gff.tsv", lineage=LINEAGES),
-        loci=rules.copy_config.output.l,
+        refs=expand(INT_REFS_DIR / "{lineage}" / "{lineage}_reformated_.gff.tsv", lineage=LINEAGES),
+        loci=LOCI_FILE,
     output:
         locitable=INT_REFS_DIR / "loci_to_plot.tsv",
     log:
@@ -29,7 +29,7 @@ rule loci:
 rule depth_distribution_plots:
     input:
         INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_distribution.tsv",
-        rules.copy_config.output.c,
+        rules.copy_chromosomes.output,
     output:
         SAMPLES_DIR / "plots" / "{sample}" / "depth_chrom_distribution.png",
         SAMPLES_DIR / "plots" / "{sample}" / "depth_global_distribution.png",

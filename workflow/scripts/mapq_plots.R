@@ -33,7 +33,7 @@ chrom_names$accession_chromosome <- factor(chrom_names$accession_chromosome, lev
 print("Joining and arranging data...")
 raw <- left_join(raw, chrom_names, by = "accession")
 loci <- loci %>% 
-  select(accession = seq_id, start, loci)%>%
+  select(accession, start, loci)%>%
   filter(accession %in% unique(raw$accession))
 lineage <- levels(as.factor(raw$lineage))
 

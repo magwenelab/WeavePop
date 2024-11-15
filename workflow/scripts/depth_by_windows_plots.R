@@ -102,7 +102,7 @@ print("Adding loci data if available...")
 if (nrow(loci_table)!= 0){
   print("Rearrange loci data")
   loci_sample <- loci_table %>% 
-      select(accession = seq_id, start = start, end = end,loci)%>%
+      select(accession, start , end , loci)%>%
       filter(accession %in% depth_windows$accession)%>%
       mutate(track = "loci")%>%
       droplevels()

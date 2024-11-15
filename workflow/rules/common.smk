@@ -73,7 +73,8 @@ d = {
     "refgenome": INT_REFS_DIR
     / UNFILT_SAMPLE_TABLE["lineage"]
     / (UNFILT_SAMPLE_TABLE["lineage"] + ".fasta"),
-    "refgff": REFS_DIR / UNFILT_SAMPLE_TABLE["lineage"] / (UNFILT_SAMPLE_TABLE["lineage"] + ".gff"),
+    "refgff": INT_REFS_DIR / UNFILT_SAMPLE_TABLE["lineage"] 
+    / (UNFILT_SAMPLE_TABLE["lineage"] + "_intergenic.gff"),
 }
 
 SAMPLE_REFERENCE = pd.DataFrame(data=d).set_index("sample", drop=False)
@@ -182,36 +183,6 @@ def get_unfiltered_output():
     final_output.extend(
         expand(SAMPLES_DIR / "snippy" / "{unf_sample}" / "snps.vcf.gz", unf_sample=UNFILT_SAMPLES)
     )
-    final_output.extend(
-        expand(
-            SAMPLES_DIR / "depth_quality" / "{unf_sample}" / "mapping_stats.tsv",
-            unf_sample=UNFILT_SAMPLES,
-        )
-    )
-    return final_output
-
-
-def get_dataset_output():
-    final_output = []
-    final_output.append(DATASET_DIR / "metadata.csv")
-    final_output.append(INT_REFS_DIR / "chromosomes.csv")
-    final_output.append(INT_REFS_DIR / "loci.csv")
-    final_output.append(DATASET_DIR / "depth_quality" / "depth_by_chrom_good.tsv")
-    final_output.append(DATASET_DIR / "depth_quality" / "depth_by_chrom_raw.tsv")
-    final_output.append(DATASET_DIR / "depth_quality" / "mapping_stats.tsv")
-    if config["cnv"]["activate"]:
-        final_output.append(DATASET_DIR / "cnv" / "cnv_calls.tsv")
-    if config["genes_mapq_depth"]["activate"]:
-        final_output.append(DATASET_DIR / "depth_quality" / "feature_mapq_depth.tsv")
-    if config["snpeff"]["activate"]:
-        final_output.append(DATASET_DIR / "snps" / "effects.tsv")
-    if config["plotting"]["activate"]:
-        final_output.append(DATASET_DIR / "plots" / "dataset_depth_by_chrom.png")
-        final_output.append(DATASET_DIR / "plots" / "dataset_summary.png")
-    if config["database"]["activate"]:
-        final_output.append(expand(DATASET_DIR / "database.db"))
-    if config["annotate_references"]["activate"]:
-        final_output.append(REFS_DIR / "refs_unmapped_features.tsv")
     return final_output
 
 
@@ -226,30 +197,15 @@ def get_filtered_output():
         SAMPLES_DIR / "annotation" / "{sample}" / "cds.fa", sample=SAMPLES
     )
     final_output = final_output, expand(
-        SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom_good.tsv", sample=SAMPLES
-    )
-    final_output = final_output, expand(
-        SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom_raw.tsv", sample=SAMPLES
-    )
-    final_output = final_output, expand(
         INT_REFS_DIR / "filtered_lineages" / "{lineage}.txt", lineage=LINEAGES
     )
-    if config["cnv"]["activate"]:
-        final_output = final_output, expand(
-            SAMPLES_DIR / "cnv" / "{sample}" / "cnv_calls.tsv", sample=SAMPLES
-        )
-        if config["plotting"]["activate"]:
-            final_output = final_output, expand(
-                SAMPLES_DIR / "plots" / "{sample}" / "depth_by_windows.png", sample=SAMPLES
-            )
-            final_output = final_output, expand(
-                SAMPLES_DIR / "plots" / "{sample}" / "mapq.png", sample=SAMPLES
-            )
-    if config["genes_mapq_depth"]["activate"]:
-        final_output = final_output, expand(
-            SAMPLES_DIR / "depth_quality" / "{sample}" / "feature_mapq_depth.tsv", sample=SAMPLES
-        )
     if config["plotting"]["activate"]:
+        final_output = final_output, expand(
+            SAMPLES_DIR / "plots" / "{sample}" / "depth_by_windows.png", sample=SAMPLES
+        )
+        final_output = final_output, expand(
+            SAMPLES_DIR / "plots" / "{sample}" / "mapq.png", sample=SAMPLES
+        )
         final_output = final_output, expand(
             SAMPLES_DIR / "plots" / "{sample}" / "depth_chrom_distribution.png", sample=SAMPLES
         )
@@ -259,4 +215,24 @@ def get_filtered_output():
         final_output = final_output, expand(
             SAMPLES_DIR / "plots" / "{sample}" / "depth_by_chrom.png", sample=SAMPLES
         )
+    return final_output
+
+def get_dataset_output():
+    final_output = []
+    final_output.append(DATASET_DIR / "metadata.csv")
+    final_output.append(DATASET_DIR / "chromosomes.csv")
+    final_output.append(DATASET_DIR / "depth_quality" / "mapping_stats.tsv")
+    if config["annotate_references"]["activate"]:
+        final_output.append(REFS_DIR / "refs_unmapped_features.tsv")
+    if config["genes_mapq_depth"]["activate"]:
+        final_output.append(DATASET_DIR / "depth_quality" / "feature_mapq_depth.tsv")
+    if config["snpeff"]["activate"]:
+        final_output.append(DATASET_DIR / "snps" / "effects.tsv")
+    if config["cnv"]["activate"]:
+        final_output.append(DATASET_DIR / "cnv" / "cnv_calls.tsv")
+    if config["plotting"]["activate"]:
+        final_output.append(DATASET_DIR / "plots" / "dataset_depth_by_chrom.png")
+        final_output.append(DATASET_DIR / "plots" / "dataset_summary.png")
+    if config["database"]["activate"]:
+        final_output.append(expand(DATASET_DIR / "database.db"))
     return final_output
