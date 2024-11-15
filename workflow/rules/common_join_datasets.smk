@@ -134,15 +134,16 @@ def input_intersect_vcfs(wildcards):
 
 
 def input_symlink_ref_gff(wildcards):
-    paths = []
+    paths = {}
     for dir in LIST_PATHS:
-        path = os.path.join(
-            dir, REFS_DIR_NAME, wildcards.lineage, f"{wildcards.lineage}.gff.tsv"
-        )
-        paths.append(path)
-    path = paths[0]
-    return path
-
+        metadata = os.path.join(dir, DATASET_DIR_NAME, "metadata.csv")
+        lineages_dir_df = pd.read_csv(metadata, header=0)
+        lineages = set(lineages_dir_df["lineage"])
+        for lineage in lineages:
+            gff = os.path.join(dir, REFS_DIR_NAME, lineage, f"{lineage}.gff.tsv")
+            paths[lineage] = gff
+    lineage_path = paths[wildcards.lineage]
+    return lineage_path
 
 
 # =================================================================================================
