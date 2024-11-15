@@ -57,12 +57,12 @@ if config["workflow"] == "analysis":
 
     else:
 
-        if config["cnv"]["activate"]:
+        if config["cnv"]["activate"] or config["plotting"]["activate"]:
 
             include: "rules/cnv.smk"
             include: "rules/repeatmasker.smk"
 
-        if config["genes_mapq_depth"]["activate"]:
+        if config["genes_mapq_depth"]["activate"] or config["plotting"]["activate"]:
 
             include: "rules/genes_mapq_depth.smk"
 
