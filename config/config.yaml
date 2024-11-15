@@ -5,8 +5,9 @@
 workflow: "analysis" # Options: "analysis", "join_datasets"
 
 # =================================================================================================
-# Sample workflow parameters
+# Analysis workflow parameters
 # =================================================================================================
+
 # ------------------Input--------------------------------------------------------------------------
 
 fastqs:
@@ -15,28 +16,30 @@ fastqs:
   fastq_suffix2: "_2.fq.gz" # Everything after the sample name of the reverse reads file.
 
 references: 
-  directory: "data/references/" # Path to directory with reference genomes.
+  directory: "data/references" # Path to directory with reference genomes.
 
-samples: "config/metadata1.csv" # Relative path to metadata CSV table.
-chromosomes: "config/chromosome_names.csv" # Relative path to chromosome names CSV table.
-species_name: "Cryptococcus_neoformans" 
+metadata: "config/metadata.csv" # Relative path to metadata CSV table.
+chromosomes: "config/chromosomes.csv" # Relative path to chromosome names CSV table.
+species_name: "" 
 samples_to_exclude: # Optional: File with list of samples to exclude from all analyses.
+
 # ------------------Output-------------------------------------------------------------------------
 
-output_directory: "results_1" # Name for the output directory
+output_directory: "results" # Name for the output directory
 
 # ------------------Annotation of reference genomes------------------------------------------------
 
 annotate_references:
-  activate: True
+  activate: 
   directory: "data/main_reference" # Relative path to directory with main reference files.
-  fasta: "FungiDB-65_CneoformansH99_Genome.fasta" # Main reference fasta.
-  gff: "FungiDB-65_CneoformansH99.gff" # Main reference GFF. 
+  fasta: "" # Main reference fasta.
+  gff: "" # Main reference GFF. 
   liftoff:
     threads: 12
     extra: ""
 
 # ------------------Depth and quality analyses-----------------------------------------------------
+
 depth_quality: 
   mosdepth: 
     threads: 12  
@@ -54,8 +57,9 @@ depth_quality:
     exclude_samples: True # Exclude samples that do not meet the quality thresholds
 
 # ------------------Copy-number variant calling----------------------------------------------------
+
 cnv:
-  activate: True
+  activate: 
   smoothing_size: 15 # Parameter for median filtering smoothing of the coverage
   depth_threshold: 0.6 # Minimum change in coverage for cnv calling
   repeats:
@@ -64,36 +68,39 @@ cnv:
     repeats_fraction: 0.5 # Fraction of repetitive bases allowed for calculating global depth
 
 # ------------------MAPQ and Depth of genetic features---------------------------------------------
+
 genes_mapq_depth:
-  activate: True
+  activate: 
 
 # ------------------Variant annotation-------------------------------------------------------------
+
 snpeff:
-  activate: True
+  activate:
   extra: ""
 
 # ------------------Plotting-----------------------------------------------------------------------
+
 plotting: 
-  activate: True
+  activate:
   loci: "config/loci.csv" # Relative path to table with loci to add to plots
   metadata2color : "source" # Column name in the samples table to color the samples in the plots
   scale : 0.7 # Ggsave scale parameter to adjust the size of the dataset plots. Use lower values for fewer samples and bigger values for more samples.
 
 # ------------------Database-----------------------------------------------------------------------
+
 database:
-  activate: True
+  activate:
 
 # =================================================================================================
 # Join datasets workflow parameters
 # =================================================================================================
-# This workflow joins the results of running the sample_workflow in different datasets. It assumes that
-# if the same lineage is present in the different datasets, the same reference genome was used.
-datasets_paths: "results_1,results_2"
-datasets_names: "R1,R2"
-joint_output_directory: "results_joined_R1R2"
-# datasets_paths: "/FastData/czirion/Crypto_Desjardins/results_2024-09-06,/FastData/czirion/ashton/results_2024-08-27" # Comma-separated list of directories with datasets to join.
-# datasets_names: "Desjardins,Ashton" # Comma-separated list of names for the datasets.
-# joint_output_directory: "results_joined" # Name for the output directory with joined datasets.
+# This workflow joins the results of running the sample_workflow in different datasets. 
+# It assumes that if the same lineage is present in the different datasets, 
+# the same reference genome was used.
+
+datasets_paths: ""
+datasets_names: ""
+joint_output_directory: "results_joined"
 
 # =================================================================================================
 #   Parameters for individual tools

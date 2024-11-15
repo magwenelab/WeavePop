@@ -7,66 +7,107 @@ This is a Snakemake workflow to map short-reads of samples to the reference geno
 
 If you want to have a common naming scheme of your genes and/or you don't have GFF files of your reference genomes you can provide a main reference to lift over the annotation from this one to your reference genomes.
 
-## Requirements
+## Installation
 
-* Mamba/Conda [Microforge3](https://mamba.readthedocs.io/en/latest/installation/mamba-installation.html)
+### Install Conda
 
-The environment from which the workflow must be run has the following software and you can install it with: `mamba env create --file workflow/envs/snakemake.yml`
-* Python
-* Python modules -- [Pandas](https://pandas.pydata.org/), [Click](https://click.palletsprojects.com/en/8.1.x/), Biopython
-* [Xonsh](https://xon.sh/)
-* [Snakemake](https://snakemake.github.io/)
-* [Graphviz](https://graphviz.org/) (optional, to see the Snakemake DAG in a graph).
-* [Seqkit](https://bioinf.shenwei.me/seqkit/)
+Install Mamba or Miniconda following the instructions from their webpage:
+* Mamba: [https://github.com/conda-forge/miniforge](https://github.com/conda-forge/miniforge) (recommended)
+* Miniconda: [https://docs.anaconda.com/miniconda/](https://docs.anaconda.com/miniconda/)
 
-The environments for particular software used in Snakemake rules are installed by Snakemake, so you don't need to do it. If you want to install them you can run `mamba env create --file workflow/envs/envname.yaml` using the specified environment file in the table below. 
+After successfully installing conda, set strict channel priority by running  
+`conda config --set channel_priority strict`
+
+### Download the workflow 
+
+#### Option 1: Download this GitHub repository
+
+Use the green button `<> Code` and click `Download ZIP`.  
+Extract the content of the `.zip` file.
+
+#### Option 2: Use Snakedeploy (PENDING)
+
+#### Option 3: Download from Bioconda (PENDING)
+
+
+### Install the Snakemake Conda environment
+
+In your terminal go to the directory you downloaded and run  
+`mamba env create --file workflow/envs/snakemake.yaml` (use `conda` instead of `mamba` if you installed Miniconda).
+
+The environments for particular software used by the pipeline will be installed by Snakemake when you run it, so you don't need to install them. The programs in each environment are described in the table below.  
 <details>
-<summary>Requirements per module </summary> 
+<summary>Software in the environments used in the pipeline </summary> 
 
-| Module | Software | Environment files |
-| :---------------- | ----: |----: |
-| Module: Annotate references|[Litoff](https://github.com/agshumate/Liftoff),[AGAT](https://github.com/NBISweden/AGAT)|`workflow/envs/liftoff.yaml`, `workflow/envs/agat.yaml`|
-| Module: Main |[Snippy](https://github.com/tseemann/snippy), [Litoff](https://github.com/agshumate/Liftoff), [AGAT](https://github.com/NBISweden/AGAT)|`workflow/envs/snippy.yaml`, `workflow/envs/liftoff.yaml`, `workflow/envs/agat.yaml`|
-| Module: Coverage - Quality|[Mosdepth](https://github.com/brentp/mosdepth), [Samtools](https://www.htslib.org/),[Bedtools](https://bedtools.readthedocs.io/en/latest/index.html), [RepeatMasker](https://www.repeatmasker.org/) and [RepeatModeler](https://www.repeatmasker.org/RepeatModeler/), R and R libraries -- tidyverse|`workflow/envs/depth.yaml`, `workflow/envs/samtools.yaml`, `workflow/envs/repeatmasker.yaml`, `workflow/envs/r.yaml`|
-| Module: SNPs | [Samtools](https://www.htslib.org/), [Bedtools](https://bedtools.readthedocs.io/en/latest/index.html), [Bcftools](https://samtools.github.io/bcftools/bcftools.html), [Xonsh](https://xon.sh/), [Pandas](https://pandas.pydata.org/), [Click](https://click.palletsprojects.com/en/8.1.x/)|`workflow/envs/samtools.yaml`|
-| Module: Plotting |[Samtools](https://www.htslib.org/), Gnuplot, matplotlib, tectonic, texlive-core, R and R libraries -- tidyverse ComplexHeatmap, svglite, scales, RColorBrewer|`workflow/envs/plot-bamstats.yaml`,`workflow/envs/r.yaml`|
+|Environment files | Software | 
+| ----: |----: |
+|`workflow/envs/snakemake.yaml`|[Snakemake](https://snakemake.github.io/),[Python](https://www.python.org/), [Pandas](https://pandas.pydata.org/), [Click](https://click.palletsprojects.com/en/8.1.x/), [Biopython](https://biopython.org/), [Xonsh](https://xon.sh/), [Graphviz](https://graphviz.org/),[Seqkit](https://bioinf.shenwei.me/seqkit/)|
+|`workflow/envs/snippy.yaml`|[Snippy](https://github.com/tseemann/snippy),[Samtools](https://www.htslib.org/)|
+|`workflow/envs/liftoff.yaml`|[Litoff](https://github.com/agshumate/Liftoff),[Minimap2]()|
+|`workflow/envs/agat.yaml`|[AGAT](https://github.com/NBISweden/AGAT),[Seqkit](https://bioinf.shenwei.me/seqkit/)|
+|`workflow/envs/samtools.yaml`|[Samtools](https://www.htslib.org/), [Bedtools](https://bedtools.readthedocs.io/en/latest/index.html), [Bcftools](https://samtools.github.io/bcftools/bcftools.html),[Xonsh](https://xon.sh/),[Pandas](https://pandas.pydata.org/), [Click](https://click.palletsprojects.com/en/8.1.x/), [SciPy](https://scipy.org/), [NumPy](https://numpy.org/) |
+|`workflow/envs/depth.yaml`|[Mosdepth](https://github.com/brentp/mosdepth)|
+|`workflow/envs/repeatmasker.yaml`|[RepeatMasker](https://www.repeatmasker.org/),[RepeatModeler](https://www.repeatmasker.org/RepeatModeler/), [Bedtools](https://bedtools.readthedocs.io/en/latest/index.html), [Seqkit](https://bioinf.shenwei.me/seqkit/)|
+|`workflow/envs/r.yaml` | R, tidyverse, svglite, scales, RColorBrewer||
+|`workflow/envs/variants.yaml`| [SnpEff](https://pcingola.github.io/SnpEff/),[DuckDB](https://duckdb.org/), [PyVCF](https://pyvcf.readthedocs.io/en/latest/), [Xonsh](https://xon.sh/),[Pandas](https://pandas.pydata.org/), [Click](https://click.palletsprojects.com/en/8.1.x/), [Biopython](https://biopython.org/), [Bedtools](https://bedtools.readthedocs.io/en/latest/index.html), [Bcftools](https://samtools.github.io/bcftools/bcftools.html)|
 </details>
 
-## Steps to take
+## Configuration
 
-  * Download the code from this repository.
-  * Gather your starting files (see below) and check that they are in the correct format.
-  * Edit the `config/config.yaml` to match your files and desired parameters.
-  * Install Mamba/Conda [Microforge3](https://mamba.readthedocs.io/en/latest/installation/mamba-installation.html)
-  * Install the `snakemake` enviroment: `mamba env create --file workflow/envs/snakemake.yaml`
-  * `conda activate snakemake`
-  * Run the pipeline: `snakemake --cores <n> --sdm conda -p`
-    * Snakemake options:  
-      * `--cores <n>`: Number of cores you want to use. Mandatory.
-      * `--sdm conda`: Specify that Snakemake will use conda environments to run the rules. Mandatory.
-      * `-p`: Print the command-lines run by each job in the standard output. Optional.
-      * `--conda-frontend conda`: Use it if you are using conda instead of mamba. Mamba is the default.
-      * `--rerun-incomplete`: Use it when a past run of the workflow was aborted and you are repeating the run.
-      * `--keep-going`: Use it to avoid stoping the workflow when a job fails (i.e. run everything that can run).
-      * `-n`: Dry run.  
+### Input files
 
-## Structure of the working directory:    
-  * `workflow/` has all the code (rules, scripts and main Snakefile), and the environment files.
-  * `config/` has the file `config.yaml`(provided [here](https://github.com/magwenelab/DiversityPipeline/blob/main/config/config.yaml)) that **you must edit** to adapt to your dataset.
-  * A directory of results with the name specified in `config/config.yaml` will hold all the output.
-  * `logs/` will hold the log files of all runs.  
-  * Additionally you need to provide the **starting files** described below. It's recommended to put the data files in `data/` and the tables in `config/`.
+#### Tables
 
-## Starting files:
-  * Metadata CSV table: A comma-separated table with one sample per row. Specify the path to it in `config/config.yaml`. Mandatory columns: `sample` (sample ID used in the FASTQ file names), `lineage` (lineage or group name that associates the sample with a reference genome), `strain` (strain name, it can be the same as `sample`). If the plotting will be activated you need  one metadata column to color your samples, specify the name of this column in the `config/config.yaml`. More columns with free format are allowed. [Example](https://github.com/magwenelab/DiversityPipeline/blob/main/config/metadata1.csv)  
-  * FASTQ files: Paired end short-read FASTQ files, one forward and one reverse file for each sample. The names of these files should be the names used in the metadata `sample` column, followed by an extension specified in the `config/config.yaml`. Files can be gzip compressed. The FASTQ files for all samples should be in the same directory (e.g., `data/samples/`, specified in the `config.yaml`).  
-  * Reference genomes:    
-    * If you will use reference genomes with annotation: Provide the FASTA and GFF files for each reference genome. The names of the files must be the ones in the `lineage` column of the metadata (e.g. `VNI.fasta` and `VNI.gff`). Put all the files in the same directory (e.g. `data/references`) and specify the path to it in the `config/config.yaml`.  
-    * If you will use a main reference to annotate the reference genomes: Provide the FASTA file for each reference genome. The names of the files must be the ones in the `lineage` column of the metadata, e.g. `VNI.fasta`. Put all the files in the same directory (e.g. `data/references`) and specify the path to it in the `config/config.yaml`. And provide a FASTA and GFF files for the main reference, put both files in the same directory (e.g. `data/main_reference`) and specify the path to it and the names of the files in the `config/config.yaml`.   
+* `config/metadata.csv`: A comma-separated table with one sample per row.  
+Mandatory columns:  
+  * `sample`: sample ID used in the FASTQ file names (no special characters or spaces)  
+  * `lineage`: lineage or group name that associates the sample with a reference genome (no special characters or spaces)  
+  * `strain`: strain name (a "common name" for each sample, it can be the same as `sample` if you don't have a different one).   
+If the plotting will be activated you need one metadata column to color the samples, specify the name of this column in  `metadata2color` in `config/config.yaml`. More columns with free format are allowed. [Example](https://github.com/magwenelab/DiversityPipeline/blob/main/config/metadata.csv). Specify the path to this file in `metadata` in `config/config.yaml`, the default is `config/metadata.csv`.  
 
-  * `config/chromosomes.csv`: CSV with the columns `lineage`, `accession` (with the sequence ID of the chromosomes in the FASTA and GFF of the references. Make sure each chromosome ID is not repeated in this file), and `chromosome` (with the chromosome names, e.g. chr01, 1, VNI_chr1). [Example](https://github.com/magwenelab/DiversityPipeline/blob/main/config/chromosome_names.csv).
-  * `config/RepBase.fasta`: Database of repetitive sequences to use for RepeatModeler and RepeatMasker in FASTA format.
-  * `config/loci.csv`: If you want gene features to be plotted to the depth and MAPQ plots provide a CSV with the first column `gene_id` with the gene IDs, and the second column `feature` with the name of the feature (locus, pathway, centromere, individual gene name etc.) the gene belongs to. [Example](https://github.com/magwenelab/DiversityPipeline/blob/main/config/loci.csv)
+* `config/chromosomes.csv`: A comma-separated table with one row per chromosome per lineage.  
+Mandatory columns:  
+`lineage`: Lineage name (the same as in the metadata table and the names of the reference files)  
+`accession`: Sequence ID of the chromosomes in the FASTA and GFF of the reference of each lineage. Make sure each chromosome ID is not repeated in this file.     
+`chromosome`: Common name of the chromosome, e.g. chr01, 1, VNI_chr01.  
+[Example](https://github.com/magwenelab/DiversityPipeline/blob/main/config/chromosomes.csv).
+Specify the path to this file in `chromosomes` in `config/config.yaml`, the default is `config/chromosomes.csv`.
+
+* `config/RepBase.fasta`: Database of repetitive sequences to use for RepeatModeler and RepeatMasker in FASTA format. Needed if the CNV, plotting or database modules with be activated. Specify the path tho this file in `cnv: repeats_database` in `config/config.yaml`.  
+
+* `config/loci.csv`: If you want gene features to be plotted to the depth and MAPQ plots, provide a CSV with the first column `gene_id` with the gene IDs, and the second column `feature` with the name of the feature (locus, pathway, centromere, individual gene name etc.) the gene belongs to. [Example](https://github.com/magwenelab/DiversityPipeline/blob/main/config/loci.csv). Specify the path to this file in `plotting: loci` in `config/config.yaml`.  
+
+* `config/exclude.txt`: If you want to exclude from all analysis some of the samples in your metadata file you can provide a file with a list of sample names to exclude. Specify the path to this file in `samples_to_exclude:` in `config/config.yaml` (no default).
+
+#### Data
+
+* FASTQ files: Paired-end short-read FASTQ files, one forward and one reverse file for each sample. The names of these files should be the names used in the metadata `sample` column, followed by an extension specified in `fastqs: fastq_suffix1` and  `fastqs: fastq_suffix1` in `config/config.yaml`. This files can be gzip compressed. The FASTQ files for all samples should be in the same directory. Specify the path to this directory in `fastqs: directory` (default is `data/samples`).  
+
+* Reference genomes:    
+  * If you will use reference genomes with annotation: Provide the FASTA and GFF files for each reference genome. The names of the files must be the ones in the `lineage` column of the metadata (e.g. `VNI.fasta` and `VNI.gff`). Put all the files in the same directory. Specify the path to this directory in `references: directory` in `config/config.yaml` (default is `data/references`).   
+  * If you will use a main reference to annotate the reference genomes: Provide the FASTA file for each reference genome. The names of the files must be the ones in the `lineage` column of the metadata, e.g. `VNI.fasta`. Put all the files in the same directory. Specify the path to this directory in `references: directory` in `config/config.yaml` (default is `data/references`). And provide a FASTA and GFF files for the main reference, put both files in the same directory. Specify the path to it in `annotate_references: directory` (default is `data/main_reference`) and specify the names of the files in `annotate_references:fasta` and `annotate_references:gff` (no defaults) in the `config/config.yaml`.   
+
+
+### Edit the configuration file
+
+Edit the provided `config/config.yaml` file to:
+* Select the workflow to run. The `analysis` workflow will run the analysis for one dataset. If you have the complete results (database module activated) of the analysis workflow for two datasets you can join them to create a database with both of them using the `join_datasets` workflow.  
+* Provide the paths to the input files and output directory.  
+* Activate each module and specify its parameters. See the description of the output below to know which files are created by each module. Activating the `database` module automatically activates the modules `cnv`, `genes_mapq_depth` and `snpeff`.  
+
+## Execution
+In a terminal the working directory must be the directory you downloaded.  
+Activate the Snakemake environment: `conda activate snakemake`.  
+Run the pipeline: `snakemake --cores <n> --sdm conda -p`
+  * Snakemake options:  
+    * `--cores <n>`: Number of cores you want to use. Mandatory.
+    * `--sdm conda`: Specify that Snakemake will use conda environments to run the rules. Mandatory.
+    * `-p`: Print the command-lines run by each job in the standard output. Optional.
+    * `--conda-frontend conda`: Use it if you are using conda instead of mamba. Mamba is the default.
+    * `--rerun-incomplete`: Use it when a past run of the workflow was aborted and you are repeating the run.
+    * `--keep-going`: Use it to avoid stoping the workflow when a job fails (i.e. run everything that can run).
+    * `-n`: Dry run.  
+  
 
 
 ## Output

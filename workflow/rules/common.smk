@@ -12,7 +12,7 @@ from snakemake.utils import validate
 #   Define global variables and validate input files using schemas
 # =================================================================================================
 
-UNFILT_SAMPLE_FILE = config["samples"]
+UNFILT_SAMPLE_FILE = config["metadata"]
 EXCLUDE_FILE = config["samples_to_exclude"]
 if EXCLUDE_FILE:
     EXCLUDE_SAMPLES = set(list(pd.read_csv(EXCLUDE_FILE, header=None, names=["sample"])["sample"]))
