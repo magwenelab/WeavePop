@@ -21,3 +21,4 @@ data
 *test*
 *temp*
 config/RepBase.fasta
+*pycache*
