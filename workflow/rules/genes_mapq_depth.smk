@@ -14,7 +14,7 @@ rule mosdepth:
         extra=config["depth_quality"]["mosdepth"]["extra"],
         outdir=INT_SAMPLES_DIR / "mosdepth",
     log:
-        "logs/samples/mosdepth/mosdepth_{sample}.log",
+        "logs/samples/depth_quality/mosdepth_{sample}.log",
     threads: config["depth_quality"]["mosdepth"]["threads"]
     resources:
         tmpdir=TEMPDIR,

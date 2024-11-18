@@ -15,7 +15,7 @@ rule mosdepth_good:
         min_mapq=config["depth_quality"]["mosdepth"]["min_mapq"],
         outdir=INT_SAMPLES_DIR / "mosdepth",
     log:
-        "logs/samples/mosdepth/mosdepth_good_{sample}.log",
+        "logs/samples/depth_quality/mosdepth_good_{sample}.log",
     threads: config["depth_quality"]["mosdepth"]["threads"]
     resources:
         tmpdir=TEMPDIR,

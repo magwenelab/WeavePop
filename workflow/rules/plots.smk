@@ -10,7 +10,7 @@ rule loci:
     output:
         locitable=INT_REFS_DIR / "loci_to_plot.tsv",
     log:
-        "logs/dataset/files/loci.log",
+        "logs/dataset/plots/loci.log",
     conda:
         "../envs/snakemake.yaml"
     shell:

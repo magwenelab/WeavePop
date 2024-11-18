@@ -7,18 +7,18 @@ rule liftoff:
     input:
         unpack(liftoff_input),
     output:
-        ref_gff=INT_SAMPLES_DIR / "liftoff" / "{sample}" / "ref.gff",
-        gff=INT_SAMPLES_DIR / "liftoff" / "{sample}" / "lifted.gff",
-        polished=INT_SAMPLES_DIR / "liftoff" / "{sample}" / "lifted.gff_polished",
-        unmapped=INT_SAMPLES_DIR / "liftoff" / "{sample}" / "unmapped_features.txt",
-        intermediate=directory(INT_SAMPLES_DIR / "liftoff" / "{sample}" / "intermediate_liftoff"),
+        ref_gff=INT_SAMPLES_DIR / "annotation"/ "liftoff" / "{sample}" / "ref.gff",
+        gff=INT_SAMPLES_DIR / "annotation"/ "liftoff" / "{sample}" / "lifted.gff",
+        polished=INT_SAMPLES_DIR / "annotation"/ "liftoff" / "{sample}" / "lifted.gff_polished",
+        unmapped=INT_SAMPLES_DIR / "annotation"/ "liftoff" / "{sample}" / "unmapped_features.txt",
+        intermediate=directory(INT_SAMPLES_DIR / "annotation"/ "liftoff" / "{sample}" / "intermediate_liftoff"),
         fai=SAMPLES_DIR / "snippy" / "{sample}" / "snps.consensus.fa.fai",
         mmi=SAMPLES_DIR / "snippy" / "{sample}" / "snps.consensus.fa.mmi",
     params:
         extra=config["liftoff"]["extra"],
-        outpath=INT_SAMPLES_DIR / "liftoff" / "{sample}",
+        outpath=INT_SAMPLES_DIR / "annotation"/ "liftoff" / "{sample}",
     log:
-        "logs/samples/liftoff/liftoff_{sample}.log",
+        "logs/samples/annotation/liftoff_{sample}.log",
     threads: config["liftoff"]["threads"]
     resources:
         tmpdir=TEMPDIR,
@@ -131,7 +131,7 @@ rule sort_gff:
     output:
         gff=SAMPLES_DIR / "annotation" / "{sample}" / "annotation.gff",
     log:
-        "logs/samples/annotation/sort_{sample}.log",
+        "logs/samples/annotation/sort_gff_{sample}.log",
     conda:
         "../envs/agat.yaml"
     shell:
@@ -231,7 +231,7 @@ rule prots2csv:
     output:
         csv=INT_SAMPLES_DIR / "annotation" / "{sample}" / "proteins.csv",
     log:
-        "logs/samples/annotation/prots2db_{sample}.log",
+        "logs/samples/annotation/prots2csv_{sample}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:

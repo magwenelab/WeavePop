@@ -24,7 +24,7 @@ rule copy_chromosomes:
     output:
         DATASET_DIR / "chromosomes.csv",
     log:
-        "logs/references/copy_chromosomes.log",
+        "logs/dataset/copy_chromosomes.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
