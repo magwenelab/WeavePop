@@ -22,8 +22,10 @@ try:
         ) 
         raise ValueError(message)
     else:
+        logging.info(f"Number of lineages: {len(lineages)}")
         for lineage in lineages:
             path = Path(output,f"{lineage}.txt")
+            logging.info(f"Creating file: {path}...")
             path.parent.mkdir(parents=True, exist_ok=True)
             path.touch()
         logging.info("Done!")

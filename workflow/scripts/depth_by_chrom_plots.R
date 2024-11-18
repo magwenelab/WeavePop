@@ -2,32 +2,28 @@ log <- file(snakemake@log[[1]], open="wt")
 sink(log, type = "output")
 sink(log, type = "message")
 
-print("Loading libraries")
+print("Loading libraries...")
 suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(scales))
 suppressPackageStartupMessages(library(ggnewscale))
 suppressPackageStartupMessages(library(RColorBrewer))
 
-print("Reading files")
-# raw_stats_chroms <- read.delim("/FastData/czirion/ashton/results/samples/mosdepth/ERS542301/depth_by_chrom_raw.tsv", sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
-# good_stats_chroms <- read.delim("/FastData/czirion/ashton/results/samples/mosdepth/ERS542301/depth_by_chrom_good.tsv", sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
-# chrom_names <- read.csv("/FastData/czirion/ashton/config/chromosome_names.csv", sep = ",", header = FALSE, col.names = c("Lineage", "Accession", "Chromosome"), stringsAsFactors = TRUE, na = c("", "N/A"))
-
+print("Reading files...")
 raw_stats_chroms <- read.delim(snakemake@input[[1]], sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
 good_stats_chroms <- read.delim(snakemake@input[[2]], sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
 chrom_names <- read.csv(snakemake@input[[3]], sep = ",", header = FALSE, col.names = c("lineage", "accession", "chromosome"), stringsAsFactors = TRUE, na = c("", "N/A"))
 sample <- unique(good_stats_chroms$sample)
 
-print("Filtering chromosome names")
+print("Filtering chromosome names...")
 chrom_names <- chrom_names %>%
   filter(accession %in% unique(good_stats_chroms$accession) )
 
-print("Ordering chromosome names")
+print("Ordering chromosome names...")
 chrom_names['accession_chromosome'] <- paste(chrom_names$chromosome, chrom_names$accession, sep = "xxx")
 unique_levels <- unique(chrom_names$accession_chromosome)
 chrom_names$accession_chromosome <- factor(chrom_names$accession_chromosome, levels = unique_levels)
 
-print("Joining and pivoting data")
+print("Joining and pivoting data...")
 good_stats_chroms <- left_join(good_stats_chroms, chrom_names, by = "accession")
 raw_stats_chroms <- left_join(raw_stats_chroms, chrom_names, by = "accession")
 
@@ -36,14 +32,14 @@ good_stats_long <- good_stats_chroms %>%
 raw_stats_long <- raw_stats_chroms %>%
   pivot_longer(c(chrom_mean, chrom_median), names_to = "measurement", values_to = "value")
 
-print("Getting plot parameters")
+print("Getting plot parameters...")
 toplim <- max(raw_stats_long$value) + max(raw_stats_long$value)/10
 lineage <- unique(good_stats_chroms$lineage)
 raw_color = "gray50"
 good_color = "black" 
 color_quality = c("Good quality alignments" = good_color, "All alignments" = raw_color)
 
-print("Ploting good quality Read depth")            
+print("Ploting good quality Read depth...")            
 plot <- ggplot()+
   ylim(0,toplim) +
   geom_hline(aes(yintercept = unique(raw_stats_long$global_median),linetype = "global median", color= "All alignments"))+
@@ -62,6 +58,6 @@ plot <- ggplot()+
   scale_color_manual(name= "Alignment quality", values= color_quality)+
   scale_x_discrete(labels = function(x) gsub("xxx.*", "", x))
 
-print("Saving plot")
+print("Saving plot...")
 ggsave(snakemake@output[[1]], plot = plot, units = "in", height = 7.5, width = 7, dpi = 600 )
 print("Done!") 

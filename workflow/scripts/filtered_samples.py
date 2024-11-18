@@ -22,9 +22,10 @@ try:
         ) 
         raise ValueError(message)
     else:
+        logging.info(f"Number of samples: {len(sample_names)}")
         for sample_name in sample_names:
             path = Path(output,f"{sample_name}.txt")
-            logging.info(f"Creating file: {path}")
+            logging.info(f"Creating file: {path}...")
             path.parent.mkdir(parents=True, exist_ok=True)
             path.touch()
         logging.info("Done!")

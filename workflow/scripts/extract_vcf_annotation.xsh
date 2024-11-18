@@ -15,12 +15,12 @@ import vcf
 @click.option("--lineage", "-l", type = str, help="Lineage")
 
 def extract_annotation(vcf_path, gff_tsv, effects_out, variants_out, lofs_out, nmds_out, lineage):
-    print("Getting tables from SnpEff result")
+    print("Getting tables from SnpEff result...")
     data_effects = []
     data_variants = []
     data_lofs = []
     data_nmds = []
-    # Iterate over the records in the VCF file
+    print("Iterating over VCF file records to extract information...")
     with open(vcf_path, 'r') as file:
         # Open the VCF file
         vcf_reader = vcf.Reader(file)
@@ -74,7 +74,7 @@ def extract_annotation(vcf_path, gff_tsv, effects_out, variants_out, lofs_out, n
                 percent_affected = last.replace(')', '')
                 data_nmds.append([var_id, gene_name, num_transcripts, percent_affected])
 
-    print("Creating dataframes")
+    print("Creating dataframes...")
     print("Variants dataframe")
     df_variants = pd.DataFrame(data_variants, columns=['var_id', 'accession', 'pos', 'ref', 'alt'])
     df_variants['alt'] = df_variants['alt'].astype(str)
@@ -87,15 +87,15 @@ def extract_annotation(vcf_path, gff_tsv, effects_out, variants_out, lofs_out, n
 
     print("Effects dataframe")
     effects_pre = pd.DataFrame(data_effects, columns=['var_id', 'effect_type', 'impact','effect', 'codon_change', 'amino_acid_change', 'amino_acid_length', 'gene_name', 'transcript_biotype', 'gene_coding', 'transcript_id', 'exon_rank'])
-    print("Formating effects dataframe and adding gene IDs from reference GFF")
-    print("Reading GFF file")
+    print("Formating effects dataframe and adding gene IDs from reference GFF...")
+    print("Reading GFF file...")
     df_gff = pd.read_csv(gff_tsv, sep='\t', header = 0, low_memory=False)
-    print("Getting gene IDs from GFF file")
+    print("Getting gene IDs from GFF file...")
     id_cols = ['gene_id', 'gene_name', 'feature_id']
     existing_id_cols = [col for col in id_cols if col in df_gff.columns]
     gff_ids = df_gff[existing_id_cols].copy()
     gff_ids.drop_duplicates(inplace=True)
-    print("Defining function to replace gene names with gene IDs")
+    print("Defining function to replace gene names with gene IDs...")
     def replace_with_gene_id(part):
         if part in gff_ids['gene_id'].values:
             return part
@@ -103,25 +103,25 @@ def extract_annotation(vcf_path, gff_tsv, effects_out, variants_out, lofs_out, n
             return gff_ids.loc[gff_ids['gene_name'] == part, 'gene_id'].values[0]
         return part
 
-    print("Subsetting effects table")
+    print("Subsetting effects table...")
     df_gene_transcript = effects_pre[(effects_pre['gene_name'].notnull()) & (effects_pre['transcript_id'].notnull())].copy()
     df_gene_no_transcript = effects_pre[(effects_pre['gene_name'].notnull()) & (effects_pre['transcript_id'].isnull())].copy()
     df_no_gene_no_transcript = effects_pre[(effects_pre['gene_name'].isnull()) & (effects_pre['transcript_id'].isnull())].copy()
 
-    print("Getting variant effects with fused gene names")
+    print("Getting variant effects with fused gene names...")
     df_fused_genes = df_gene_no_transcript[df_gene_no_transcript['gene_name'].str.contains('\\+')].copy()
 
     if df_fused_genes.shape[0] > 0:
         print("Fused gene names found")
-        print("Separating fused gene names")
+        print("Separating fused gene names...")
         df_fused_genes[['part1', 'part2']] = df_fused_genes['gene_name'].str.split('+', expand=True)
-        print("Replacing gene names with gene IDs in part1")
+        print("Replacing gene names with gene IDs in part1...")
         df_fused_genes['gene_tag_id1'] = df_fused_genes['part1'].apply(replace_with_gene_id)
-        print("Replacing gene names with gene IDs in part2")
+        print("Replacing gene names with gene IDs in part2...")
         df_fused_genes.loc[df_fused_genes['part2'].notnull(), 'gene_tag_id2'] = df_fused_genes.loc[df_fused_genes['part2'].notnull(), 'part2'].apply(replace_with_gene_id)
-        print("Joining part1 with part2")
+        print("Joining part1 with part2...")
         df_fused_genes['gene_id'] = df_fused_genes.apply(lambda row: row['gene_tag_id1'] + '+' + row['gene_tag_id2'] if pd.notnull(row['part2']) else row['gene_tag_id1'], axis=1)
-        print("Removing unnecessary columns")
+        print("Removing unnecessary columns...")
         df_fused_genes.drop(['part1', 'part2', 'gene_tag_id1', 'gene_tag_id2'], axis=1, inplace=True)
         df_gene_no_transcript_fixed = df_fused_genes.copy()
     else:
@@ -129,27 +129,29 @@ def extract_annotation(vcf_path, gff_tsv, effects_out, variants_out, lofs_out, n
         df_gene_no_transcript_fixed = df_gene_no_transcript.copy()
         df_gene_no_transcript_fixed['gene_id'] = df_gene_no_transcript_fixed['gene_name'].apply(replace_with_gene_id)
 
-    print("Getting unique gene IDs from GFF")
+    print("Getting unique gene IDs from GFF...")
     gff_ids_unique = gff_ids.drop_duplicates(subset='feature_id', keep='first')
-    print("Creating dictionary to map feature IDs to gene IDs")
+    print("Creating dictionary to map feature IDs to gene IDs...")
     feature_to_gene = gff_ids_unique.set_index('feature_id')['gene_id']
-    print("Mapping transcript IDs to gene IDs")
+    print("Mapping transcript IDs to gene IDs...")
     df_gene_transcript['gene_id'] = df_gene_transcript['transcript_id'].map(feature_to_gene)
-    print("Concatenating dataframes")
+    print("Concatenating dataframes...")
     df_effects = pd.concat([df_gene_transcript, df_gene_no_transcript_fixed, df_no_gene_no_transcript])
-    print("Finished formatting effects dataframe")
+    print("Finished formatting effects dataframe!")
 
-    print("Adding lineage to dataframes")
+    print("Adding lineage to dataframes...")
     df_variants['lineage'] = lineage
     df_effects['lineage'] = lineage
     df_lofs['lineage'] = lineage
     df_nmds['lineage'] = lineage
 
-    print("Saving dataframes to CSV files")
+    print("Saving dataframes to CSV files...")
     df_variants.to_csv(variants_out, sep = "\t",  index=False)
     df_effects.to_csv(effects_out, sep = "\t", index=False)
     df_lofs.to_csv(lofs_out, sep = "\t", index=False)
     df_nmds.to_csv(nmds_out, sep = "\t",index=False)
+
+    print("Done!")
 
 if __name__ == '__main__':
     extract_annotation()

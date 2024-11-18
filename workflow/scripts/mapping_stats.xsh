@@ -25,7 +25,7 @@ def stats(sample, bamfile,  global_mode, low_mapq, high_mapq, min_position_depth
     print("Getting MAPQ distribution...")
     out_mapq = []
     for chromosome in chromosomes:
-        print("Analysing chromosome", chromosome)
+        print("Analysing chromosome", chromosome, "...")
         mapq = $(samtools stats @(bamfile) @(chromosome) | grep ^MAPQ | cut -f 2-)
         mapq = pd.Series(list(mapq.split("\n")))
         mapq = chromosome + "\t" + mapq
@@ -104,6 +104,7 @@ def stats(sample, bamfile,  global_mode, low_mapq, high_mapq, min_position_depth
     
     print("Saving mapped reads metrics...")
     stats_wider.to_csv(output, index=False, sep = "\t")
+    
     print("Done!")
 if __name__ == "__main__":
         stats() 

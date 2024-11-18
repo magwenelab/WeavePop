@@ -13,15 +13,15 @@ from pathlib import Path
 @click.option('-dp', '--depth_threshold', help='Threshold to define copy number variation in smoothed normalzed depth.', type=click.types.FloatRange(min=0.0))
 @click.option('-co', '--cnv_output', help='Path to output table of CNV calling.', type=click.Path())
 def cnv_calling(depth_input, repeats_input, sample_name, window_size, depth_threshold, cnv_output):
-    print("Merge overlapping repeats and intersect with windows.")
+    print("Merging overlapping repeats and intersect with windows...")
     intersect = $(bedtools intersect -a @(depth_input) -b @(repeats_input) -wao)
 
-    print("Reorganize intersection.")
+    print("Reorganize intersection...")
     df = pd.read_csv(io.StringIO(intersect), sep='\t', header=None)
     header = ['bed_accession', 'bed_start', 'bed_end','bed_depth', 'bed_norm_depth', 'bed_smooth_depth', 'r_accession', 'r_start', 'r_end', 'r_type', 'overlap_bp'] 
     df.columns = header
 
-    print("Calculate overlap in base pairs.")
+    print("Calculate overlap in base pairs...")
     df = df.drop(['r_accession', 'r_start', 'r_end'], axis=1)
     df['r_type_mix'] = df.groupby(['bed_accession', 'bed_start', 'bed_end', 'bed_depth', 'bed_norm_depth', 'bed_smooth_depth'])['r_type'].transform(lambda x: ','.join(x))
     df['overlap_bp_sum'] = df.groupby(['bed_accession', 'bed_start', 'bed_end', 'bed_depth', 'bed_norm_depth', 'bed_smooth_depth'])['overlap_bp'].transform('sum')
@@ -30,13 +30,13 @@ def cnv_calling(depth_input, repeats_input, sample_name, window_size, depth_thre
     df.rename(columns={'r_type_mix': 'r_type', 'overlap_bp_sum': 'overlap_bp'}, inplace=True)    
     df = df.reset_index(drop=True)
 
-    print("Calculate fraction of window with repetitive sequences.")
+    print("Calculating fraction of window with repetitive sequences...")
     repeats_fragments = df.copy()
     repeats_fragments['repeat_fraction'] = (repeats_fragments['overlap_bp'] / window_size).round(2)
     repeats_fragments.columns = repeats_fragments.columns.str.replace('bed_', '')
     repeats_fragments['sample'] = sample_name
 
-    print("Define copy-number of regions.")
+    print("Defining copy-number of regions...")
     cnv_regions = pd.DataFrame()
     for accession in repeats_fragments['accession'].unique():
         regions_merged = repeats_fragments[repeats_fragments['accession'] == accession].copy()
@@ -61,17 +61,20 @@ def cnv_calling(depth_input, repeats_input, sample_name, window_size, depth_thre
         regions['repeat_fraction'] = (regions['overlap_bp'] / regions['region_size']).round(2)
         regions = regions.drop(['region_index'], axis=1)
         cnv_regions = pd.concat([cnv_regions, regions], ignore_index=True)
-    print("Join regions with copy-number variants of all chromosomes.")
+    print("Joining regions with copy-number variants of all chromosomes...")
     cnv_regions = cnv_regions[cnv_regions['cnv'] != 'haploid']
     cnv_regions = cnv_regions.round(2)
     cnv_regions['sample'] = sample_name
 
-    print("Convert from 0-based to 1-based coordinates")    
+    print("Converting from 0-based to 1-based coordinates...")    
     cnv_regions['start'] = cnv_regions['start'] + 1
-    print("Save CNV regions to file.")
+
+    print("Saveing CNV regions to file...")
     output_path = Path(cnv_output)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     cnv_regions.to_csv(output_path, sep='\t', index=False, header=True)
+
+    print("Done!")
     
 if __name__ == '__main__':
     cnv_calling()

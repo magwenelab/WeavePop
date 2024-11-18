@@ -2,40 +2,34 @@ log <- file(snakemake@log[[1]], open = "wt")
 sink(log, type = "output")
 sink(log, type = "message")
 
-print("Loading libraries")
+print("Loading libraries...")
 suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(RColorBrewer))
 suppressPackageStartupMessages(library(scales))
 suppressPackageStartupMessages(library(patchwork))
 
-print("Reading files")
-#metadata <- read.csv("config/sample_metadata.csv", header = TRUE, stringsAsFactors = TRUE)
-# chrom_names <- read.csv("config/chromosome_names.csv", header = FALSE, col.names = c("lineage", "Accession", "Chromosome"), stringsAsFactors = TRUE)
-# good_stats <- read.delim("results/dataset/files/coverage_good.tsv", sep = "\t", header = TRUE, stringsAsFactors = TRUE)
-
+print("Reading files...")
 metadata <- read.csv(snakemake@input[[1]], header = TRUE, stringsAsFactors = TRUE)
 chrom_names <- read.csv(snakemake@input[[2]], header = TRUE, col.names = c("lineage", "accession", "chromosome"), stringsAsFactors = TRUE)
 good_stats <- read.delim(snakemake@input[[3]], sep = "\t", header = TRUE, stringsAsFactors = TRUE)
 
-print("Filtering chromosome names")
+print("Filtering chromosome names...")
 chrom_names <- chrom_names %>%
     select(accession, chromosome)
 
-print("Joining and arranging data")
+print("Joining and arranging data...")
 metadata <- mutate(metadata, name = paste(strain, sample, sep = " "))
-
 good_stats <- rename(good_stats, sample = sample)
 good_stats <- left_join(good_stats, metadata, by = "sample")
 good_stats <- left_join(good_stats, chrom_names, by = "accession")
 
-
-print("Getting plot parameters")
+print("Getting plot parameters...")
 toplim <- ceiling(max(good_stats$norm_chrom_mean))
 values <- seq(0, toplim, by = 1)
 ylabel <- "Normalized depth"
 gscale = snakemake@params[[2]]
 
-print("Plotting")
+print("Plotting...")
 meanplot <- ggplot(good_stats, aes(x = reorder(name, -global_mean, sum), y = norm_chrom_mean)) +
     geom_point(aes(color = get(snakemake@params[[1]]))) +
     ylim(0, toplim) +
@@ -51,6 +45,6 @@ meanplot <- ggplot(good_stats, aes(x = reorder(name, -global_mean, sum), y = nor
          x = "Sample",
          y = ylabel)
 
-print("Saving plot")
+print("Saving plot...")
 ggsave(snakemake@output[[1]], plot = meanplot, units = "in", height = 9, width = 16, scale = gscale)
 print("Done!")

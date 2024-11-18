@@ -2,26 +2,20 @@ log <- file(snakemake@log[[1]], open = "wt")
 sink(log, type = "output")
 sink(log, type = "message")
 
-print("Loading libraries")
+print("Loading libraries...")
 suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(RColorBrewer))
 suppressPackageStartupMessages(library(scales))
 suppressPackageStartupMessages(library(patchwork))
 
-print("Reading files")
-#metadata <- read.csv("config/sample_metadata_filtered.csv", header = TRUE, stringsAsFactors = TRUE)
-# chrom_names <- read.csv("config/chromosome_names.csv", header = TRUE, col.names = c("lineage", "Accession", "Chromosome"), colClasses = "factor")
-# good_stats <- read.delim("results/dataset/files/depth_by_chrom_good.tsv", sep = "\t", header = TRUE, stringsAsFactors = TRUE)
-# raw_stats <- read.delim("results/dataset/files/depth_by_chrom_raw.tsv", sep = "\t", header = TRUE, stringsAsFactors = TRUE)
-# map_stats <- read.table("results/dataset/files/mapping_stats.tsv",header = TRUE, stringsAsFactors = TRUE, sep = "\t")
-
+print("Reading files...")
 metadata <- read.csv(snakemake@input[[1]], header = TRUE, stringsAsFactors = TRUE)
 chrom_names <- read.csv(snakemake@input[[2]], header = TRUE, col.names = c("lineage", "accession", "chromosome"), colClasses = "factor")
 good_stats <- read.delim(snakemake@input[[3]], sep = "\t", header = TRUE, stringsAsFactors = TRUE)
 raw_stats <- read.delim(snakemake@input[[4]], sep = "\t", header = TRUE, stringsAsFactors = TRUE)
 map_stats <- read.table(snakemake@input[[5]], header = TRUE, stringsAsFactors = TRUE, sep = "\t")
 
-print("Joining and arranging data")
+print("Joining and arranging data...")
 metadata <- metadata %>%
     select(sample, strain, lineage) %>%
     mutate(name = paste(strain, sample, sep = " "))
@@ -36,14 +30,14 @@ raw_stats <- rename(raw_stats, sample = sample)
 raw_stats <- left_join(raw_stats, metadata, by = "sample")
 raw_stats <- left_join(raw_stats, chrom_names, by = "accession")
 
-print("Getting plot parameters")
+print("Getting plot parameters...")
 topylim <- max(good_stats$global_mean) + max(good_stats$global_mean / 10)
 raw_color = "gray50"
 good_color = "black" 
 color_quality = c("Good quality mappings" = good_color, "All mappings" = raw_color)
 shape_stat <- c("Mean" = 16, "Median" = 15)
 
-print("Binding and pivoting data")
+print("Binding and pivoting data...")
 all <- bind_rows(good_stats %>% mutate(quality = "Good quality mappings"), raw_stats %>% mutate(quality = "All mappings"))
 all$name <- reorder(all$name, -all$global_mean, sum)
 all <- all %>%
@@ -51,7 +45,7 @@ all <- all %>%
         pivot_longer(cols = c(mean, median, mode), names_to = "measurement", values_to = "value")%>%
         as.data.frame()
 
-print("Plotting genome-wide read depth")
+print("Plotting genome-wide read depth...")
 topylim <- max(all$value) + max(all$value) / 10
 g <- ggplot(all) +
     geom_point(aes(x = name, y = value, shape = measurement, color = quality)) +
@@ -70,7 +64,7 @@ g <- ggplot(all) +
          y = "Read depth (X)",
          x = "")
 
-print("Joining and arranging data")
+print("Joining and arranging data...")
 
 map_stats_metad <- merge(map_stats, metadata, by = "sample")
 stats_metad <- map_stats_metad %>%
@@ -90,11 +84,11 @@ stats_qualit <- stats_long %>%
 stats_qualit$metric <- factor(stats_qualit$metric, levels = c("percent_low_mapq","percent_inter_mapq","percent_high_mapq"),
                               labels = c("Low MAPQ", "Intermediate MAPQ", "High MAPQ"))
 
-print("Getting plot parameters")
+print("Getting plot parameters...")
 palette_reads <- brewer.pal(n = length(unique(stats_reads$metric)), name = "BuPu")
 palette_qualit <- brewer.pal(n = length(unique(stats_qualit$metric)), name = "BuGn")
 
-print("Plotting percentage of reads by mapping status")
+print("Plotting percentage of reads by mapping status...")
 reads <- ggplot()+
     geom_bar(data = stats_reads, aes(x = name, y = value, fill = metric), stat = "identity")+
     facet_grid(~ lineage, scales = "free", space = "free_x")+
@@ -109,7 +103,7 @@ reads <- ggplot()+
     labs(x = "", y = "Percentage of reads", fill = "Metric", title = "Percentage of reads by mapping status")+
     scale_fill_manual(values = palette_reads, name = "")
 
-print("Plotting percentage of reads by mapping quality")
+print("Plotting percentage of reads by mapping quality...")
 mapq <- ggplot() +
     geom_bar(data = stats_qualit, aes(x = name, y = value, fill = metric), stat = "identity") +
     facet_grid(~ lineage, scales = "free", space = "free_x") +
@@ -123,10 +117,10 @@ mapq <- ggplot() +
     labs(x = "", y = "Percentage of reads", fill = "Metric", title = "Percentage of mapped reads by mapping quality") +
     scale_fill_manual(values = palette_qualit, name = "")
 
-print("Joining plots")
+print("Joining plots...")
 plot <- g/reads/mapq
 
-print("Saving plot")
+print("Saving plot...")
 gscale = snakemake@params[[1]]
 ggsave(snakemake@output[[1]], plot = plot, units = "in", height = 9, width = 16, scale = gscale)
 print("Done!")

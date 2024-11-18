@@ -6,14 +6,12 @@ print("Loading libraries...")
 suppressPackageStartupMessages(library(tidyverse))
 
 print("Reading files...")
-# metadata <- read.csv("config/metadata1.csv", header = TRUE)
 metadata <- read.csv(snakemake@input[[1]], header = TRUE)
 lineages_path <- snakemake@params[[1]]
+genes<-read_delim(snakemake@input[[2]], col_names = TRUE, na = c("NA","N/A", ""), show_col_types = FALSE )
+
 print("Getting lineages...")
 lineages <- unique(metadata$lineage)
-
-# genes<-read_delim("/FastData/czirion/DiversityPipeline/results_1/04.Intermediate_files/03.References/FungiDB-65_CneoformansH99.tsv", col_names = TRUE, na = c("NA","N/A", ""), show_col_types = FALSE )
-genes<-read_delim(snakemake@input[[2]], col_names = TRUE, na = c("NA","N/A", ""), show_col_types = FALSE )
 
 print("Selecting columns of main reference...")
 genes<- genes %>% 
@@ -33,5 +31,6 @@ print("Filtering only unmapped features...")
 unmapped <- genes %>%
   filter_at(vars(all_of(lineages)), any_vars(!is.na(.)))
 
+print("Saving output...")
 write_tsv(unmapped, file = snakemake@output[[1]], col_names = TRUE)
-
+print("Done!")
