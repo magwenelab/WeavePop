@@ -3,7 +3,6 @@
 # =================================================================================================
 
 
-# Create softlinks to have the reference genomes in the INT_REFS_DIR
 rule links:
     input:
         REF_DATA / "{lineage}.fasta",

@@ -54,8 +54,10 @@ rule mapq:
 
 
 # =================================================================================================
-#   Per sample | Intersect MAPQ with depth by window and GFF
+#   Per sample | Intersect MAPQ to depth by window and annotated features
 # =================================================================================================
+
+
 rule mapq_depth:
     input:
         mapqbed=rules.mapq.output.window_bed,

@@ -1,5 +1,5 @@
 # =================================================================================================
-# Per sample | Run Liftoff to annotate the assembly with the coresponding reference genome
+# Per sample | Run Liftoff to annotate the assembly with the corresponding reference genome
 # =================================================================================================
 
 
@@ -143,7 +143,7 @@ rule sort_gff:
 
 
 # =================================================================================================
-# Per sample | Run AGAT to extract CDS, protein , intergenic and intronic sequences
+# Per sample | Run AGAT to extract CDS and protein sequences
 # =================================================================================================
 
 
@@ -201,7 +201,7 @@ rule extract_prots:
 
 
 # =================================================================================================
-# Per sample | Convert fasta to csv
+# Per sample | Convert fasta to csv to include in database
 # =================================================================================================
 
 

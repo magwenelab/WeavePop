@@ -1,5 +1,5 @@
 # =================================================================================================
-#   Per sample | Run Mosdepth to get depth per window of  good quality reads
+#   Per sample | Run Mosdepth to get depth per window of good quality reads
 # =================================================================================================
 
 
@@ -34,7 +34,7 @@ rule mosdepth_good:
 
 
 # =================================================================================================
-#   Per sample | Normalize depth and by windows
+#   Per sample | Normalize and smooth depth by windows
 # =================================================================================================
 
 
@@ -62,7 +62,7 @@ rule depth_by_windows:
 
 
 # =================================================================================================
-#   Per sample | Intercept depth by windows with repeats and call CNVs
+#   Per sample | Call CNVs
 # =================================================================================================
 
 

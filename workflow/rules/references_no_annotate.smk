@@ -104,6 +104,12 @@ rule ref_recreate_ids:
         "-ot {output.tsv} "
         "&> {log}"
 
+
+# ==================================================================================================
+#   Per lineage | Add repetitive sequences, introns, intergenic regions, and convert to TSV
+# ==================================================================================================
+
+
 rule ref_add_intergenic:
     input:
         gff=rules.ref_recreate_ids.output.gff,

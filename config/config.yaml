@@ -11,85 +11,84 @@ workflow: "analysis" # Options: "analysis", "join_datasets"
 # ------------------Input--------------------------------------------------------------------------
 
 fastqs:
-  directory: "data/samples" # Relative path to directory with all FASTQ files 
-  fastq_suffix1: "_1.fq.gz" # Everything after the sample name of the forward reads file.
-  fastq_suffix2: "_2.fq.gz" # Everything after the sample name of the reverse reads file.
+  directory: "data/samples" # Relative path to directory with all FASTQ files.
+  fastq_suffix1: "_1.fq.gz" # Suffix after the sample name of the forward reads file.
+  fastq_suffix2: "_2.fq.gz" # Suffix after the sample name of the reverse reads file.
 
 references: 
   directory: "data/references" # Path to directory with reference genomes.
 
-metadata: "config/metadata.csv" # Relative path to metadata CSV table.
-chromosomes: "config/chromosomes.csv" # Relative path to chromosome names CSV table.
-species_name: "" 
-samples_to_exclude: # Optional: File with list of samples to exclude from all analyses.
+metadata: "config/metadata2.csv" # Relative path to metadata CSV table.
+chromosomes: "config/chromosomes.csv" # Relative path to chromosomes CSV table.
+species_name: "Species_name" # One string with the name of the species/genus/group to analyze.
+samples_to_exclude: # Optional: Relative path to list of samples to exclude from analyses.
 
 # ------------------Output-------------------------------------------------------------------------
 
-output_directory: "results" # Name for the output directory
+output_directory: "results_2" # Name for the output directory.
 
 # ------------------Annotation of reference genomes------------------------------------------------
 
 annotate_references:
-  activate: 
+  activate: # True to run the annotation of the reference genomes. Empty or False to skip.
   directory: "data/main_reference" # Relative path to directory with main reference files.
-  fasta: "" # Main reference fasta.
-  gff: "" # Main reference GFF. 
+  fasta: "" # Filename of the main reference genome FASTA file.
+  gff: "" # Filename of the main reference genome GFF file.
   liftoff:
-    threads: 12
-    extra: ""
+    threads: 12 # Number of threads for Liftoff.
+    extra: "" # Extra parameters for Liftoff.
 
 # ------------------Depth and quality analyses-----------------------------------------------------
 
 depth_quality: 
   mosdepth: 
-    threads: 12  
-    window: 500 # Window size for mosdepth
-    min_mapq: 20 # Minimum mapping quality for mosdepth
-    extra: ""
-  flag_quality: # Minimum values for a sample to be considered to have a good quality read mapping
-    low_MAPQ_limit: 20 # Top limit for low MAPQ reads
-    high_MAPQ_limit: 60 # Bottom limit for high MAPQ reads
-    min_position_depth: 5 # Minimum depth for a position to be considered covered
-    min_percent_MAPQ: 75 # Minimum percentage of reads in the high MAPQ bin
-    min_percent_genome-wide_depth: 2 # Minimum percentage of genome-wide depth (Global mode)
-    min_percent_properly_paired_reads: 25 # Minimum percentage of properly paired mapped reads
-    min_percent_coverage: 50 # Minimum percentage of genome-wide coverage
-    exclude_samples: True # Exclude samples that do not meet the quality thresholds
+    threads: 12  # Number of threads for mosdepth.
+    window: 500 # Window size for mosdepth.
+    min_mapq: 20 # Minimum mapping quality for mosdepth.
+    extra: "" # Extra parameters for mosdepth.
+  flag_quality: 
+    low_MAPQ_limit: 20 # Max MAPQ to be considered low quality.
+    high_MAPQ_limit: 60 # Min MAPQ to be considered high quality.
+    exclude_samples: True # True to exclude samples that do not meet the quality thresholds.
+    min_position_depth: 5 # Minimum depth for a position to be considered covered.
+    min_percent_coverage: 50 # If percent of genome covered is below this value, the sample is excluded.
+    min_percent_MAPQ: 75 # If percent of high quality reads is below this value, the sample is excluded.
+    min_percent_genome-wide_depth: 2 # If genome-wide depth (Global mode) is below this value, the sample is excluded.
+    min_percent_properly_paired_reads: 25 # If percent of properly paired reads is below this value, the sample is excluded.
 
 # ------------------Copy-number variant calling----------------------------------------------------
 
 cnv:
-  activate: 
-  smoothing_size: 15 # Parameter for median filtering smoothing of the coverage
-  depth_threshold: 0.6 # Minimum change in coverage for cnv calling
+  activate: # True to activate the module. Empty or False to skip.
+  smoothing_size: 15 # Parameter for median filtering smoothing of the read depth.
+  depth_threshold: 0.6 # Min deviation from the global depth to be considered a CNV.
   repeats:
-    repeats_database: "config/RepBase.fasta"
-    repeats_threads: 20
-    repeats_fraction: 0.5 # Fraction of repetitive bases allowed for calculating global depth
+    repeats_database: "config/RepBase.fasta" # Relative path to the RepBase FASTA file.
+    repeats_threads: 20 # Number of threads for RepeatModeler and RepeatMasker.
 
 # ------------------MAPQ and Depth of genetic features---------------------------------------------
 
 genes_mapq_depth:
-  activate: 
+  activate: # True to activate the module. Empty or False to skip.
 
 # ------------------Variant annotation-------------------------------------------------------------
 
 snpeff:
-  activate:
-  extra: ""
+  activate: # True to activate the module. Empty or False to skip.
+  extra: "" # Extra parameters for SnpEff.
 
 # ------------------Plotting-----------------------------------------------------------------------
 
 plotting: 
-  activate:
-  loci: "config/loci.csv" # Relative path to table with loci to add to plots
-  metadata2color : "source" # Column name in the samples table to color the samples in the plots
+  activate: # True to activate the module. Empty or False to skip.
+  loci: "config/loci.csv" # Relative path to table with loci to add to plots.
+  metadata2color : "source" # Column name in the samples table to color the samples in the plots.
   scale : 0.7 # Ggsave scale parameter to adjust the size of the dataset plots. Use lower values for fewer samples and bigger values for more samples.
 
 # ------------------Database-----------------------------------------------------------------------
 
 database:
-  activate:
+  activate: # True to activate the module. Empty or False to skip.
 
 # =================================================================================================
 # Join datasets workflow parameters
@@ -98,9 +97,9 @@ database:
 # It assumes that if the same lineage is present in the different datasets, 
 # the same reference genome was used.
 
-datasets_paths: ""
-datasets_names: ""
-joint_output_directory: "results_joined"
+datasets_paths: "" # Commas separated list of paths to the directories with the results of the analysis workflow.
+datasets_names: "" # Commas separated list of names for the datasets, in the same order as the paths.
+joint_output_directory: "results_joined" # Relative path to the directory where the joined results will be saved.
 
 # =================================================================================================
 #   Parameters for individual tools

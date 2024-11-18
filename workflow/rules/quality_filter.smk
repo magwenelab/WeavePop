@@ -1,5 +1,5 @@
 # =================================================================================================
-#   Per sample | Get distribution and global mode fo depth (genome-wide depth to normalize)
+#   Per sample | Get distribution and genome-wide depth (global_mode) to normalize
 # =================================================================================================
 
 

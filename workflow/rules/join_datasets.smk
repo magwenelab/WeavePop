@@ -35,6 +35,10 @@ rule join_chromosomes:
         "../scripts/join_chromosomes.py"
 
 
+# =================================================================================================
+#   Get names of lineages in combined datasets
+# =================================================================================================
+
 checkpoint get_lineages:
     input:
         rules.join_metadata.output,
@@ -115,7 +119,7 @@ rule join_ref_annotations:
 
 
 # =================================================================================================
-#   Copy SnpEff lineage databases and config file
+#   Redo intersection of VCFs and variant annotation
 # =================================================================================================
 
 
@@ -156,11 +160,6 @@ rule copy_snpeff_config:
         "../envs/shell.yaml"
     shell:
         "cat {input.config} 1> {output} 2> {log}"
-
-
-# =================================================================================================
-#   Intersect SNPs, run SnpEff and extract annotations
-# =================================================================================================
 
 
 rule intersect_vcfs:
@@ -226,6 +225,7 @@ rule symlink_ref_gff:
     shell:
         "ln -sr {input} {output} &> {log}"
 
+
 rule extract_vcf_annotation:
     input:
         vcf=rules.snpeff.output.vcf,
@@ -253,9 +253,6 @@ rule extract_vcf_annotation:
         "&> {log}"
 
 
-# =================================================================================================
-#   Create final database
-# =================================================================================================
 rule join_variant_annotation:
     input:
         effects=expand(INT_DATASET_DIR / "snps" / "{lineage}_effects.tsv", lineage=LINEAGES),
@@ -277,6 +274,11 @@ rule join_variant_annotation:
         "../envs/snakemake.yaml"
     script:
         "../scripts/join_variant_annotation.py"
+
+        
+# =================================================================================================
+#   Create final database
+# =================================================================================================
 
 
 rule complete_db:

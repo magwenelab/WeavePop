@@ -172,7 +172,7 @@ LINEAGES = listing_lineages
 #   Final output definition functions
 # =================================================================================================
 
-# --Output previous to sample filtering------------------------------------------------------------
+# --Output per sample previous to sample filtering-------------------------------------------------
 def get_unfiltered_output():
     final_output = expand(
         SAMPLES_DIR / "snippy" / "{unf_sample}" / "snps.consensus.fa", unf_sample=UNFILT_SAMPLES
@@ -186,6 +186,7 @@ def get_unfiltered_output():
     return final_output
 
 
+# --Output per sample after sample filtering-------------------------------------------------------
 def get_filtered_output():
     final_output = expand(
         SAMPLES_DIR / "annotation" / "{sample}" / "annotation.gff", sample=SAMPLES
@@ -217,6 +218,8 @@ def get_filtered_output():
         )
     return final_output
 
+
+# --Output per dataset---------------------------------------------------------------------------
 def get_dataset_output():
     final_output = []
     final_output.append(DATASET_DIR / "metadata.csv")

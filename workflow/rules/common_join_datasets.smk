@@ -8,7 +8,7 @@ import glob
 from pathlib import Path
 
 # =================================================================================================
-#   Global variables
+#   Define global variables
 # =================================================================================================
 
 OUTPUT = Path(config["joint_output_directory"])
@@ -24,20 +24,9 @@ TEMPDIR = str(INTDIR / TEMPDIR_NAME)
 INPUT_PATHS = config["datasets_paths"].split(",")
 LIST_PATHS = [Path(dir) for dir in INPUT_PATHS]
 
-# =================================================================================================
-#   Checkpoint functions
-# =================================================================================================
-
-
-def listing_lineages(wildcards):
-    checkpoint_output = checkpoints.get_lineages.get(**wildcards).output[0]
-    return expand("{i}", i=glob_wildcards(os.path.join(checkpoint_output, "{i}.lineage")).i)
-
-
-LINEAGES = listing_lineages
 
 # =================================================================================================
-#   Define input functions
+#   Input functions for rules
 # =================================================================================================
 
 
@@ -147,7 +136,20 @@ def input_symlink_ref_gff(wildcards):
 
 
 # =================================================================================================
-#   Define final output
+#   Checkpoint functions
+# =================================================================================================
+
+
+def listing_lineages(wildcards):
+    checkpoint_output = checkpoints.get_lineages.get(**wildcards).output[0]
+    return expand("{i}", i=glob_wildcards(os.path.join(checkpoint_output, "{i}.lineage")).i)
+
+
+LINEAGES = listing_lineages
+
+
+# =================================================================================================
+#   Final output definition functions
 # =================================================================================================
 
 

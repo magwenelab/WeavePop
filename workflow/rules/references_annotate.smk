@@ -1,5 +1,5 @@
 # =================================================================================================
-#   Per main reference | Standardize GFF format and convert to TSV
+#   Main reference | Standardize GFF format and convert to TSV
 # =================================================================================================
 
 

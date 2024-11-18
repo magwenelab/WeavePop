@@ -1,6 +1,8 @@
 # =================================================================================================
-#   Join lineages | Create a single GFF file with all lineages
+#   Join lineages | Create a single table with the annotation of all lineages
 # =================================================================================================
+
+
 rule join_ref_annotations:
     input:
         expand(REFS_DIR / "{lineage}" / "{lineage}.gff.tsv", lineage=LINEAGES),
@@ -17,7 +19,7 @@ rule join_ref_annotations:
 
 
 # =================================================================================================
-#   Join dataset | Join tables with sequences and convert them to SQL db
+#   Join dataset | Join tables with sequences, mapq_depth, CNV and variant annotation
 # =================================================================================================
 
 
@@ -37,11 +39,6 @@ rule join_sequences:
         "../scripts/join_sequences.py"
 
 
-# =================================================================================================
-#   Per dataset | Join feature MAPQ and Depth
-# =================================================================================================
-
-
 rule join_mapq_depth:
     input:
         expand(
@@ -57,11 +54,6 @@ rule join_mapq_depth:
         "../scripts/join_tables.py"
 
 
-# =================================================================================================
-#   Per dataset | Join CNV calls
-# =================================================================================================
-
-
 rule join_cnv:
     input:
         expand(SAMPLES_DIR / "cnv" / "{sample}" / "cnv_calls.tsv", sample=SAMPLES),
@@ -75,9 +67,6 @@ rule join_cnv:
         "../scripts/join_tables.py"
 
 
-# =================================================================================================
-#   Per dataset | Create final database
-# =================================================================================================
 rule join_variant_annotation:
     input:
         effects=expand(INT_DATASET_DIR / "snps" / "{lineage}_effects.tsv", lineage=LINEAGES),
@@ -97,6 +86,10 @@ rule join_variant_annotation:
         "../envs/snakemake.yaml"
     script:
         "../scripts/join_variant_annotation.py"
+
+# =================================================================================================
+#   Dataset | Create final database
+# =================================================================================================
 
 
 rule complete_db:

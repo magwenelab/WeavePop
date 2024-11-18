@@ -17,7 +17,6 @@ rule repeat_modeler_build:
         / wildcards.lineage,
     log:
         "logs/references/repeats/repeatmodeler_build_{lineage}.log",
-    threads: config["cnv"]["repeats"]["repeats_threads"]
     conda:
         "../envs/repeatmasker.yaml"
     shell:

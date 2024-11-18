@@ -1,7 +1,8 @@
 # =================================================================================================
 #   Per lineage | Extract CDS and protein sequences from reference genomes
 # =================================================================================================
-# Extract cds and protein sequences from reference genomes
+
+
 rule extract_cds_seqs:
     input:
         gff=INT_REFS_DIR / "{lineage}" / "{lineage}_reformated_sorted.gff",
