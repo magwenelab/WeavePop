@@ -118,7 +118,7 @@ onstart:
     print("                                  ", flush=True)
 
     try:
-        sample_table = pd.read_csv(config["samples"], header=0)
+        sample_table = pd.read_csv(config["metadata"], header=0)
         chrom_names = pd.read_csv(
             config["chromosomes"], header=0, names=["lineage", "accession", "chromosome"]
         )
