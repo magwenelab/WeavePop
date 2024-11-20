@@ -22,7 +22,7 @@ rule join_metadata:
 
 rule join_chromosomes:
     input:
-        expand(os.path.join("{dir}", DATSET_DIR_NAME, "chromosomes.csv"), dir=LIST_PATHS),
+        expand(os.path.join("{dir}", DATASET_DIR_NAME, "chromosomes.csv"), dir=LIST_PATHS),
     output:
         DATASET_DIR / "chromosomes.csv",
     log:
@@ -229,7 +229,7 @@ rule symlink_ref_gff:
 rule extract_vcf_annotation:
     input:
         vcf=rules.snpeff.output.vcf,
-        gff=rules.symlink_ref_gff.output,
+        tsv=rules.symlink_ref_gff.output,
     output:
         effects=INT_DATASET_DIR / "snps" / "{lineage}_effects.tsv",
         variants=INT_DATASET_DIR / "snps" / "{lineage}_variants.tsv",
@@ -244,7 +244,7 @@ rule extract_vcf_annotation:
     shell:
         "xonsh workflow/scripts/extract_vcf_annotation.xsh "
         "-i {input.vcf} "
-        "-g {input.gff} "
+        "-g {input.tsv} "
         "-e {output.effects} "
         "-v {output.variants} "
         "-f {output.lofs} "
@@ -284,7 +284,7 @@ rule join_variant_annotation:
 rule complete_db:
     input:
         metadata=DATASET_DIR / "metadata.csv",
-        chrom_names=INT_REFS_DIR / "chromosomes.csv",
+        chrom_names=DATASET_DIR / "chromosomes.csv",
         cnv=rules.join_cnv.output,
         md=rules.join_mapq_depth.output,
         gffs=rules.join_ref_annotations.output,

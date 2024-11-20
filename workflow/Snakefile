@@ -82,6 +82,12 @@ elif config["workflow"] == "join_datasets":
     include: "rules/common_join_datasets.smk"
     include: "rules/join_datasets.smk"
 
+else:
+    print(f"Workflow must be one of 'analysis' or 'join_datasets'.", flush=True)
+    print("Check the spelling in the config/config.yaml file.", flush=True)
+    print("Exiting...", flush=True)
+    exit(1)
+
 
 # =================================================================================================
 #   On start checks
@@ -97,78 +103,84 @@ onstart:
     print("                                   ", flush=True)
     print("Selected workflow: ", config["workflow"], flush=True)
     print("                                   ", flush=True)
-    print("Activated modules:", flush=True)
-    if config["annotate_references"]["activate"]:
-        print("+ Reference annotation", flush=True)
-    if config["database"]["activate"]:
-        print("+ Database", flush=True)
-    if config["cnv"]["activate"]:
-        print("+ CNV", flush=True)
-    if config["genes_mapq_depth"]["activate"]:
-        print("+ MAPQ and depth of genetic features", flush=True)
-    if config["snpeff"]["activate"]:
-        print("+ SnpEff", flush=True)
-    if config["plotting"]["activate"]:
-        print("+ Plotting", flush=True)
-    print("                                  ", flush=True)
-    print("Working directory:", os.getcwd(), flush=True)
-    print("Output directory:", os.path.join(os.getcwd(),config["output_directory"]), flush=True)
-    print("                                  ", flush=True)
-    print("Checking provided file of chromosome names...", flush=True)
-    print("                                  ", flush=True)
+    if config["workflow"] == "join_datasets":
+        print("                                  ", flush=True)
+        print("Working directory:", os.getcwd(), flush=True)
+        print("Output directory:", os.path.join(os.getcwd(),config["joint_output_directory"]), flush=True)
+    elif config["workflow"] == "analysis":
+        print("Activated modules:", flush=True)
+        if config["annotate_references"]["activate"]:
+            print("+ Reference annotation", flush=True)
+        if config["database"]["activate"]:
+            print("+ Database", flush=True)
+        if config["cnv"]["activate"]:
+            print("+ CNV", flush=True)
+        if config["genes_mapq_depth"]["activate"]:
+            print("+ MAPQ and depth of genetic features", flush=True)
+        if config["snpeff"]["activate"]:
+            print("+ SnpEff", flush=True)
+        if config["plotting"]["activate"]:
+            print("+ Plotting", flush=True)
+        print("                                  ", flush=True)
+        print("Working directory:", os.getcwd(), flush=True)
+        print("Output directory:", os.path.join(os.getcwd(),config["output_directory"]), flush=True)
 
-    try:
-        sample_table = pd.read_csv(config["metadata"], header=0)
-        chrom_names = pd.read_csv(
-            config["chromosomes"], header=0, names=["lineage", "accession", "chromosome"]
-        )
-        if chrom_names.isnull().values.any():
-            raise ValueError("Chromosome names file has missing values")
-        if set(sample_table["lineage"].unique()) == set(chrom_names["lineage"].unique()):
-            print("All lineages are in the chromosome names file.", flush=True)
-            print("                                  ", flush=True)
-        else:
-            raise ValueError("Lineages in metadata and chromosome names file do not match")
+        print("                                  ", flush=True)
+        print("Checking provided file of chromosome names...", flush=True)
+        print("                                  ", flush=True)
 
-        reference_dir = config["references"]["directory"]
-
-        for lineage in chrom_names["lineage"].unique():
-            print(f"Checking the chromosome names of lineage {lineage}...", flush=True)
-            accessions = chrom_names[chrom_names["lineage"] == lineage]["accession"].tolist()
-            ref_file = Path(reference_dir) / f"{lineage}.fasta"
-            if ref_file.exists():
-                with open(ref_file) as f:
-                    seq_ids = [
-                        line.strip().split()[0][1:] for line in f if line.startswith(">")
-                    ]
-
-                    if not all([acc in seq_ids for acc in accessions]):
-                        raise ValueError(
-                            f"Not all chromosomes in provided file are present in {ref_file}"
-                        )
-                    else:
-                        print(f"All chromosomes in provided file are present in {ref_file}", flush=True)
-                                        
-                    if not all([seq_id in accessions for seq_id in seq_ids]):
-                        raise ValueError(
-                            f"Not all chromosomes in {ref_file} are present in the provided file"
-                        )
-                    else:
-                        print(f"All chromosomes in {ref_file} are present in the provided file", flush=True)
-
+        try:
+            sample_table = pd.read_csv(config["metadata"], header=0)
+            chrom_names = pd.read_csv(
+                config["chromosomes"], header=0, names=["lineage", "accession", "chromosome"]
+            )
+            if chrom_names.isnull().values.any():
+                raise ValueError("Chromosome names file has missing values")
+            if set(sample_table["lineage"].unique()) == set(chrom_names["lineage"].unique()):
+                print("All lineages are in the chromosome names file.", flush=True)
+                print("                                  ", flush=True)
             else:
-                raise ValueError(f"Reference {ref_file} not found")
+                raise ValueError("Lineages in metadata and chromosome names file do not match")
 
-    except Exception as e:
-        print("Error in input files:", flush=True)
-        print(e)
-        print("Exiting...", flush=True)
-        exit(1)
-    else:
-        print("                                  ", flush=True)
-        print("Input files are good!", flush=True)
-        print("Starting workflow...", flush=True)
-        print("                                  ", flush=True)
+            reference_dir = config["references"]["directory"]
+
+            for lineage in chrom_names["lineage"].unique():
+                print(f"Checking the chromosome names of lineage {lineage}...", flush=True)
+                accessions = chrom_names[chrom_names["lineage"] == lineage]["accession"].tolist()
+                ref_file = Path(reference_dir) / f"{lineage}.fasta"
+                if ref_file.exists():
+                    with open(ref_file) as f:
+                        seq_ids = [
+                            line.strip().split()[0][1:] for line in f if line.startswith(">")
+                        ]
+
+                        if not all([acc in seq_ids for acc in accessions]):
+                            raise ValueError(
+                                f"Not all chromosomes in provided file are present in {ref_file}"
+                            )
+                        else:
+                            print(f"All chromosomes in provided file are present in {ref_file}", flush=True)
+                                            
+                        if not all([seq_id in accessions for seq_id in seq_ids]):
+                            raise ValueError(
+                                f"Not all chromosomes in {ref_file} are present in the provided file"
+                            )
+                        else:
+                            print(f"All chromosomes in {ref_file} are present in the provided file", flush=True)
+
+                else:
+                    raise ValueError(f"Reference {ref_file} not found")
+
+        except Exception as e:
+            print("Error in input files:", flush=True)
+            print(e)
+            print("Exiting...", flush=True)
+            exit(1)
+        else:
+            print("                                  ", flush=True)
+            print("Input files are good!", flush=True)
+            print("Starting workflow...", flush=True)
+            print("                                  ", flush=True)
 
 
 # =================================================================================================

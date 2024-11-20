@@ -179,8 +179,8 @@ rule ref_reformat_annotation:
     input:
         tsv=rules.ref_gff2tsv.output.tsv,
     output:
-        tsv=INT_REFS_DIR / "{lineage}" / "{lineage}_reformated_.gff.tsv",
-        gff=INT_REFS_DIR / "{lineage}" / "{lineage}_reformated_.gff",
+        tsv=INT_REFS_DIR / "{lineage}" / "{lineage}_reformated.gff.tsv",
+        gff=INT_REFS_DIR / "{lineage}" / "{lineage}_reformated.gff",
     log:
         "logs/references/ref_reformat_annotation_{lineage}.log",
     conda:

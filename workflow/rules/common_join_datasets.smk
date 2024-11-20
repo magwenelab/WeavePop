@@ -129,7 +129,7 @@ def input_symlink_ref_gff(wildcards):
         lineages_dir_df = pd.read_csv(metadata, header=0)
         lineages = set(lineages_dir_df["lineage"])
         for lineage in lineages:
-            gff = os.path.join(dir, REFS_DIR_NAME, lineage, f"{lineage}.gff.tsv")
+            gff = os.path.join(dir, INTDIR_NAME, REFS_DIR_NAME, lineage, f"{lineage}_reformated.gff.tsv")
             paths[lineage] = gff
     lineage_path = paths[wildcards.lineage]
     return lineage_path
