@@ -58,13 +58,13 @@ def stats(sample, bamfile, bamgood, distribution_out, chromosome_good_out, chrom
     global_mode = global_cov.loc[global_cov['count_good'].idxmax()]['depth']
 
     print("Getting mean and median depth by chromosome of good alignments...")
-    def calculate_mean_median(group, quality):
-        total_depth = (group['depth'] * group[quality]).sum()
-        total_count = group[quality].sum()
+    def calculate_mean_median(group, count_quality):
+        total_depth = (group['depth'] * group[count_quality]).sum()
+        total_count = group[count_quality].sum()
         mean_depth = (total_depth / total_count).round(2)
         sorted_group = group.sort_values('depth')
-        cutoff = sorted_group[quality].sum() / 2
-        median_depth = sorted_group[sorted_group[quality].cumsum() >= cutoff].iloc[0]['depth']
+        cutoff = sorted_group[count_quality].sum() / 2
+        median_depth = sorted_group[sorted_group[count_quality].cumsum() >= cutoff].iloc[0]['depth']
         
         return pd.Series({'chrom_mean': mean_depth, 'chrom_median': median_depth})
 

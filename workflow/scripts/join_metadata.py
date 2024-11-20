@@ -10,7 +10,7 @@ logging.basicConfig(filename=log_file, level=logging.INFO, format='%(message)s')
 
 try:
     logging.info("Getting dataset names...")
-    logging.info("Reading metadata files and adding dataset names ...")
+    logging.info("Reading metadata files and adding dataset names...")
     dataframes = []
     for file_path, string in zip(input, dataset_names):
         df = pd.read_csv(file_path, sep=",", header=0)
