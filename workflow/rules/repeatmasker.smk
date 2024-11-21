@@ -5,7 +5,7 @@
 
 rule repeat_modeler_build:
     input:
-        rules.links.output,
+        rules.ref_fasta_symlinks.output,
     output:
         INT_REFS_DIR / "{lineage}" / "repeats" / "db_rmodeler" / "{lineage}.nsq",
     params:
@@ -31,7 +31,7 @@ rule repeat_modeler_build:
 rule repeat_modeler:
     input:
         database=rules.repeat_modeler_build.output,
-        fasta=rules.links.output,
+        fasta=rules.ref_fasta_symlinks.output,
     output:
         INT_REFS_DIR / "{lineage}" / "repeats" / "db_rmodeler" / "{lineage}-families.fa",
     params:
@@ -72,7 +72,7 @@ rule repeat_modeler_separate:
 rule repeat_masker_1:
     input:
         database=config["cnv"]["repeats"]["repeats_database"],
-        fasta=rules.links.output,
+        fasta=rules.ref_fasta_symlinks.output,
     output:
         INT_REFS_DIR / "{lineage}" / "repeats" / "01_simple" / "{lineage}.fasta.out",
     params:
@@ -101,7 +101,7 @@ rule repeat_masker_1:
 rule repeat_masker_2:
     input:
         database=config["cnv"]["repeats"]["repeats_database"],
-        fasta=rules.links.output,
+        fasta=rules.ref_fasta_symlinks.output,
     output:
         INT_REFS_DIR / "{lineage}" / "repeats" / "02_complex" / "{lineage}.fasta.out",
     params:
@@ -129,7 +129,7 @@ rule repeat_masker_2:
 rule repeat_masker_3:
     input:
         known=rules.repeat_modeler_separate.output.known,
-        fasta=rules.links.output,
+        fasta=rules.ref_fasta_symlinks.output,
     output:
         INT_REFS_DIR / "{lineage}" / "repeats" / "03_known" / "{lineage}.fasta.out",
     params:
@@ -156,7 +156,7 @@ rule repeat_masker_3:
 rule repeat_masker_4:
     input:
         unknown=rules.repeat_modeler_separate.output.unknown,
-        fasta=rules.links.output,
+        fasta=rules.ref_fasta_symlinks.output,
     output:
         INT_REFS_DIR / "{lineage}" / "repeats" / "04_unknown" / "{lineage}.fasta.out",
     params:

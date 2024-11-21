@@ -3,13 +3,13 @@
 # =================================================================================================
 
 
-rule links:
+rule ref_fasta_symlinks:
     input:
         REF_DATA / "{lineage}.fasta",
     output:
         INT_REFS_DIR / "{lineage}" / "{lineage}.fasta",
     log:
-        "logs/references/links_{lineage}.log",
+        "logs/references/ref_fasta_symlinks_{lineage}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
