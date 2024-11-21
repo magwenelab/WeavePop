@@ -133,30 +133,18 @@ rule quality_filter:
         "../scripts/quality_filter.py"
 
 
-checkpoint filtered_samples:
+checkpoint filter_wildcards:
     input:
         rules.quality_filter.output.metadata,
     output:
         directory(INT_SAMPLES_DIR / "filtered_samples"),
-    log:
-        "logs/dataset/depth_quality/filtered_samples.log",
-    conda:
-        "../envs/snakemake.yaml"
-    script:
-        "../scripts/filtered_samples.py"
-
-
-checkpoint filtered_lineages:
-    input:
-        rules.quality_filter.output.metadata,
-    output:
         directory(INT_REFS_DIR / "filtered_lineages"),
     log:
-        "logs/dataset/depth_quality/filtered_lineages.log",
+        "logs/dataset/depth_quality/filter_wildcards.log",
     conda:
         "../envs/snakemake.yaml"
     script:
-        "../scripts/filtered_lineages.py"
+        "../scripts/filter_wildcards.py"
 
 
 # =================================================================================================

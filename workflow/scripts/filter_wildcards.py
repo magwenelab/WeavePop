@@ -5,15 +5,17 @@ import logging
 
 log_file=snakemake.log[0]
 input=snakemake.input[0]
-output=snakemake.output[0]
+output_samples=snakemake.output[0]
+output_lineages=snakemake.output[1]
 
 logging.basicConfig(filename=log_file, level=logging.INFO, format='%(message)s')
 
 try:
     logging.info("Reading file...")
     metadata = pd.read_csv(input, header=0)
-    lineages = list(metadata["lineage"])
-    if len(lineages) == 0:
+    sample_names = list(metadata["sample"])
+    lineage_names = set(metadata["lineage"])
+    if len(sample_names) == 0:
         message = (
             "The quality filter removed all samples! "
             "There is nothing to analyze. Exiting. "
@@ -22,13 +24,19 @@ try:
         ) 
         raise ValueError(message)
     else:
-        logging.info(f"Number of lineages: {len(lineages)}")
-        for lineage in lineages:
-            path = Path(output,f"{lineage}.txt")
+        logging.info(f"Number of samples: {len(sample_names)}")
+        for sample_name in sample_names:
+            path = Path(output_samples,f"{sample_name}.txt")
             logging.info(f"Creating file: {path}...")
             path.parent.mkdir(parents=True, exist_ok=True)
             path.touch()
-        logging.info("Done!")
+        logging.info(f"Number of lineages: {len(lineage_names)}")
+        for lineage in lineage_names:
+            path = Path(output_lineages,f"{lineage}.txt")
+            logging.info(f"Creating file: {path}...")
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.touch()
+    logging.info("Done!")
 except Exception as e:
     logging.error(f"Error: {e}")
     raise e

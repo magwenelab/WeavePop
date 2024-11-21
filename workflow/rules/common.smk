@@ -150,7 +150,7 @@ def intersect_vcfs_input(wildcards):
 # =================================================================================================
 
 def listing_samples(wildcards):
-    checkpoint_output = checkpoints.filtered_samples.get(**wildcards).output[0]
+    checkpoint_output = checkpoints.filter_wildcards.get(**wildcards).output[0]
     return expand(
         "{sample}", sample=glob_wildcards(os.path.join(checkpoint_output, "{sample}.txt")).sample
     )
@@ -159,7 +159,7 @@ SAMPLES = listing_samples
 
 
 def listing_lineages(wildcards):
-    checkpoint_output = checkpoints.filtered_lineages.get(**wildcards).output[0]
+    checkpoint_output = checkpoints.filter_wildcards.get(**wildcards).output[1]
     return expand(
         "{lineage}",
         lineage=glob_wildcards(os.path.join(checkpoint_output, "{lineage}.txt")).lineage,
