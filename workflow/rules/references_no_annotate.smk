@@ -137,7 +137,7 @@ rule ref_add_introns:
         gff=rules.ref_add_intergenic.output,
         config=rules.agat_config.output,
     output:
-        gff=INT_REFS_DIR / "{lineage}" / "{lineage}_introns.gff",
+        gff=INT_REFS_DIR / "{lineage}" / "{lineage}_interg_introns.gff",
     params:
         extra=config["agat"]["extra"],
     log:
@@ -174,45 +174,12 @@ rule ref_gff2tsv:
         "-o {output.tsv} "
         "&> {log}"
 
-
-rule ref_reformat_annotation:
-    input:
-        tsv=rules.ref_gff2tsv.output.tsv,
-    output:
-        tsv=INT_REFS_DIR / "{lineage}" / "{lineage}_reformated.gff.tsv",
-        gff=INT_REFS_DIR / "{lineage}" / "{lineage}_reformated.gff",
-    log:
-        "logs/references/ref_reformat_annotation_{lineage}.log",
-    conda:
-        "../envs/snakemake.yaml"
-    script:
-        "../scripts/reformat_annotation.py"
-
-
-rule ref_sort_gff:
-    input:
-        gff=rules.ref_reformat_annotation.output.gff,
-        config=rules.agat_config.output,
-    output:
-        gff=INT_REFS_DIR / "{lineage}" / "{lineage}_reformated_sorted.gff",
-    log:
-        "logs/references/ref_sort_gff_{lineage}.log",
-    conda:
-        "../envs/agat.yaml"
-    shell:
-        "agat_convert_sp_gxf2gxf.pl "
-        "-g {input.gff} "
-        "-o {output.gff} "
-        "-c {input.config} "
-        "&> {log} "
-
-
 rule ref_add_repeats:
     input:
-        gff=rules.ref_sort_gff.output.gff,
+        gff=rules.ref_add_introns.output.gff,
         repeats=REFS_DIR / "{lineage}" / "{lineage}_repeats.bed",
     output:
-        REFS_DIR / "{lineage}" / "{lineage}.gff",
+        INT_REFS_DIR / "{lineage}" / "{lineage}_repeats.gff",
     log:
         "logs/references/ref_add_repeats_{lineage}.log",
     resources:
@@ -232,7 +199,7 @@ rule ref_gff2tsv_2:
         target=rules.ref_add_repeats.output,
         config=rules.agat_config.output,
     output:
-        tsv=REFS_DIR / "{lineage}" / "{lineage}.gff.tsv",
+        tsv=INT_REFS_DIR / "{lineage}" / "{lineage}_repeats.gff.tsv",
     log:
         "logs/references/gff2tsv_{lineage}.log",
     resources:
@@ -245,3 +212,21 @@ rule ref_gff2tsv_2:
         "-c {input.config} "
         "-o {output.tsv} "
         "&> {log}"
+
+rule ref_reformat_annotation:
+    input:
+        tsv=rules.ref_gff2tsv_2.output.tsv,
+    output:
+        tsv=REFS_DIR / "{lineage}" / "{lineage}.gff.tsv",
+        gff=REFS_DIR / "{lineage}" / "{lineage}.gff",
+    log:
+        "logs/references/ref_reformat_annotation_{lineage}.log",
+    conda:
+        "../envs/snakemake.yaml"
+    script:
+        "../scripts/reformat_annotation.py"
+
+
+
+
+

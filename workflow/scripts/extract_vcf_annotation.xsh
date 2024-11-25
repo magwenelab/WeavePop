@@ -87,30 +87,38 @@ def extract_annotation(vcf_path, gff_tsv, effects_out, variants_out, lofs_out, n
 
     print("Effects dataframe")
     effects_pre = pd.DataFrame(data_effects, columns=['var_id', 'effect_type', 'impact','effect', 'codon_change', 'amino_acid_change', 'amino_acid_length', 'gene_name', 'transcript_biotype', 'gene_coding', 'transcript_id', 'exon_rank'])
+
     print("Formating effects dataframe and adding gene IDs from reference GFF...")
     print("Reading GFF file...")
     df_gff = pd.read_csv(gff_tsv, sep='\t', header = 0, low_memory=False)
-    print("Getting gene IDs from GFF file...")
-    id_cols = ['gene_id', 'gene_name', 'feature_id']
+
+    print("Getting gene IDs from GFF file...")  
+    id_cols = ['locus', 'Name', 'ID']
     existing_id_cols = [col for col in id_cols if col in df_gff.columns]
-    gff_ids = df_gff[existing_id_cols].copy()
-    gff_ids.drop_duplicates(inplace=True)
-    print("Defining function to replace gene names with gene IDs...")
-    def replace_with_gene_id(part):
-        if part in gff_ids['gene_id'].values:
-            return part
-        elif part in gff_ids['gene_name'].values:
-            return gff_ids.loc[gff_ids['gene_name'] == part, 'gene_id'].values[0]
-        return part
+    gff_ids = df_gff[existing_id_cols].drop_duplicates().copy()
+    rename_dict = {'locus': 'gene_id', 'Name': 'gene_name', 'ID': 'feature_id'}
+    existing_columns = gff_ids.columns
+    filtered_rename_dict = {k: v for k, v in rename_dict.items() if k in existing_columns}
+    gff_ids.rename(columns=filtered_rename_dict, inplace=True)
+    gff_ids = gff_ids.dropna(subset=['gene_id'])
 
     print("Subsetting effects table...")
+
+    effects_pre.replace('', pd.NA, inplace=True)
     df_gene_transcript = effects_pre[(effects_pre['gene_name'].notnull()) & (effects_pre['transcript_id'].notnull())].copy()
     df_gene_no_transcript = effects_pre[(effects_pre['gene_name'].notnull()) & (effects_pre['transcript_id'].isnull())].copy()
     df_no_gene_no_transcript = effects_pre[(effects_pre['gene_name'].isnull()) & (effects_pre['transcript_id'].isnull())].copy()
 
+    print("Defining function to replace gene names with gene IDs...")
+    def replace_with_gene_id(part):
+        if part in gff_ids['gene_id'].values:
+            new_part = part
+        elif part in gff_ids['gene_name'].values:
+            new_part = gff_ids.loc[gff_ids['gene_name'] == part, 'gene_id'].values[0]
+        return new_part
+
     print("Getting variant effects with fused gene names...")
     df_fused_genes = df_gene_no_transcript[df_gene_no_transcript['gene_name'].str.contains('\\+')].copy()
-
     if df_fused_genes.shape[0] > 0:
         print("Fused gene names found")
         print("Separating fused gene names...")

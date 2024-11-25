@@ -74,7 +74,7 @@ d = {
     / UNFILT_SAMPLE_TABLE["lineage"]
     / (UNFILT_SAMPLE_TABLE["lineage"] + ".fasta"),
     "refgff": INT_REFS_DIR / UNFILT_SAMPLE_TABLE["lineage"] 
-    / (UNFILT_SAMPLE_TABLE["lineage"] + "_intergenic.gff"),
+    / (UNFILT_SAMPLE_TABLE["lineage"] + "_interg_introns.gff"),
 }
 
 SAMPLE_REFERENCE = pd.DataFrame(data=d).set_index("sample", drop=False)

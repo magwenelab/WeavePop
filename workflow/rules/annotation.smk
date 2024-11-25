@@ -115,31 +115,13 @@ rule reformat_annotation:
         tsv=rules.annotation_gff2tsv.output.tsv,
     output:
         tsv=SAMPLES_DIR / "annotation" / "{sample}" / "annotation.gff.tsv",
-        gff=INT_SAMPLES_DIR / "annotation" / "{sample}" / "annotation.gff",
+        gff=SAMPLES_DIR / "annotation" / "{sample}" / "annotation.gff",
     log:
         "logs/samples/annotation/reformat_annotation_{sample}.log",
     conda:
         "../envs/shell.yaml"
     script:
         "../scripts/reformat_annotation.py"
-
-
-rule sort_gff:
-    input:
-        gff=rules.reformat_annotation.output.gff,
-        config=rules.agat_config.output,
-    output:
-        gff=SAMPLES_DIR / "annotation" / "{sample}" / "annotation.gff",
-    log:
-        "logs/samples/annotation/sort_gff_{sample}.log",
-    conda:
-        "../envs/agat.yaml"
-    shell:
-        "agat_convert_sp_gxf2gxf.pl "
-        "-g {input.gff} "
-        "-o {output.gff} "
-        "-c {input.config} "
-        "&> {log} "
 
 
 # =================================================================================================
@@ -149,7 +131,7 @@ rule sort_gff:
 
 rule extract_cds:
     input:
-        gff=rules.sort_gff.output.gff,
+        gff=rules.reformat_annotation.output.gff,
         fa=SAMPLES_DIR / "snippy" / "{sample}" / "snps.consensus.fa",
         config=rules.agat_config.output,
     output:
@@ -174,7 +156,7 @@ rule extract_cds:
 
 rule extract_prots:
     input:
-        gff=rules.sort_gff.output.gff,
+        gff=rules.reformat_annotation.output.gff,
         fa=SAMPLES_DIR / "snippy" / "{sample}" / "snps.consensus.fa",
         config=rules.agat_config.output,
         cds=rules.extract_cds.output.fa,

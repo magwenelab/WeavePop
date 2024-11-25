@@ -13,6 +13,8 @@ logging.basicConfig(filename=log_file, level=logging.INFO, format='%(message)s')
 try:
     logging.info("Reading GFF table...")
     df = pd.read_csv(input_tsv, sep='\t', header=[0], dtype=str)
+    logging.info("Sorting the accessions because AGAT gff2tsv disorders them...")
+    df.sort_values(by=["seq_id"], kind='mergesort', inplace=True)
     
     logging.info("Defining feature number and suffix...")
     intron_mask = df['primary_tag'] == 'intron'
@@ -27,30 +29,49 @@ try:
     logging.info("Removing unnecessary columns...")
     df.drop(['feature_number', 'suffix', 'new_ID'], axis=1, inplace=True)
     
-    attribute_columns = [
-        "ID",
-        "locus",
-        "Parent",
-        "Name",
-        "description",
-        "old_ID",
-        "sequence_ID",
-        "copy_num_ID",
-        "coverage",
-        "extra_copy_number",
-        "inframe_stop_codon",
-        "matches_ref_protein",
-        "missing_start_codon",
-        "missing_stop_codon",
-        "low_identity",
-        "partial_mapping",
-        "valid_ORF",
-        "valid_ORFs"
-    ]
+    logging.info("Replacing True/False for Yes/No...")
+    df = df.replace({'True': 'Yes', 'False': 'No'})
+    logging.info(set(df['missing_start_codon']))
+
     
+    logging.info("Creating start_stop_mutations column...")
+    ref_mutations = ['missing_start_codon', 'missing_stop_codon', 'inframe_stop_codon']
+    if any(column in df.columns for column in ref_mutations):
+        exising_ref_mutations = [column for column in ref_mutations if column in df.columns]
+        for column in exising_ref_mutations:
+            df[column] = df[column].apply(lambda x: column if x == 'Yes' else x)
+        df['start_stop_mutations'] = df[exising_ref_mutations].apply(lambda x: ','.join(x.dropna()), axis=1)
+        df['start_stop_mutations'] = df['start_stop_mutations'].replace('', None)
+        logging.info(set(df['start_stop_mutations']))
+        df = df.drop(columns=exising_ref_mutations)
+        
+    logging.info("Renaming matches_ref_protein to indentical_to_main_ref if present...")
+    if 'matches_ref_protein' in df.columns:
+        df.rename(columns={'matches_ref_protein': 'identical_to_main_ref'}, inplace=True)
+       
     logging.info("Converting to GFF format...")
-    df_gff = df.copy()
+    attribute_columns = [
+    "ID",
+    "locus",
+    "Parent",
+    "Name",
+    "description",
+    "old_ID",
+    "sequence_ID",
+    "copy_num_ID",
+    "coverage",
+    "extra_copy_number",
+    "identical_to_main_ref",
+    "start_stop_mutations",
+    "low_identity",
+    "partial_mapping",
+    "valid_ORF",
+    "valid_ORFs",
+    "repeat_fraction"]
+    
     existing_attributes = [column for column in attribute_columns if column in df.columns]
+    
+    df_gff = df.copy()
 
     for column in existing_attributes:
         df_gff[column] = df_gff[column].apply(lambda x: column + '=' + x if pd.notnull(x) else x)
@@ -62,29 +83,14 @@ try:
     logging.info("Saving GFF...")
     df_gff.to_csv(output_gff, sep='\t', index=False, header=False)
     
-    logging.info("Reformating TSV version...")
-    
-    logging.info("Replacing True/False for Yes/No...")
-    df = df.replace({True: 'Yes', False: 'No'})
-    
-    logging.info("Creating start_stop_mutations column...")
-    ref_mutations = ['missing_start_codon', 'missing_stop_codon', 'inframe_stop_codon']
-    if any(column in df.columns for column in ref_mutations):
-        exising_ref_mutations = [column for column in ref_mutations if column in df.columns]
-        for column in exising_ref_mutations:
-            df[column] = df[column].apply(lambda x: column if x == 'Yes' else x)
-        df['start_stop_mutations'] = df[exising_ref_mutations].apply(lambda x: ','.join(x.dropna()), axis=1)
-        df = df.drop(columns=exising_ref_mutations)
-    
-    logging.info("Renaming columns...")
+    logging.info("Renaming columns of TSV version...")
     df = df.rename(columns={
         'seq_id': 'accession',
         'ID': 'feature_id',
         'Name': 'gene_name',
         'locus': 'gene_id',
         'old_ID': 'old_feature_id'})
-    if 'matches_ref_protein' in df.columns:
-        df.rename(columns={'matches_ref_protein': 'identical_to_main_ref'}, inplace=True)
+
     df.columns = df.columns.str.lower()
     
     logging.info("Reordering columns...")

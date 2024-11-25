@@ -5,7 +5,7 @@
 
 rule loci:
     input:
-        refs=expand(INT_REFS_DIR / "{lineage}" / "{lineage}_reformated_.gff.tsv", lineage=LINEAGES),
+        refs=expand(REFS_DIR / "{lineage}" / "{lineage}.gff.tsv", lineage=LINEAGES),
         loci=LOCI_FILE,
     output:
         locitable=INT_REFS_DIR / "loci_to_plot.tsv",

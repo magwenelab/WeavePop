@@ -5,7 +5,7 @@
 
 rule extract_cds_seqs:
     input:
-        gff=INT_REFS_DIR / "{lineage}" / "{lineage}_reformated_sorted.gff",
+        gff=INT_REFS_DIR / "{lineage}" / "{lineage}_interg_introns.gff",
         fasta=INT_REFS_DIR / "{lineage}" / "{lineage}.fasta",
         config=rules.agat_config.output,
     output:
@@ -27,7 +27,7 @@ rule extract_cds_seqs:
 
 rule extract_protein_seqs:
     input:
-        gff=INT_REFS_DIR / "{lineage}" / "{lineage}_reformated_sorted.gff",
+        gff=INT_REFS_DIR / "{lineage}" / "{lineage}_interg_introns.gff",
         fasta=INT_REFS_DIR / "{lineage}" / "{lineage}.fasta",
         config=rules.agat_config.output,
         cds=rules.extract_cds_seqs.output.cds,
@@ -52,7 +52,7 @@ rule extract_protein_seqs:
 # Make symbolic links in the snpeff_data directory and create config file
 rule prepare_refs_db:
     input:
-        gff=INT_REFS_DIR / "{lineage}" / "{lineage}_reformated_sorted.gff",
+        gff=INT_REFS_DIR / "{lineage}" / "{lineage}_interg_introns.gff",
         fasta=rules.extract_cds_seqs.input.fasta,
         cds=rules.extract_cds_seqs.output.cds,
         prots=rules.extract_protein_seqs.output.prots,
@@ -172,7 +172,7 @@ rule snpeff:
 rule extract_vcf_annotation:
     input:
         vcf=rules.snpeff.output.vcf,
-        tsv=rules.ref_reformat_annotation.output.tsv,
+        tsv=rules.ref_gff2tsv.output.tsv,
     output:
         effects=INT_DATASET_DIR / "snps" / "{lineage}_effects.tsv",
         variants=INT_DATASET_DIR / "snps" / "{lineage}_variants.tsv",
