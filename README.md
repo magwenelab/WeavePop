@@ -123,36 +123,19 @@ To learn more about how Snakemake works and how to take advantage of its feature
 
 | Path | Description |
 | :---------------- | ----: |
-| 03.References/{lineage}.gff | Polished GFF file of the reference genome, result of Liftoff annotation using the main reference. Positions are 1-Based. ||
-| 03.References/{lineage}_repeats.bed | BED file of regions with repetitive sequences identified by RepeatMasker. Each region is the intersection of diferent types of repetitive sequences identified. Positions are 0-Based. Columns are Accession, Start, End, Types (comma separated list of types in the region).
+| 03.References/{lineage}/{lineage}_repeats.bed | BED file of regions with repetitive sequences identified by RepeatMasker. Each region is the intersection of different types of repetitive sequences identified. Columns are Accession, Start, End, Types (comma separated list of types in the region). Positions are 0-Based.
+| 03.References/{lineage}/{lineage}.gff | Standardized GFF file of the reference genome with added introns, intergenic regions and repetitive sequences. If the reference annotation was activated it is the processed result of Liftoff annotation using the main reference. Positions are 1-Based.|
+| 03.References/{lineage}/{lineage}.gff.tsv | Tabular version of the previous file. Positions are 1-Based. Column names different from standard GFF format: `accession` ('seq_id'), `feature_id` ('ID'), `gene_name` ('Name'), `gene_id` ('locus'), `old_feature_id` (original ID before fixing), `lineage`, and `identical_to_main_ref`, ('matches_ref_protein', added by Liftoff if used)	`start_stop_mutation` (union of columns: 'missing_start_codon', 'missing_stop_codon', 'inframe_stop_codon' added by Liftoff if used).|
+| 03.References/all_lineages.gff.tsv | Concatenation of the previous table of all lineages. Positions are 1-Based. |
+
 
 <details>
 <summary> Intermediate files </summary> 
 
 | Path | Description |
 | :---------------- | ----: |
-| 04.Intermediate_files/03.References/agat_config.yaml | Config file for AGAT
-| 04.Intermediate_files/03.References/all_lineages.gff.tsv | Table version of GFF files of all the reference genomes concatenated. Positions are 1-Based. Features are not sorted like in the GFF. Column names different from standard GFF:         accession (seq_id), feature_id (ID), gene_name (Name), gene_id (locus), old_feature_id (original ID before fixing), lineage, and matches_ref_protein,	missing_start_codon,	missing_stop_codon,	inframe_stop_codon (see Liftoff output for last 4).|
-| 04.Intermediate_files/03.References/chromosomes.csv | Same as chromosome.csv provided by the user.|
-| 04.Intermediate_files/03.References/{main_reference}_fixed_description.gff | GFF with description tag instead of product tag|
-| 04.Intermediate_files/03.References/{main_reference}_fixed_ID.gff | GFF with fixed IDs |
-| 04.Intermediate_files/03.References/{main_reference}_fixed_locus.gff | GFF with locus tag added |
-| 04.Intermediate_files/03.References/{main_reference}_fixed.tsv | Table version of fixed_description GFF |
-| 04.Intermediate_files/03.References/{main_reference}.gff | Final fixed GFF with new IDs in the shape of `<locus>-<level2 tag_level2 number>-<level3 tag and number>` |
-| 04.Intermediate_files/03.References/{main_reference}.tsv | TSV version of fixed GFF |
-| 04.Intermediate_files/03.References/{lineage}/{main_reference}.fasta | Symlink to original FASTA |
-| 04.Intermediate_files/03.References/{lineage}/{main_reference}.fasta.fai | FASTA index created by Liftoff |
-| 04.Intermediate_files/03.References/{lineage}/{main_reference}.gff | Symlink to fixed GFF |
-| 04.Intermediate_files/03.References/{lineage}/{main_reference}.gff_db | DB of GFF created by Liftoff |
+| 04.Intermediate_files/03.References/filtered_lineages/{lineage}.txt | Empty file for surviving lineage after the sample filtering. |
 | 04.Intermediate_files/03.References/{lineage}/intermediate_liftoff/ | See [Liftoff output](https://github.com/agshumate/Liftoff?tab=readme-ov-file#usage) |
-| 04.Intermediate_files/03.References/{lineage}/liftoff.gff | GFF from Liftoff before polishing |
-| 04.Intermediate_files/03.References/{lineage}/unmapped_features.txt | List of features not found in reference genome |
-| 04.Intermediate_files/03.References/{lineage}/{lineage}.cds.fa | Nucleotide sequences of all isoforms in reference genome |
-| 04.Intermediate_files/03.References/{lineage}/{lineage}.fasta.fai 
-| 04.Intermediate_files/03.References/{lineage}/{lineage}.fasta.index
-| 04.Intermediate_files/03.References/{lineage}/{lineage}.fasta.mmi
-| 04.Intermediate_files/03.References/{lineage}/{lineage}.gff.tsv | Table version of polished GFF of reference genome. Positions are 1-Based. Features are not sorted like in the GFF. |
-| 04.Intermediate_files/03.References/{lineage}/{lineage}.prots.fa | Protein sequences of all isoforms in reference genome |
 | 04.Intermediate_files/03.References/{lineage}/repeats/01_simple/{lineage}.bed | BED file of simple repetitive sequences. Positions are 0-Based. |
 | 04.Intermediate_files/03.References/{lineage}/repeats/01_simple/ | See [RepeatMasker output](https://www.repeatmasker.org/webrepeatmaskerhelp.html)|
 | 04.Intermediate_files/03.References/{lineage}/repeats/02_complex/{lineage}.bed | BED file of complex repetitive sequences. Positions are 0-Based. |
@@ -161,10 +144,31 @@ To learn more about how Snakemake works and how to take advantage of its feature
 | 04.Intermediate_files/03.References/{lineage}/repeats/03_known/ | See [RepeatMasker output](https://www.repeatmasker.org/webrepeatmaskerhelp.html)|
 | 04.Intermediate_files/03.References/{lineage}/repeats/04_unknown/{lineage}.bed | BED file of unknown repetitive sequences. Positions are 0-Based. |
 | 04.Intermediate_files/03.References/{lineage}/repeats/04_unknown/ | See [RepeatMasker output](https://www.repeatmasker.org/webrepeatmaskerhelp.html)|
-| 04.Intermediate_files/03.References/{lineage}/repeats/{lineage}_db/ | Database created with RepeatModeler's BuildDatabase |
-| 04.Intermediate_files/03.References/{lineage}/repeats/{lineage}_known.fa | FASTA file of known families of repetitive sequences identified by RepeatModeler |
-| 04.Intermediate_files/03.References/{lineage}/repeats/{lineage}_unknown.fa | FASTA file of unknown families of repetitive sequences identified by RepeatModeler |
-| 04.Intermediate_files/03.References/{lineage}/repeats/RModeler/ | See [RepeatModeler output](https://www.repeatmasker.org/RepeatModeler/)|
+| 04.Intermediate_files/03.References/{lineage}/repeats/db_rmodeler/ | Database created with RepeatModeler's BuildDatabase |
+| 04.Intermediate_files/03.References/{lineage}/repeats/known.fa | FASTA file of known families of repetitive sequences identified by RepeatModeler |
+| 04.Intermediate_files/03.References/{lineage}/repeats/unknown.fa | FASTA file of unknown families of repetitive sequences identified by RepeatModeler |
+| 04.Intermediate_files/03.References/{lineage}/{main_reference}.fasta | Symlink to original FASTA |
+| 04.Intermediate_files/03.References/{lineage}/{main_reference}.fasta.fai | FASTA index created by Liftoff |
+| 04.Intermediate_files/03.References/{lineage}/{main_reference}.gff | Symlink to fixed GFF |
+| 04.Intermediate_files/03.References/{lineage}/{main_reference}.gff_db | DB of GFF created by Liftoff |
+| 04.Intermediate_files/03.References/{lineage}/liftoff.gff | GFF from Liftoff before polishing |
+| 04.Intermediate_files/03.References/{lineage}/liftoff.gff_polished | GFF from Liftoff polished |
+| 04.Intermediate_files/03.References/{lineage}/unmapped_features.txt | List of features not lifted over to the reference genome |
+| 04.Intermediate_files/03.References/{lineage}/{lineage}_interg_introns.gff | `liftoff.gff_polished` plus intergenic regions and introns |
+| 04.Intermediate_files/03.References/{lineage}/{lineage}_intergenic.gff | `liftoff.gff_polished` plus intergenic regions |
+| 04.Intermediate_files/03.References/{lineage}/{lineage}_repeats.gff | `liftoff.gff_polished` plus intergenic regions, introns and fraction of repetitive sequences |
+| 04.Intermediate_files/03.References/{lineage}/{lineage}_repeats.gff.tsv | Tabular version of the previous file |
+| 04.Intermediate_files/03.References/{lineage}/{lineage}.fasta | Symlink to original FASTA |
+| 04.Intermediate_files/03.References/{lineage}/{lineage}.fasta.fai 
+| 04.Intermediate_files/03.References/{lineage}/{lineage}.fasta.mmi
+| 04.Intermediate_files/03.References/agat_config.yaml | Config file for AGAT
+| 04.Intermediate_files/03.References/{main_reference}_fixed_description.gff | GFF with description tag instead of product tag|
+| 04.Intermediate_files/03.References/{main_reference}_fixed_ID.gff | GFF with fixed IDs |
+| 04.Intermediate_files/03.References/{main_reference}_fixed_locus.gff | GFF with locus tag added |
+| 04.Intermediate_files/03.References/{main_reference}_fixed.tsv | Table version of fixed_description GFF |
+| 04.Intermediate_files/03.References/{main_reference}.gff | Final fixed GFF with new IDs in the shape of `<locus>-<level2 tag and number>-<level3 tag and number>` |
+| 04.Intermediate_files/03.References/{main_reference}.tsv | TSV version of fixed GFF |
+
 
 </details>
 
@@ -172,7 +176,7 @@ To learn more about how Snakemake works and how to take advantage of its feature
 
 | Path | Description |
 | :---------------- | ----: |
-| 01.Samples/snippy/{sample}/snps.bam | BAM file of alignment between short reads of sample and corresponding reference genome. |
+| 01.Samples/snippy/{sample}/snps.bam | BAM file of alignment between short reads of sample with corresponding reference genome. |
 | 01.Samples/snippy/{sample}/snps.consensus.fa | FASTA file of the reference genome with all variants instantiated. |
 | 01.Samples/snippy/{sample}/snps.vcf | Called variants in VCF format. Positions are 01-Based.|
 | 01.Samples/snippy/{sample}/* | Other files from the [Snippy output](https://github.com/tseemann/snippy?tab=readme-ov-file#output-files).|
@@ -282,6 +286,10 @@ To learn more about how Snakemake works and how to take advantage of its feature
 | 04.Intermediate_files/03.References/snpeff_data/Cryptococcus_neoformans_{lineage}/
 | 04.Intermediate_files/03.References/snpeff_data/{lineage}.done
 | 04.Intermediate_files/03.References/snpeff_data/snpEff.config
+
+| 04.Intermediate_files/03.References/{lineage}/{lineage}.cds.fa | Nucleotide sequences of all isoforms in reference genome |
+| 04.Intermediate_files/03.References/{lineage}/{lineage}.prots.fa | Protein sequences of all isoforms in reference genome |
+| 04.Intermediate_files/03.References/{lineage}/{lineage}.fasta.index
 
 </details>
 
