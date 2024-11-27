@@ -79,6 +79,8 @@ def extract_annotation(vcf_path, gff_tsv, effects_out, variants_out, lofs_out, n
     df_variants = pd.DataFrame(data_variants, columns=['var_id', 'accession', 'pos', 'ref', 'alt'])
     df_variants['alt'] = df_variants['alt'].astype(str)
     df_variants['alt'] = df_variants['alt'].str.replace('[', '').str.replace(']', '')
+    df_variants['lineage'] = lineage
+    df_variants = df_variants[['var_id', 'lineage', 'accession', 'pos', 'ref', 'alt']]
 
     print("LOFs dataframe")
     df_lofs = pd.DataFrame(data_lofs, columns=['var_id', 'gene_name', 'num_transcripts', 'percent_affected'])
@@ -146,12 +148,6 @@ def extract_annotation(vcf_path, gff_tsv, effects_out, variants_out, lofs_out, n
     print("Concatenating dataframes...")
     df_effects = pd.concat([df_gene_transcript, df_gene_no_transcript_fixed, df_no_gene_no_transcript])
     print("Finished formatting effects dataframe!")
-
-    print("Adding lineage to dataframes...")
-    df_variants['lineage'] = lineage
-    df_effects['lineage'] = lineage
-    df_lofs['lineage'] = lineage
-    df_nmds['lineage'] = lineage
 
     print("Saving dataframes to CSV files...")
     df_variants.to_csv(variants_out, sep = "\t",  index=False)

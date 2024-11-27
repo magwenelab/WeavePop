@@ -24,7 +24,7 @@ def intersect(vcf_output, presence_output, lineage, tempdir, vcf_files):
 
         print("Creating  and saving presence table...")
         sample = $(bcftools query -l @(vcf_files[0])).rstrip()
-        df_presence = pd.DataFrame({'var_id': vcf['var_id'], 'sample': sample, 'lineage': lineage})
+        df_presence = pd.DataFrame({'var_id': vcf['var_id'], 'sample': sample})
         df_presence.to_csv(presence_output, sep='\t', index=False)
 
         print("Saving new vcf file...")
@@ -69,7 +69,6 @@ def intersect(vcf_output, presence_output, lineage, tempdir, vcf_files):
         presence_melt = presence_matrix.melt(id_vars='var_id', var_name='sample', value_name='value')
         df_presence = presence_melt[presence_melt['value'] == '1'].copy()
         df_presence.drop(columns='value', inplace=True)
-        df_presence['lineage'] = lineage
         df_presence.to_csv(presence_output, sep='\t', index=False)
 
         print("Removing temporary directory...")
