@@ -10,6 +10,10 @@ The database is useful for easily querying the results using FungalPop-Shiny, an
 
 ## Installation
 
+### Requirements
+
+Requires a **Linux** operating system.
+
 ### Install Conda
 
 Install Mamba or Miniconda following the instructions from their webpage:
@@ -85,7 +89,17 @@ Mandatory columns with this exact names:
   * `accession`: Sequence ID of the chromosomes in the FASTA and GFF of the reference of each lineage. Make sure each chromosome ID is not repeated in this file.     
   * `chromosome`: Common name of the chromosome, e.g. chr01, 1, VNI_chr01.  
 
-* `config/RepBase.fasta`: Database of repetitive sequences to use for RepeatModeler and RepeatMasker in FASTA format. Needed if the CNV, plotting or database modules are activated. 
+* `config/RepBase.fasta`: Database of repetitive sequences to use for RepeatModeler and RepeatMasker in FASTA format. Needed if the CNV, plotting or database modules are activated.   
+We recommend the [RepBase database](https://www.girinst.org/server/RepBase/). You need to download it, extract the files and concatenate all in one FASTA file `config/RepBase.fasta`.
+
+```
+# Download RepBase database
+wget https://www.girinst.org/server/RepBase/protected/RepBase29.01.fasta.tar.gz
+tar -xvzf RepBase29.01.fasta.tar.gz
+cat RepBase29.01.fasta/*.ref > RepBase.fasta
+cat RepBase29.01.fasta/appendix/*.ref >> RepBase.fasta
+rm -rf RepBase29.01.fasta/ RepBase29.01.fasta.tar.gz
+```
 
 * `config/loci.csv`: If you want genetic features to be plotted in the depth and MAPQ plots, provide comma-separated table with one row per gene. [Example](https://github.com/magwenelab/DiversityPipeline/blob/main/config/loci.csv).  
 Mandatory columns with this exact names:    
