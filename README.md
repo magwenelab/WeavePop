@@ -194,8 +194,6 @@ To learn more about how Snakemake works and how to take advantage of its feature
 | `01.Samples/depth_quality/{sample}/depth_by_chrom_good.tsv` | Depth metrics of good quality mappings. Genome-wide and by chromosome (absolute and normalized). |
 | `01.Samples/depth_quality/{sample}/depth_by_chrom_raw.tsv` | Depth metrics of all mappings. Genome-wide and by chromosome (absolute). |
 | `01.Samples/depth_quality/{sample}/mapping_stats.tsv` | Mapping quality and depth statistics plus quality warning. | 
-| `02.Dataset/depth_quality/depth_by_chrom_good.tsv` | Concatenation of all `depth_by_chrom_good.tsv` files. |
-| `02.Dataset/depth_quality/depth_by_chrom_raw.tsv` | Concatenation of all `depth_by_chrom_raw.tsv` files. |
 | `02.Dataset/depth_quality/mapping_stats.tsv` | Concatenation of `mapping_stats.tsv` files of samples that passed the quality filter. |
 | `02.Dataset/metadata.csv` | Metadata table with samples that survived the quality filter. |
 
@@ -238,8 +236,8 @@ To learn more about how Snakemake works and how to take advantage of its feature
 
 ### Depth and quality of genetic features
 
-| Path | Description | Column names |
-| :---------------- | ----: |----: |
+| Path | Description |
+| :---------------- | ----: |
 | `01.Samples/depth_quality/{sample}/mapq_depth_by_feature.tsv` | MAPQ and mean depth of each feature. |
 | `01.Samples/depth_quality/{sample}/mapq_depth_by_window.bed` | MAPQ and mean depth of each window. Positions are 0-Based. Columns are: accession, start, end, mean MAPQ, mean depth. |
 | `02.Dataset/depth_quality/mapq_depth_by_feature.tsv` | Concatenation of all `mapq_depth_by_feature.tsv` files. |
@@ -260,12 +258,14 @@ To learn more about how Snakemake works and how to take advantage of its feature
 
 | Path | Description |
 | :---------------- | ----: |
-| 01.Samples/cnv/{sample}/cnv_calls.tsv | Positions are 0-Based.|
-| 02.Dataset/cnv/cnv_calls.tsv | Positions are 0-Based.|
+| `01.Samples/cnv/{sample}/cnv_calls.tsv` | Table of deleted and duplicated regions in each sample and their overlap with repetitive sequences. Positions are 1-Based.|
+| `02.Dataset/cnv/cnv_calls.tsv` | Concatenation of all `cnv_calls.tsv` files.|
 
 <details>
 <summary> Intermediate files </summary>
 
+| Path | Description |
+| :---------------- | ----: |
 | `04.Intermediate_files/01.Samples/depth_quality/{sample}/depth_by_windows.tsv` | Mean depth of each window. Positions are 0-Based. Columns are: accession, start, end, mean depth, normalized mean depth, smoothed normalized mean depth.
 | `04.Intermediate_files/01.Samples/mosdepth/{sample}/*` |  See [Modepth](https://github.com/brentp/mosdepth) output. The files without the `_good` suffix are created in the Depth and quality of genetic features module.|
 
@@ -273,8 +273,8 @@ To learn more about how Snakemake works and how to take advantage of its feature
 
 ### Annotation of SNP effects
 
-| Path | Description | Column names |
-| :---------------- | ----: |----: |
+| Path | Description |
+| :---------------- | ----: |
 | 02.Dataset/snps/effects.tsv
 | 02.Dataset/snps/lofs.tsv
 | 02.Dataset/snps/nmds.tsv
@@ -284,8 +284,8 @@ To learn more about how Snakemake works and how to take advantage of its feature
 <details>
 <summary> Intermediate files </summary> 
 
-| Path | Description | Column names |
-| :---------------- | ----: |----: |
+| Path | Description |
+| :---------------- | ----: |
 | 04.Intermediate_files/02.Dataset/snps/{lineage}_effects.tsv
 | 04.Intermediate_files/02.Dataset/snps/{lineage}_intersection.vcf | Positions are 1-Based.
 | 04.Intermediate_files/02.Dataset/snps/{lineage}_lofs.tsv
@@ -322,25 +322,26 @@ To learn more about how Snakemake works and how to take advantage of its feature
 
 </details>
 
-### Plots
+### Plotting
 
 | Path | Description |
 | :---------------- | ----: |
-| 01.Samples/plots/{sample}/depth_by_chrom.png
-| 01.Samples/plots/{sample}/depth_by_windows.png
-| 01.Samples/plots/{sample}/depth_chrom_distribution.png
-| 01.Samples/plots/{sample}/depth_global_distribution.png
-| 01.Samples/plots/{sample}/mapq.png
-| 02.Dataset/plots/dataset_depth_by_chrom.png
-| 02.Dataset/plots/dataset_summary.png
+| `01.Samples/plots/{sample}/depth_by_chrom.png` | Plot of depth metrics by chromosome and genome-wide. |
+| `01.Samples/plots/{sample}/depth_by_windows.png` | Plot of normalized depth of windows along each chromosome, with specified genetic features, called CNVs, and repetitive sequences of the correspondig reference. |
+| `01.Samples/plots/{sample}/depth_chrom_distribution.png` | Depth distribution by chromosome plot. |
+| `01.Samples/plots/{sample}/depth_global_distribution.png` | Genome-wide depth distribution plot. |
+| `01.Samples/plots/{sample}/mapq.png` | Plot of MAPQ of windows along each chromosome, with specified genetic features, called CNVs, and repetitive sequences of the correspondig reference. |
+| `02.Dataset/plots/dataset_depth_by_chrom.png` | Normalized mean depth of each chromosome in the samples that survived the quality filter.  |
+| `02.Dataset/plots/dataset_summary.png` | Genome-wide depth and mapping quality metrics of the samples that survived the quality filter.|
 
 <details>
 <summary> Intermediate files </summary> 
 
-| Path | Description | Column names |
-| :---------------- | ----: |----: |
-| 04.Intermediate_files/03.References/loci.csv
-| 04.Intermediate_files/03.References/loci_to_plot.tsv | Positions are 1-Based.
+| Path | Description |
+| :---------------- | ----: |
+| `04.Intermediate_files/03.References/loci_to_plot.tsv` | Positions are 1-Based. |
+| `04.Intermediate_files/02.Dataset/depth_quality/depth_by_chrom_good.tsv` | Concatenation of the `depth_by_chrom_good.tsv` files of the samples that survived the quality filter. |
+| `04.Intermediate_files/02.Dataset/depth_quality/depth_by_chrom_raw.tsv` | Concatenation of the `depth_by_chrom_raw.tsv` files of the samples that survived the quality filter. |
 
 </details>
 
