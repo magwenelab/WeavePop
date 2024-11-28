@@ -146,37 +146,3 @@ checkpoint filter_wildcards:
     script:
         "../scripts/filter_wildcards.py"
 
-
-# =================================================================================================
-#   Per dataset | Join depth by chrom
-# =================================================================================================
-
-
-rule join_depth_by_chrom_raw:
-    input:
-        expand(
-            SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom_raw.tsv", sample=SAMPLES
-        ),
-    output:
-        DATASET_DIR / "depth_quality" / "depth_by_chrom_raw.tsv",
-    log:
-        "logs/dataset/depth_quality/join_depth_by_chrom_raw.log",
-    conda:
-        "../envs/shell.yaml"
-    script:
-        "../scripts/join_tables.py"
-
-
-rule join_depth_by_chrom_good:
-    input:
-        expand(
-            SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom_good.tsv", sample=SAMPLES
-        ),
-    output:
-        DATASET_DIR / "depth_quality" / "depth_by_chrom_good.tsv",
-    log:
-        "logs/dataset/depth_quality/join_depth_by_chrom_good.log",
-    conda:
-        "../envs/snakemake.yaml"
-    script:
-        "../scripts/join_tables.py"
