@@ -89,7 +89,7 @@ Mandatory columns with this exact names:
   * `accession`: Sequence ID of the chromosomes in the FASTA and GFF of the reference of each lineage. Make sure each chromosome ID is not repeated in this file.     
   * `chromosome`: Common name of the chromosome, e.g. chr01, 1, VNI_chr01.  
 
-* `config/RepBase.fasta`: Database of repetitive sequences to use for RepeatModeler and RepeatMasker in FASTA format. Needed if the CNV, plotting or database modules are activated.   
+* `config/RepBase.fasta`: Database of repetitive sequences in FASTA format to use for RepeatMasker. Needed if the CNV, plotting or database modules are activated.   
 We recommend the [RepBase database](https://www.girinst.org/server/RepBase/). You need to download it, extract the files and concatenate all in one FASTA file `config/RepBase.fasta`.
 
 * `config/loci.csv`: If you want genetic features to be plotted in the depth and MAPQ plots, provide comma-separated table with one row per gene. [Example](https://github.com/magwenelab/DiversityPipeline/blob/main/config/loci.csv).  
@@ -128,10 +128,10 @@ To learn more about how Snakemake works and how to take advantage of its feature
 
 | Path | Description |
 | :---------------- | ----: |
-| 03.References/{lineage}/{lineage}_repeats.bed | BED file of regions with repetitive sequences identified by RepeatMasker. Each region is the intersection of different types of repetitive sequences identified. Columns are Accession, Start, End, Types (comma separated list of types in the region). Positions are 0-Based.
-| 03.References/{lineage}/{lineage}.gff | Standardized GFF file of the reference genome with added introns, intergenic regions and repetitive sequences. If the reference annotation was activated it is the processed result of Liftoff annotation using the main reference. Positions are 1-Based.|
-| 03.References/{lineage}/{lineage}.gff.tsv | Tabular version of the previous file. Positions are 1-Based. Column names different from standard GFF format: `accession` ('seq_id'), `feature_id` ('ID'), `gene_name` ('Name'), `gene_id` ('locus'), `old_feature_id` (original ID before fixing), `lineage`, and `identical_to_main_ref`, ('matches_ref_protein', added by Liftoff if used)	`start_stop_mutation` (union of columns: 'missing_start_codon', 'missing_stop_codon', 'inframe_stop_codon' added by Liftoff if used).|
-| 03.References/all_lineages.gff.tsv | Concatenation of the previous table of all lineages. Positions are 1-Based. |
+| `03.References/{lineage}/{lineage}_repeats.bed` | BED file of regions with repetitive sequences identified by RepeatMasker. Each region is the intersection of different types of repetitive sequences identified. Columns are Accession, Start, End, Types (comma separated list of types in the region). Positions are 0-Based.
+| `03.References/{lineage}/{lineage}.gff` | Standardized GFF file of the reference genome with added introns, intergenic regions and repetitive sequences. If the reference annotation was activated it is the processed result of Liftoff annotation using the main reference. Positions are 1-Based.|
+| `03.References/{lineage}/{lineage}.gff.tsv` | Tabular version of the previous file. Positions are 1-Based. Column names different from standard GFF format: `accession` ('seq_id'), `feature_id` ('ID'), `gene_name` ('Name'), `gene_id` ('locus'), `old_feature_id` (original ID before fixing), `lineage`, and `identical_to_main_ref`, ('matches_ref_protein', added by Liftoff if used)	`start_stop_mutation` (union of columns: 'missing_start_codon', 'missing_stop_codon', 'inframe_stop_codon' added by Liftoff if used).|
+| `03.References/all_lineages.gff.tsv` | Concatenation of the previous table of all lineages. Positions are 1-Based. |
 
 
 <details>
@@ -139,40 +139,40 @@ To learn more about how Snakemake works and how to take advantage of its feature
 
 | Path | Description |
 | :---------------- | ----: |
-| 04.Intermediate_files/03.References/filtered_lineages/{lineage}.txt | Empty file for surviving lineage after the sample filtering. |
-| 04.Intermediate_files/03.References/{lineage}/intermediate_liftoff/ | See [Liftoff output](https://github.com/agshumate/Liftoff?tab=readme-ov-file#usage) |
-| 04.Intermediate_files/03.References/{lineage}/repeats/01_simple/{lineage}.bed | BED file of simple repetitive sequences. Positions are 0-Based. |
-| 04.Intermediate_files/03.References/{lineage}/repeats/01_simple/ | See [RepeatMasker output](https://www.repeatmasker.org/webrepeatmaskerhelp.html)|
-| 04.Intermediate_files/03.References/{lineage}/repeats/02_complex/{lineage}.bed | BED file of complex repetitive sequences. Positions are 0-Based. |
-| 04.Intermediate_files/03.References/{lineage}/repeats/02_complex/ | See [RepeatMasker output](https://www.repeatmasker.org/webrepeatmaskerhelp.html)|
-| 04.Intermediate_files/03.References/{lineage}/repeats/03_known/{lineage}.bed| BED file of known repetitive sequences. Positions are 0-Based. |
-| 04.Intermediate_files/03.References/{lineage}/repeats/03_known/ | See [RepeatMasker output](https://www.repeatmasker.org/webrepeatmaskerhelp.html)|
-| 04.Intermediate_files/03.References/{lineage}/repeats/04_unknown/{lineage}.bed | BED file of unknown repetitive sequences. Positions are 0-Based. |
-| 04.Intermediate_files/03.References/{lineage}/repeats/04_unknown/ | See [RepeatMasker output](https://www.repeatmasker.org/webrepeatmaskerhelp.html)|
-| 04.Intermediate_files/03.References/{lineage}/repeats/db_rmodeler/ | Database created with RepeatModeler's BuildDatabase |
-| 04.Intermediate_files/03.References/{lineage}/repeats/known.fa | FASTA file of known families of repetitive sequences identified by RepeatModeler |
-| 04.Intermediate_files/03.References/{lineage}/repeats/unknown.fa | FASTA file of unknown families of repetitive sequences identified by RepeatModeler |
-| 04.Intermediate_files/03.References/{lineage}/{main_reference}.fasta | Symlink to original FASTA |
-| 04.Intermediate_files/03.References/{lineage}/{main_reference}.fasta.fai | FASTA index created by Liftoff |
-| 04.Intermediate_files/03.References/{lineage}/{main_reference}.gff | Symlink to fixed GFF |
-| 04.Intermediate_files/03.References/{lineage}/{main_reference}.gff_db | DB of GFF created by Liftoff |
-| 04.Intermediate_files/03.References/{lineage}/liftoff.gff | GFF from Liftoff before polishing |
-| 04.Intermediate_files/03.References/{lineage}/liftoff.gff_polished | GFF from Liftoff polished |
-| 04.Intermediate_files/03.References/{lineage}/unmapped_features.txt | List of features not lifted over to the reference genome |
-| 04.Intermediate_files/03.References/{lineage}/{lineage}_interg_introns.gff | `liftoff.gff_polished` plus intergenic regions and introns |
-| 04.Intermediate_files/03.References/{lineage}/{lineage}_intergenic.gff | `liftoff.gff_polished` plus intergenic regions |
-| 04.Intermediate_files/03.References/{lineage}/{lineage}_repeats.gff | `liftoff.gff_polished` plus intergenic regions, introns and fraction of repetitive sequences |
-| 04.Intermediate_files/03.References/{lineage}/{lineage}_repeats.gff.tsv | Tabular version of the previous file |
-| 04.Intermediate_files/03.References/{lineage}/{lineage}.fasta | Symlink to original FASTA |
-| 04.Intermediate_files/03.References/{lineage}/{lineage}.fasta.fai 
-| 04.Intermediate_files/03.References/{lineage}/{lineage}.fasta.mmi
-| 04.Intermediate_files/03.References/agat_config.yaml | Config file for AGAT
-| 04.Intermediate_files/03.References/{main_reference}_fixed_description.gff | GFF with description tag instead of product tag|
-| 04.Intermediate_files/03.References/{main_reference}_fixed_ID.gff | GFF with fixed IDs |
-| 04.Intermediate_files/03.References/{main_reference}_fixed_locus.gff | GFF with locus tag added |
-| 04.Intermediate_files/03.References/{main_reference}_fixed.tsv | Table version of fixed_description GFF |
-| 04.Intermediate_files/03.References/{main_reference}.gff | Final fixed GFF with new IDs in the shape of `<locus>-<level2 tag and number>-<level3 tag and number>` |
-| 04.Intermediate_files/03.References/{main_reference}.tsv | TSV version of fixed GFF |
+| `04.Intermediate_files/03.References/filtered_lineages/{lineage}.txt` | Empty file for surviving lineage after the sample filtering. |
+| `04.Intermediate_files/03.References/{lineage}/intermediate_liftoff/` | See [Liftoff output](https://github.com/agshumate/Liftoff?tab=readme-ov-file#usage) |
+| `04.Intermediate_files/03.References/{lineage}/repeats/01_simple/{lineage}.bed` | BED file of simple repetitive sequences. Positions are 0-Based. |
+| `04.Intermediate_files/03.References/{lineage}/repeats/01_simple/` | See [RepeatMasker output](https://www.repeatmasker.org/webrepeatmaskerhelp.html)|
+| `04.Intermediate_files/03.References/{lineage}/repeats/02_complex/{lineage}.bed` | BED file of complex repetitive sequences. Positions are 0-Based. |
+| `04.Intermediate_files/03.References/{lineage}/repeats/02_complex/` | See [RepeatMasker output](https://www.repeatmasker.org/webrepeatmaskerhelp.html)|
+| `04.Intermediate_files/03.References/{lineage}/repeats/03_known/{lineage}.bed`| BED file of known repetitive sequences. Positions are 0-Based. |
+| `04.Intermediate_files/03.References/{lineage}/repeats/03_known/` | See [RepeatMasker output](https://www.repeatmasker.org/webrepeatmaskerhelp.html)|
+| `04.Intermediate_files/03.References/{lineage}/repeats/04_unknown/{lineage}.bed` | BED file of unknown repetitive sequences. Positions are 0-Based. |
+| `04.Intermediate_files/03.References/{lineage}/repeats/04_unknown/` | See [RepeatMasker output](https://www.repeatmasker.org/webrepeatmaskerhelp.html)|
+| `04.Intermediate_files/03.References/{lineage}/repeats/db_rmodeler/` | Database created with RepeatModeler's BuildDatabase |
+| `04.Intermediate_files/03.References/{lineage}/repeats/known.fa` | FASTA file of known families of repetitive sequences identified by RepeatModeler |
+| `04.Intermediate_files/03.References/{lineage}/repeats/unknown.fa` | FASTA file of unknown families of repetitive sequences identified by RepeatModeler |
+| `04.Intermediate_files/03.References/{lineage}/{main_reference}.fasta` | Symlink to original FASTA |
+| `04.Intermediate_files/03.References/{lineage}/{main_reference}.fasta.fai` | FASTA index created by Liftoff |
+| `04.Intermediate_files/03.References/{lineage}/{main_reference}.gff` | Symlink to fixed GFF |
+| `04.Intermediate_files/03.References/{lineage}/{main_reference}.gff_db` | DB of GFF created by Liftoff |
+| `04.Intermediate_files/03.References/{lineage}/liftoff.gff` | GFF from Liftoff before polishing |
+| `04.Intermediate_files/03.References/{lineage}/liftoff.gff_polished` | GFF from Liftoff polished |
+| `04.Intermediate_files/03.References/{lineage}/unmapped_features.txt` | List of features not lifted over to the reference genome |
+| `04.Intermediate_files/03.References/{lineage}/{lineage}_interg_introns.gff` | `liftoff.gff_polished` plus intergenic regions and introns |
+| `04.Intermediate_files/03.References/{lineage}/{lineage}_intergenic.gff` | `liftoff.gff_polished` plus intergenic regions |
+| `04.Intermediate_files/03.References/{lineage}/{lineage}_repeats.gff` | `liftoff.gff_polished` plus intergenic regions, introns and fraction of repetitive sequences |
+| `04.Intermediate_files/03.References/{lineage}/{lineage}_repeats.gff.tsv` | Tabular version of the previous file |
+| `04.Intermediate_files/03.References/{lineage}/{lineage}.fasta` | Symlink to original FASTA |
+| `04.Intermediate_files/03.References/{lineage}/{lineage}.fasta.fai` |
+| `04.Intermediate_files/03.References/{lineage}/{lineage}.fasta.mmi` |
+| `04.Intermediate_files/03.References/agat_config.yaml` | Config file for AGAT |
+| `04.Intermediate_files/03.References/{main_reference}_fixed_description.gff` | GFF with description tag instead of product tag|
+| `04.Intermediate_files/03.References/{main_reference}_fixed_ID.gff` | GFF with fixed IDs |
+| `04.Intermediate_files/03.References/{main_reference}_fixed_locus.gff` | GFF with locus tag added |
+| `04.Intermediate_files/03.References/{main_reference}_fixed.tsv` | Table version of fixed_description GFF |
+| `04.Intermediate_files/03.References/{main_reference}.gff` | Final fixed GFF with new IDs in the shape of `<locus>-<level2 tag and number>-<level3 tag and number>` |
+| `04.Intermediate_files/03.References/{main_reference}.tsv` | TSV version of fixed GFF |
 
 
 </details>
@@ -181,90 +181,97 @@ To learn more about how Snakemake works and how to take advantage of its feature
 
 | Path | Description |
 | :---------------- | ----: |
-| 01.Samples/snippy/{sample}/snps.bam | BAM file of alignment between short reads of sample with corresponding reference genome. |
-| 01.Samples/snippy/{sample}/snps.consensus.fa | FASTA file of the reference genome with all variants instantiated. |
-| 01.Samples/snippy/{sample}/snps.vcf | Called variants in VCF format. Positions are 01-Based.|
-| 01.Samples/snippy/{sample}/* | Other files from the [Snippy output](https://github.com/tseemann/snippy?tab=readme-ov-file#output-files).|
+| `01.Samples/snippy/{sample}/snps.bam` | BAM file of alignment between short reads of sample with corresponding reference genome. |
+| `01.Samples/snippy/{sample}/snps.consensus.fa` | FASTA file of the reference genome with all variants instantiated. |
+| `01.Samples/snippy/{sample}/snps.vcf` | Called variants in VCF format. Positions are 01-Based.|
+| `01.Samples/snippy/{sample}/*` | Other files from the [Snippy output](https://github.com/tseemann/snippy?tab=readme-ov-file#output-files).|
 
 
 ### Depth and quality
 
-| Path | Description | Column names |
-| :---------------- | ----: |----: |
-| 01.Samples/depth_quality/{sample}/depth_by_chrom_good.tsv
-| 01.Samples/depth_quality/{sample}/depth_by_chrom_raw.tsv
-| 01.Samples/depth_quality/{sample}/mapping_stats.tsv
-| 01.Samples/depth_quality/{sample}/mapq_depth_window.bed | Positions are 0-Based.
-| 02.Dataset/depth_quality/depth_by_chrom_good.tsv
-| 02.Dataset/depth_quality/depth_by_chrom_raw.tsv
-| 02.Dataset/depth_quality/mapping_stats.tsv
+| Path | Description |
+| :---------------- | ----: |
+| `01.Samples/depth_quality/{sample}/depth_by_chrom_good.tsv` | Depth metrics of good quality mappings. Genome-wide and by chromosome (absolute and normalized). |
+| `01.Samples/depth_quality/{sample}/depth_by_chrom_raw.tsv` | Depth metrics of all mappings. Genome-wide and by chromosome (absolute). |
+| `01.Samples/depth_quality/{sample}/mapping_stats.tsv` | Mapping quality and depth statistics plus quality warning. | 
+| `02.Dataset/depth_quality/depth_by_chrom_good.tsv` | Concatenation of all `depth_by_chrom_good.tsv` files. |
+| `02.Dataset/depth_quality/depth_by_chrom_raw.tsv` | Concatenation of all `depth_by_chrom_raw.tsv` files. |
+| `02.Dataset/depth_quality/mapping_stats.tsv` | Concatenation of `mapping_stats.tsv` files of samples that passed the quality filter. |
+| `02.Dataset/metadata.csv` | Metadata table with samples that survived the quality filter. |
+
 
 <details>
 <summary> Intermediate files </summary> 
 
-| Path | Description | Column names |
-| :---------------- | ----: |----: |
-| 04.Intermediate_files/01.Samples/mosdepth/{sample}/coverage_good.mosdepth.global.dist.txt
-| 04.Intermediate_files/01.Samples/mosdepth/{sample}/coverage_good.mosdepth.region.dist.txt
-| 04.Intermediate_files/01.Samples/mosdepth/{sample}/coverage_good.mosdepth.summary.txt
-| 04.Intermediate_files/01.Samples/mosdepth/{sample}/coverage_good.regions.bed.gz
-| 04.Intermediate_files/01.Samples/mosdepth/{sample}/coverage_good.regions.bed.gz.csi
-| 04.Intermediate_files/01.Samples/mosdepth/{sample}/coverage.mosdepth.global.dist.txt
-| 04.Intermediate_files/01.Samples/mosdepth/{sample}/coverage.mosdepth.region.dist.txt
-| 04.Intermediate_files/01.Samples/mosdepth/{sample}/coverage.mosdepth.summary.txt
-| 04.Intermediate_files/01.Samples/mosdepth/{sample}/coverage.regions.bed.gz
-| 04.Intermediate_files/01.Samples/mosdepth/{sample}/coverage.regions.bed.gz.csi
-| 04.Intermediate_files/01.Samples/depth_quality/{sample}/depth_by_windows.tsv
-| 04.Intermediate_files/01.Samples/depth_quality/{sample}/depth_distribution.tsv
-| 04.Intermediate_files/01.Samples/depth_quality/{sample}/mapq.bed
-| 04.Intermediate_files/01.Samples/depth_quality/{sample}/mapq_window.bed
-| 04.Intermediate_files/01.Samples/depth_quality/{sample}/snps_good.bam
-| 04.Intermediate_files/01.Samples/depth_quality/{sample}/snps_good.bam.bai
-| 04.Intermediate_files/01.Samples/filtered_samples/{sample}.txt
-| 04.Intermediate_files/02.Dataset/depth_quality/unfiltered_mapping_stats.tsv
-| 04.Intermediate_files/03.References/filtered_lineages/{lineage}.txt
+| Path | Description |
+| :---------------- | ----: |
+| `04.Intermediate_files/01.Samples/depth_quality/{sample}/depth_distribution.tsv` | Distribution of read depth of good quality mappings and all mappings. |
+| `04.Intermediate_files/01.Samples/depth_quality/{sample}/snps_good.bam` | Filtered BAM file with good quality mappings. |
+| `04.Intermediate_files/01.Samples/depth_quality/{sample}/snps_good.bam.bai` | Index of previous file. |
+| `04.Intermediate_files/01.Samples/filtered_samples/{sample}.txt` | Empty file for surviving samples after the quality filter. |
+| `04.Intermediate_files/03.References/filtered_lineages/{lineage}.txt` | Empty file for surviving lineages after the sample filtering. |
+| `04.Intermediate_files/02.Dataset/depth_quality/unfiltered_mapping_stats.tsv` | Concatenation of all `mapping_stats.tsv` files, before the quality filter. |
+
 
 </details>
 
 ### Annotation
 
-| Path | Description | Column names |
-| :---------------- | ----: |----: |
-| 01.Samples/annotation/{sample}/annotation.gff | Positions are 1-Based.
-| 01.Samples/annotation/{sample}/cds.fa
-| 01.Samples/annotation/{sample}/proteins.fa
+| Path | Description |
+| :---------------- | ----: |
+| `01.Samples/annotation/{sample}/annotation.gff` | Standardized GFF file of annotation by Liftoff. Positions are 1-Based. |
+| `01.Samples/annotation/{sample}/annotation.gff.tsv` | Tabular version of the previous file. Positions are 1-Based. Column names different from standard GFF format: `accession` ('seq_id'), `feature_id` ('ID'), `gene_name` ('Name'), `gene_id` ('locus'), `old_feature_id` (original ID before fixing), and `identical_to_main_ref`, ('matches_ref_protein') `start_stop_mutation` (union of columns: 'missing_start_codon', 'missing_stop_codon', 'inframe_stop_codon'). |
+| `01.Samples/annotation/{sample}/cds.fa` | Nucleotide sequences of all transcripts of the sample. |
+| `01.Samples/annotation/{sample}/proteins.fa` | Protein sequences of all isoforms of the sample. |
 
 <details>
 <summary> Intermediate files </summary> 
 
-| Path | Description | Column names |
-| :---------------- | ----: |----: |
-| 04.Intermediate_files/01.Samples/liftoff/{sample}/intermediate_liftoff/(see liftoff output)
-| 04.Intermediate_files/01.Samples/liftoff/{sample}/lifted.gff
-| 04.Intermediate_files/01.Samples/liftoff/{sample}/ref.gff_db
-| 04.Intermediate_files/01.Samples/liftoff/{sample}/unmapped_features.txt
-| 04.Intermediate_files/01.Samples/annotation/{sample}/cds.csv
-| 04.Intermediate_files/01.Samples/annotation/{sample}/proteins.csv
-| 04.Intermediate_files/02.Dataset/sequences.csv
-| 04.Intermediate_files/agat_config.yaml
+| Path | Description | 
+| :---------------- | ----: |
+| `04.Intermediate_files/01.Samples/annotation/liftoff/{sample}/` |  See [Liftoff output](https://github.com/agshumate/Liftoff?tab=readme-ov-file#usage)|
+| `04.Intermediate_files/01.Samples/annotation/{sample}/intergenic.gff` | Polished GFF annotated by Liftoff with added intergenic regions. |
+| `04.Intermediate_files/01.Samples/annotation/{sample}/interg_introns.gff` | Previous file with added introns. |
+| `04.Intermediate_files/01.Samples/annotation/{sample}/annotation.gff.tsv` | Tabular version of previous file. |
 
 </details>
 
-### Depth and quality of genes
+### Depth and quality of genetic features
 
 | Path | Description | Column names |
 | :---------------- | ----: |----: |
-| 01.Samples/depth_quality/{sample}/feature_mapq_depth.tsv
-| 02.Dataset/depth_quality/feature_mapq_depth.tsv
+| `01.Samples/depth_quality/{sample}/mapq_depth_by_feature.tsv` | MAPQ and mean depth of each feature. |
+| `01.Samples/depth_quality/{sample}/mapq_depth_by_window.bed` | MAPQ and mean depth of each window. Positions are 0-Based. Columns are: accession, start, end, mean MAPQ, mean depth. |
+| `02.Dataset/depth_quality/mapq_depth_by_feature.tsv` | Concatenation of all `mapq_depth_by_feature.tsv` files. |
+
+
+<details>
+<summary> Intermediate files </summary>
+
+| Path | Description |
+| :---------------- | ----: |
+| `04.Intermediate_files/01.Samples/depth_quality/{sample}/mapq.bed` | Mean MAPQ of each position. Positions are 0-Based. Columns are: accession, start, end, mean MAPQ. |
+| `04.Intermediate_files/01.Samples/mosdepth/{sample}/*` |  See [Modepth](https://github.com/brentp/mosdepth) output. The files with the `_good` suffix are created in the CNV module.|
+| `04.Intermediate_files/01.Samples/depth_quality/{sample}/mapq_by_window.bed` | Mean MAPQ of each window. Positions are 0-Based. Columns are: accession, start, end, mean MAPQ. |
+
+</details>
 
 ### CNV calling
 
-| Path | Description | Column names |
-| :---------------- | ----: |----: |
+| Path | Description |
+| :---------------- | ----: |
 | 01.Samples/cnv/{sample}/cnv_calls.tsv | Positions are 0-Based.|
 | 02.Dataset/cnv/cnv_calls.tsv | Positions are 0-Based.|
 
-### SNP effects
+<details>
+<summary> Intermediate files </summary>
+
+| `04.Intermediate_files/01.Samples/depth_quality/{sample}/depth_by_windows.tsv` | Mean depth of each window. Positions are 0-Based. Columns are: accession, start, end, mean depth, normalized mean depth, smoothed normalized mean depth.
+| `04.Intermediate_files/01.Samples/mosdepth/{sample}/*` |  See [Modepth](https://github.com/brentp/mosdepth) output. The files without the `_good` suffix are created in the Depth and quality of genetic features module.|
+
+</details>
+
+### Annotation of SNP effects
 
 | Path | Description | Column names |
 | :---------------- | ----: |----: |
@@ -292,7 +299,7 @@ To learn more about how Snakemake works and how to take advantage of its feature
 | 04.Intermediate_files/03.References/snpeff_data/{lineage}.done
 | 04.Intermediate_files/03.References/snpeff_data/snpEff.config
 
-| 04.Intermediate_files/03.References/{lineage}/{lineage}.cds.fa | Nucleotide sequences of all isoforms in reference genome |
+| 04.Intermediate_files/03.References/{lineage}/{lineage}.cds.fa | Nucleotide sequences of all transcripts in reference genome |
 | 04.Intermediate_files/03.References/{lineage}/{lineage}.prots.fa | Protein sequences of all isoforms in reference genome |
 | 04.Intermediate_files/03.References/{lineage}/{lineage}.fasta.index
 
@@ -300,9 +307,20 @@ To learn more about how Snakemake works and how to take advantage of its feature
 
 ### Database
 
-| Path | Description | Column names |
-| :---------------- | ----: |----: |
+| Path | Description |
+| :---------------- | ----: |
 | 02.Dataset/database.db
+
+<details>
+<summary> Intermediate files </summary>
+
+| Path | Description |
+| :---------------- | ----: |
+| `04.Intermediate_files/01.Samples/annotation/{sample}/cds.csv` | Tabular version of corresponding FASTA file. |
+| `04.Intermediate_files/01.Samples/annotation/{sample}/proteins.csv` | Tabular version of corresponding FASTA file. |
+| `04.Intermediate_files/02.Dataset/sequences.csv` | Concatenation of all `cds.csv` and `proteins.csv` files. |
+
+</details>
 
 ### Plots
 
