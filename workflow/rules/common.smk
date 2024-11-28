@@ -124,7 +124,7 @@ def depth_by_windows_plots_input(wildcards):
 def mapq_plot_input(wildcards):
     s = SAMPLE_REFERENCE.loc[wildcards.sample,]
     return {
-        "mapq": INT_SAMPLES_DIR / "depth_quality" / s["sample"] / "mapq_window.bed",
+        "mapq": INT_SAMPLES_DIR / "depth_quality" / s["sample"] / "mapq_by_window.bed",
         "cnv": SAMPLES_DIR / "cnv" / s["sample"] / "cnv_calls.tsv",
         "repeats": REFS_DIR / s["lineage"] / (s["lineage"] + "_repeats.bed"),
     }
@@ -227,8 +227,8 @@ def get_dataset_output():
     final_output.append(DATASET_DIR / "depth_quality" / "mapping_stats.tsv")
     if config["annotate_references"]["activate"]:
         final_output.append(REFS_DIR / "refs_unmapped_features.tsv")
-    if config["genes_mapq_depth"]["activate"]:
-        final_output.append(DATASET_DIR / "depth_quality" / "feature_mapq_depth.tsv")
+    if config["depth_quality_features"]["activate"]:
+        final_output.append(DATASET_DIR / "depth_quality" / "mapq_depth_by_feature.tsv")
     if config["snpeff"]["activate"]:
         final_output.append(DATASET_DIR / "snps" / "effects.tsv")
     if config["cnv"]["activate"]:

@@ -38,7 +38,7 @@ annotate_references:
     threads: 12 # Number of threads for Liftoff.
     extra: "" # Extra parameters for Liftoff.
 
-# ------------------Depth and quality analyses-----------------------------------------------------
+# ------------------Depth and quality analyses and filter-----------------------------------------------------
 
 depth_quality: 
   mosdepth: 
@@ -56,6 +56,11 @@ depth_quality:
     min_percent_genome-wide_depth: 2 # If genome-wide depth (Global mode) is below this value, the sample is excluded.
     min_percent_properly_paired_reads: 25 # If percent of properly paired reads is below this value, the sample is excluded.
 
+# ------------------Depth and quality of genetic features---------------------------------------------
+
+depth_quality_features:
+  activate: # True to activate the module. Empty or False to skip.
+
 # ------------------Copy-number variant calling----------------------------------------------------
 
 cnv:
@@ -66,12 +71,7 @@ cnv:
     repeats_database: "config/RepBase.fasta" # Relative path to the RepBase FASTA file.
     repeats_threads: 20 # Number of threads for RepeatModeler and RepeatMasker.
 
-# ------------------MAPQ and Depth of genetic features---------------------------------------------
-
-genes_mapq_depth:
-  activate: # True to activate the module. Empty or False to skip.
-
-# ------------------Variant annotation-------------------------------------------------------------
+# ------------------Annotation of SNP effects------------------------------------------------------
 
 snpeff:
   activate: # True to activate the module. Empty or False to skip.

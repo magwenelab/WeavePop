@@ -92,7 +92,7 @@ rule join_mapq_depth:
     input:
         input_join_mapq_depth,
     output:
-        DATASET_DIR / "depth_quality" / "feature_mapq_depth.tsv",
+        DATASET_DIR / "depth_quality" / "mapq_depth_by_feature.tsv",
     log:
         "logs/join_datasets/join_mapq_depth.log",
     resources:

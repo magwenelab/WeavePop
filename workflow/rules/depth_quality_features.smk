@@ -42,7 +42,7 @@ rule mapq:
         rules.mosdepth.output.bed,
     output:
         bed=INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "mapq.bed",
-        window_bed=INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "mapq_window.bed",
+        window_bed=INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "mapq_by_window.bed",
     log:
         "logs/samples/depth_quality/mapq_{sample}.log",
     resources:
@@ -50,7 +50,7 @@ rule mapq:
     conda:
         "../envs/samtools.yaml"
     script:
-        "../scripts/pileup_mapq.sh"
+        "../scripts/mapq.sh"
 
 
 # =================================================================================================
@@ -65,8 +65,8 @@ rule mapq_depth:
         gff=rules.reformat_annotation.output.gff,
         global_mode=SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom_good.tsv",
     output:
-        depthmapq=SAMPLES_DIR / "depth_quality" / "{sample}" / "mapq_depth_window.bed",
-        tsv=SAMPLES_DIR / "depth_quality" / "{sample}" / "feature_mapq_depth.tsv",
+        depthmapq=SAMPLES_DIR / "depth_quality" / "{sample}" / "mapq_depth_by_window.bed",
+        tsv=SAMPLES_DIR / "depth_quality" / "{sample}" / "mapq_depth_by_feature.tsv",
     log:
         "logs/samples/depth_quality/mapq_depth_{sample}.log",
     resources:

@@ -72,7 +72,7 @@ rule add_introns:
         gff=rules.add_intergenic.output.gff,
         config=rules.agat_config.output,
     output:
-        gff=INT_SAMPLES_DIR / "annotation" / "{sample}" / "introns.gff",
+        gff=INT_SAMPLES_DIR / "annotation" / "{sample}" / "interg_introns.gff",
     params:
         extra=config["agat"]["extra"],
     log:

@@ -42,7 +42,7 @@ def input_joining(wildcards):
         for samp in samps:
             cnv = os.path.join(dir, SAMPLES_DIR_NAME, "cnv", samp, "cnv_calls.tsv")
             mapq_depth = os.path.join(
-                dir, SAMPLES_DIR_NAME, "depth_quality", samp, "feature_mapq_depth.tsv"
+                dir, SAMPLES_DIR_NAME, "depth_quality", samp, "mapq_depth_by_feature.tsv"
             )
             cds = os.path.join(dir, INTDIR_NAME, SAMPLES_DIR_NAME, "annotation", samp, "cds.csv")
             prots = os.path.join(

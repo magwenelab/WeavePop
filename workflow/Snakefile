@@ -53,7 +53,7 @@ if config["workflow"] == "analysis":
         include: "rules/cnv.smk"
         include: "rules/repeatmasker.smk"
         include: "rules/snps.smk"
-        include: "rules/genes_mapq_depth.smk"
+        include: "rules/depth_quality_features.smk"
 
     else:
 
@@ -62,9 +62,9 @@ if config["workflow"] == "analysis":
             include: "rules/cnv.smk"
             include: "rules/repeatmasker.smk"
 
-        if config["genes_mapq_depth"]["activate"] or config["plotting"]["activate"]:
+        if config["depth_quality_features"]["activate"] or config["plotting"]["activate"]:
 
-            include: "rules/genes_mapq_depth.smk"
+            include: "rules/depth_quality_features.smk"
 
         if config["snpeff"]["activate"]:
 
@@ -115,7 +115,7 @@ onstart:
             print("+ Database", flush=True)
         if config["cnv"]["activate"]:
             print("+ CNV", flush=True)
-        if config["genes_mapq_depth"]["activate"]:
+        if config["depth_quality_features"]["activate"]:
             print("+ MAPQ and depth of genetic features", flush=True)
         if config["snpeff"]["activate"]:
             print("+ SnpEff", flush=True)

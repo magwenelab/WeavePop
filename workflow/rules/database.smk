@@ -42,10 +42,10 @@ rule join_sequences:
 rule join_mapq_depth:
     input:
         expand(
-            SAMPLES_DIR / "depth_quality" / "{sample}" / "feature_mapq_depth.tsv", sample=SAMPLES
+            SAMPLES_DIR / "depth_quality" / "{sample}" / "mapq_depth_by_feature.tsv", sample=SAMPLES
         ),
     output:
-        DATASET_DIR / "depth_quality" / "feature_mapq_depth.tsv",
+        DATASET_DIR / "depth_quality" / "mapq_depth_by_feature.tsv",
     log:
         "logs/dataset/depth_quality/join_mapq_depth.log",
     conda:
