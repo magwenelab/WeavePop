@@ -230,7 +230,7 @@ def get_dataset_output():
     if config["depth_quality_features"]["activate"]:
         final_output.append(DATASET_DIR / "depth_quality" / "mapq_depth_by_feature.tsv")
     if config["snpeff"]["activate"]:
-        final_output.append(DATASET_DIR / "snps" / "effects.tsv")
+        final_output.append(DATASET_DIR / "snpeff" / "effects.tsv")
     if config["cnv"]["activate"]:
         final_output.append(DATASET_DIR / "cnv" / "cnv_calls.tsv")
     if config["plotting"]["activate"]:

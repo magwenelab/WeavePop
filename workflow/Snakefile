@@ -52,7 +52,7 @@ if config["workflow"] == "analysis":
 
         include: "rules/cnv.smk"
         include: "rules/repeatmasker.smk"
-        include: "rules/snps.smk"
+        include: "rules/snpeff.smk"
         include: "rules/depth_quality_features.smk"
 
     else:
@@ -68,7 +68,7 @@ if config["workflow"] == "analysis":
 
         if config["snpeff"]["activate"]:
 
-            include: "rules/snps.smk"
+            include: "rules/snpeff.smk"
     
     if config["plotting"]["activate"]:
 

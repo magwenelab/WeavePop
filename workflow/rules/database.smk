@@ -69,19 +69,19 @@ rule join_cnv:
 
 rule join_variant_annotation:
     input:
-        effects=expand(INT_DATASET_DIR / "snps" / "{lineage}_effects.tsv", lineage=LINEAGES),
-        variants=expand(INT_DATASET_DIR / "snps" / "{lineage}_variants.tsv", lineage=LINEAGES),
-        lofs=expand(INT_DATASET_DIR / "snps" / "{lineage}_lofs.tsv", lineage=LINEAGES),
-        nmds=expand(INT_DATASET_DIR / "snps" / "{lineage}_nmds.tsv", lineage=LINEAGES),
-        presence=expand(INT_DATASET_DIR / "snps" / "{lineage}_presence.tsv", lineage=LINEAGES),
+        effects=expand(INT_DATASET_DIR / "snpeff" / "{lineage}_effects.tsv", lineage=LINEAGES),
+        variants=expand(INT_DATASET_DIR / "snpeff" / "{lineage}_variants.tsv", lineage=LINEAGES),
+        lofs=expand(INT_DATASET_DIR / "snpeff" / "{lineage}_lofs.tsv", lineage=LINEAGES),
+        nmds=expand(INT_DATASET_DIR / "snpeff" / "{lineage}_nmds.tsv", lineage=LINEAGES),
+        presence=expand(INT_DATASET_DIR / "snpeff" / "{lineage}_presence.tsv", lineage=LINEAGES),
     output:
-        effects=DATASET_DIR / "snps" / "effects.tsv",
-        variants=DATASET_DIR / "snps" / "variants.tsv",
-        lofs=DATASET_DIR / "snps" / "lofs.tsv",
-        nmds=DATASET_DIR / "snps" / "nmds.tsv",
-        presence=DATASET_DIR / "snps" / "presence.tsv",
+        effects=DATASET_DIR / "snpeff" / "effects.tsv",
+        variants=DATASET_DIR / "snpeff" / "variants.tsv",
+        lofs=DATASET_DIR / "snpeff" / "lofs.tsv",
+        nmds=DATASET_DIR / "snpeff" / "nmds.tsv",
+        presence=DATASET_DIR / "snpeff" / "presence.tsv",
     log:
-        "logs/dataset/snps/join_variant_annotation.log",
+        "logs/dataset/snpeff/join_variant_annotation.log",
     conda:
         "../envs/snakemake.yaml"
     script:

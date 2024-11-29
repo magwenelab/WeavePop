@@ -166,8 +166,8 @@ rule intersect_vcfs:
     input:
         unpack(input_intersect_vcfs),
     output:
-        vcf=INT_DATASET_DIR / "snps" / "{lineage}_intersection.vcf",
-        tsv=INT_DATASET_DIR / "snps" / "{lineage}_presence.tsv",
+        vcf=INT_DATASET_DIR / "snpeff" / "{lineage}_intersection.vcf",
+        tsv=INT_DATASET_DIR / "snpeff" / "{lineage}_presence.tsv",
     params:
         tmp_dir=os.path.join(TEMPDIR, "tmp_{lineage}"),
     log:
@@ -191,8 +191,8 @@ rule snpeff:
         vcf=rules.intersect_vcfs.output.vcf,
         config=rules.copy_snpeff_config.output,
     output:
-        vcf=INT_DATASET_DIR / "snps" / "{lineage}_snpeff.vcf",
-        html=INT_DATASET_DIR / "snps" / "{lineage}_snpeff.html",
+        vcf=INT_DATASET_DIR / "snpeff" / "{lineage}_snpeff.vcf",
+        html=INT_DATASET_DIR / "snpeff" / "{lineage}_snpeff.html",
     params:
         dir=os.getcwd() / INT_REFS_DIR / "snpeff_data",
         name=config["species_name"] + "_{lineage}",
@@ -231,10 +231,10 @@ rule extract_vcf_annotation:
         vcf=rules.snpeff.output.vcf,
         tsv=rules.symlink_ref_gff.output,
     output:
-        effects=INT_DATASET_DIR / "snps" / "{lineage}_effects.tsv",
-        variants=INT_DATASET_DIR / "snps" / "{lineage}_variants.tsv",
-        lofs=INT_DATASET_DIR / "snps" / "{lineage}_lofs.tsv",
-        nmds=INT_DATASET_DIR / "snps" / "{lineage}_nmds.tsv",
+        effects=INT_DATASET_DIR / "snpeff" / "{lineage}_effects.tsv",
+        variants=INT_DATASET_DIR / "snpeff" / "{lineage}_variants.tsv",
+        lofs=INT_DATASET_DIR / "snpeff" / "{lineage}_lofs.tsv",
+        nmds=INT_DATASET_DIR / "snpeff" / "{lineage}_nmds.tsv",
     log:
         "logs/join_datasets/extract_vcf_annotation_{lineage}.log",
     resources:
@@ -255,17 +255,17 @@ rule extract_vcf_annotation:
 
 rule join_variant_annotation:
     input:
-        effects=expand(INT_DATASET_DIR / "snps" / "{lineage}_effects.tsv", lineage=LINEAGES),
-        variants=expand(INT_DATASET_DIR / "snps" / "{lineage}_variants.tsv", lineage=LINEAGES),
-        lofs=expand(INT_DATASET_DIR / "snps" / "{lineage}_lofs.tsv", lineage=LINEAGES),
-        nmds=expand(INT_DATASET_DIR / "snps" / "{lineage}_nmds.tsv", lineage=LINEAGES),
-        presence=expand(INT_DATASET_DIR / "snps" / "{lineage}_presence.tsv", lineage=LINEAGES),
+        effects=expand(INT_DATASET_DIR / "snpeff" / "{lineage}_effects.tsv", lineage=LINEAGES),
+        variants=expand(INT_DATASET_DIR / "snpeff" / "{lineage}_variants.tsv", lineage=LINEAGES),
+        lofs=expand(INT_DATASET_DIR / "snpeff" / "{lineage}_lofs.tsv", lineage=LINEAGES),
+        nmds=expand(INT_DATASET_DIR / "snpeff" / "{lineage}_nmds.tsv", lineage=LINEAGES),
+        presence=expand(INT_DATASET_DIR / "snpeff" / "{lineage}_presence.tsv", lineage=LINEAGES),
     output:
-        effects=DATASET_DIR / "snps" / "effects.tsv",
-        variants=DATASET_DIR / "snps" / "variants.tsv",
-        lofs=DATASET_DIR / "snps" / "lofs.tsv",
-        nmds=DATASET_DIR / "snps" / "nmds.tsv",
-        presence=DATASET_DIR / "snps" / "presence.tsv",
+        effects=DATASET_DIR / "snpeff" / "effects.tsv",
+        variants=DATASET_DIR / "snpeff" / "variants.tsv",
+        lofs=DATASET_DIR / "snpeff" / "lofs.tsv",
+        nmds=DATASET_DIR / "snpeff" / "nmds.tsv",
+        presence=DATASET_DIR / "snpeff" / "presence.tsv",
     log:
         "logs/join_datasets/join_variant_annotation.log",
     resources:
