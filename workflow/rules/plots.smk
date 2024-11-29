@@ -29,7 +29,7 @@ rule loci:
 rule depth_distribution_plots:
     input:
         INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_distribution.tsv",
-        rules.copy_chromosomes.output,
+        chrom_names=rules.quality_filter.output.chromosomes,
     output:
         SAMPLES_DIR / "plots" / "{sample}" / "depth_chrom_distribution.png",
         SAMPLES_DIR / "plots" / "{sample}" / "depth_global_distribution.png",
@@ -45,7 +45,7 @@ rule depth_by_chrom_plots:
     input:
         SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom_raw.tsv",
         SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom_good.tsv",
-        CHROM_NAMES,
+        rules.quality_filter.output.chromosomes,
     output:
         SAMPLES_DIR / "plots" / "{sample}" / "depth_by_chrom.png",
     conda:
@@ -65,7 +65,7 @@ rule depth_by_windows_plots:
     input:
         unpack(depth_by_windows_plots_input),
         loci=rules.loci.output.locitable,
-        chrom_names=CHROM_NAMES,
+        chrom_names=rules.quality_filter.output.chromosomes,
     output:
         SAMPLES_DIR / "plots" / "{sample}" / "depth_by_windows.png",
     conda:
@@ -79,7 +79,7 @@ rule depth_by_windows_plots:
 rule mapq_plots:
     input:
         unpack(mapq_plot_input),
-        chrom_names=CHROM_NAMES,
+        chrom_names=rules.quality_filter.output.chromosomes,
         loci=rules.loci.output.locitable,
     output:
         SAMPLES_DIR / "plots" / "{sample}" / "mapq.png",

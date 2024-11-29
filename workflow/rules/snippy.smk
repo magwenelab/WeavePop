@@ -16,23 +16,6 @@ rule ref_fasta_symlinks:
         "../envs/shell.yaml"
     shell:
         "ln -s -r {input} {output} 2> {log}"
-
-
-rule copy_chromosomes:
-    input:
-        CHROM_NAMES,
-    output:
-        DATASET_DIR / "chromosomes.csv",
-    log:
-        "logs/dataset/copy_chromosomes.log",
-    resources:
-        tmpdir=TEMPDIR,
-    conda:
-        "../envs/shell.yaml"
-    shell:
-        """
-        rsync {input} {output} 2> {log}
-        """
         
 
 # Edit the agat config file to avoid creating log files

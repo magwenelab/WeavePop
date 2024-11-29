@@ -118,9 +118,11 @@ rule quality_filter:
     input:
         rules.join_mapping_stats.output,
         UNFILT_SAMPLE_FILE,
+        CHROM_NAMES,
     output:
         stats=DATASET_DIR / "depth_quality" / "mapping_stats.tsv",
         metadata=DATASET_DIR / "metadata.csv",
+        chromosomes=DATASET_DIR / "chromosomes.csv",
     params:
         exclude=config["depth_quality"]["flag_quality"]["exclude_samples"],
     log:

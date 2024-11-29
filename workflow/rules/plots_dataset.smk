@@ -40,8 +40,8 @@ rule join_depth_by_chrom_good:
 
 rule dataset_summary_plot:
     input:
-        DATASET_DIR / "metadata.csv",
-        rules.copy_chromosomes.output,
+        rules.quality_filter.output.metadata,
+        rules.quality_filter.output.chromosomes,
         rules.join_depth_by_chrom_good.output,
         rules.join_depth_by_chrom_raw.output,
         rules.join_mapping_stats.output,
@@ -64,8 +64,8 @@ rule dataset_summary_plot:
 
 rule dataset_depth_by_chrom_plot:
     input:
-        DATASET_DIR / "metadata.csv",
-        rules.copy_chromosomes.output,
+        rules.quality_filter.output.metadata,
+        rules.quality_filter.output.chromosomes,
         rules.join_depth_by_chrom_good.output,
     output:
         DATASET_DIR / "plots" / "dataset_depth_by_chrom.png",
