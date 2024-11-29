@@ -131,7 +131,7 @@ To learn more about how Snakemake works and how to take advantage of its feature
 | `03.References/{lineage}/{lineage}_repeats.bed` | BED file of regions with repetitive sequences identified by RepeatMasker. Each region is the intersection of different types of repetitive sequences identified. Columns are Accession, Start, End, Types (comma separated list of types in the region). Positions are 0-Based.
 | `03.References/{lineage}/{lineage}.gff` | Standardized GFF file of the reference genome with added introns, intergenic regions and repetitive sequences. If the reference annotation was activated it is the processed result of Liftoff annotation using the main reference. Positions are 1-Based.|
 | `03.References/{lineage}/{lineage}.gff.tsv` | Tabular version of the previous file. Positions are 1-Based. Column names different from standard GFF format: `accession` ('seq_id'), `feature_id` ('ID'), `gene_name` ('Name'), `gene_id` ('locus'), `old_feature_id` (original ID before fixing), `lineage`, and `identical_to_main_ref`, ('matches_ref_protein', added by Liftoff if used)	`start_stop_mutation` (union of columns: 'missing_start_codon', 'missing_stop_codon', 'inframe_stop_codon' added by Liftoff if used).|
-| `03.References/all_lineages.gff.tsv` | Concatenation of the previous table of all lineages. Positions are 1-Based. |
+| **`03.References/all_lineages.gff.tsv`** | Concatenation of the previous table of all lineages. Positions are 1-Based. |
 
 
 <details>
@@ -195,7 +195,9 @@ To learn more about how Snakemake works and how to take advantage of its feature
 | `01.Samples/depth_quality/{sample}/depth_by_chrom_raw.tsv` | Depth metrics of all mappings. Genome-wide and by chromosome (absolute). |
 | `01.Samples/depth_quality/{sample}/mapping_stats.tsv` | Mapping quality and depth statistics plus quality warning. | 
 | `02.Dataset/depth_quality/mapping_stats.tsv` | Concatenation of `mapping_stats.tsv` files of samples that passed the quality filter. |
-| `02.Dataset/metadata.csv` | Metadata table with samples that survived the quality filter. |
+| **`02.Dataset/metadata.csv`** | Metadata table with samples that survived the quality filter. |
+| **`02.Dataset/chromosomes.csv`** | Table of chromosome names with the lineages that survived the quality filter. |
+
 
 
 <details>
@@ -240,7 +242,7 @@ To learn more about how Snakemake works and how to take advantage of its feature
 | :---------------- | ----: |
 | `01.Samples/depth_quality/{sample}/mapq_depth_by_feature.tsv` | MAPQ and mean depth of each feature. |
 | `01.Samples/depth_quality/{sample}/mapq_depth_by_window.bed` | MAPQ and mean depth of each window. Positions are 0-Based. Columns are: accession, start, end, mean MAPQ, mean depth. |
-| `02.Dataset/depth_quality/mapq_depth_by_feature.tsv` | Concatenation of all `mapq_depth_by_feature.tsv` files. |
+| **`02.Dataset/depth_quality/mapq_depth_by_feature.tsv`** | Concatenation of all `mapq_depth_by_feature.tsv` files. |
 
 
 <details>
@@ -259,7 +261,7 @@ To learn more about how Snakemake works and how to take advantage of its feature
 | Path | Description |
 | :---------------- | ----: |
 | `01.Samples/cnv/{sample}/cnv_calls.tsv` | Table of deleted and duplicated regions in each sample and their overlap with repetitive sequences. Positions are 1-Based.|
-| `02.Dataset/cnv/cnv_calls.tsv` | Concatenation of all `cnv_calls.tsv` files.|
+| **`02.Dataset/cnv/cnv_calls.tsv`** | Concatenation of all `cnv_calls.tsv` files.|
 
 <details>
 <summary> Intermediate files </summary>
@@ -275,51 +277,32 @@ To learn more about how Snakemake works and how to take advantage of its feature
 
 | Path | Description |
 | :---------------- | ----: |
-| 02.Dataset/snps/effects.tsv
-| 02.Dataset/snps/lofs.tsv
-| 02.Dataset/snps/nmds.tsv
-| 02.Dataset/snps/presence.tsv
-| 02.Dataset/snps/variants.tsv | Positions are 1-Based.
+| **`02.Dataset/snpeff/effects.tsv`**|Concatenation of the effect tables of all lineages.|
+| **`02.Dataset/snpeff/lofs.tsv`**|Concatenation of the loss of function tables of all lineages.|
+| **`02.Dataset/snpeff/nmds.tsv`**|Concatenation of the nonsense-mediated decay tables of all lineages.|
+| **`02.Dataset/snpeff/presence.tsv`**|Concatenation of the variant presence tables of all lineages.|
+| **`02.Dataset/snpeff/variants.tsv`**|Concatenation of the variant description tables of all lineages. Positions are 1-Based.|
 
 <details>
 <summary> Intermediate files </summary> 
 
 | Path | Description |
 | :---------------- | ----: |
-| 04.Intermediate_files/02.Dataset/snps/{lineage}_effects.tsv
-| 04.Intermediate_files/02.Dataset/snps/{lineage}_intersection.vcf | Positions are 1-Based.
-| 04.Intermediate_files/02.Dataset/snps/{lineage}_lofs.tsv
-| 04.Intermediate_files/02.Dataset/snps/{lineage}_nmds.tsv
-| 04.Intermediate_files/02.Dataset/snps/{lineage}_presence.tsv
-| 04.Intermediate_files/02.Dataset/snps/{lineage}_snpeff.genes.txt
-| 04.Intermediate_files/02.Dataset/snps/{lineage}_snpeff.html
-| 04.Intermediate_files/02.Dataset/snps/{lineage}_snpeff.vcf
-| 04.Intermediate_files/02.Dataset/snps/{lineage}_variants.tsv | Positions are 1-Based.
-| 04.Intermediate_files/03.References/snpeff_data/Cryptococcus_neoformans_{lineage}/
-| 04.Intermediate_files/03.References/snpeff_data/{lineage}.done
-| 04.Intermediate_files/03.References/snpeff_data/snpEff.config
-
-| 04.Intermediate_files/03.References/{lineage}/{lineage}.cds.fa | Nucleotide sequences of all transcripts in reference genome |
-| 04.Intermediate_files/03.References/{lineage}/{lineage}.prots.fa | Protein sequences of all isoforms in reference genome |
-| 04.Intermediate_files/03.References/{lineage}/{lineage}.fasta.index
-
-</details>
-
-### Database
-
-| Path | Description |
-| :---------------- | ----: |
-| 02.Dataset/database.db
-
-<details>
-<summary> Intermediate files </summary>
-
-| Path | Description |
-| :---------------- | ----: |
-| `04.Intermediate_files/01.Samples/annotation/{sample}/cds.csv` | Tabular version of corresponding FASTA file. |
-| `04.Intermediate_files/01.Samples/annotation/{sample}/proteins.csv` | Tabular version of corresponding FASTA file. |
-| `04.Intermediate_files/02.Dataset/sequences.csv` | Concatenation of all `cds.csv` and `proteins.csv` files. |
-
+|`04.Intermediate_files/02.Dataset/snpeff/{lineage}_effects.tsv`| Table with the effects of the possible variants of the lineage. Identified against with the annotation of the reference genome of the lineage. |
+|`04.Intermediate_files/02.Dataset/snpeff/{lineage}_intersection.vcf` | VCF file with the description of all the possible variants in the lineage. The MAT field in INFO is a matrix of presence/absence of the variant in the samples of the lineage. Positions are 1-Based.|
+|`04.Intermediate_files/02.Dataset/snpeff/{lineage}_lofs.tsv`|Loss of function output table of SnpEff.|
+|`04.Intermediate_files/02.Dataset/snpeff/{lineage}_nmds.tsv`|Nonsense-mediated decay output table of SnpEff.|
+|`04.Intermediate_files/02.Dataset/snpeff/{lineage}_presence.tsv`|Table with the variant IDs and the samples they are present in.|
+|`04.Intermediate_files/02.Dataset/snpeff/{lineage}_snpeff.genes.txt`|See [SnpEff](https://pcingola.github.io/SnpEff/) output.|
+|`04.Intermediate_files/02.Dataset/snpeff/{lineage}_snpeff.html`|See [SnpEff](https://pcingola.github.io/SnpEff/) output.|
+|`04.Intermediate_files/02.Dataset/snpeff/{lineage}_snpeff.vcf`| Version of the `{lineage}_intersection.vcf` annotated by SnpEff. Positions are 1-Based. |
+|`04.Intermediate_files/02.Dataset/snpeff/{lineage}_variants.tsv`| Tabular version of the `{lineage}_intersection.vcf`. Positions are 1-Based.|
+|`04.Intermediate_files/03.References/snpeff_data{Species_name}_{lineage}/`| Directory with the annotation database craeted by SnpEff build.|
+|`04.Intermediate_files/03.References/snpeff_data/{lineage}.done`|Empty file.|
+|`04.Intermediate_files/03.References/snpeff_data/snpEff.config`|Config file for SnpEff.|
+|`04.Intermediate_files/03.References/{lineage}/{lineage}.cds.fa` | Nucleotide sequences of all transcripts in reference genome. |
+|`04.Intermediate_files/03.References/{lineage}/{lineage}.prots.fa`| Protein sequences of all isoforms in reference genome. |
+s
 </details>
 
 ### Plotting
@@ -342,6 +325,23 @@ To learn more about how Snakemake works and how to take advantage of its feature
 | `04.Intermediate_files/03.References/loci_to_plot.tsv` | Positions are 1-Based. |
 | `04.Intermediate_files/02.Dataset/depth_quality/depth_by_chrom_good.tsv` | Concatenation of the `depth_by_chrom_good.tsv` files of the samples that survived the quality filter. |
 | `04.Intermediate_files/02.Dataset/depth_quality/depth_by_chrom_raw.tsv` | Concatenation of the `depth_by_chrom_raw.tsv` files of the samples that survived the quality filter. |
+
+</details>
+
+### Database
+
+The file `02.Dataset/database.db` is an SQL Database created with DuckDB. It contains the tables marked in bold. The schema of the database is explained in the diagram below. 
+DuckDB does not require primary keys to be declared.  
+
+
+<details>
+<summary> Intermediate files </summary>
+
+| Path | Description |
+| :---------------- | ----: |
+| `04.Intermediate_files/01.Samples/annotation/{sample}/cds.csv` | Tabular version of corresponding FASTA file. |
+| `04.Intermediate_files/01.Samples/annotation/{sample}/proteins.csv` | Tabular version of corresponding FASTA file. |
+| **`04.Intermediate_files/02.Dataset/sequences.csv`** | Concatenation of all `cds.csv` and `proteins.csv` files. |
 
 </details>
 
