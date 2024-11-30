@@ -6,8 +6,7 @@ import datetime
 from Bio import SeqIO
 import pandas as pd
 
-mydb = '../results/02.Dataset/database.db'
-
+mydb='database.db'
 
 with ui.navset_pill(id="Database"):
     with ui.nav_panel("Home"):
@@ -583,11 +582,11 @@ with ui.navset_pill(id="Database"):
                         width="100%",
                 )                
             with ui.card(): 
-                ui.card_header("Feature")
+                ui.card_header("CNV")
                 ui.input_select(
                         "cnv_cnv",
-                        "Feature type",
-                        choices=[None, "deletion", "duplication"],
+                        "CNV type",
+                        choices=qdb.list_cnv_types(db = mydb),
                     )
                 ui.input_slider(
                         "repeats_threshold_cnv",
@@ -615,7 +614,7 @@ with ui.navset_pill(id="Database"):
                                      sample= s, strain= st, lineage= l,
                                      chromosome=input.chromosomes_cnv(), start=input.start_cnv(),end=input.end_cnv(), 
                                      min_size=input.size_cnv()[0], max_size=input.size_cnv()[1], 
-                                     CNV=input.cnv_cnv(),repeat_fraction=input.repeats_threshold_cnv())
+                                     cnv=input.cnv_cnv(),repeat_fraction=input.repeats_threshold_cnv())
                     if df.shape[0] > 500:
                         return df.head(500)
                     else:
@@ -635,7 +634,7 @@ with ui.navset_pill(id="Database"):
                             sample= s, strain= st, lineage= l,
                             chromosome=input.chromosomes_cnv(), start=input.start_cnv(),end=input.end_cnv(), 
                             min_size=input.size_cnv()[0], max_size=input.size_cnv()[1], 
-                            CNV=input.cnv_cnv(),repeat_fraction=input.repeats_threshold_cnv())
+                            cnv=input.cnv_cnv(),repeat_fraction=input.repeats_threshold_cnv())
                     except Exception as e:
                         with io.BytesIO() as buf:
                             buf.write(f"Error: {e}".encode())
