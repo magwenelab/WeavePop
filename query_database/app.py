@@ -6,25 +6,17 @@ import datetime
 from Bio import SeqIO
 import pandas as pd
 
-mydb='database.db'
+mydb='/FastData/czirion/DiversityPipeline/results_joined/02.Dataset/database.db'
 
 with ui.navset_pill(id="Database"):
     with ui.nav_panel("Home"):
-        ui.h1(ui.markdown("Database of the Strain Diversity Collection of _Cryptococcus neoformans_"), style="padding-top: 20px;padding-bottom: 20px;")
+        ui.h1(ui.markdown("FungalPop Database"), style="padding-top: 20px;padding-bottom: 20px;")
         ui.markdown(
             """
-            This database has the results of several analyses of the 387 samples of *Cryptococcus neoformans* from 
-            [Desjardins et al. 2017](https://pubmed.ncbi.nlm.nih.gov/28611159/), and 686 samples of *C. neoformans* lineage VNI from [Ashton et al. 2019](https://www.nature.com/articles/s41467-019-10092-5). 
+            This database is the result of FungalPop, a workflow for the discovery of genomic diversity in a population.   
             In summary, the analyses consisted of the following steps:
-            1. Annotate the reference genome of each lineage by [lifting over](https://github.com/agshumate/Liftoff) the
-            [annotation of the H99 reference genome](https://fungidb.org/common/downloads/release-65/CneoformansH99/gff/data/FungiDB-65_CneoformansH99.gff). 
-            This allows us to have a common naming scheme for the genes in the different lineages with gene IDs in the format CNAG_00000. 
-            The reference genome assemblies for each lineage are:
-                * VNI: Strain H99 from [FungiDB release 65](https://fungidb.org/common/downloads/release-65/CneoformansH99/fasta/data/FungiDB-65_CneoformansH99_Genome.fasta).
-                * VNII: Strain VNII from [GCA_022832995.1](https://www.ncbi.nlm.nih.gov/datasets/genome/GCA_022832995.1/).
-                * VNBI: Strain Bt22, genome assembled by Marco A. Coelho.
-                * VNBII: Strain Bt81 from [GCA_023650555.1/](https://www.ncbi.nlm.nih.gov/datasets/genome/GCA_023650555.1/)
-            2. Map the short reads of each sample to the corresponding reference genome using [Snippy](https://github.com/tseemann/snippy). From this, we obtained:
+            1. Processing of the annotation of the reference genome. 
+            2. Map the short reads of each sample to the corresponding reference genome using [Snippy](https://github.com/tseemann/snippy).  
                 * Reference-based assemblies.
                 * Called variants.
                 * Depth of coverage.
@@ -34,10 +26,9 @@ with ui.navset_pill(id="Database"):
             
             """
         )
-        ui.markdown("Please see the Citation tab for information on how to cite this resource, and the Glossary tab for definitions of the terms used in the filters and tables.")
         ui.h1("Available data",style="padding-top: 20px;padding-bottom: 10px;")
         ui.h4("Metadata",style="padding-top: 10px;padding-bottom: 10px;")
-        "Metadata of the samples, including the strain, sample ID, lineage, isolation source and other information."
+        "Metadata of the samples, including the strain, sample ID, lineage, etc."
         ui.h4(" Reference Genomes’ Annotations",style="padding-top: 10px;padding-bottom: 10px;")
         "Table with the description of the genes in the reference genome of each lineage. Including the nested features of the genes."
         ui.h4("Sequences",style="padding-top: 10px;padding-bottom: 10px;")
@@ -46,21 +37,15 @@ with ui.navset_pill(id="Database"):
         ui.markdown("""
                     Variants (SNPs, INDELs, and MNPs) and their predicted effects. Visit [SnpEff](https://pcingola.github.io/SnpEff/snpeff/inputoutput/) to see the description of the effects and impacts.  
                     Since the variants were called comparing each sample to the reference genome of its lineage, 
-                    the variants have an ID that corresponds to the lineage (e.g. var_VNI_1), and they are associated with the samples 
+                    the variants have an ID that corresponds to the lineage, and they are associated with the samples 
                     they were found in.    
-                    The table contains one row per combination of variant, effect, and samples where the variant it is present in.   
-                    In the example below, the variant var_VNBI_10000 has two effects, one with impact LOW in gene CNAG_00148 
-                    and the other with impact MODIFIER in gene CNAG_00147 and is present in the strains Muc479-1 and Ftc555-1.  
-                    
+                    The table contains one row per combination of variant, effect, and samples where the variant it is present in.                     
                     """)
-        # @render.data_frame
-        # def show_variants():
-        #     df = qdb.effects(db = mydb,strain = ("Muc479-1","Ftc555-1"), impact = ("LOW", "MODIFIER") )
-        #     df.sort_values(by = "var_id", inplace = True)
-        #     df = df[df["var_id"] == "var_VNBI_10000"]
-        #     return df
         ui.h4("Copy Number Variants",style="padding-top: 10px;padding-bottom: 10px;")
         "Table with predicted duplicated and deleted regions in the samples."
+        ui.h4("Glossary",style="padding-top: 10px;padding-bottom: 10px;")
+        "Definitions of the terms used in the tables."
+        ui.h1("",style="padding-top: 20px;padding-bottom: 10px;")
         
     with ui.nav_panel("Metadata"):
         ui.h1("Metadata", style="padding-top: 20px;padding-bottom: 20px;")
@@ -701,11 +686,3 @@ with ui.navset_pill(id="Database"):
             **Repeats threshold**: Parameter to filter out features with a repeat_fraction larger than this threshold.  
             **repeat_fraction**: The proportion of the feature that is covered by repetitive sequences.  
             """)
-            
-    with ui.nav_panel("Citation"):
-        ui.h1("Citation", style="padding-top: 20px;padding-bottom: 20px;")
-        ui.markdown("""
-                    We are working on a manuscript describing the pipeline used to create this database and web-resource.  For now, please cite this resource as:  
-                    
-                    C. Zirión-Martínez and P. M. Magwene. FungalPop: A biofinformatics pipeline for building population genomic databases for fungal organisms.  in prep. Funded by NIH R01AI133654.
-                    """)
