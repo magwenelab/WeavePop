@@ -1,6 +1,14 @@
 
 # FungalPop
 
+[Description](#description)  
+[Installation](#installation)  
+[Configuration](#configuration)  
+[Execution](#execution)  
+[Output](#output)  
+[Query the database](#query-the-database)  
+[Graph of rules in the workflow](#graph-of-rules-in-the-workflow)  
+
 ## Description
 
 FungalPop is a [Snakemake](https://snakemake.github.io/) workflow to map short sequencing reads of multiple samples to reference genomes of the corresponding lineage and analyze the mapping to obtain small variants and copy-number variants between them.
@@ -113,18 +121,25 @@ Run the pipeline: `snakemake --cores <n> --sdm conda -p`
   * Snakemake options:  
     * `--cores <n>`: Number of cores you want to use. Mandatory.
     * `--sdm conda`: Specify that Snakemake will use conda environments to run the rules. Mandatory.
-    * `-p`: Print the command-lines run by each job in the standard output. Optional.
+    * `-p`: Print in the standard output the command-lines run by each job. Optional.
     * `--conda-frontend conda`: Use it if you are using conda instead of mamba. Mamba is the default.
     * `--rerun-incomplete`: Use it when a past run of the workflow was aborted and you are repeating the run.
     * `--keep-going`: Use it to avoid stoping the workflow when a job fails (i.e. run everything that can run).
     * `-n`: Dry run.  
   
 To learn more about how Snakemake works and how to take advantage of its features, see the Wiki (PENDING).
-  
 
 ## Output
 
+Below is a description of the output produced by each module. The paths are relative to the output directory that you specified in the config file, `results/`by default.  
+If you want to create all the output files you only need to activate the database and the plotting modules. If you don't want to create the database you can activate only the intermediate modules you want.
+The files in bold are the ones that are integrated into the final database.  
+
+
 ### Processing of reference genomes
+
+This is a required module but it has two variants. In the config file you can activate the annotation of the reference genomes by a main reference.
+The files related to repetitive sequences are created only if the CNV calling module is activated.
 
 | Path | Description |
 | :---------------- | ----: |
@@ -132,7 +147,6 @@ To learn more about how Snakemake works and how to take advantage of its feature
 | `03.References/{lineage}/{lineage}.gff` | Standardized GFF file of the reference genome with added introns, intergenic regions and repetitive sequences. If the reference annotation was activated it is the processed result of Liftoff annotation using the main reference. Positions are 1-Based.|
 | `03.References/{lineage}/{lineage}.gff.tsv` | Tabular version of the previous file. Positions are 1-Based. Column names different from standard GFF format: `accession` ('seq_id'), `feature_id` ('ID'), `gene_name` ('Name'), `gene_id` ('locus'), `old_feature_id` (original ID before fixing), `lineage`, and `identical_to_main_ref`, ('matches_ref_protein', added by Liftoff if used)	`start_stop_mutation` (union of columns: 'missing_start_codon', 'missing_stop_codon', 'inframe_stop_codon' added by Liftoff if used).|
 | **`03.References/all_lineages.gff.tsv`** | Concatenation of the previous table of all lineages. Positions are 1-Based. |
-
 
 <details>
 <summary> Intermediate files </summary> 
@@ -174,10 +188,12 @@ To learn more about how Snakemake works and how to take advantage of its feature
 | `04.Intermediate_files/03.References/{main_reference}.gff` | Final fixed GFF with new IDs in the shape of `<locus>-<level2 tag and number>-<level3 tag and number>` |
 | `04.Intermediate_files/03.References/{main_reference}.tsv` | TSV version of fixed GFF |
 
-
 </details>
 
+
 ### Snippy
+
+Allways produced.
 
 | Path | Description |
 | :---------------- | ----: |
@@ -189,16 +205,16 @@ To learn more about how Snakemake works and how to take advantage of its feature
 
 ### Depth and quality
 
+Allways produced.
+
 | Path | Description |
 | :---------------- | ----: |
 | `01.Samples/depth_quality/{sample}/depth_by_chrom_good.tsv` | Depth metrics of good quality mappings. Genome-wide and by chromosome (absolute and normalized). |
 | `01.Samples/depth_quality/{sample}/depth_by_chrom_raw.tsv` | Depth metrics of all mappings. Genome-wide and by chromosome (absolute). |
 | `01.Samples/depth_quality/{sample}/mapping_stats.tsv` | Mapping quality and depth statistics plus quality warning. | 
-| `02.Dataset/depth_quality/mapping_stats.tsv` | Concatenation of `mapping_stats.tsv` files of samples that passed the quality filter. |
+| `02.Dataset/depth_quality/mapping_stats.tsv` | Concatenation of `mapping_stats.tsv` files of samples that survived the quality filter. |
 | **`02.Dataset/metadata.csv`** | Metadata table with samples that survived the quality filter. |
 | **`02.Dataset/chromosomes.csv`** | Table of chromosome names with the lineages that survived the quality filter. |
-
-
 
 <details>
 <summary> Intermediate files </summary> 
@@ -216,6 +232,8 @@ To learn more about how Snakemake works and how to take advantage of its feature
 </details>
 
 ### Annotation
+
+Allways produced.
 
 | Path | Description |
 | :---------------- | ----: |
@@ -238,6 +256,8 @@ To learn more about how Snakemake works and how to take advantage of its feature
 
 ### Depth and quality of genetic features
 
+This files are produced if you activate this module or the database module.
+
 | Path | Description |
 | :---------------- | ----: |
 | `01.Samples/depth_quality/{sample}/mapq_depth_by_feature.tsv` | MAPQ and mean depth of each feature. |
@@ -258,6 +278,8 @@ To learn more about how Snakemake works and how to take advantage of its feature
 
 ### CNV calling
 
+This files are produced if you activate this module, the plotting module or the database module.
+
 | Path | Description |
 | :---------------- | ----: |
 | `01.Samples/cnv/{sample}/cnv_calls.tsv` | Table of deleted and duplicated regions in each sample and their overlap with repetitive sequences. Positions are 1-Based.|
@@ -274,6 +296,8 @@ To learn more about how Snakemake works and how to take advantage of its feature
 </details>
 
 ### Annotation of SNP effects
+
+This files are produced if you activate this module or the database module.
 
 | Path | Description |
 | :---------------- | ----: |
@@ -307,6 +331,8 @@ s
 
 ### Plotting
 
+This files are produced if you activate this module.
+
 | Path | Description |
 | :---------------- | ----: |
 | `01.Samples/plots/{sample}/depth_by_chrom.png` | Plot of depth metrics by chromosome and genome-wide. |
@@ -330,9 +356,11 @@ s
 
 ### Database
 
-The file `02.Dataset/database.db` is an SQL Database created with DuckDB. It contains the tables marked in bold. The schema of the database is explained in the diagram below. 
+Activating this module will automatically activate the CNV calling, depth and quality of genetic features, and annotation of SNP effects to integrate all the results into the file `02.Dataset/database.db`. 
+This is an SQL Database created with DuckDB. It contains the tables marked in bold. The schema of the database is explained in the diagram below. 
 DuckDB does not require primary keys to be declared.  
 
+![Database schema](db_schema.png)
 
 <details>
 <summary> Intermediate files </summary>
@@ -379,4 +407,4 @@ The activated modules in the graph are:
 Annotate references and Database.  
 
 
-![Filegraph](all.svg)
+![Rulegraph](all.svg)
