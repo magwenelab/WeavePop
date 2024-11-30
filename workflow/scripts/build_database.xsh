@@ -37,7 +37,7 @@ def build_db(metadata, chrom_names, cnvs, mapq_depth, gff_tsv, effects, variants
     print(f"12. output: {output}")
     
     print("Reading metadata table...")
-    df_samples = pd.read_csv(metadata) 
+    df_metadata = pd.read_csv(metadata) 
     print("Metadata table done!")
 
     print("Reading Copy-number variants table...")
@@ -86,7 +86,7 @@ def build_db(metadata, chrom_names, cnvs, mapq_depth, gff_tsv, effects, variants
     con = duckdb.connect(database=output)
 
     print("Registering dataframes")
-    con.register('df_samples', df_samples)
+    con.register('df_metadata', df_metadata)
     con.register('df_cnv', df_cnv)
     con.register('df_mapq_depth', df_mapq_depth)
     con.register('df_chroms', df_chroms)
@@ -98,10 +98,10 @@ def build_db(metadata, chrom_names, cnvs, mapq_depth, gff_tsv, effects, variants
     con.register('df_sequences', df_sequences)
     
     print("Adding dataframes to database")
-    con.execute("CREATE TABLE IF NOT EXISTS samples AS SELECT * FROM df_samples")   
+    con.execute("CREATE TABLE IF NOT EXISTS metadata AS SELECT * FROM df_metadata")   
     con.execute("CREATE TABLE IF NOT EXISTS cnvs AS SELECT * FROM df_cnv")
     con.execute("CREATE TABLE IF NOT EXISTS mapq_depth AS SELECT * FROM df_mapq_depth")
-    con.execute("CREATE TABLE IF NOT EXISTS chromosome_names AS SELECT * FROM df_chroms")
+    con.execute("CREATE TABLE IF NOT EXISTS chromosomes AS SELECT * FROM df_chroms")
     con.execute("CREATE TABLE IF NOT EXISTS gff AS SELECT * FROM df_gff")
     con.execute("CREATE TABLE IF NOT EXISTS presence AS SELECT * FROM df_presence")
     con.execute("CREATE TABLE IF NOT EXISTS variants AS SELECT * FROM df_variants")
