@@ -13,16 +13,16 @@ import click
 @click.option("--output", "-o", help= 'Output table with average MAPQ and Depth per genetic feature.', type=click.Path())
 def mapqdepth(mapqbed, depthbed, gff, depthmapq, global_mode, sample, output):
     print("Making merged version of BED file with MAPQ and Depth columns...")
-    mapq = pd.read_csv(mapqbed, names = ["chromosome", "start", "end", "mapq"], sep = "\t" )
-    depth = pd.read_csv(depthbed, names = ["chromosome", "start", "end", "depth"], sep = "\t" )
-    df = pd.merge(mapq, depth, on=["chromosome", "start", "end"])
+    mapq = pd.read_csv(mapqbed, names = ["chromosome", "start_w", "end_w", "mapq"], sep = "\t" )
+    depth = pd.read_csv(depthbed, names = ["chromosome", "start_w", "end_w", "depth"], sep = "\t" )
+    df = pd.merge(mapq, depth, on=["chromosome", "start_w", "end_w"])
     filepath = Path(depthmapq)  
     df.to_csv(filepath, index=False, header = False, sep='\t')  
 
     print("Intersecting MAPQ and Depth of windows with GFF file...")
     gff = $(bedtools intersect -wa -wb -a @(gff)  -b @(depthmapq))
     stringList = gff.split('\n')
-    dfgff = pd.DataFrame([item.split('\t') for item in stringList], columns = ["seq_id", "source", "primary_tag", "start", "end", "score", "strand", "frame", "attribute", "chromosome", "start", "end", "mapq", "depth"])
+    dfgff = pd.DataFrame([item.split('\t') for item in stringList], columns = ["seq_id", "source", "primary_tag", "start", "end", "score", "strand", "frame", "attribute", "chromosome", "start_w", "end_w", "mapq", "depth"])
     dfgff = dfgff.dropna()
 
     print("Getting average of MAPQ and Depth of all windows covered by each feature...")
@@ -36,7 +36,7 @@ def mapqdepth(mapqbed, depthbed, gff, depthmapq, global_mode, sample, output):
     new_gff['mean_depth'] = new_gff['mean_depth'].apply(lambda x: round(x, 2)).astype(str)
 
     print("Creating TSV with average values...")
-    new_gff['feature_id'] = new_gff['attribute'].str.extract(r'ID=(.*?);')
+    new_gff['feature_id'] = new_gff['attribute'].str.extract(r'ID=([^;]+)')
     tsv = new_gff.loc[:, ['feature_id','primary_tag', 'mean_mapq', 'mean_depth']]
 
     print("Normalizing mean_depth...")
