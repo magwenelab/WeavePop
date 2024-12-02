@@ -31,8 +31,6 @@ try:
     
     logging.info("Replacing True/False for Yes/No...")
     df = df.replace({'True': 'Yes', 'False': 'No'})
-    logging.info(set(df['missing_start_codon']))
-
     
     logging.info("Creating start_stop_mutations column...")
     ref_mutations = ['missing_start_codon', 'missing_stop_codon', 'inframe_stop_codon']
