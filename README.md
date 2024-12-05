@@ -357,8 +357,8 @@ This files are produced if you activate this module.
 ### Database
 
 Activating this module will automatically activate the CNV calling, depth and quality of genetic features, and annotation of SNP effects to integrate all the results into the file `02.Dataset/database.db`. 
-This is an SQL Database created with DuckDB. It contains the tables marked in bold. The schema of the database is explained in the diagram below. 
-DuckDB does not require primary keys to be declared.  
+This is an SQL Database created with DuckDB. It contains the tables marked in bold in the description of the output above.  
+DuckDB does not require primary keys to be declared. In the schema below, when there is one variable in bold it is a unique variable, and when there are more, their combination is unique.
 
 ![Database schema](db_schema.png)
 
