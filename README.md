@@ -99,6 +99,14 @@ Mandatory columns with this exact names:
 
 * `config/RepBase.fasta`: Database of repetitive sequences in FASTA format to use for RepeatMasker. Needed if the CNV, plotting or database modules are activated.   
 We recommend the [RepBase database](https://www.girinst.org/server/RepBase/). You need to download it, extract the files and concatenate all in one FASTA file `config/RepBase.fasta`.
+```
+# Update the filename to the latest version and run the following commands
+wget https://www.girinst.org/server/RepBase/protected/RepBase29.01.fasta.tar.gz
+tar -xvzf RepBase29.01.fasta.tar.gz
+cat RepBase29.01.fasta/*.ref > RepBase.fasta
+cat RepBase29.01.fasta/appendix/*.ref >> RepBase.fasta
+rm -rf RepBase29.01.fasta/ RepBase29.01.fasta.tar.gz
+```
 
 * `config/loci.csv`: If you want genetic features to be plotted in the depth and MAPQ plots, provide comma-separated table with one row per gene. [Example](https://github.com/magwenelab/DiversityPipeline/blob/main/config/loci.csv).  
 Mandatory columns with this exact names:    
