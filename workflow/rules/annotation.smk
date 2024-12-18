@@ -1,39 +1,34 @@
 # =================================================================================================
-# Per sample | Run Liftoff to annotate the assembly with the coresponding reference genome
+# Per sample | Run Liftoff to annotate the assembly with the corresponding reference genome
 # =================================================================================================
 
-def liftoff_input(wildcards):
-    s = SAMPLE_REFERENCE.loc[wildcards.sample,]
-    return {
-        "target": OUTDIR / "snippy" / s["sample"] / "snps.consensus.fa" ,
-        "refgff": s["refgff"],
-        "refgenome": s["refgenome"],
-    }
+
 rule liftoff:
     input:
-        unpack(liftoff_input)
+        unpack(liftoff_input),
     output:
-        ref_gff = OUTDIR / "liftoff" / "{sample}" / "ref.gff",
-        gff = OUTDIR / "liftoff" / "{sample}" / "lifted.gff",
-        polished = OUTDIR / "liftoff" / "{sample}" / "lifted.gff_polished",
-        unmapped = OUTDIR / "liftoff" / "{sample}" / "unmapped_features.txt",
-        intermediate = directory(OUTDIR / "liftoff" / "{sample}" / "intermediate_files"),
-        fai = OUTDIR / "snippy" / "{sample}" / "snps.consensus.fa.fai",
-        mmi = OUTDIR / "snippy" / "{sample}" / "snps.consensus.fa.mmi"
-    threads: 
-        config["liftoff"]["threads"]
+        ref_gff=INT_SAMPLES_DIR / "annotation"/ "liftoff" / "{sample}" / "ref.gff",
+        gff=INT_SAMPLES_DIR / "annotation"/ "liftoff" / "{sample}" / "lifted.gff",
+        polished=INT_SAMPLES_DIR / "annotation"/ "liftoff" / "{sample}" / "lifted.gff_polished",
+        unmapped=INT_SAMPLES_DIR / "annotation"/ "liftoff" / "{sample}" / "unmapped_features.txt",
+        intermediate=directory(INT_SAMPLES_DIR / "annotation"/ "liftoff" / "{sample}" / "intermediate_liftoff"),
+        fai=SAMPLES_DIR / "snippy" / "{sample}" / "snps.consensus.fa.fai",
+        mmi=SAMPLES_DIR / "snippy" / "{sample}" / "snps.consensus.fa.mmi",
     params:
-        extra = config["liftoff"]["extra"],
-        outpath =  OUTDIR / "liftoff" / "{sample}"
+        extra=config["liftoff"]["extra"],
+        outpath=INT_SAMPLES_DIR / "annotation"/ "liftoff" / "{sample}",
+    log:
+        "logs/samples/annotation/liftoff_{sample}.log",
+    threads: config["liftoff"]["threads"]
+    resources:
+        tmpdir=TEMPDIR,
     conda:
         "../envs/liftoff.yaml"
-    log:
-        "logs/samples/liftoff/liftoff_{sample}.log" 
     shell:
         "ln -s -r -f {input.refgff} {output.ref_gff} &> {log} || true "
         "&& "
         "liftoff "
-        "-g {output.ref_gff} " 
+        "-g {output.ref_gff} "
         "-o {output.gff} "
         "-dir {output.intermediate} "
         "-u {output.unmapped} "
@@ -43,91 +38,190 @@ rule liftoff:
         "{input.target} "
         "{input.refgenome} &>> {log}"
 
+
 # =================================================================================================
-# Per sample | Run AGAT to extract CDS and protein sequences
+# Per sample | Annotate intergenic regions and introns
 # =================================================================================================
 
-rule agat_cds:
+
+rule add_intergenic:
     input:
-        gff = rules.liftoff.output.polished,
-        fa = OUTDIR / "snippy" / "{sample}" / "snps.consensus.fa",
-        config = rules.agat_config.output
+        gff=rules.liftoff.output.polished,
+        config=rules.agat_config.output,
     output:
-        cds = OUTDIR / "agat" / "{sample}" / "cds.fa",
+        gff=INT_SAMPLES_DIR / "annotation" / "{sample}" / "intergenic.gff",
+    params:
+        extra=config["agat"]["extra"],
+    log:
+        "logs/samples/annotation/add_intergenic_{sample}.log",
+    resources:
+        tmpdir=TEMPDIR,
     conda:
         "../envs/agat.yaml"
-    params:
-        extra = config["agat"]["extra"]
-    log: 
-        "logs/samples/agat/agat_cds_{sample}.log",
     shell:
-        "agat_sp_extract_sequences.pl "
-        "-g {input.gff} " 
-        "-f {input.fa} "
-        "-o {output.cds} "
+        "agat_sp_add_intergenic_regions.pl "
+        "-g {input.gff} "
+        "-o {output.gff} "
         "-c {input.config} "
         "{params.extra} "
         "&> {log} "
 
-rule agat_prots:
+
+rule add_introns:
     input:
-        gff = rules.liftoff.output.polished,
-        fa = OUTDIR / "snippy" / "{sample}" / "snps.consensus.fa",
-        config = rules.agat_config.output,
-        cds = rules.agat_cds.output.cds
+        gff=rules.add_intergenic.output.gff,
+        config=rules.agat_config.output,
     output:
-        prots = OUTDIR / "agat" / "{sample}" / "proteins.fa"
+        gff=INT_SAMPLES_DIR / "annotation" / "{sample}" / "interg_introns.gff",
+    params:
+        extra=config["agat"]["extra"],
+    log:
+        "logs/samples/annotation/add_introns_{sample}.log",
+    resources:
+        tmpdir=TEMPDIR,
     conda:
         "../envs/agat.yaml"
+    shell:
+        "agat_sp_add_introns.pl "
+        "-g {input.gff} "
+        "-o {output.gff} "
+        "-c {input.config} "
+        "{params.extra} "
+        "&> {log} "
+
+
+rule annotation_gff2tsv:
+    input:
+        gff=rules.add_introns.output.gff,
+        config=rules.agat_config.output,
+    output:
+        tsv=INT_SAMPLES_DIR / "annotation" / "{sample}" / "annotation.gff.tsv",
+    log:
+        "logs/samples/annotation/annotation_gff2tsv_{sample}.log",
+    resources:
+        tmpdir=TEMPDIR,
+    conda:
+        "../envs/agat.yaml"
+    shell:
+        "agat_convert_sp_gff2tsv.pl "
+        "-g {input.gff} "
+        "-o {output.tsv} "
+        "-c {input.config} "
+        "&> {log} "
+
+
+rule reformat_annotation:
+    input:
+        tsv=rules.annotation_gff2tsv.output.tsv,
+    output:
+        tsv=SAMPLES_DIR / "annotation" / "{sample}" / "annotation.gff.tsv",
+        gff=SAMPLES_DIR / "annotation" / "{sample}" / "annotation.gff",
+    log:
+        "logs/samples/annotation/reformat_annotation_{sample}.log",
+    conda:
+        "../envs/shell.yaml"
+    script:
+        "../scripts/reformat_annotation.py"
+
+
+# =================================================================================================
+# Per sample | Run AGAT to extract CDS and protein sequences
+# =================================================================================================
+
+
+rule extract_cds:
+    input:
+        gff=rules.reformat_annotation.output.gff,
+        fa=SAMPLES_DIR / "snippy" / "{sample}" / "snps.consensus.fa",
+        config=rules.agat_config.output,
+    output:
+        fa=SAMPLES_DIR / "annotation" / "{sample}" / "cds.fa",
     params:
-        extra = config["agat"]["extra"]
-    log: 
-        "logs/samples/agat/agat_prots_{sample}.log"
+        extra=config["agat"]["extra"],
+    log:
+        "logs/samples/annotation/extract_cds_{sample}.log",
+    resources:
+        tmpdir=TEMPDIR,
+    conda:
+        "../envs/agat.yaml"
     shell:
         "agat_sp_extract_sequences.pl "
-        "-g {input.gff} " 
+        "-g {input.gff} "
         "-f {input.fa} "
-        "-o {output.prots} "
+        "-o {output.fa} "
+        "-c {input.config} "
+        "{params.extra} "
+        "&> {log} "
+
+
+rule extract_prots:
+    input:
+        gff=rules.reformat_annotation.output.gff,
+        fa=SAMPLES_DIR / "snippy" / "{sample}" / "snps.consensus.fa",
+        config=rules.agat_config.output,
+        cds=rules.extract_cds.output.fa,
+    output:
+        fa=SAMPLES_DIR / "annotation" / "{sample}" / "proteins.fa",
+    params:
+        extra=config["agat"]["extra"],
+    log:
+        "logs/samples/annotation/extract_prots_{sample}.log",
+    resources:
+        tmpdir=TEMPDIR,
+    conda:
+        "../envs/agat.yaml"
+    shell:
+        "agat_sp_extract_sequences.pl "
+        "-g {input.gff} "
+        "-f {input.fa} "
+        "-o {output.fa} "
         "-p "
         "-c {input.config}"
-        "{params.extra} &> {log} " 
+        "{params.extra} &> {log} "
         "&& "
         "sed -i 's/type=cds//g' {output} &>> {log} "
 
+
 # =================================================================================================
-# Per sample | Convert fasta to csv
+# Per sample | Convert fasta to csv to include in database
 # =================================================================================================
+
 
 rule cds2csv:
-    input: 
-        cds = OUTDIR / "agat" / "{sample}" / "cds.fa"
+    input:
+        fa=rules.extract_cds.output.fa,
     output:
-        cds = OUTDIR / "agat" / "{sample}" / "cds.csv"
+        csv=INT_SAMPLES_DIR / "annotation" / "{sample}" / "cds.csv",
+    log:
+        "logs/samples/annotation/cds2csv_{sample}.log",
+    resources:
+        tmpdir=TEMPDIR,
     conda:
         "../envs/variants.yaml"
-    log:
-        "logs/dataset/sequences/cds2csv_{sample}.log"
     shell:
         "python workflow/scripts/fasta_to_csv.py "
-        "-f {input.cds} "
+        "-f {input.fa} "
         "-s {wildcards.sample} "
         "-t DNA "
-        "-o {output.cds} "
+        "-o {output.csv} "
         "&> {log}"
 
+
 rule prots2csv:
-    input: 
-        prots = OUTDIR / "agat" / "{sample}" / "proteins.fa"
+    input:
+        fa=rules.extract_prots.output.fa,
     output:
-        prots = OUTDIR / "agat" / "{sample}" / "proteins.csv"
+        csv=INT_SAMPLES_DIR / "annotation" / "{sample}" / "proteins.csv",
+    log:
+        "logs/samples/annotation/prots2csv_{sample}.log",
+    resources:
+        tmpdir=TEMPDIR,
     conda:
         "../envs/variants.yaml"
-    log:
-        "logs/dataset/sequences/prots2db_{sample}.log"
     shell:
         "python workflow/scripts/fasta_to_csv.py "
-        "-f {input.prots} "
+        "-f {input.fa} "
         "-s {wildcards.sample} "
         "-t PROTEIN "
-        "-o {output.prots} "
+        "-o {output.csv} "
         "&> {log}"

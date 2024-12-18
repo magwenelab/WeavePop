@@ -4,6 +4,6 @@ channels:
   - bioconda
   - defaults
 dependencies:
-  - agat
-  - seqkit
+  - agat=1.4.0
+  - seqkit=2.8.2
 

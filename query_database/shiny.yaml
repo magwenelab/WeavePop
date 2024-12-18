@@ -1,0 +1,10 @@
+name: shiny
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python-duckdb=1.0.0
+  - shiny=0.10.2
+  - pandas=2.2.2
+  - click=8.1.7
+  - biopython=1.84

@@ -1,108 +1,90 @@
 # =================================================================================================
-#   Per sample | Run Mosdepth to get depth per region of  good quality reads
+#   Per sample | Run Mosdepth to get depth per window of good quality reads
 # =================================================================================================
+
 
 rule mosdepth_good:
     input:
-        bam = OUTDIR / "snippy" / "{sample}" / "snps.bam",
-        bai = OUTDIR / "snippy" / "{sample}" / "snps.bam.bai"
+        bam=SAMPLES_DIR / "snippy" / "{sample}" / "snps.bam",
+        bai=SAMPLES_DIR / "snippy" / "{sample}" / "snps.bam.bai",
     output:
-        bed = OUTDIR / "mosdepth" / "{sample}" / "coverage_good.regions.bed.gz"
+        bed=INT_SAMPLES_DIR / "mosdepth" / "{sample}" / "coverage_good.regions.bed.gz",
     params:
-        window = config["depth_quality"]["mosdepth"]["window"],
-        extra = config["depth_quality"]["mosdepth"]["extra"],
-        min_mapq = config["depth_quality"]["mosdepth"]["min_mapq"],
-        outdir = OUTDIR / "mosdepth"
-    conda: 
-        "../envs/depth.yaml"
-    threads:
-       config["depth_quality"]["mosdepth"]["threads"]   
+        window=config["depth_quality"]["mosdepth"]["window"],
+        extra=config["depth_quality"]["mosdepth"]["extra"],
+        min_mapq=config["depth_quality"]["mosdepth"]["min_mapq"],
+        outdir=INT_SAMPLES_DIR / "mosdepth",
     log:
-        "logs/samples/mosdepth/mosdepth_good_{sample}.log"
+        "logs/samples/depth_quality/mosdepth_good_{sample}.log",
+    threads: config["depth_quality"]["mosdepth"]["threads"]
+    resources:
+        tmpdir=TEMPDIR,
+    conda:
+        "../envs/depth.yaml"
     shell:
-        "mosdepth -n --by {params.window} --mapq {params.min_mapq} -t {threads} {params.extra} "
-        "{params.outdir}/{wildcards.sample}/coverage_good {input.bam} "
+        "mosdepth "
+        "-n "
+        "--by {params.window} "
+        "--mapq {params.min_mapq} "
+        "-t {threads} "
+        "{params.extra} "
+        "{params.outdir}/{wildcards.sample}/coverage_good "
+        "{input.bam} "
         "&> {log}"
 
+
 # =================================================================================================
-#   Per sample | Normalize depth and by region
+#   Per sample | Normalize and smooth depth by windows
 # =================================================================================================
 
-rule depth_by_regions:
+
+rule depth_by_windows:
     input:
-        depth = rules.mosdepth_good.output.bed,
-        global_mode = OUTDIR / "depth_quality" / "{sample}" / "depth_by_chrom_good.tsv"
+        depth=rules.mosdepth_good.output.bed,
+        global_mode=SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom_good.tsv",
     output:
-        OUTDIR / "depth_quality" / "{sample}" / "depth_by_regions.tsv"
+        INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_windows.tsv",
+    params:
+        smoothing_size=config["cnv"]["smoothing_size"],
+    log:
+        "logs/samples/depth_quality/depth_by_windows_{sample}.log",
+    resources:
+        tmpdir=TEMPDIR,
     conda:
         "../envs/samtools.yaml"
-    params:
-        smoothing_size = config["cnv"]["smoothing_size"]
-    log:
-        "logs/samples/depth_quality/depth_by_regions_{sample}.log"
     shell:
-        "xonsh workflow/scripts/depth_by_regions.xsh -di {input.depth} -gi {input.global_mode} -do {output} -s {params.smoothing_size} &> {log}"
+        "xonsh workflow/scripts/depth_by_windows.xsh "
+        "-di {input.depth} "
+        "-gi {input.global_mode} "
+        "-do {output} "
+        "-s {params.smoothing_size} "
+        "&> {log}"
 
 
 # =================================================================================================
-#   Per lineage | Run RepeatModeler and RepeatMasker
+#   Per sample | Call CNVs
 # =================================================================================================
 
-rule repeat_modeler:
-    input:
-        rules.links.output
-    output:
-        known = REFDIR / "{lineage}" / "repeats" / "{lineage}_known.fa",
-        unknown = REFDIR / "{lineage}" / "repeats" / "{lineage}_unknown.fa"
-    params:
-        repdir = "repeats"
-    threads:
-        config["cnv"]["repeats"]["repeats_threads"]
-    conda:
-        "../envs/repeatmasker.yaml"
-    log:
-        "logs/references/repeats/repeatmodeler_{lineage}.log"
-    shell:
-        "bash workflow/scripts/repeat-modeler.sh {threads} {input} {params.repdir} &> {log}"
 
-rule repeat_masker:
-    input:
-        database = config["cnv"]["repeats"]["repeats_database"],
-        fasta = rules.links.output,
-        known = rules.repeat_modeler.output.known,
-        unknown = rules.repeat_modeler.output.unknown
-    output:
-        REFDIR / "{lineage}" / "repeats" / "{lineage}_repeats.bed"
-    threads:
-        config["cnv"]["repeats"]["repeats_threads"]
-    conda:
-        "../envs/repeatmasker.yaml"
-    log:
-        "logs/references/repeats/repeatmasker_{lineage}.log"
-    shell:
-        "bash workflow/scripts/repeat-masker.sh {threads} {input.database} {input.fasta} {input.known} {input.unknown} {output} &> {log}"
-
-# =================================================================================================
-#   Per sample | Intercept depth by regions with repeats and call CNVs
-# =================================================================================================
-
-def cnv_calling_input(wildcards):
-    s = SAMPLE_REFERENCE.loc[wildcards.sample,]
-    return {
-        "depth": OUTDIR / "depth_quality" / s["sample"] / "depth_by_regions.tsv",
-        "repeats": REFDIR / s["lineage"]  / "repeats" / (s["lineage"] + "_repeats.bed")
-        }
 rule cnv_calling:
     input:
-        unpack(cnv_calling_input)
+        unpack(cnv_calling_input),
     output:
-        OUTDIR / "cnv" / "{sample}" / "cnv_calls.tsv"
+        SAMPLES_DIR / "cnv" / "{sample}" / "cnv_calls.tsv",
+    params:
+        window_size=config["depth_quality"]["mosdepth"]["window"],
+        depth_threshold=config["cnv"]["depth_threshold"],
+    log:
+        "logs/samples/cnv/cnv_calling_{sample}.log",
+    resources:
+        tmpdir=TEMPDIR,
     conda:
         "../envs/samtools.yaml"
-    params:
-        region_size = config["depth_quality"]["mosdepth"]["window"],
-        depth_threshold = config["cnv"]["depth_threshold"]
-    log:
-        "logs/samples/cnv/cnv_calling_{sample}.log"
     shell:
-        "xonsh workflow/scripts/cnv_calling.xsh -di {input.depth} -ri {input.repeats} -co {output} -sp {wildcards.sample} -rp {params.region_size} -dp {params.depth_threshold} &> {log}"
+        "xonsh workflow/scripts/cnv_calling.xsh "
+        "-di {input.depth} "
+        "-ri {input.repeats} "
+        "-co {output} "
+        "-sp {wildcards.sample} "
+        "-wp {params.window_size} "
+        "-dp {params.depth_threshold} &> {log}"

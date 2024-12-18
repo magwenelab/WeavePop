@@ -1,74 +1,76 @@
 # =================================================================================================
-#   Per sample | Get distribution and global mode fo depth (genome-wide depth to normalize)
+#   Per sample | Get distribution and genome-wide depth (global_mode) to normalize
 # =================================================================================================
+
 
 rule bam_good:
     input:
-        bam = rules.snippy.output.bam
+        bam=rules.snippy.output.bam,
     output:
-        bam_good = OUTDIR / "depth_quality" / "{unf_sample}" / "snps_good.bam",
-        bai_good = OUTDIR / "depth_quality" / "{unf_sample}" / "snps_good.bam.bai"
+        bam_good=INT_SAMPLES_DIR / "depth_quality" / "{unf_sample}" / "snps_good.bam",
+        bai_good=INT_SAMPLES_DIR / "depth_quality" / "{unf_sample}" / "snps_good.bam.bai",
+    params:
+        min_mapq=config["depth_quality"]["mosdepth"]["min_mapq"],
+    log:
+        "logs/samples/depth_quality/bam_good_{unf_sample}.log",
+    resources:
+        tmpdir=TEMPDIR,
     conda:
         "../envs/samtools.yaml"
-    params:
-        min_mapq = config["depth_quality"]["mosdepth"]["min_mapq"]   
-    log:
-        "logs/samples/depth_quality/bam_good_{unf_sample}.log"
     shell:
         "samtools view -q {params.min_mapq} -b {input} > {output.bam_good} 2> {log} && "
         "samtools index {output.bam_good} -o {output.bai_good} 2>> {log} "
 
-def depth_distribution_input(wildcards):
-    s = SAMPLE_REFERENCE.loc[wildcards.unf_sample,]
-    return {
-        "bam": OUTDIR / "snippy" / s["sample"] / "snps.bam" ,
-        "bai": OUTDIR / "snippy" / s["sample"] / "snps.bam.bai",
-        "bam_good": OUTDIR / "depth_quality" / s["sample"] / "snps_good.bam",
-        "bai_good": OUTDIR / "depth_quality" / s["sample"] / "snps_good.bam.bai"
-        }
+
 rule depth_distribution:
     input:
-        unpack(depth_distribution_input)
+        unpack(depth_distribution_input),
     output:
-        distrib = OUTDIR / "depth_quality" / "{unf_sample}" / "depth_distribution.tsv",
-        by_chrom_good = OUTDIR / "depth_quality" / "{unf_sample}" / "depth_by_chrom_good.tsv",
-        by_chrom_raw = OUTDIR / "depth_quality" / "{unf_sample}" / "depth_by_chrom_raw.tsv"
-    conda: 
-        "../envs/samtools.yaml"
+        distrib=INT_SAMPLES_DIR / "depth_quality" / "{unf_sample}" / "depth_distribution.tsv",
+        by_chrom_good=SAMPLES_DIR / "depth_quality" / "{unf_sample}" / "depth_by_chrom_good.tsv",
+        by_chrom_raw=SAMPLES_DIR / "depth_quality" / "{unf_sample}" / "depth_by_chrom_raw.tsv",
     log:
-        "logs/samples/depth_quality/depth_distribution_{unf_sample}.log"
+        "logs/samples/depth_quality/depth_distribution_{unf_sample}.log",
+    resources:
+        tmpdir=TEMPDIR,
+    conda:
+        "../envs/samtools.yaml"
     shell:
         "xonsh workflow/scripts/depth_distribution.xsh "
         "-s {wildcards.unf_sample} "
         "-b {input.bam} "
-        "-g {input.bam_good} " 
-        "-do {output.distrib} " 
-        "-go {output.by_chrom_good} " 
+        "-g {input.bam_good} "
+        "-do {output.distrib} "
+        "-go {output.by_chrom_good} "
         "-ro {output.by_chrom_raw} &> {log} "
+
 
 # =================================================================================================
 #   Per sample | Get mapping stats
 # =================================================================================================
 
+
 rule mapping_stats:
     input:
-        bam = rules.snippy.output.bam,
-        bai = rules.snippy.output.bai,
-        global_mode = rules.depth_distribution.output.by_chrom_good
+        bam=rules.snippy.output.bam,
+        bai=rules.snippy.output.bai,
+        global_mode=rules.depth_distribution.output.by_chrom_good,
     output:
-        OUTDIR / "depth_quality" / "{unf_sample}" / "mapping_stats.tsv"
+        SAMPLES_DIR / "depth_quality" / "{unf_sample}" / "mapping_stats.tsv",
     params:
-        low_mapq = config["depth_quality"]["flag_quality"]["low_MAPQ_limit"],
-        high_mapq = config["depth_quality"]["flag_quality"]["high_MAPQ_limit"],
-        min_position_depth = config["depth_quality"]["flag_quality"]["min_position_depth"],
-        min_depth = config["depth_quality"]["flag_quality"]["min_percent_genome-wide_depth"],
-        min_mapq = config["depth_quality"]["flag_quality"]["min_percent_MAPQ"],    
-        min_pp= config["depth_quality"]["flag_quality"]["min_percent_properly_paired_reads"],
-        min_coverage = config["depth_quality"]["flag_quality"]["min_percent_coverage"]
+        low_mapq=config["depth_quality"]["flag_quality"]["low_MAPQ_limit"],
+        high_mapq=config["depth_quality"]["flag_quality"]["high_MAPQ_limit"],
+        min_position_depth=config["depth_quality"]["flag_quality"]["min_position_depth"],
+        min_depth=config["depth_quality"]["flag_quality"]["min_percent_genome-wide_depth"],
+        min_mapq=config["depth_quality"]["flag_quality"]["min_percent_MAPQ"],
+        min_pp=config["depth_quality"]["flag_quality"]["min_percent_properly_paired_reads"],
+        min_coverage=config["depth_quality"]["flag_quality"]["min_percent_coverage"],
+    log:
+        "logs/samples/depth_quality/mapping_stats_{unf_sample}.log",
+    resources:
+        tmpdir=TEMPDIR,
     conda:
         "../envs/samtools.yaml"
-    log:
-        "logs/samples/depth_quality/mapping_stats_{unf_sample}.log"
     shell:
         "xonsh workflow/scripts/mapping_stats.xsh "
         "-b {input.bam} "
@@ -83,106 +85,66 @@ rule mapping_stats:
         "-c {params.min_coverage} "
         "-o {output} &> {log}"
 
+
 # =================================================================================================
-#   Per dataset | Join mapping stats 
+#   Per dataset | Join mapping stats
 # =================================================================================================
+
 
 rule join_mapping_stats:
     input:
-        expand(OUTDIR / "depth_quality" / "{unf_sample}" / "mapping_stats.tsv",unf_sample=UNFILTERED_SAMPLES),
+        expand(
+            SAMPLES_DIR / "depth_quality" / "{unf_sample}" / "mapping_stats.tsv",
+            unf_sample=UNFILT_SAMPLES,
+        ),
     output:
-        DATASET_OUTDIR / "depth_quality" / "mapping_stats.tsv",
+        INT_DATASET_DIR / "depth_quality" / "unfiltered_mapping_stats.tsv",
     log:
-        "logs/dataset/depth_quality/join_mapping_stats.log"
-    shell:
-        """
-        head -q -n 1 {input} 1> {output}.temp 2>> {log}
-        head -n 1 {output}.temp 1> {output} 2>> {log}
-        tail -q -n +2 {input} 1>> {output} 2>> {log}
-        rm {output}.temp
-        """
+        "logs/dataset/depth_quality/join_mapping_stats.log",
+    resources:
+        tmpdir=TEMPDIR,
+    conda:
+        "../envs/snakemake.yaml"
+    script:
+        "../scripts/join_tables.py"
+
 
 # =================================================================================================
 #   Per dataset | Checkpoint to filter out low quality samples
 # =================================================================================================
 
+
 rule quality_filter:
     input:
         rules.join_mapping_stats.output,
-        UNFILTERED_SAMPLE_FILE
+        UNFILT_SAMPLE_FILE,
+        CHROM_NAMES,
     output:
-        stats = DATASET_OUTDIR / "depth_quality" / "filtered_mapping_stats.tsv",
-        metadata = GENERAL_OUTPUT / "metadata.csv"
+        stats=DATASET_DIR / "depth_quality" / "mapping_stats.tsv",
+        metadata=DATASET_DIR / "metadata.csv",
+        chromosomes=DATASET_DIR / "chromosomes.csv",
     params:
-        exclude = config["depth_quality"]["flag_quality"]["exclude_samples"]
-    run:
-        stats = pd.read_csv(input[0], sep="\t", header = 0)
-        metadata = pd.read_csv(input[1], header=0)
-        if params.exclude:
-            stats_filtered = stats[stats["quality_warning"].isna()]
-            metadata_filtered = metadata.loc[metadata["sample"].isin(stats_filtered["sample"]),]
-        else:
-            stats_filtered = stats
-            metadata_filtered = metadata
-        stats_filtered.to_csv(output.stats, index=False, header=True, sep = "\t")
-        metadata_filtered.to_csv(output.metadata, index=False)
-
-
-checkpoint filtered_samples:
-    input:
-        rules.quality_filter.output.metadata
-    output:
-        directory(GENERAL_OUTPUT / "filtered_samples")
-    run: 
-        metadata = pd.read_csv(input[0], header=0)
-        sample_names = list(metadata["sample"])
-        for sample_name in sample_names:
-            path_s = GENERAL_OUTPUT / "filtered_samples" / f"{sample_name}.txt"
-            path_s.parent.mkdir(parents=True, exist_ok=True)
-            path_s.touch()
-        
-checkpoint filtered_lineages:
-    input:
-        rules.quality_filter.output.metadata
-    output:
-        directory(GENERAL_OUTPUT / "filtered_lineages")
-    run: 
-        lineages = list(pd.read_csv(input[0], header=0)["lineage"])
-        for lineage in lineages:
-            path_l = GENERAL_OUTPUT / "filtered_lineages" / f"{lineage}.txt"
-            path_l.parent.mkdir(parents=True, exist_ok=True)
-            path_l.touch()
-
-# =================================================================================================
-#   Per dataset | Join depth by chrom 
-# =================================================================================================
-
-rule join_depth_by_chrom_raw:
-    input:
-        expand(OUTDIR / "depth_quality" / "{sample}" / "depth_by_chrom_raw.tsv",sample=SAMPLES),
-    output:
-        DATASET_OUTDIR / "depth_quality" / "depth_by_chrom_raw.tsv",
+        exclude=config["depth_quality"]["flag_quality"]["exclude_samples"],
     log:
-        "logs/dataset/depth_quality/join_depth_by_chrom_raw.log"
-    shell:
-        """
-        head -q -n 1 {input} 1> {output}.temp 2>> {log}
-        head -n 1 {output}.temp 1> {output} 2>> {log}
-        tail -q -n +2 {input} 1>> {output} 2>> {log}
-        rm {output}.temp
-        """
+        "logs/dataset/depth_quality/quality_filter.log",
+    resources:
+        tmpdir=TEMPDIR,
+    conda:
+        "../envs/snakemake.yaml"
+    script:
+        "../scripts/quality_filter.py"
 
-rule join_depth_by_chrom_good:
+
+checkpoint filter_wildcards:
     input:
-        expand(OUTDIR / "depth_quality" / "{sample}" / "depth_by_chrom_good.tsv",sample=SAMPLES),
+        rules.quality_filter.output.metadata,
     output:
-        DATASET_OUTDIR / "depth_quality" / "depth_by_chrom_good.tsv",
+        directory(INT_SAMPLES_DIR / "filtered_samples"),
+        directory(INT_REFS_DIR / "filtered_lineages"),
     log:
-        "logs/dataset/depth_quality/join_depth_by_chrom_good.log"
-    shell:
-        """
-        head -q -n 1 {input} 1> {output}.temp 2>> {log}
-        head -n 1 {output}.temp 1> {output} 2>> {log}
-        tail -q -n +2 {input} 1>> {output} 2>> {log}
-        rm {output}.temp
-        """
+        "logs/dataset/depth_quality/filter_wildcards.log",
+    conda:
+        "../envs/snakemake.yaml"
+    script:
+        "../scripts/filter_wildcards.py"
+

@@ -10,9 +10,9 @@ import sqlite3
 @click.command()
 @click.option('--metadata', '-m', type=click.Path(exists=True), help='Path to the sample metadata CSV file.')
 @click.option('--chrom_names', '-ch', type=click.Path(), help='Path to the chromosome names file.')
-@click.option('--struc_vars', '-sv', type=click.Path(), help='Path to the structural variants file.')
+@click.option('--cnvs', '-cnv', type=click.Path(), help='Path to the copy-number variants file.')
 @click.option('--mapq_depth', '-md', type=click.Path(), help='Path to the mapq and depth of features file.')
-@click.option('--gff', '-g', type=click.Path(), help='Path to the GFF file.')
+@click.option('--gff_tsv', '-g', type=click.Path(), help='Path to the TSV version of the GFF file.')
 @click.option('--effects', '-e', type=click.Path(), help='Path to the effects file of all lineages.')
 @click.option('--variants', '-v', type=click.Path(), help='Path to the variants file of all lineages.')
 @click.option('--presence', '-p', type=click.Path(), help='Path to the presence file of all lineages.')
@@ -21,13 +21,13 @@ import sqlite3
 @click.option('--sequences', '-s', type=click.Path(), help='Path to the sequences table.')
 @click.option('--output', '-o', type=click.Path(), help='Output database file.')
 
-def build_db(metadata, chrom_names, struc_vars, mapq_depth, gff, effects, variants, presence, lofs, nmds, sequences, output):
+def build_db(metadata, chrom_names, cnvs, mapq_depth, gff_tsv, effects, variants, presence, lofs, nmds, sequences, output):
     print("Using the following arguments:")
     print(f"1. metadata: {metadata}")
     print(f"2. chrom_names: {chrom_names}")
-    print(f"3. struc_vars: {struc_vars}")
+    print(f"3. cnvs: {cnvs}")
     print(f"4. mapq_depth: {mapq_depth}")
-    print(f"5. gff: {gff}")
+    print(f"5. gff: {gff_tsv}")
     print(f"6. effects: {effects}")
     print(f"7. variants: {variants}")
     print(f"8. presence: {presence}")
@@ -36,87 +36,47 @@ def build_db(metadata, chrom_names, struc_vars, mapq_depth, gff, effects, varian
     print(f"11. sequences: {sequences}")
     print(f"12. output: {output}")
     
-    print("Reading and adjusting dataset files")
-    df_samples = pd.read_csv(metadata)
-    df_samples.columns = df_samples.columns.str.lower()
-    df_samples.columns = df_samples.columns.str.replace(' ', '_')
+    print("Reading metadata table...")
+    df_metadata = pd.read_csv(metadata) 
     print("Metadata table done!")
 
-    df_sv = pd.read_csv(struc_vars, sep='\t')
-    df_sv.columns = df_sv.columns.str.lower()
-    print("Structural variants table done!")
+    print("Reading Copy-number variants table...")
+    df_cnv = pd.read_csv(cnvs, sep='\t')
+    print("Copy-number variants table done!")
 
+    print("Reading MAPQ-depth table...")
     df_mapq_depth = pd.read_csv(mapq_depth, sep='\t')
-    df_mapq_depth.rename(columns={'ID' : 'feature_id'}, inplace=True)
-    print("MapQ Depth table done!")
+    print("MAPQ Depth table done!")
 
-    df_chroms = pd.read_csv(chrom_names, names=["lineage", "accession", "chromosome"], dtype = str)
+    print("Reading chromosome names table...")
+    df_chroms = pd.read_csv(chrom_names, header = 0, dtype = str)
     print("Chromosome names table done!")
 
-    df_gff = pd.read_csv(gff, sep='\t', header = 0, low_memory=False)
-    df_gff['feature_id_lineage'] = df_gff['feature_id'] + '_' + df_gff['lineage']
-    df_gff.columns = df_gff.columns.str.lower()
+    print("Reading GFF table...")
+    df_gff = pd.read_csv(gff_tsv, sep='\t', header = 0, low_memory=False)
     print("GFF table done!")
-    print("Formatting effects table")
-    print("Getting gene IDs from GFF file")
-    gff_ids = df_gff[['gene_id', 'gene_name', 'feature_id']].copy()
-    gff_ids.drop_duplicates(inplace=True)
-    print("Defining function to replace gene names with gene IDs")
-    def replace_with_gene_id(part):
-        if part in gff_ids['gene_id'].values:
-            return part
-        elif part in gff_ids['gene_name'].values:
-            return gff_ids.loc[gff_ids['gene_name'] == part, 'gene_id'].values[0]
-        return part
-    print("Reading effects table")
-    effects_pre = pd.read_csv(effects, header = 0, sep='\t')
-    print("Subsetting effects table")
-    df_gene_transcript = effects_pre[(effects_pre['gene_name'].notnull()) & (effects_pre['transcript_id'].notnull())].copy()
-    df_gene_no_transcript = effects_pre[(effects_pre['gene_name'].notnull()) & (effects_pre['transcript_id'].isnull())].copy()
-    df_no_gene_no_transcript = effects_pre[(effects_pre['gene_name'].isnull()) & (effects_pre['transcript_id'].isnull())].copy()
 
-    if '+' in df_gene_no_transcript['gene_name'].values:
-        print("Fused gene names found")
-        df_fused_genes = df_gene_no_transcript[df_gene_no_transcript['gene_name'].str.contains('+')]
-        print("Separating fused gene names")
-        df_fused_genes[['part1', 'part2']] = df_fused_genes['gene_name'].str.split('+', expand=True)
-        print("Replacing gene names with gene IDs in part1")
-        df_fused_genes['gene_tag_id1'] = df_fused_genes['part1'].apply(replace_with_gene_id)
-        print("Replacing gene names with gene IDs in part2")
-        df_fused_genes.loc[df_fused_genes['part2'].notnull(), 'gene_tag_id2'] = df_fused_genes.loc[df_fused_genes['part2'].notnull(), 'part2'].apply(replace_with_gene_id)
-        print("Joining part1 with part2")
-        df_fused_genes['gene_id'] = df_fused_genes.apply(lambda row: row['gene_tag_id1'] + '+' + row['gene_tag_id2'] if pd.notnull(row['part2']) else row['gene_tag_id1'], axis=1)
-        print("Removing unnecessary columns")
-        df_fused_genes.drop(['part1', 'part2', 'gene_tag_id1', 'gene_tag_id2'], axis=1, inplace=True)
-        df_gene_no_transcript_fixed = df_fused_genes.copy()
-    else:
-        print("No fused gene names found")
-        df_gene_no_transcript_fixed = df_gene_no_transcript.copy()
-        df_gene_no_transcript_fixed['gene_id'] = df_gene_no_transcript_fixed['gene_name'].apply(replace_with_gene_id)
-
-
-    print("Getting unique gene IDs from GFF")
-    gff_ids_unique = gff_ids.drop_duplicates(subset='feature_id', keep='first')
-    print("Creating dictionary to map feature IDs to gene IDs")
-    feature_to_gene = gff_ids_unique.set_index('feature_id')['gene_id']
-    print("Mapping transcript IDs to gene IDs")
-    df_gene_transcript['gene_id'] = df_gene_transcript['transcript_id'].map(feature_to_gene)
-    print("Concatenating dataframes")
-    df_effects = pd.concat([df_gene_transcript, df_gene_no_transcript_fixed, df_no_gene_no_transcript])
+    print("Reading effects table...")
+    df_effects = pd.read_csv(effects, header = 0, sep='\t')
     print("Effects table done!")
 
+    print("Reading variants table...")
     df_variants = pd.read_csv(variants, header = 0, sep='\t')
     print("Variants table done!")
 
+    print("Reading presence table...")
     df_presence = pd.read_csv(presence, header = 0, sep='\t')
     print("Presence table done!")
 
+    print("Reading lofs table...")
     df_lofs = pd.read_csv(lofs, header = 0, sep='\t')
     print("Loss of function table done!")
 
+    print("Reading nonsense-mediated decay table...")
     df_nmds = pd.read_csv(nmds, header = 0, sep='\t')
     print("Nonsense-mediated decay table done!")
 
+    print("Reading sequences table...")
     df_sequences = pd.read_csv(sequences, header = 0, sep=',')
     print("Sequences table done!")
 
@@ -126,8 +86,8 @@ def build_db(metadata, chrom_names, struc_vars, mapq_depth, gff, effects, varian
     con = duckdb.connect(database=output)
 
     print("Registering dataframes")
-    con.register('df_samples', df_samples)
-    con.register('df_sv', df_sv)
+    con.register('df_metadata', df_metadata)
+    con.register('df_cnv', df_cnv)
     con.register('df_mapq_depth', df_mapq_depth)
     con.register('df_chroms', df_chroms)
     con.register('df_gff', df_gff)
@@ -138,10 +98,10 @@ def build_db(metadata, chrom_names, struc_vars, mapq_depth, gff, effects, varian
     con.register('df_sequences', df_sequences)
     
     print("Adding dataframes to database")
-    con.execute("CREATE TABLE IF NOT EXISTS samples AS SELECT * FROM df_samples")   
-    con.execute("CREATE TABLE IF NOT EXISTS structural_variants AS SELECT * FROM df_sv")
+    con.execute("CREATE TABLE IF NOT EXISTS metadata AS SELECT * FROM df_metadata")   
+    con.execute("CREATE TABLE IF NOT EXISTS cnvs AS SELECT * FROM df_cnv")
     con.execute("CREATE TABLE IF NOT EXISTS mapq_depth AS SELECT * FROM df_mapq_depth")
-    con.execute("CREATE TABLE IF NOT EXISTS chromosome_names AS SELECT * FROM df_chroms")
+    con.execute("CREATE TABLE IF NOT EXISTS chromosomes AS SELECT * FROM df_chroms")
     con.execute("CREATE TABLE IF NOT EXISTS gff AS SELECT * FROM df_gff")
     con.execute("CREATE TABLE IF NOT EXISTS presence AS SELECT * FROM df_presence")
     con.execute("CREATE TABLE IF NOT EXISTS variants AS SELECT * FROM df_variants")

@@ -1,33 +1,62 @@
 # =================================================================================================
+#   Setup rules
+# =================================================================================================
+
+
+rule ref_fasta_symlinks:
+    input:
+        REF_DATA / "{lineage}.fasta",
+    output:
+        INT_REFS_DIR / "{lineage}" / "{lineage}.fasta",
+    log:
+        "logs/references/ref_fasta_symlinks_{lineage}.log",
+    resources:
+        tmpdir=TEMPDIR,
+    conda:
+        "../envs/shell.yaml"
+    shell:
+        "ln -s -r {input} {output} 2> {log}"
+        
+
+# Edit the agat config file to avoid creating log files
+rule agat_config:
+    output:
+        INT_REFS_DIR / "agat_config.yaml",
+    log:
+        "logs/references/agat_config.log",
+    resources:
+        tmpdir=TEMPDIR,
+    conda:
+        "../envs/agat.yaml"
+    shell:
+        "agat config --expose &> {log} && "
+        "mv agat_config.yaml {output} &> {log} && "
+        "sed -i 's/log: true/log: false/g' {output} &>> {log} "
+
+
+# =================================================================================================
 # Per sample | Run Snippy to map reads to reference genome, get assembly and call SNPs
 # =================================================================================================
 
-def snippy_input(wildcards):
-    s = SAMPLE_REFERENCE.loc[wildcards.unf_sample,]
-    return {
-        "fq1": FQ_DATA / (s["sample"] + FQ1),
-        "fq2": FQ_DATA / (s["sample"] + FQ2),
-        "refgenome": s["refgenome"],
-    }
 
 rule snippy:
     input:
-        unpack(snippy_input)
+        unpack(snippy_input),
     output:
-        fa = OUTDIR / "snippy" / "{unf_sample}" / "snps.consensus.fa",
-        bam = OUTDIR / "snippy" / "{unf_sample}" / "snps.bam",
-        ref = OUTDIR / "snippy" / "{unf_sample}" / "ref.fa",
-        bai = OUTDIR / "snippy" / "{unf_sample}" / "snps.bam.bai",
-        vcf = OUTDIR / "snippy" / "{unf_sample}" / "snps.vcf.gz"
-    threads: 
-        config["snippy"]["threads"]
+        fa=SAMPLES_DIR / "snippy" / "{unf_sample}" / "snps.consensus.fa",
+        bam=SAMPLES_DIR / "snippy" / "{unf_sample}" / "snps.bam",
+        ref=SAMPLES_DIR / "snippy" / "{unf_sample}" / "ref.fa",
+        bai=SAMPLES_DIR / "snippy" / "{unf_sample}" / "snps.bam.bai",
+        vcf=SAMPLES_DIR / "snippy" / "{unf_sample}" / "snps.vcf.gz",
     params:
-        outpath = OUTDIR / "snippy",
-        extra = config["snippy"]["extra"]
+        outpath=SAMPLES_DIR / "snippy",
+        tmpdir=TEMPDIR,
+        extra=config["snippy"]["extra"],
+    log:
+        "logs/samples/snippy/snippy_{unf_sample}.log",
+    threads: config["snippy"]["threads"]
     conda:
         "../envs/snippy.yaml"
-    log:
-        "logs/samples/snippy/snippy_{unf_sample}.log"
     shell:
         "snippy --outdir {params.outpath}/{wildcards.unf_sample} "
         "--cpus {threads} "
@@ -35,4 +64,5 @@ rule snippy:
         "--R1 {input.fq1} "
         "--R2 {input.fq2} "
         "--force "
+        "--tmpdir {params.tmpdir} "
         "{params.extra} &> {log}"

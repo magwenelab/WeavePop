@@ -3,107 +3,232 @@
 # =================================================================================================
 
 from snakemake.utils import min_version
+
 min_version("8.2.1")
 
 # =================================================================================================
 #   Setup config file
 # =================================================================================================
 
+
 configfile: "config/config.yaml"
+
+
+# =================================================================================================
+#   Define names of directories
+# =================================================================================================
+
+SAMPLES_DIR_NAME = "01.Samples"
+DATASET_DIR_NAME = "02.Dataset"
+REFS_DIR_NAME = "03.References"
+INTDIR_NAME = "04.Intermediate_files"
+TEMPDIR_NAME = "04.Temporary_files"
 
 # =================================================================================================
 #   Load rules
 # =================================================================================================
 
-if config["sample_workflow"]:
+# ------------------Analysis workflow--------------------------------------------------------------
+if config["workflow"] == "analysis":
+
     include: "rules/common.smk"
     include: "rules/snippy.smk"
     include: "rules/quality_filter.smk"
     include: "rules/annotation.smk"
     include: "rules/database.smk"
 
-    # ------------------Reference annotation rules-----------------------------------------------------
+    # ------------------Reference annotation rules-------------------------------------------------
     if config["annotate_references"]["activate"]:
-        include: "rules/references.smk"
-        if config["plotting"]["activate"]:
-            include: "rules/unmapped_main_ref.smk"
+
+        include: "rules/references_annotate.smk"
 
     if not config["annotate_references"]["activate"]:
-        include: "rules/lineage_gffs.smk"
-        # if config["plotting"]["activate"]:
-        #     include: "rules/unmapped_per_lineage.smk"
 
-    # ------------------Module rules-------------------------------------------------------------------
-    if config["plotting"]["activate"]:
-        include: "rules/plots.smk"
-        include: "rules/dataset_plots.smk"
+        include: "rules/references_no_annotate.smk"
 
-    if config["cnv"]["activate"]:
-        include: "rules/cnv.smk"
 
-    if config["genes_mapq_depth"]["activate"]:
-        include: "rules/genes_mapq_depth.smk"
-
-    if config["snpeff"]["activate"]:
-        include: "rules/snps.smk"     
-
+    # ------------------Module rules---------------------------------------------------------------
     if config["database"]["activate"]:
+
         include: "rules/cnv.smk"
-        include: "rules/snps.smk"
-        include: "rules/genes_mapq_depth.smk"
-elif config["join_datasets_workflow"]:
-    include: "rules/join_results.smk"
+        include: "rules/repeatmasker.smk"
+        include: "rules/snpeff.smk"
+        include: "rules/depth_quality_features.smk"
+
+    else:
+
+        if config["cnv"]["activate"] or config["plotting"]["activate"]:
+
+            include: "rules/cnv.smk"
+            include: "rules/repeatmasker.smk"
+
+        if config["depth_quality_features"]["activate"] or config["plotting"]["activate"]:
+
+            include: "rules/depth_quality_features.smk"
+
+        if config["snpeff"]["activate"]:
+
+            include: "rules/snpeff.smk"
+    
+    if config["plotting"]["activate"]:
+
+        include: "rules/plots.smk"
+        include: "rules/plots_dataset.smk"
+
+
+# ------------------Join datasets workflow---------------------------------------------------------
+elif config["workflow"] == "join_datasets":
+
+    include: "rules/common_join_datasets.smk"
+    include: "rules/join_datasets.smk"
+
+else:
+    print(f"Workflow must be one of 'analysis' or 'join_datasets'.", flush=True)
+    print("Check the spelling in the config/config.yaml file.", flush=True)
+    print("Exiting...", flush=True)
+    exit(1)
+
 
 # =================================================================================================
-#   Onstart checks
+#   On start checks
 # =================================================================================================
+
 
 onstart:
-    print("Checking input files...", flush=True)
-    try:       
-        sample_table = pd.read_csv(config["samples"], header=0)
-        chrom_names = pd.read_csv(config["chromosomes"], header = 0,
-                                    names=["lineage","accession","chromosome"])
-        if chrom_names.isnull().values.any():
-            raise ValueError("Bad: Chromosome names file has missing values.")
-        if set(sample_table['lineage'].unique()) == set(chrom_names['lineage'].unique()):
-            print("Good: All lineages are in the chromosome names file.", flush=True)
-        else:
-            raise ValueError("Bad: Lineages in metadata and chromosome names file do not match.")
-        
-        chromosome_ids = []
-        reference_dir = config["references"]["directory"]
+    print("                                   ", flush=True)
+    print(" _           _   _      _   _   _  ", flush=True)
+    print("|_ | | |\\ | |_  |_| |  |_| | | |_|", flush=True)
+    print("|  |_| | \\| |_| | | |_ |   |_| |  ", flush=True)
+    print("                                   ", flush=True)
+    print("                                   ", flush=True)
+    print("Selected workflow: ", config["workflow"], flush=True)
+    print("                                   ", flush=True)
+    if config["workflow"] == "join_datasets":
+        print("                                  ", flush=True)
+        print("Working directory:", os.getcwd(), flush=True)
+        print("Output directory:", os.path.join(os.getcwd(),config["joint_output_directory"]), flush=True)
+    elif config["workflow"] == "analysis":
+        print("Activated modules:", flush=True)
+        if config["annotate_references"]["activate"]:
+            print("+ Reference annotation", flush=True)
+        if config["database"]["activate"]:
+            print("+ Database", flush=True)
+        if config["cnv"]["activate"]:
+            print("+ CNV", flush=True)
+        if config["depth_quality_features"]["activate"]:
+            print("+ MAPQ and depth of genetic features", flush=True)
+        if config["snpeff"]["activate"]:
+            print("+ SnpEff", flush=True)
+        if config["plotting"]["activate"]:
+            print("+ Plotting", flush=True)
+        print("                                  ", flush=True)
+        print("Working directory:", os.getcwd(), flush=True)
+        print("Output directory:", os.path.join(os.getcwd(),config["output_directory"]), flush=True)
 
-        for lineage in chrom_names['lineage'].unique():
-            ref_file = Path(reference_dir) / f"{lineage}.fasta"
-            if ref_file.exists():
-                for chrom in chrom_names[chrom_names['lineage'] == lineage]['accession']:
-                    with open(ref_file) as f:
-                        seq_ids = [line.strip().split()[0][1:] for line in f if line.startswith(">")]
-                        if chrom not in seq_ids:
-                            raise ValueError(f"Bad: Chromosome {chrom} not found in reference {ref_file}")
+        print("                                  ", flush=True)
+        print("Checking provided file of chromosome names...", flush=True)
+        print("                                  ", flush=True)
+
+        try:
+            sample_table = pd.read_csv(config["metadata"], header=0)
+            chrom_names = pd.read_csv(
+                config["chromosomes"], header=0, names=["lineage", "accession", "chromosome"]
+            )
+            if chrom_names.isnull().values.any():
+                raise ValueError("Chromosome names file has missing values")
+            if set(sample_table["lineage"].unique()) == set(chrom_names["lineage"].unique()):
+                print("All lineages are in the chromosome names file.", flush=True)
+                print("                                  ", flush=True)
             else:
-                raise ValueError(f"Bad: Reference {ref_file} not found")
+                raise ValueError("Lineages in metadata and chromosome names file do not match")
 
-    except Exception as e:
-        print("Error in input files:", flush=True)
-        print(e)
-        print("Exiting...", flush=True)
-        exit(1)
-    else:
-        print("Input files are good! Starting workflow...", flush=True)
+            reference_dir = config["references"]["directory"]
+
+            for lineage in chrom_names["lineage"].unique():
+                print(f"Checking the chromosome names of lineage {lineage}...", flush=True)
+                accessions = chrom_names[chrom_names["lineage"] == lineage]["accession"].tolist()
+                ref_file = Path(reference_dir) / f"{lineage}.fasta"
+                if ref_file.exists():
+                    with open(ref_file) as f:
+                        seq_ids = [
+                            line.strip().split()[0][1:] for line in f if line.startswith(">")
+                        ]
+
+                        if not all([acc in seq_ids for acc in accessions]):
+                            raise ValueError(
+                                f"Not all chromosomes in provided file are present in {ref_file}"
+                            )
+                        else:
+                            print(f"All chromosomes in provided file are present in {ref_file}", flush=True)
+                                            
+                        if not all([seq_id in accessions for seq_id in seq_ids]):
+                            raise ValueError(
+                                f"Not all chromosomes in {ref_file} are present in the provided file"
+                            )
+                        else:
+                            print(f"All chromosomes in {ref_file} are present in the provided file", flush=True)
+
+                else:
+                    raise ValueError(f"Reference {ref_file} not found")
+
+        except Exception as e:
+            print("Error in input files:", flush=True)
+            print(e)
+            print("Exiting...", flush=True)
+            exit(1)
+        else:
+            print("                                  ", flush=True)
+            print("Input files are good!", flush=True)
+            print("Starting workflow...", flush=True)
+            print("                                  ", flush=True)
+
+
+# =================================================================================================
+#   On success messages
+# =================================================================================================
+
+
+onsuccess:
+    print("                                   ", flush=True)
+    print(" _           _   _      _   _   _  ", flush=True)
+    print("|_ | | |\\ | |_  |_| |  |_| | | |_|", flush=True)
+    print("|  |_| | \\| |_| | | |_ |   |_| |  ", flush=True)
+    print("                                   ", flush=True)
+    print("                                   ", flush=True)
+    if config["workflow"] == "analysis":
+        print("The analysis workflow finished successfully!", flush=True)
+        original_metadata = pd.read_csv(UNFILT_SAMPLE_FILE, header=0)
+        filtered_metadata = pd.read_csv(rules.quality_filter.output.metadata, header=0)
+        if original_metadata["sample"].nunique() == filtered_metadata["sample"].nunique():
+            print("All samples passed the quality filter.", flush=True)
+        else:
+            print(
+                f"The quality filter removed "
+                f"{original_metadata['sample'].nunique()- filtered_metadata['sample'].nunique()} "
+                f"samples. See 04.Intermediate_files/02.Dataset/depth_quality/"
+                f"unfiltered_mapping_stats.tsv to check the quality warning of the removed samples.",
+                flush=True,
+            )
+    elif config["workflow"] == "join_datasets":
+        print("The join datasets workflow finished successfully!", flush=True)
+    print("                                   ", flush=True)
+    print("Enjoy science!", flush=True)
+
 
 # =================================================================================================
 #   Define final output
 # =================================================================================================
 
-if config["sample_workflow"]:
+if config["workflow"] == "analysis":
+
     rule all:
         input:
             get_unfiltered_output(),
             get_filtered_output(),
-            get_dataset_output()
-elif config["join_datasets_workflow"]:
+            get_dataset_output(),
+
+elif config["workflow"] == "join_datasets":
+
     rule all:
         input:
-            get_final_output()
+            get_final_output(),
