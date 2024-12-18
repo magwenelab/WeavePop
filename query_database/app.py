@@ -6,7 +6,7 @@ import datetime
 from Bio import SeqIO
 import pandas as pd
 
-mydb='/FastData/czirion/DiversityPipeline/results_joined/02.Dataset/database.db'
+mydb='database.db'
 
 with ui.navset_pill(id="Database"):
     with ui.nav_panel("Home"):
