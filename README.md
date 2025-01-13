@@ -73,8 +73,8 @@ The environments for particular software used by the pipeline will be installed 
 
 To execute the workflow you need to provide input files (tables and data files) and edit the configuration file located in `config/config.yaml` to:   
 
-* Select the workflow to run: The `analysis` workflow will run the analysis for one dataset. If you have the complete results (database module activated) of the `analysis` workflow for two datasets you can join them to create a database with both of them using the `join_datasets` workflow.  
-* Provide the paths to the input files and output directory. The config file has default paths to the input files or directories, which are relative to the working directory. The working directory should be the directory you downloaded, that contains `config/` and `workflow/`.
+* Select the workflow to run: The `analysis` workflow will run the analysis for one dataset. If you have the complete results (database module activated) of the `analysis` workflow for multiple datasets you can join them to create a database with all of them using the `join_datasets` workflow.  
+* Provide the paths to the input files and output directory: The config file has default paths to the input files or directories, which are relative to the working directory. The working directory should be the directory you downloaded, that contains `config/` and `workflow/`.
 * Activate modules: For the `analysis` workflow, activate each module. See the description of the output below to know which files are created by each module. Activating the `database` module automatically activates the modules `cnv`, `genes_mapq_depth` , and `snpeff`.  
 * Specify execution parameters.  
 
@@ -406,9 +406,56 @@ Use the app in a browser: Copy the link that appears in the output (e.g. http://
 This steps assume that you are using a local machine. If you have FungalPop and your results in a remote machine you can either download `query_database/` and the `results/02.Datasets/database.db` file and do the installation and use the FungalPop-Shiny locally, or use VSCode with the Remote extension and Shiny extension to use the FungalPop-Shiny remotely.
 
 
-### FungalPop-CLI (PENDING)
+### FungalPop-CLI 
 
 
+FungalPop-CLI has the following commands:  
+* annotation : Provides the functional annotation of all reference genomes.
+* cnv : Provides the copy-number variants.
+* metadata : Provides the metadata table.
+* query : Query the database with a customized SQL query.
+* sequences : Provides FASTA files of the sequences.
+* variants : Provides the details and effects of the variants.
+
+Activate the environment  
+```
+conda activate shiny
+```
+To know the options and available filters of each command run:  
+```
+python fungalpop_cli.py <command> --help
+```
+
+Examples:  
+1) Get the DNA sequence of one gene of one strain:
+```
+python fungalpop_cli.py sequences --db ../database.db --gene_id CNAG_00001 --strain NRH5076
+```
+```
+>NRH5076|CNAG_00001-mR1 sample=SRS8318901 gene_id=CNAG_00001 gene_name=None chromosome=13 accession=chr13_Ftc555-1
+ATGGTGAGAGGGGTGGGCAAGATGGAAAGGAAAGGCTGGCGATGGAGAATATAGGGTGTG
+GATGGAGAGGAGTTTGCGGATGGCTCATTTTCAATGTTCACCCTCGACTGCATCCGACTC
+GACTGCATCCCACGCCGCATGCCCCATTCGAATTCGCTTTCCTCACTAGCGACTCTACAC
+TCGACACTCGGCTATCCCTCAACGCCCGACGCATTTGCTCGGTTACTCCTCAACATCGCT
+ACTCCTCAACATCCGACCCATCACACCCAACTCGTTCACTCTCACTCGGCTACCCCTCCA
+CGCTGGCTCAACTACGCGACAGATGA
+```
+
+2) Get the CNVs of in a chromosome of a strain:
+```
+python fungalpop_cli.py cnv --db ../database.db  --strain NRH5084 --chromosome 1
+```
+```
+strain  sample  lineage chromosome      start   end     cnv     region_size     repeat_fraction
+NRH5084 SRS8318900      VNBI    1       1       8000    deletion        8000    0.66
+NRH5084 SRS8318900      VNBI    1       2240501 2242557 deletion        2057    0.96
+```
+
+3) Make a customized query to get a table with genes with high normalized depth and save it in a file.
+
+```
+python fungalpop_cli.py query --db ../database.db --query "SELECT sample,gene_id,gene_name,mean_depth_normalized FROM mapq_depth JOIN gff ON gff.feature_id = mapq_depth.feature_id WHERE mapq_depth.primary_tag = 'gene' AND mean_depth_normalized > 5" --output high_depth_genes.tsv
+```
 
 ## Graph of rules in the workflow
 The activated modules in the graph are:  
