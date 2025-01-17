@@ -381,7 +381,7 @@ Activating this module will automatically activate the CNV calling, depth and qu
 This is an SQL Database created with DuckDB. It contains the tables marked in bold in the description of the output above.  
 DuckDB does not require primary keys to be declared. In the schema below, when there is one variable in bold it is a unique variable, and when there are more, their combination is unique.
 
-![Database schema](db_schema.png)
+![Database schema](.figs/db_schema.png)
 
 <details>
 <summary> Intermediate files </summary>
@@ -475,4 +475,4 @@ The activated modules in the graph are:
 Annotate references and Database.  
 
 
-![Rulegraph](all.svg)
+![Rulegraph](.figs/all.svg)
