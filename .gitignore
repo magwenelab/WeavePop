@@ -3,7 +3,6 @@
 logs/
 fastqs/
 fastq_combined/
-references/
 srafiles/
 analysis*
 results*
@@ -16,9 +15,11 @@ files/read_pair_table.csv
 files/sample_reference.csv
 files/samples.txt
 files/unpaired_fastqs.csv
-data
 *log
-*test*
+test_liftoff
+test_orthofinder
+test_repeatmodeler
+data_small/
 *temp*
 config/RepBase.fasta
 *pycache*

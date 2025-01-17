@@ -1,0 +1,118 @@
+# =================================================================================================
+#   Choose which workflow to run
+# =================================================================================================
+
+workflow: "analysis" # Options: "analysis", "join_datasets"
+
+# =================================================================================================
+# Analysis workflow parameters
+# =================================================================================================
+
+# ------------------Input--------------------------------------------------------------------------
+
+fastqs:
+  directory: "test/data/samples" # Relative path to directory with all FASTQ files.
+  fastq_suffix1: "_R1.fastq.gz" # Suffix after the sample name of the forward reads file.
+  fastq_suffix2: "_R2.fastq.gz" # Suffix after the sample name of the reverse reads file.
+
+references: 
+  directory: "test/data/references" # Path to directory with reference genomes.
+
+metadata: "test/config/metadata.csv" # Relative path to metadata CSV table.
+chromosomes: "test/config/chromosomes.csv" # Relative path to chromosomes CSV table.
+species_name: "Species_name" # One string with the name of the species/genus/group to analyze.
+samples_to_exclude: # Optional: Relative path to list of samples to exclude from analyses.
+
+# ------------------Output-------------------------------------------------------------------------
+
+output_directory: "results_test" # Name for the output directory.
+
+# ------------------Annotation of reference genomes------------------------------------------------
+
+annotate_references:
+  activate: True # True to run the annotation of the reference genomes. Empty or False to skip.
+  directory: "test/data/references" # Relative path to directory with main reference files.
+  fasta: "main_reference.fasta" # Filename of the main reference genome FASTA file.
+  gff: "main_reference.gff" # Filename of the main reference genome GFF file.
+  liftoff:
+    threads: 12 # Number of threads for Liftoff.
+    extra: "" # Extra parameters for Liftoff.
+
+# ------------------Depth and quality analyses and filter-----------------------------------------------------
+
+depth_quality: 
+  mosdepth: 
+    threads: 12  # Number of threads for mosdepth.
+    window: 500 # Window size for mosdepth.
+    min_mapq: 20 # Minimum mapping quality for mosdepth.
+    extra: "" # Extra parameters for mosdepth.
+  flag_quality: 
+    low_MAPQ_limit: 20 # Max MAPQ to be considered low quality.
+    high_MAPQ_limit: 60 # Min MAPQ to be considered high quality.
+    exclude_samples: False # True to exclude samples that do not meet the quality thresholds.
+    min_position_depth: 5 # Minimum depth for a position to be considered covered.
+    min_percent_coverage: 50 # If percent of genome covered is below this value, the sample is excluded.
+    min_percent_MAPQ: 75 # If percent of high quality reads is below this value, the sample is excluded.
+    min_percent_genome-wide_depth: 2 # If genome-wide depth (Global mode) is below this value, the sample is excluded.
+    min_percent_properly_paired_reads: 25 # If percent of properly paired reads is below this value, the sample is excluded.
+
+# ------------------Depth and quality of genetic features---------------------------------------------
+
+depth_quality_features:
+  activate: # True to activate the module. Empty or False to skip.
+
+# ------------------Copy-number variant calling----------------------------------------------------
+
+cnv:
+  activate: # True to activate the module. Empty or False to skip.
+  smoothing_size: 15 # Parameter for median filtering smoothing of the read depth.
+  depth_threshold: 0.6 # Min deviation from the global depth to be considered a CNV.
+  repeats:
+    repeats_database: "config/RepBase.fasta" # Relative path to the RepBase FASTA file.
+    repeats_threads: 20 # Number of threads for RepeatModeler and RepeatMasker.
+
+# ------------------Annotation of SNP effects------------------------------------------------------
+
+snpeff:
+  activate: # True to activate the module. Empty or False to skip.
+  extra: "" # Extra parameters for SnpEff.
+
+# ------------------Plotting-----------------------------------------------------------------------
+
+plotting: 
+  activate: True # True to activate the module. Empty or False to skip.
+  loci: "test/config/loci.csv" # Relative path to table with loci to add to plots.
+  metadata2color : "source" # Column name in the samples table to color the samples in the plots.
+  scale : 0.7 # Ggsave scale parameter to adjust the size of the dataset plots. Use lower values for fewer samples and bigger values for more samples.
+
+# ------------------Database-----------------------------------------------------------------------
+
+database:
+  activate: True # True to activate the module. Empty or False to skip.
+
+# =================================================================================================
+# Join datasets workflow parameters
+# =================================================================================================
+# This workflow joins the results of running the sample_workflow in different datasets. 
+# It assumes that if the same lineage is present in the different datasets, 
+# the same reference genome was used.
+
+datasets_paths: "" # Commas separated list of paths to the directories with the results of the analysis workflow.
+datasets_names: "" # Commas separated list of names for the datasets, in the same order as the paths.
+joint_output_directory: "results_joined" # Relative path to the directory where the joined results will be saved.
+
+# =================================================================================================
+#   Parameters for individual tools
+# =================================================================================================
+
+snippy:
+  threads: 12
+  extra: ""
+
+liftoff:
+  threads: 12
+  extra: ""
+
+agat:
+  extra: ""
+

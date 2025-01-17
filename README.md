@@ -69,6 +69,17 @@ The environments for particular software used by the pipeline will be installed 
 |`workflow/envs/variants.yaml`| [SnpEff](https://pcingola.github.io/SnpEff/),[DuckDB](https://duckdb.org/), [PyVCF](https://pyvcf.readthedocs.io/en/latest/), [Xonsh](https://xon.sh/),[Pandas](https://pandas.pydata.org/), [Click](https://click.palletsprojects.com/en/8.1.x/), [Biopython](https://biopython.org/), [Bedtools](https://bedtools.readthedocs.io/en/latest/index.html), [Bcftools](https://samtools.github.io/bcftools/bcftools.html)|
 </details>
 
+## Testing
+
+To test the installation of FungalPop, run it with the included test dataset.  
+The only file needed that we didn't provide is the RepBase database 
+See the Configuration and Input sections bellow and **run the testing when you have the RepBase database in the file `config/RepBase.fasta`**.
+
+```
+snakemake --cores 8 --sdm conda -p --configfile test/config/config.yaml &> test.log
+```
+
+
 ## Configuration
 
 To execute the workflow you need to provide input files (tables and data files) and edit the configuration file located in `config/config.yaml` to:   
@@ -136,6 +147,8 @@ Run the pipeline: `snakemake --cores <n> --sdm conda -p`
     * `-n`: Dry run.  
   
 To learn more about how Snakemake works and how to take advantage of its features, see the Wiki (PENDING).
+
+If you see an error message, identify which rule failed and check the log file for that rule. The log files are in the `logs/` directory.
 
 ## Output
 
