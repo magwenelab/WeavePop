@@ -73,11 +73,7 @@ plot_global <- ggplot()+
   labs(title = paste("Lineage:",lineage, " Sample:", sample,  sep = " "))+
   theme_bw()
 
-print("Calculating plot dimensions...")
-pheight <- 0.5 + length(unique((depth$chromosome)))/2
-pwidth <- pheight * 1.78
-
 print("Saving plots...")
-ggsave(snakemake@output[[1]], plot = plot_chrom, units = "in", height = pheight, width = pwidth, dpi = 600)
+ggsave(snakemake@output[[1]], plot = plot_chrom, units = "in", height = 4.5, width = 8, dpi = 600)
 ggsave(snakemake@output[[2]], plot = plot_global,  units = "in", height = 4.5, width = 8, dpi = 600)
 print("Done!")
