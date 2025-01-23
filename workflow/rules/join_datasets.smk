@@ -195,7 +195,7 @@ rule snpeff:
         html=INT_DATASET_DIR / "snpeff" / "{lineage}_snpeff.html",
     params:
         dir=os.getcwd() / INT_REFS_DIR / "snpeff_data",
-        name=config["species_name"] + "_{lineage}",
+        name="Species_name_{lineage}",
     log:
         "logs/join_datasets/snpeff_{lineage}.log",
     resources:

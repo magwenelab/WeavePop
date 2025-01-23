@@ -57,20 +57,20 @@ rule prepare_refs_db:
         cds=rules.extract_cds_seqs.output.cds,
         prots=rules.extract_protein_seqs.output.prots,
     output:
-        gff=INT_REFS_DIR / "snpeff_data" / str(config["species_name"] + "_{lineage}") / "genes.gff",
+        gff=INT_REFS_DIR / "snpeff_data" / "Species_name_{lineage}" / "genes.gff",
         fasta=INT_REFS_DIR
         / "snpeff_data"
-        / str(config["species_name"] + "_{lineage}")
+        / "Species_name_{lineage}"
         / "sequences.fa",
-        cds=INT_REFS_DIR / "snpeff_data" / str(config["species_name"] + "_{lineage}") / "cds.fa",
+        cds=INT_REFS_DIR / "snpeff_data" / "Species_name_{lineage}" / "cds.fa",
         prots=INT_REFS_DIR
         / "snpeff_data"
-        / str(config["species_name"] + "_{lineage}")
+        / "Species_name_{lineage}"
         / "protein.fa",
     conda:
         "../envs/variants.yaml"
     params:
-        name=config["species_name"] + "_{lineage}",
+        name="Species_name_{lineage}",
         config=INT_REFS_DIR / "snpeff_data" / "snpEff.config",
     log:
         "logs/references/prepare_dbs_{lineage}.log",
@@ -96,7 +96,7 @@ rule build_refs_db:
     params:
         config=INT_REFS_DIR / "snpeff_data" / "snpEff.config",
         dir=os.getcwd() / INT_REFS_DIR / "snpeff_data",
-        name=config["species_name"] + "_{lineage}",
+        name="Species_name_{lineage}",
     log:
         "logs/references/build_dbs_{lineage}.log",
     resources:
@@ -152,7 +152,7 @@ rule snpeff:
     params:
         dir=os.getcwd() / INT_REFS_DIR / "snpeff_data",
         config=INT_REFS_DIR / "snpeff_data" / "snpEff.config",
-        name=config["species_name"] + "_{lineage}",
+        name="Species_name_{lineage}",
     log:
         "logs/dataset/snpeff/snpeff_{lineage}.log",
     resources:

@@ -1,3 +1,0 @@
-strain,sample,name,lineage,VNI_subdivision,Mating_type,Country_of_origin,Isolation_source,Broad_Project,SRA_Accession,Strain_description,In_GWAS,Phenotyped,source
-NRHc5005.ENR,SRS881178,NRHc5005.ENR,VNBI,,α,Botswana,Clinical,G84316,"SRR1925990, SRR1926071, SRR1944719",Chen et. al 2015 Mol. Ecol.,Yes,Yes,Clinical
-Gbc39-1,SRS881202,Gbc39-1,VNI,VNIc,α,Botswana,Acacia tree,G84360,"SRR1926079, SRR1942964, SRR1943070",Chen et. al 2015 Mol. Ecol.,No,No,Environment

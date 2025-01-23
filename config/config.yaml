@@ -11,27 +11,26 @@ workflow: "analysis" # Options: "analysis", "join_datasets"
 # ------------------Input--------------------------------------------------------------------------
 
 fastqs:
-  directory: "data/samples" # Relative path to directory with all FASTQ files.
-  fastq_suffix1: "_1.fq.gz" # Suffix after the sample name of the forward reads file.
-  fastq_suffix2: "_2.fq.gz" # Suffix after the sample name of the reverse reads file.
+  directory: "" # Relative path to directory with all FASTQ files.
+  fastq_suffix1: "" # Suffix after the sample name of the forward reads file.
+  fastq_suffix2: "" # Suffix after the sample name of the reverse reads file.
 
 references: 
-  directory: "data/references" # Path to directory with reference genomes.
+  directory: "" # Path to directory with reference genomes.
 
-metadata: "config/metadata2.csv" # Relative path to metadata CSV table.
+metadata: "config/metadata.csv" # Relative path to metadata CSV table.
 chromosomes: "config/chromosomes.csv" # Relative path to chromosomes CSV table.
-species_name: "Species_name" # One string with the name of the species/genus/group to analyze.
 samples_to_exclude: # Optional: Relative path to list of samples to exclude from analyses.
 
 # ------------------Output-------------------------------------------------------------------------
 
-output_directory: "results_2" # Name for the output directory.
+output_directory: "" # Name for the output directory.
 
 # ------------------Annotation of reference genomes------------------------------------------------
 
 annotate_references:
   activate: # True to run the annotation of the reference genomes. Empty or False to skip.
-  directory: "data/main_reference" # Relative path to directory with main reference files.
+  directory: "" # Relative path to directory with main reference files.
   fasta: "" # Filename of the main reference genome FASTA file.
   gff: "" # Filename of the main reference genome GFF file.
   liftoff:
@@ -82,7 +81,7 @@ snpeff:
 plotting: 
   activate: # True to activate the module. Empty or False to skip.
   loci: "config/loci.csv" # Relative path to table with loci to add to plots.
-  metadata2color : "source" # Column name in the samples table to color the samples in the plots.
+  metadata2color : "" # Column name in the samples table to color the samples in the plots.
   scale : 0.7 # Ggsave scale parameter to adjust the size of the dataset plots. Use lower values for fewer samples and bigger values for more samples.
 
 # ------------------Database-----------------------------------------------------------------------
@@ -99,7 +98,7 @@ database:
 
 datasets_paths: "" # Commas separated list of paths to the directories with the results of the analysis workflow.
 datasets_names: "" # Commas separated list of names for the datasets, in the same order as the paths.
-joint_output_directory: "results_joined" # Relative path to the directory where the joined results will be saved.
+joint_output_directory: "" # Relative path to the directory where the joined results will be saved.
 
 # =================================================================================================
 #   Parameters for individual tools

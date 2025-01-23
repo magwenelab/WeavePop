@@ -101,7 +101,7 @@ def input_copy_speff_data(wildcards):
                     INTDIR_NAME,
                     REFS_DIR_NAME,
                     "snpeff_data",
-                    config["species_name"] + f"_{lin}",
+                    f"Species_name_{lin}",
                 )
             }
             paths_snpeff_Data.update(data_dict)
