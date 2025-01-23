@@ -28,8 +28,11 @@ Install Mamba or Miniconda following the instructions from their webpage:
 * Mamba: [https://github.com/conda-forge/miniforge](https://github.com/conda-forge/miniforge) (recommended)
 * Miniconda: [https://docs.anaconda.com/miniconda/](https://docs.anaconda.com/miniconda/)
 
-After successfully installing conda, set strict channel priority by running  
+After successfully installing conda, add the necessary channels and set strict channel priority by running  
 ```
+conda config --add defaults
+conda config --add conda-forge
+conda config --add bioconda
 conda config --set channel_priority strict
 ```
 
@@ -72,7 +75,7 @@ The environments for particular software used by the pipeline will be installed 
 ## Testing
 
 To test the installation of FungalPop, run it with the included test dataset.  
-The only file needed that we didn't provide is the RepBase database 
+The only file needed that we didn't provide is the RepBase database. 
 See the Configuration and Input sections bellow and **run the testing when you have the RepBase database in the file `config/RepBase.fasta`**.
 
 ```
@@ -134,9 +137,16 @@ Mandatory columns with this exact names:
   * `data/references/` and `data/main_reference/`: If you want to have a common naming scheme for the genes or don't have an annotation (GFF file) of your reference genomes you can provide one annotated main reference to annotate the reference genomes' assemblies using Liftoff. For this, provide the FASTA and GFF files for the main reference, and put both files in the same directory. And provide only the FASTA file for each reference genome. The names of the files must be the ones in the lineage column of the metadata, e.g. `VNI.fasta`. Put these files in the same directory. 
 
 ## Execution
-In a terminal the working directory must be the directory with `workflow/` and `config/`.
-Activate the Snakemake environment: `conda activate snakemake`.  
-Run the pipeline: `snakemake --cores <n> --sdm conda -p`
+In a terminal the working directory must be the directory with `workflow/` and `config/`.  
+Activate the Snakemake environment: 
+```
+conda activate snakemake
+```
+
+Run the pipeline: 
+```
+snakemake --cores <n> --sdm conda -p &> <mydataset>.log
+```
   * Snakemake options:  
     * `--cores <n>`: Number of cores you want to use. Mandatory.
     * `--sdm conda`: Specify that Snakemake will use conda environments to run the rules. Mandatory.
@@ -148,6 +158,7 @@ Run the pipeline: `snakemake --cores <n> --sdm conda -p`
   
 To learn more about how Snakemake works and how to take advantage of its features, see the Wiki (PENDING).
 
+It is recommended to redirect all the standard output and error to a log file as shown in the example command above.
 If you see an error message, identify which rule failed and check the log file for that rule. The log files are in the `logs/` directory.
 
 ## Output
