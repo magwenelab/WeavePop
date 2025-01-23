@@ -20,7 +20,6 @@ references:
 
 metadata: "test/config/metadata.csv" # Relative path to metadata CSV table.
 chromosomes: "test/config/chromosomes.csv" # Relative path to chromosomes CSV table.
-species_name: "Species_name" # One string with the name of the species/genus/group to analyze.
 samples_to_exclude: # Optional: Relative path to list of samples to exclude from analyses.
 
 # ------------------Output-------------------------------------------------------------------------
