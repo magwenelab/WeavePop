@@ -11,3 +11,4 @@ dependencies:
   - seqkit=2.8.2
   - graphviz=12.0.0
   - biopython=1.84
+  - apptainer=1.3.6

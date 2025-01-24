@@ -39,15 +39,15 @@ rule repeat_modeler:
     log:
         "logs/references/repeats/repeatmodeler_{lineage}.log",
     threads: config["cnv"]["repeats"]["repeats_threads"]
-    conda:
-        "../envs/repeatmasker.yaml"
+    singularity:
+        "docker://dfam/tetools:latest"
     shell:
         "wd=$(pwd) && "
-        "cd {params.dir} && "
+        "cd $wd/{params.dir} && "
         "RepeatModeler "
         "-database db_rmodeler/{wildcards.lineage} "
         "-engine ncbi "
-        "-pa {threads} "
+        "-threads {threads} "
         "&> $wd/{log} && "
         "rm -r RM_* &>> $wd/{log}"
 

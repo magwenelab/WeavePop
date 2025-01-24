@@ -1,0 +1,15 @@
+# This is the profile configuration file for local execution.
+
+# To run the workflow with local execution use the following command:
+# snakemake --profile config/default
+
+# Config you can change
+cores: 8
+printshellcmds: True
+dry-run: False
+keep-going: True
+rerun-incomplete: True
+conda-frontend: mamba
+
+# Config you should not change
+use-conda: True
