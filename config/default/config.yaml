@@ -5,11 +5,13 @@
 
 # Config you can change
 cores: 8
+keep-going: False
+rerun-incomplete: True
 printshellcmds: True
 dry-run: False
-keep-going: True
-rerun-incomplete: True
 conda-frontend: mamba
 
-# Config you should not change
+# Config you should not change unless you know what you are doing
 use-conda: True
+use-apptainer: True
+apptainer-args: "--bind $(pwd):$(pwd)"

@@ -17,13 +17,12 @@ rule repeat_modeler_build:
         / wildcards.lineage,
     log:
         "logs/references/repeats/repeatmodeler_build_{lineage}.log",
-    conda:
-        "../envs/repeatmasker.yaml"
+    singularity:
+        "docker://dfam/tetools:1.90"
     shell:
         "mkdir -p {params.repdir}/db_rmodeler && "
         "BuildDatabase "
         "-name {params.name} "
-        "-engine ncbi "
         "{input} "
         "&> {log}"
 
@@ -40,7 +39,7 @@ rule repeat_modeler:
         "logs/references/repeats/repeatmodeler_{lineage}.log",
     threads: config["cnv"]["repeats"]["repeats_threads"]
     singularity:
-        "docker://dfam/tetools:latest"
+        "docker://dfam/tetools:1.90"
     shell:
         "wd=$(pwd) && "
         "cd $wd/{params.dir} && "
@@ -61,7 +60,7 @@ rule repeat_modeler_separate:
     log:
         "logs/references/repeats/repeatmodeler_separate_{lineage}.log",
     conda:
-        "../envs/repeatmasker.yaml"
+        "../envs/snakemake.yaml"
     shell:
         """
         cat {input} | seqkit fx2tab | grep -v "Unknown" | seqkit tab2fx > {output.known} 2> {log}
@@ -81,8 +80,8 @@ rule repeat_masker_1:
     log:
         "logs/references/repeats/repeatmasker1_{lineage}.log",
     threads: config["cnv"]["repeats"]["repeats_threads"]
-    conda:
-        "../envs/repeatmasker.yaml"
+    singularity:
+        "docker://dfam/tetools:1.90"
     shell:
         "wd=$(pwd) && "
         "cd {params.tmp} && "
@@ -110,8 +109,8 @@ rule repeat_masker_2:
     log:
         "logs/references/repeats/repeatmasker2_{lineage}.log",
     threads: config["cnv"]["repeats"]["repeats_threads"]
-    conda:
-        "../envs/repeatmasker.yaml"
+    singularity:
+        "docker://dfam/tetools:1.90"
     shell:
         "wd=$(pwd) && "
         "cd {params.tmp} && "
@@ -138,8 +137,8 @@ rule repeat_masker_3:
     log:
         "logs/references/repeats/repeatmasker3_{lineage}.log",
     threads: config["cnv"]["repeats"]["repeats_threads"]
-    conda:
-        "../envs/repeatmasker.yaml"
+    singularity:
+        "docker://dfam/tetools:1.90"
     shell:
         "wd=$(pwd) && "
         "cd {params.tmp} && "
@@ -165,8 +164,8 @@ rule repeat_masker_4:
     log:
         "logs/references/repeats/repeatmasker4_{lineage}.log",
     threads: config["cnv"]["repeats"]["repeats_threads"]
-    conda:
-        "../envs/repeatmasker.yaml"
+    singularity:
+        "docker://dfam/tetools:1.90"
     shell:
         "wd=$(pwd) && "
         "cd {params.tmp} && "
@@ -195,7 +194,7 @@ rule repeat_masker_bed:
     log:
         "logs/references/repeats/repeatmasker_combine_{lineage}.log",
     conda:
-        "../envs/repeatmasker.yaml"
+        "../envs/shell.yaml"
     shell:
         """
         tail -n +4 {input.simple} | awk '{{print $5"\t"($6-1)"\t"$7"\t"$11}}' \
@@ -220,7 +219,7 @@ rule repeat_masker_combine:
     log:
         "logs/references/repeats/repeatmasker_combine_{lineage}.log",
     conda:
-        "../envs/repeatmasker.yaml"
+        "../envs/samtools.yaml"
     shell:
         """
         cat {input.simple} {input.complx} {input.known} {input.unknown} \
