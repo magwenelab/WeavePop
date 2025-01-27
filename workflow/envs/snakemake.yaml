@@ -5,6 +5,7 @@ channels:
   - defaults
 dependencies:
   - snakemake=8.18.2
+  - snakemake-executor-plugin-slurm=0.15.0
   - xonsh=0.18.3
   - pandas=2.2.2
   - click=8.1.3
