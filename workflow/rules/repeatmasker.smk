@@ -17,6 +17,8 @@ rule repeat_modeler_build:
         / wildcards.lineage,
     log:
         "logs/references/repeats/repeatmodeler_build_{lineage}.log",
+    resources:
+        tmpdir=TEMPDIR,
     singularity:
         "docker://dfam/tetools:1.90"
     shell:
@@ -38,11 +40,14 @@ rule repeat_modeler:
     log:
         "logs/references/repeats/repeatmodeler_{lineage}.log",
     threads: config["cnv"]["repeats"]["repeats_threads"]
+    resources:
+        tmpdir=TEMPDIR,
     singularity:
         "docker://dfam/tetools:1.90"
     shell:
         "wd=$(pwd) && "
         "cd $wd/{params.dir} && "
+        "export HOME={params.dir} && "
         "RepeatModeler "
         "-database db_rmodeler/{wildcards.lineage} "
         "-engine ncbi "
@@ -80,11 +85,14 @@ rule repeat_masker_1:
     log:
         "logs/references/repeats/repeatmasker1_{lineage}.log",
     threads: config["cnv"]["repeats"]["repeats_threads"]
+    resources:
+        tmpdir=TEMPDIR,
     singularity:
         "docker://dfam/tetools:1.90"
     shell:
         "wd=$(pwd) && "
         "cd {params.tmp} && "
+        "export HOME={params.dir} && "
         "RepeatMasker "
         "-pa {threads} "
         "-lib $wd/{input.database} "
@@ -109,11 +117,14 @@ rule repeat_masker_2:
     log:
         "logs/references/repeats/repeatmasker2_{lineage}.log",
     threads: config["cnv"]["repeats"]["repeats_threads"]
+    resources:
+        tmpdir=TEMPDIR,
     singularity:
         "docker://dfam/tetools:1.90"
     shell:
         "wd=$(pwd) && "
         "cd {params.tmp} && "
+        "export HOME={params.dir} && "
         "RepeatMasker "
         "-pa {threads} "
         "-lib $wd/{input.database} "
@@ -137,11 +148,14 @@ rule repeat_masker_3:
     log:
         "logs/references/repeats/repeatmasker3_{lineage}.log",
     threads: config["cnv"]["repeats"]["repeats_threads"]
+    resources:
+        tmpdir=TEMPDIR,
     singularity:
         "docker://dfam/tetools:1.90"
     shell:
         "wd=$(pwd) && "
         "cd {params.tmp} && "
+        "export HOME={params.dir} && "
         "RepeatMasker "
         "-pa {threads} "
         "-lib $wd/{input.known} "
@@ -164,11 +178,14 @@ rule repeat_masker_4:
     log:
         "logs/references/repeats/repeatmasker4_{lineage}.log",
     threads: config["cnv"]["repeats"]["repeats_threads"]
+    resources:
+        tmpdir=TEMPDIR,
     singularity:
         "docker://dfam/tetools:1.90"
     shell:
         "wd=$(pwd) && "
         "cd {params.tmp} && "
+        "export HOME={params.dir} && "
         "RepeatMasker "
         "-pa {threads} "
         "-lib $wd/{input.unknown} "
