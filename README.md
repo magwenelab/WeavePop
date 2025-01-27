@@ -76,7 +76,7 @@ The only file needed that we didn't provide is the RepBase database.
 See the Configuration and Input sections below and **run the testing when you have the RepBase database in the file `config/RepBase.fasta`**.
 
 ```
-snakemake --cores 8 --sdm conda -p --configfile test/config/config.yaml &> test.log
+snakemake --profile config/default --configfile test/config/config.yaml &> test/test.log
 ```
 
 
