@@ -11,7 +11,6 @@ default-resources:
   nodes: 1
   cpus_per_task: 12
   runtime: 2880
-  tmpdir: "'temp/'"
 
 # Config you can change
 jobs: 100
@@ -20,6 +19,7 @@ rerun-incomplete: True
 printshellcmds: True
 dry-run: False
 conda-frontend: mamba
+latency-wait: 60
 
 # Config you should not change unless you know what you are doing
 use-conda: True
