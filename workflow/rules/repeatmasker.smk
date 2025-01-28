@@ -52,8 +52,7 @@ rule repeat_modeler:
         "-database db_rmodeler/{wildcards.lineage} "
         "-engine ncbi "
         "-threads {threads} "
-        "&> $wd/{log} && "
-        "rm -r RM_* &>> $wd/{log}"
+        "&> $wd/{log}"
 
 
 rule repeat_modeler_separate:
