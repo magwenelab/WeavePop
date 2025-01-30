@@ -1,6 +1,8 @@
 
 # FungalPop
 
+[![Snakemake](https://img.shields.io/badge/snakemake-≥8.2.1-brightgreen.svg?style=flat)](https://snakemake.readthedocs.io)
+
 [Description](#description)  
 [Installation](#installation)  
 [Configuration](#configuration)  
