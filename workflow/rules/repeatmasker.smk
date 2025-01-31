@@ -76,6 +76,7 @@ rule repeat_masker_1:
     input:
         database=config["cnv"]["repeats"]["repeats_database"],
         fasta=rules.ref_fasta_symlinks.output,
+        rule_order=rules.repeat_modeler_separate.output.known,
     output:
         INT_REFS_DIR / "{lineage}" / "repeats" / "01_simple" / "{lineage}.fasta.out",
     params:
@@ -108,6 +109,7 @@ rule repeat_masker_2:
     input:
         database=config["cnv"]["repeats"]["repeats_database"],
         fasta=rules.ref_fasta_symlinks.output,
+        rule_order=rules.repeat_masker_1.output,
     output:
         INT_REFS_DIR / "{lineage}" / "repeats" / "02_complex" / "{lineage}.fasta.out",
     params:
@@ -139,6 +141,7 @@ rule repeat_masker_3:
     input:
         known=rules.repeat_modeler_separate.output.known,
         fasta=rules.ref_fasta_symlinks.output,
+        rule_order=rules.repeat_masker_2.output,
     output:
         INT_REFS_DIR / "{lineage}" / "repeats" / "03_known" / "{lineage}.fasta.out",
     params:
@@ -169,6 +172,7 @@ rule repeat_masker_4:
     input:
         unknown=rules.repeat_modeler_separate.output.unknown,
         fasta=rules.ref_fasta_symlinks.output,
+        rule_order=rules.repeat_masker_3.output,
     output:
         INT_REFS_DIR / "{lineage}" / "repeats" / "04_unknown" / "{lineage}.fasta.out",
     params:
