@@ -23,3 +23,5 @@ data_small/
 *temp*
 config/RepBase.fasta
 *pycache*
+test_bigger
+
