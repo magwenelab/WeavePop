@@ -3,6 +3,7 @@
 # =================================================================================================
 
 from snakemake.utils import min_version
+import sys
 
 min_version("8.2.1")
 
@@ -95,14 +96,39 @@ else:
 
 
 onstart:
+
     print("                                   ", flush=True)
     print(" _           _   _      _   _   _  ", flush=True)
     print("|_ | | |\\ | |_  |_| |  |_| | | |_|", flush=True)
     print("|  |_| | \\| |_| | | |_ |   |_| |  ", flush=True)
     print("                                   ", flush=True)
     print("                                   ", flush=True)
-    print("Selected workflow: ", config["workflow"], flush=True)
+    print("Executed command:", " ".join(sys.argv))
     print("                                   ", flush=True)
+    profile_config_path = None
+    for arg in sys.argv: # Check if --profile option is used
+        if arg.startswith("--profile"):     
+            profile_path = arg.split("=")[1] if "=" in arg else sys.argv[sys.argv.index(arg) + 1]
+            profile_config_path = os.path.join(profile_path, "config.yaml")
+            break
+    if profile_config_path and os.path.exists(profile_config_path):
+        print("Command line options from profile config file:", flush=True)
+        with open(profile_config_path, 'r') as file:
+            for line in file:
+                if line.strip() and not line.strip().startswith("#"):
+                    print(line.strip(), flush=True)
+        print("                                   ", flush=True)
+
+    print("Parameters from config file:", flush=True)
+    config_file = "config/config.yaml"
+    with open(config_file, 'r') as file:
+        for line in file:
+            if line.strip() and not line.strip().startswith("#"):
+                print(line.strip(), flush=True)
+
+
+    print("Selected workflow: ", config["workflow"], flush=True)
+
     if config["workflow"] == "join_datasets":
         print("                                  ", flush=True)
         print("Working directory:", os.getcwd(), flush=True)
