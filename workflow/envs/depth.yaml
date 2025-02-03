@@ -1,4 +1,4 @@
-name: mosdepth
+name: depth
 channels:
   - conda-forge
   - bioconda

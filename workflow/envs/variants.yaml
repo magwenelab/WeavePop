@@ -1,4 +1,4 @@
-name : variants
+name: variants
 channels:
   - conda-forge
   - bioconda
