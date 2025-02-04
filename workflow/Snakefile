@@ -11,8 +11,8 @@ min_version("8.2.1")
 #   Setup config file
 # =================================================================================================
 
-
-configfile: "config/config.yaml"
+if not config:
+    configfile: "config/config.yaml"
 
 
 # =================================================================================================
@@ -119,12 +119,20 @@ onstart:
                     print(line.strip(), flush=True)
         print("                                   ", flush=True)
 
-    print("Parameters from config file:", flush=True)
-    config_file = "config/config.yaml"
-    with open(config_file, 'r') as file:
-        for line in file:
-            if line.strip() and not line.strip().startswith("#"):
-                print(line.strip(), flush=True)
+    params_config_path = None
+    for arg in sys.argv: # Check if --configfile option is used
+        if arg.startswith("--configfile"):     
+            params_config_path = arg.split("=")[1] if "=" in arg else sys.argv[sys.argv.index(arg) + 1]
+            break
+        else:
+            params_config_path = "config/config.yaml"
+    if params_config_path and os.path.exists(params_config_path):
+        print("Parameters from config file:", flush=True)
+        with open(params_config_path, 'r') as file:
+            for line in file:
+                if line.strip() and not line.strip().startswith("#"):
+                    print(line.strip(), flush=True)
+        print("                                   ", flush=True)
 
 
     print("Selected workflow: ", config["workflow"], flush=True)
