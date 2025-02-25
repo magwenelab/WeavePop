@@ -5,3 +5,4 @@ channels:
 dependencies:
   - liftoff=1.6.3
   - minimap2=2.28
+  - libsqlite=3.48.0
