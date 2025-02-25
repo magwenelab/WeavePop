@@ -104,7 +104,7 @@ rule join_mapping_stats:
     resources:
         tmpdir=TEMPDIR,
     conda:
-        "../envs/snakemake.yaml"
+        "../envs/pandas.yaml"
     script:
         "../scripts/join_tables.py"
 
@@ -130,7 +130,7 @@ rule quality_filter:
     resources:
         tmpdir=TEMPDIR,
     conda:
-        "../envs/snakemake.yaml"
+        "../envs/pandas.yaml"
     script:
         "../scripts/quality_filter.py"
 
@@ -144,7 +144,7 @@ checkpoint filter_wildcards:
     log:
         "logs/dataset/depth_quality/filter_wildcards.log",
     conda:
-        "../envs/snakemake.yaml"
+        "../envs/pandas.yaml"
     script:
         "../scripts/filter_wildcards.py"
 

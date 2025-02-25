@@ -64,7 +64,7 @@ rule repeat_modeler_separate:
     log:
         "logs/references/repeats/repeatmodeler_separate_{lineage}.log",
     conda:
-        "../envs/snakemake.yaml"
+        "../envs/agat.yaml"
     shell:
         """
         cat {input} | seqkit fx2tab | grep -v "Unknown" | seqkit tab2fx > {output.known} 2> {log}

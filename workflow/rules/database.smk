@@ -13,7 +13,7 @@ rule join_ref_annotations:
     resources:
         tmpdir=TEMPDIR,
     conda:
-        "../envs/snakemake.yaml"
+        "../envs/pandas.yaml"
     script:
         "../scripts/join_ref_annotations.py"
 
@@ -34,7 +34,7 @@ rule join_sequences:
     resources:
         tmpdir=TEMPDIR,
     conda:
-        "../envs/snakemake.yaml"
+        "../envs/pandas.yaml"
     script:
         "../scripts/join_sequences.py"
 
@@ -49,7 +49,7 @@ rule join_mapq_depth:
     log:
         "logs/dataset/depth_quality/join_mapq_depth.log",
     conda:
-        "../envs/snakemake.yaml"
+        "../envs/pandas.yaml"
     script:
         "../scripts/join_tables.py"
 
@@ -62,7 +62,7 @@ rule join_cnv:
     log:
         "logs/dataset/cnv/join_cnv_calls.log",
     conda:
-        "../envs/snakemake.yaml"
+        "../envs/pandas.yaml"
     script:
         "../scripts/join_tables.py"
 
@@ -83,7 +83,7 @@ rule join_variant_annotation:
     log:
         "logs/dataset/snpeff/join_variant_annotation.log",
     conda:
-        "../envs/snakemake.yaml"
+        "../envs/pandas.yaml"
     script:
         "../scripts/join_variant_annotation.py"
 

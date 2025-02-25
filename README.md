@@ -78,6 +78,7 @@ The only file needed that we didn't provide is the RepBase database.
 See the Configuration and Input sections below and **run the testing when you have the RepBase database in the file `config/RepBase.fasta`**.
 
 ```
+conda activate snakemake
 snakemake --profile config/default --configfile test/config/config.yaml &> test/test.log
 ```
 ### Warning about RepeatModeler and RepeatMasker
@@ -89,6 +90,8 @@ and in the `config/default/config.yaml` or `config/slurm/config.yaml` add the fo
 use-apptainer: True
 apptainer-args: "--bind $(pwd):$(pwd)"
 ```
+And use the environment `workflow/envs/snakemake-apptainer.yaml` instead of `workflow/envs/snakemake.yaml`.
+
 Note that the container and the Conda environment use different versions of the software:
 | Software | Conda | Container |
 | :---- |----: | ----: |

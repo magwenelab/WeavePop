@@ -96,7 +96,7 @@ rule ref_recreate_ids:
     resources:
         tmpdir=TEMPDIR,
     conda:
-        "../envs/snakemake.yaml"
+        "../envs/samtools.yaml"
     shell:
         "python workflow/scripts/recreate_ids.py "
         "-i {input.tsv} "
@@ -222,7 +222,7 @@ rule ref_reformat_annotation:
     log:
         "logs/references/ref_reformat_annotation_{lineage}.log",
     conda:
-        "../envs/snakemake.yaml"
+        "../envs/pandas.yaml"
     script:
         "../scripts/reformat_annotation.py"
 
