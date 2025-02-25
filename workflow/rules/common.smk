@@ -15,6 +15,7 @@ from snakemake.utils import validate
 UNFILT_SAMPLE_FILE = config["metadata"]
 EXCLUDE_FILE = config["samples_to_exclude"]
 if EXCLUDE_FILE:
+    print("Excluding samples in the file " + EXCLUDE_FILE + " from the analysis", flush=True)
     EXCLUDE_SAMPLES = set(list(pd.read_csv(EXCLUDE_FILE, header=None, names=["sample"])["sample"]))
     SAMPLE_ORIGINAL = pd.read_csv(UNFILT_SAMPLE_FILE, sep=",", header=0)
     UNFILT_SAMPLE_TABLE = SAMPLE_ORIGINAL[~SAMPLE_ORIGINAL["sample"].isin(EXCLUDE_SAMPLES)]
