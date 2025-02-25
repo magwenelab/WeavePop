@@ -14,7 +14,6 @@ min_version("8.2.1")
 if not config:
     configfile: "config/config.yaml"
 
-
 # =================================================================================================
 #   Define names of directories
 # =================================================================================================
@@ -83,144 +82,53 @@ elif config["workflow"] == "join_datasets":
     include: "rules/common_join_datasets.smk"
     include: "rules/join_datasets.smk"
 
+# ------------------No workflow selected message----------------------------------------------------
 else:
-    print(f"Workflow must be one of 'analysis' or 'join_datasets'.", flush=True)
+    print("Workflow must be one of 'analysis' or 'join_datasets'.", flush=True)
     print("Check the spelling in the config/config.yaml file.", flush=True)
     print("Exiting...", flush=True)
     exit(1)
-
 
 # =================================================================================================
 #   On start checks
 # =================================================================================================
 
+# onstart:
 
-onstart:
+#     print("Executed command:", " ".join(sys.argv))
+#     print("                                   ", flush=True)
+#     profile_config_path = None
+#     for arg in sys.argv: # Check if --profile option is used
+#         if arg.startswith("--profile"):     
+#             profile_path = arg.split("=")[1] if "=" in arg else sys.argv[sys.argv.index(arg) + 1]
+#             profile_config_path = os.path.join(profile_path, "config.yaml")
+#             break
+#     if profile_config_path and os.path.exists(profile_config_path):
+#         print("Command line options from profile config file:", flush=True)
+#         with open(profile_config_path, 'r') as file:
+#             for line in file:
+#                 if line.strip() and not line.strip().startswith("#"):
+#                     print(line.strip(), flush=True)
+#         print("                                   ", flush=True)
 
-    print("                                   ", flush=True)
-    print(" _           _   _      _   _   _  ", flush=True)
-    print("|_ | | |\\ | |_  |_| |  |_| | | |_|", flush=True)
-    print("|  |_| | \\| |_| | | |_ |   |_| |  ", flush=True)
-    print("                                   ", flush=True)
-    print("                                   ", flush=True)
-    print("Executed command:", " ".join(sys.argv))
-    print("                                   ", flush=True)
-    profile_config_path = None
-    for arg in sys.argv: # Check if --profile option is used
-        if arg.startswith("--profile"):     
-            profile_path = arg.split("=")[1] if "=" in arg else sys.argv[sys.argv.index(arg) + 1]
-            profile_config_path = os.path.join(profile_path, "config.yaml")
-            break
-    if profile_config_path and os.path.exists(profile_config_path):
-        print("Command line options from profile config file:", flush=True)
-        with open(profile_config_path, 'r') as file:
-            for line in file:
-                if line.strip() and not line.strip().startswith("#"):
-                    print(line.strip(), flush=True)
-        print("                                   ", flush=True)
-
-    params_config_path = None
-    for arg in sys.argv: # Check if --configfile option is used
-        if arg.startswith("--configfile"):     
-            params_config_path = arg.split("=")[1] if "=" in arg else sys.argv[sys.argv.index(arg) + 1]
-            break
-        else:
-            params_config_path = "config/config.yaml"
-    if params_config_path and os.path.exists(params_config_path):
-        print("Parameters from config file:", flush=True)
-        with open(params_config_path, 'r') as file:
-            for line in file:
-                if line.strip() and not line.strip().startswith("#"):
-                    print(line.strip(), flush=True)
-        print("                                   ", flush=True)
-
-
-    print("Selected workflow: ", config["workflow"], flush=True)
-
-    if config["workflow"] == "join_datasets":
-        print("                                  ", flush=True)
-        print("Working directory:", os.getcwd(), flush=True)
-        print("Output directory:", os.path.join(os.getcwd(),config["joint_output_directory"]), flush=True)
-    elif config["workflow"] == "analysis":
-        print("Activated modules:", flush=True)
-        if config["annotate_references"]["activate"]:
-            print("+ Reference annotation", flush=True)
-        if config["database"]["activate"]:
-            print("+ Database", flush=True)
-        if config["cnv"]["activate"]:
-            print("+ CNV", flush=True)
-        if config["depth_quality_features"]["activate"]:
-            print("+ MAPQ and depth of genetic features", flush=True)
-        if config["snpeff"]["activate"]:
-            print("+ SnpEff", flush=True)
-        if config["plotting"]["activate"]:
-            print("+ Plotting", flush=True)
-        print("                                  ", flush=True)
-        print("Working directory:", os.getcwd(), flush=True)
-        print("Output directory:", os.path.join(os.getcwd(),config["output_directory"]), flush=True)
-
-        print("                                  ", flush=True)
-        print("Checking provided file of chromosome names...", flush=True)
-        print("                                  ", flush=True)
-
-        try:
-            sample_table = pd.read_csv(config["metadata"], header=0)
-            chrom_names = pd.read_csv(
-                config["chromosomes"], header=0, names=["lineage", "accession", "chromosome"]
-            )
-            if chrom_names.isnull().values.any():
-                raise ValueError("Chromosome names file has missing values")
-            if set(sample_table["lineage"].unique()) == set(chrom_names["lineage"].unique()):
-                print("All lineages are in the chromosome names file.", flush=True)
-                print("                                  ", flush=True)
-            else:
-                raise ValueError("Lineages in metadata and chromosome names file do not match")
-
-            reference_dir = config["references"]["directory"]
-
-            for lineage in chrom_names["lineage"].unique():
-                print(f"Checking the chromosome names of lineage {lineage}...", flush=True)
-                accessions = chrom_names[chrom_names["lineage"] == lineage]["accession"].tolist()
-                ref_file = Path(reference_dir) / f"{lineage}.fasta"
-                if ref_file.exists():
-                    with open(ref_file) as f:
-                        seq_ids = [
-                            line.strip().split()[0][1:] for line in f if line.startswith(">")
-                        ]
-
-                        if not all([acc in seq_ids for acc in accessions]):
-                            raise ValueError(
-                                f"Not all chromosomes in provided file are present in {ref_file}"
-                            )
-                        else:
-                            print(f"All chromosomes in provided file are present in {ref_file}", flush=True)
-                                            
-                        if not all([seq_id in accessions for seq_id in seq_ids]):
-                            raise ValueError(
-                                f"Not all chromosomes in {ref_file} are present in the provided file"
-                            )
-                        else:
-                            print(f"All chromosomes in {ref_file} are present in the provided file", flush=True)
-
-                else:
-                    raise ValueError(f"Reference {ref_file} not found")
-
-        except Exception as e:
-            print("Error in input files:", flush=True)
-            print(e)
-            print("Exiting...", flush=True)
-            exit(1)
-        else:
-            print("                                  ", flush=True)
-            print("Input files are good!", flush=True)
-            print("Starting workflow...", flush=True)
-            print("                                  ", flush=True)
-
+#     params_config_path = None
+#     for arg in sys.argv: # Check if --configfile option is used
+#         if arg.startswith("--configfile"):     
+#             params_config_path = arg.split("=")[1] if "=" in arg else sys.argv[sys.argv.index(arg) + 1]
+#             break
+#         else:
+#             params_config_path = "config/config.yaml"
+#     if params_config_path and os.path.exists(params_config_path):
+#         print("Parameters from config file:", flush=True)
+#         with open(params_config_path, 'r') as file:
+#             for line in file:
+#                 if line.strip() and not line.strip().startswith("#"):
+#                     print(line.strip(), flush=True)
+#         print("                                   ", flush=True)
 
 # =================================================================================================
 #   On success messages
 # =================================================================================================
-
 
 onsuccess:
     print("                                   ", flush=True)
@@ -231,7 +139,7 @@ onsuccess:
     print("                                   ", flush=True)
     if config["workflow"] == "analysis":
         print("The analysis workflow finished successfully!", flush=True)
-        original_metadata = pd.read_csv(UNFILT_SAMPLE_FILE, header=0)
+        original_metadata = UNFILT_SAMPLE_TABLE
         filtered_metadata = pd.read_csv(rules.quality_filter.output.metadata, header=0)
         if original_metadata["sample"].nunique() == filtered_metadata["sample"].nunique():
             print("All samples passed the quality filter.", flush=True)
@@ -248,6 +156,22 @@ onsuccess:
     print("                                   ", flush=True)
     print("Enjoy science!", flush=True)
 
+# =================================================================================================
+#   On error messages
+# =================================================================================================
+
+onerror:
+    print("                                   ", flush=True)
+    print(" _           _   _      _   _   _  ", flush=True)
+    print("|_ | | |\\ | |_  |_| |  |_| | | |_|", flush=True)
+    print("|  |_| | \\| |_| | | |_ |   |_| |  ", flush=True)
+    print("                                   ", flush=True)
+    print("                                   ", flush=True)
+    print("An error occurred during the workflow execution.", flush=True)
+    print("Check the log file for more information.", flush=True)
+    print("                                   ", flush=True)
+    print("Exiting...", flush=True)
+    exit(1)
 
 # =================================================================================================
 #   Define final output

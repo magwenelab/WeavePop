@@ -117,7 +117,7 @@ rule join_mapping_stats:
 rule quality_filter:
     input:
         rules.join_mapping_stats.output,
-        UNFILT_SAMPLE_FILE,
+        SAMPLE_ORIGINAL_FILE,
         CHROM_NAMES,
     output:
         stats=DATASET_DIR / "depth_quality" / "mapping_stats.tsv",

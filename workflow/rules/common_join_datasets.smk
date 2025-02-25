@@ -24,6 +24,20 @@ TEMPDIR = str(INTDIR / TEMPDIR_NAME)
 INPUT_PATHS = config["datasets_paths"].split(",")
 LIST_PATHS = [Path(dir) for dir in INPUT_PATHS]
 
+# =================================================================================================
+#  Print configuration
+# =================================================================================================
+print("                                  ", flush=True)
+print(".......Workflow Configuration......", flush=True)
+print("                                  ", flush=True)
+print("Selected workflow: ", config["workflow"], flush=True)
+print("                                  ", flush=True)
+print("Working directory:", os.getcwd(), flush=True)
+print("                                  ", flush=True)
+print("Output directory:", os.path.join(os.getcwd(),config["joint_output_directory"]), flush=True)
+print("                                  ", flush=True)
+print(".........Starting Workflow.........", flush=True)
+print("                                  ", flush=True)
 
 # =================================================================================================
 #   Input functions for rules
