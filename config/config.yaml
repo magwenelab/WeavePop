@@ -69,6 +69,7 @@ cnv:
   repeats:
     repeats_database: "config/RepBase.fasta" # Relative path to the RepBase FASTA file.
     repeats_threads: 20 # Number of threads for RepeatModeler and RepeatMasker.
+    use_container: False # True to use Apptainer containers for RepeatModeler and RepeatMasker.
 
 # ------------------Annotation of SNP effects------------------------------------------------------
 

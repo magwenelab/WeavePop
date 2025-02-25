@@ -80,6 +80,20 @@ See the Configuration and Input sections below and **run the testing when you ha
 ```
 snakemake --profile config/default --configfile test/config/config.yaml &> test/test.log
 ```
+### Warning about RepeatModeler and RepeatMasker
+If you have issues with the steps that run RepeatModeler and RepeatMasker you might need to 
+run them inside the `dfam/tetools` container instead of the Conda environment. Doing this will likely solve the issue but it will require more time to run.
+To do this, in the `config/config.yaml` file in the `cnv` module set the `use_container` parameter to `True`, 
+and in the `config/default/config.yaml` or `config/slurm/config.yaml` add the following parameters:
+```
+use-apptainer: True
+apptainer-args: "--bind $(pwd):$(pwd)"
+```
+Note that the container and the Conda environment use different versions of the software:
+| Software | Conda | Container |
+| :---- |----: | ----: |
+RepeatModeler  | 2.0.1 | 2.0.6
+RepeatMasker | 4.1.2 | 4.1.7-p1
 
 
 ## Configuration

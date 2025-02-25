@@ -19,8 +19,8 @@ rule repeat_modeler_build:
         "logs/references/repeats/repeatmodeler_build_{lineage}.log",
     resources:
         tmpdir=TEMPDIR,
-    conda:
-        "../envs/repeatmasker.yaml"
+    singularity:
+        "docker://dfam/tetools:1.90"
     shell:
         "mkdir -p {params.repdir}/db_rmodeler && "
         "BuildDatabase "
@@ -42,8 +42,8 @@ rule repeat_modeler:
     threads: config["cnv"]["repeats"]["repeats_threads"]
     resources:
         tmpdir=TEMPDIR,
-    conda:
-        "../envs/repeatmasker.yaml"
+    singularity:
+        "docker://dfam/tetools:1.90"
     shell:
         "wd=$(pwd) && "
         "cd $wd/{params.dir} && "
@@ -51,7 +51,7 @@ rule repeat_modeler:
         "RepeatModeler "
         "-database db_rmodeler/{wildcards.lineage} "
         "-engine ncbi "
-        "-pa {threads} "
+        "-threads {threads} "
         "&> $wd/{log}"
 
 
@@ -87,8 +87,8 @@ rule repeat_masker_1:
     threads: config["cnv"]["repeats"]["repeats_threads"]
     resources:
         tmpdir=TEMPDIR,
-    conda:
-        "../envs/repeatmasker.yaml"
+    singularity:
+        "docker://dfam/tetools:1.90"
     shell:
         "wd=$(pwd) && "
         "cd {params.tmp} && "
@@ -120,8 +120,8 @@ rule repeat_masker_2:
     threads: config["cnv"]["repeats"]["repeats_threads"]
     resources:
         tmpdir=TEMPDIR,
-    conda:
-        "../envs/repeatmasker.yaml"
+    singularity:
+        "docker://dfam/tetools:1.90"
     shell:
         "wd=$(pwd) && "
         "cd {params.tmp} && "
@@ -152,8 +152,8 @@ rule repeat_masker_3:
     threads: config["cnv"]["repeats"]["repeats_threads"]
     resources:
         tmpdir=TEMPDIR,
-    conda:
-        "../envs/repeatmasker.yaml"
+    singularity:
+        "docker://dfam/tetools:1.90"
     shell:
         "wd=$(pwd) && "
         "cd {params.tmp} && "
@@ -183,8 +183,8 @@ rule repeat_masker_4:
     threads: config["cnv"]["repeats"]["repeats_threads"]
     resources:
         tmpdir=TEMPDIR,
-    conda:
-        "../envs/repeatmasker.yaml"
+    singularity:
+        "docker://dfam/tetools:1.90"
     shell:
         "wd=$(pwd) && "
         "cd {params.tmp} && "
