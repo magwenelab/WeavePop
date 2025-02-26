@@ -83,7 +83,7 @@ The environments for particular software used by the pipeline will be installed 
 </details>
 
 ## Input files
-To see a full description of the input files and their format go to the [Input Wiki](https://github.com/magwenelab/DiversityPipeline/wiki/Input_files).
+To see a full description of the input files and their format go to the [Input Wiki](https://github.com/magwenelab/DiversityPipeline/wiki/Input-files).
 
 * FASTQ files: Paired-end short-read FASTQ files for all samples in the same directory.  
 * Reference genomes: FASTA and GFF files for each lineage. Or FASTA for each lineage and FASTA and GFF for a main reference to use to annotate the other references.
