@@ -10,7 +10,7 @@ The database is useful for easily querying the results using FungalPop-Shiny, an
 
 Check the [Wiki](https://github.com/magwenelab/DiversityPipeline/wiki) for the detailed information on how to use FungalPop.
 
-[Overview](#overview)
+[Overview](#overview)  
 [Installation](#installation)  
 [Input files](#input-files)  
 [Configuration](#configuration)  
