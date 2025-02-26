@@ -126,7 +126,7 @@ snakemake --profile test/config/default
 
 1) In a terminal go to `FungalPop/` to use as your working directory.  
 2) Activate the Snakemake environment: `conda activate snakemake`.
-3) Specify the command-line parameters in the execution configuration file `config/default/config.yaml`. 
+3) Specify the command-line parameters in the execution profile `config/default/config.yaml`. 
 4) Run: 
 ```
 snakemake --profile config/default
