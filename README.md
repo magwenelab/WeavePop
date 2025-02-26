@@ -17,7 +17,7 @@ Check the [Wiki](https://github.com/magwenelab/DiversityPipeline/wiki) for the d
 [Testing](#testing)   
 [Execution](#execution)   
 [Output](#output)  
-[Query the Database](#query-the-database)  
+[FungalPop-Shiny](#fungalpop-shiny)  
 
 ## Overview
 
