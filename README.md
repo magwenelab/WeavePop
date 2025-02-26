@@ -132,7 +132,7 @@ snakemake --profile test/config/default
 snakemake --profile config/default
 ```
 
-Learn more about the execution options in the Wiki pages [Basic usage](https://github.com/magwenelab/DiversityPipeline/wiki/Basic-usage), [SLURM execution](https://github.com/magwenelab/DiversityPipeline/wiki/SLURM-execution) and [Working with multiple projects and runs](https://github.com/magwenelab/DiversityPipeline/wiki/Working-with-multiple-projects-and-runs).
+Learn more about the execution options in the Wiki pages [Basic usage](https://github.com/magwenelab/DiversityPipeline/wiki/Basic-usage), [Execution profiles](https://github.com/magwenelab/DiversityPipeline/wiki/Execution-profiles) and [Working with multiple projects and runs](https://github.com/magwenelab/DiversityPipeline/wiki/Working-with-multiple-projects-and-runs).
 
 ## Output
 
