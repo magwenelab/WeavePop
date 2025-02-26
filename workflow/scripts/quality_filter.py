@@ -34,8 +34,7 @@ try:
     metadata_filtered.columns = metadata_filtered.columns.str.lower()
     metadata_filtered.columns = metadata_filtered.columns.str.replace(' ', '_')
     logging.info("Adding dataset column...")
-    if 'dataset' not in metadata_filtered.columns:
-        metadata_filtered['dataset'] = "X"   
+    metadata_filtered.loc[:, 'dataset'] = "X"
         
     logging.info("Saving filtered tables...")
     stats_filtered.to_csv(output_stats, index=False, header=True, sep = "\t")

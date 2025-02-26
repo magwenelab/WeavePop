@@ -1,7 +1,7 @@
-name: depth
+name: pandas
 channels:
   - conda-forge
   - bioconda
   - defaults
 dependencies:
-  - mosdepth=0.3.8
+  - pandas=2.2.2

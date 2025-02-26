@@ -9,22 +9,170 @@ from pathlib import Path
 from snakemake.utils import validate
 
 # =================================================================================================
-#   Define global variables and validate input files using schemas
+#   Print welcome message
 # =================================================================================================
 
-UNFILT_SAMPLE_FILE = config["metadata"]
+print("                                   ", flush=True)
+print(" _           _   _      _   _   _  ", flush=True)
+print("|_ | | |\\ | |_  |_| |  |_| | | |_|", flush=True)
+print("|  |_| | \\| |_| | | |_ |   |_| |  ", flush=True)
+print("                                   ", flush=True)
+print("                                   ", flush=True)
+
+# =================================================================================================
+#   Validate input files and get metadata table
+# =================================================================================================
+print("...............Input...............", flush=True)
+print("                                   ", flush=True)
+# --Validate original metadata table---------------------------------------------------------------
+
+SAMPLE_ORIGINAL_FILE = config["metadata"]
+if not SAMPLE_ORIGINAL_FILE:
+    print("Metadata file not provided.", flush=True)
+    print("Exiting...", flush=True)
+    exit(1)
+if os.path.exists(SAMPLE_ORIGINAL_FILE):
+    print(f"Validating metadata file {SAMPLE_ORIGINAL_FILE}...", flush=True)
+    SAMPLE_ORIGINAL = pd.read_csv(SAMPLE_ORIGINAL_FILE, sep=",", header=0)
+    validate(SAMPLE_ORIGINAL, schema="../schemas/metadata.schema.yaml")
+    print(f"    Number of samples in the metadata file: {SAMPLE_ORIGINAL.shape[0]}", flush=True)
+else:
+    print(f"Metadata file {SAMPLE_ORIGINAL_FILE} not found.", flush=True)
+    print("Exiting...", flush=True)
+    exit(1)
+
+# --Exclude samples--------------------------------------------------------------------------------
+
 EXCLUDE_FILE = config["samples_to_exclude"]
 if EXCLUDE_FILE:
-    EXCLUDE_SAMPLES = set(list(pd.read_csv(EXCLUDE_FILE, header=None, names=["sample"])["sample"]))
-    SAMPLE_ORIGINAL = pd.read_csv(UNFILT_SAMPLE_FILE, sep=",", header=0)
-    UNFILT_SAMPLE_TABLE = SAMPLE_ORIGINAL[~SAMPLE_ORIGINAL["sample"].isin(EXCLUDE_SAMPLES)]
+    if os.path.exists(EXCLUDE_FILE):
+        print(f"Excluding samples in the file {EXCLUDE_FILE} from the analysis...", flush=True)
+        EXCLUDE_SAMPLES = set(list(pd.read_csv(EXCLUDE_FILE, header=None, names=["sample"])["sample"]))
+        UNFILT_SAMPLE_TABLE = SAMPLE_ORIGINAL[~SAMPLE_ORIGINAL["sample"].isin(EXCLUDE_SAMPLES)]
+        print(f"    Number of samples to analyze: {UNFILT_SAMPLE_TABLE.shape[0]}", flush=True)
+    else:
+        print(f"File {EXCLUDE_FILE} not found.", flush=True)
+        print("Exiting...", flush=True)
+        exit(1)
 else:
-    UNFILT_SAMPLE_TABLE = pd.read_csv(UNFILT_SAMPLE_FILE, sep=",", header=0)
+    UNFILT_SAMPLE_TABLE = SAMPLE_ORIGINAL
+    print(f"    Number of samples to analyze: {UNFILT_SAMPLE_TABLE.shape[0]}", flush=True)
 
-validate(UNFILT_SAMPLE_TABLE, schema="../schemas/metadata.schema.yaml")
+# --Validate chromosome names file--------------------------------------------------------------------
+
+print("                                  ", flush=True)
+CHROM_NAMES = config["chromosomes"]
+if not CHROM_NAMES:
+    print("Chromosome names file not provided.", flush=True)
+    print("Exiting...", flush=True)
+    exit(1)
+if os.path.exists(CHROM_NAMES):
+    print(f"Validating chromosome names file {CHROM_NAMES}...", flush=True)
+    CHROM_NAMES_TABLE = pd.read_csv(CHROM_NAMES, header=0, dtype={"chromosome": "string"})
+    validate(CHROM_NAMES_TABLE, schema="../schemas/chromosomes.schema.yaml")
+else:
+    print(f"Chromosome names file {CHROM_NAMES} not found.", flush=True)
+    print("Exiting...", flush=True)
+    exit(1)
+
+try:
+    if CHROM_NAMES_TABLE.isnull().values.any():
+        raise ValueError("Chromosome names file has missing values.")
+    if set(UNFILT_SAMPLE_TABLE["lineage"].unique()) == set(CHROM_NAMES_TABLE["lineage"].unique()):
+        print("    All lineages are in the chromosome names file.", flush=True)
+    else:
+        raise ValueError("Lineages in metadata and chromosome names file do not match.")
+
+    reference_dir = config["references"]["directory"]
+
+    for lineage in CHROM_NAMES_TABLE["lineage"].unique():
+        print(f"Checking the chromosome names of lineage {lineage}...", flush=True)
+        accessions = CHROM_NAMES_TABLE[CHROM_NAMES_TABLE["lineage"] == lineage]["accession"].tolist()
+        ref_file = Path(reference_dir) / f"{lineage}.fasta"
+        if ref_file.exists():
+            with open(ref_file) as f:
+                seq_ids = [
+                    line.strip().split()[0][1:] for line in f if line.startswith(">")
+                ]
+
+                if not all([acc in seq_ids for acc in accessions]):
+                    raise ValueError(
+                        f"Not all chromosomes in provided file are present in {ref_file}."
+                    )
+                else:
+                    print(f"    All chromosomes in provided file are present in {ref_file}.", flush=True)
+                                    
+                if not all([seq_id in accessions for seq_id in seq_ids]):
+                    raise ValueError(
+                        f"Not all chromosomes in {ref_file} are present in the provided file."
+                    )
+                else:
+                    print(f"    All chromosomes in {ref_file} are present in the provided file.", flush=True)
+
+        else:
+            raise ValueError(f"Reference {ref_file} not found.")
+
+except Exception as e:
+    print("Error in input files:", flush=True)
+    print(e)
+    print("Exiting...", flush=True)
+    exit(1)
+
+# --Validate loci file----------------------------------------------------------------------------
+
+LOCI_FILE = config["plotting"]["loci"]
+if LOCI_FILE:
+    if os.path.exists(LOCI_FILE):
+        print("                                  ", flush=True)
+        print("Validating provided file of loci to plot...", flush=True)
+        LOCI_TABLE = pd.read_csv(LOCI_FILE, sep=",", header=0)
+        validate(LOCI_TABLE, schema="../schemas/loci.schema.yaml")
+        print(f"    Number of loci to plot: {LOCI_TABLE.shape[0]}", flush=True)
+    else:
+        print(f"File {LOCI_FILE} not found.", flush=True)
+        print("Exiting...", flush=True)
+        exit(1)
+else:
+    LOCI_FILE = SAMPLES_DIR / "loci_empty.txt"
+    with open(LOCI_FILE, "w") as f:
+        f.write("")
+
+# =================================================================================================
+#  Print configuration
+# =================================================================================================
+print("                                  ", flush=True)
+print(".......Workflow Configuration......", flush=True)
+print("                                  ", flush=True)
+print("Selected workflow: ", config["workflow"], flush=True)
+print("                                  ", flush=True)
+print("Activated modules:", flush=True)
+if config["annotate_references"]["activate"]:
+    print("    Reference annotation", flush=True)
+if config["database"]["activate"]:
+    print("    Database", flush=True)
+if config["cnv"]["activate"]:
+    print("    CNV", flush=True)
+if config["depth_quality_features"]["activate"]:
+    print("    MAPQ and depth of genetic features", flush=True)
+if config["snpeff"]["activate"]:
+    print("    SnpEff", flush=True)
+if config["plotting"]["activate"]:
+    print("    Plotting", flush=True)
+print("                                  ", flush=True)
+print("Working directory:", os.getcwd(), flush=True)
+print("                                  ", flush=True)
+print("Output directory:", os.path.join(os.getcwd(),config["output_directory"]), flush=True)
+print("                                  ", flush=True)
+print(".........Starting Workflow.........", flush=True)
+print("                                  ", flush=True)
+
+# =================================================================================================
+#   Define directories and variables
+# =================================================================================================
 
 UNFILT_SAMPLES = list(set(UNFILT_SAMPLE_TABLE["sample"]))
 
+# --Define directories----------------------------------------------------------------------------
 REF_DATA = Path(config["references"]["directory"])
 FQ_DATA = Path(config["fastqs"]["directory"])
 FQ1 = config["fastqs"]["fastq_suffix1"]
@@ -39,19 +187,6 @@ INT_SAMPLES_DIR = INTDIR / SAMPLES_DIR_NAME
 INT_DATASET_DIR = INTDIR / DATASET_DIR_NAME
 INT_REFS_DIR = INTDIR / REFS_DIR_NAME
 TEMPDIR = str(INTDIR / TEMPDIR_NAME)
-
-CHROM_NAMES = config["chromosomes"]
-CHROM_NAMES_TABLE = pd.read_csv(CHROM_NAMES, header=0, dtype={"chromosome": "string"})
-validate(CHROM_NAMES_TABLE, schema="../schemas/chromosomes.schema.yaml")
-
-if config["plotting"]["loci"]:
-    LOCI_FILE = config["plotting"]["loci"]
-    LOCI_TABLE = pd.read_csv(LOCI_FILE, sep=",", header=0)
-    validate(LOCI_TABLE, schema="../schemas/loci.schema.yaml")
-else:
-    LOCI_FILE = SAMPLES_DIR / "loci_empty.txt"
-    with open(LOCI_FILE, "w") as f:
-        f.write("")
 
 # =================================================================================================
 #   Variables for the module Reference annotation

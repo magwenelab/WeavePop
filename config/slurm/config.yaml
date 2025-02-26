@@ -1,0 +1,30 @@
+# This is the profile configuration file for SLURM execution.
+
+# To run the workflow in SLURM use the following command:
+# snakemake --profile config/slurm
+
+executor: slurm
+default-resources:
+  slurm_partition: # Partition to submit jobs to
+  slurm_account: # Account
+  mem_mb_per_cpu: 2000
+  nodes: 1
+  cpus_per_task: 12
+  runtime: 2880
+
+# Config you can change
+jobs: 30
+keep-going: False
+rerun-incomplete: True
+printshellcmds: True
+dry-run: False
+conda-frontend: mamba
+latency-wait: 60
+
+# Config you should not change unless you know what you are doing
+use-conda: True
+
+# If you need to run RepeatModeler and RepeatMasker in a container
+# instead of a Conda environment, uncomment the following lines
+#use-apptainer: True
+#apptainer-args: "--bind $(pwd):$(pwd)"

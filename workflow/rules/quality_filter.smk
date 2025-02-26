@@ -104,7 +104,7 @@ rule join_mapping_stats:
     resources:
         tmpdir=TEMPDIR,
     conda:
-        "../envs/snakemake.yaml"
+        "../envs/pandas.yaml"
     script:
         "../scripts/join_tables.py"
 
@@ -117,7 +117,7 @@ rule join_mapping_stats:
 rule quality_filter:
     input:
         rules.join_mapping_stats.output,
-        UNFILT_SAMPLE_FILE,
+        SAMPLE_ORIGINAL_FILE,
         CHROM_NAMES,
     output:
         stats=DATASET_DIR / "depth_quality" / "mapping_stats.tsv",
@@ -130,7 +130,7 @@ rule quality_filter:
     resources:
         tmpdir=TEMPDIR,
     conda:
-        "../envs/snakemake.yaml"
+        "../envs/pandas.yaml"
     script:
         "../scripts/quality_filter.py"
 
@@ -144,7 +144,7 @@ checkpoint filter_wildcards:
     log:
         "logs/dataset/depth_quality/filter_wildcards.log",
     conda:
-        "../envs/snakemake.yaml"
+        "../envs/pandas.yaml"
     script:
         "../scripts/filter_wildcards.py"
 

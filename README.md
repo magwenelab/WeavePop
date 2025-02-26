@@ -78,8 +78,25 @@ The only file needed that we didn't provide is the RepBase database.
 See the Configuration and Input sections below and **run the testing when you have the RepBase database in the file `config/RepBase.fasta`**.
 
 ```
-snakemake --cores 8 --sdm conda -p --configfile test/config/config.yaml &> test.log
+conda activate snakemake
+snakemake --profile config/default --configfile test/config/config.yaml &> test/test.log
 ```
+### Warning about RepeatModeler and RepeatMasker
+If you have issues with the steps that run RepeatModeler and RepeatMasker you might need to 
+run them inside the `dfam/tetools` container instead of the Conda environment. Doing this will likely solve the issue but it will require more time to run.
+To do this, in the `config/config.yaml` file in the `cnv` module set the `use_container` parameter to `True`, 
+and in the `config/default/config.yaml` or `config/slurm/config.yaml` add the following parameters:
+```
+use-apptainer: True
+apptainer-args: "--bind $(pwd):$(pwd)"
+```
+And use the environment `workflow/envs/snakemake-apptainer.yaml` instead of `workflow/envs/snakemake.yaml`.
+
+Note that the container and the Conda environment use different versions of the software:
+| Software | Conda | Container |
+| :---- |----: | ----: |
+RepeatModeler  | 2.0.1 | 2.0.6
+RepeatMasker | 4.1.2 | 4.1.7-p1
 
 
 ## Configuration
@@ -137,25 +154,22 @@ Mandatory columns with these exact names:
 
 ## Execution
 In a terminal, the working directory must be the directory with `workflow/` and `config/`.  
-Activate the Snakemake environment: 
+1) Activate the Snakemake environment: 
 ```
 conda activate snakemake
 ```
 
-Run the pipeline: 
+2) Modify the execution configuration in `config/default/config.yaml` or `config/slurm/config.yaml`, depending on whether you want to run the workflow locally or in a SLURM cluster. To learn more about how Snakemake works, undertand its command-line options and how to take advantage of its features, you can take a look at the Wiki (PENDING).
+
+3) Option 1 - Execute locally:
 ```
-snakemake --cores <n> --sdm conda -p &> <mydataset>.log
+snakemake --profile config/default &> <mydataset>.log
 ```
-  * Snakemake options:  
-    * `--cores <n>`: Number of cores you want to use. Mandatory.
-    * `--sdm conda`: Specify that Snakemake will use conda environments to run the rules. Mandatory.
-    * `-p`: Print in the standard output the command-lines run by each job. Optional.
-    * `--conda-frontend conda`: Use it if you are using conda instead of mamba. Mamba is the default.
-    * `--rerun-incomplete`: Use it when a past run of the workflow was aborted and you are repeating the run.
-    * `--keep-going`: Use it to avoid stopping the workflow when a job fails (i.e. run everything that can run).
-    * `-n`: Dry run.  
-  
-To learn more about how Snakemake works and how to take advantage of its features, you can take a look at the Wiki (PENDING).
+
+3) Option 2 - Execute in SLURM:
+```
+snakemake --profile config/slurm &> <mydataset>.log
+```
 
 It is recommended to redirect all the standard output and error to a log file as shown in the example command above.
 If you see an error message, identify which rule failed and check the log file for that rule. The log files are in the `logs/` directory.

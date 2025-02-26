@@ -15,7 +15,7 @@ rule join_metadata:
     resources:
         tmpdir=TEMPDIR,
     conda:
-        "../envs/snakemake.yaml"
+        "../envs/pandas.yaml"
     script:
         "../scripts/join_metadata.py"
 
@@ -30,7 +30,7 @@ rule join_chromosomes:
     resources:
         tmpdir=TEMPDIR,
     conda:
-        "../envs/snakemake.yaml"
+        "../envs/pandas.yaml"
     script:
         "../scripts/join_chromosomes.py"
 
@@ -49,7 +49,7 @@ checkpoint get_lineages:
     resources:
         tmpdir=TEMPDIR,
     conda:
-        "../envs/snakemake.yaml"
+        "../envs/pandas.yaml"
     script:
         "../scripts/get_lineages.py"
 
@@ -66,7 +66,7 @@ rule join_sequences:
     output:
         sequences=INT_DATASET_DIR / "sequences.csv",
     conda:
-        "../envs/snakemake.yaml"
+        "../envs/pandas.yaml"
     log:
         "logs/join_datasets/join_sequences.log",
     script:
@@ -83,7 +83,7 @@ rule join_cnv:
     resources:
         tmpdir=TEMPDIR,
     conda:
-        "../envs/snakemake.yaml"
+        "../envs/pandas.yaml"
     script:
         "../scripts/join_tables.py"
 
@@ -98,7 +98,7 @@ rule join_mapq_depth:
     resources:
         tmpdir=TEMPDIR,
     conda:
-        "../envs/snakemake.yaml"
+        "../envs/pandas.yaml"
     script:
         "../scripts/join_tables.py"
 
@@ -113,7 +113,7 @@ rule join_ref_annotations:
     resources:
         tmpdir=TEMPDIR,
     conda:
-        "../envs/snakemake.yaml"
+        "../envs/pandas.yaml"
     script:
         "../scripts/join_ref_annotations.py"
 
@@ -222,6 +222,8 @@ rule symlink_ref_gff:
         INT_REFS_DIR / "{lineage}.gff.tsv",
     log:
         "logs/join_datasets/symlink_ref_gff_{lineage}.log",
+    conda:
+        "../envs/shell.yaml"
     shell:
         "ln -sr {input} {output} &> {log}"
 
@@ -271,7 +273,7 @@ rule join_variant_annotation:
     resources:
         tmpdir=TEMPDIR,
     conda:
-        "../envs/snakemake.yaml"
+        "../envs/pandas.yaml"
     script:
         "../scripts/join_variant_annotation.py"
 

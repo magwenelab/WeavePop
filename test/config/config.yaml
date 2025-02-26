@@ -24,7 +24,7 @@ samples_to_exclude: # Optional: Relative path to list of samples to exclude from
 
 # ------------------Output-------------------------------------------------------------------------
 
-output_directory: "results_test" # Name for the output directory.
+output_directory: "test/results" # Name for the output directory.
 
 # ------------------Annotation of reference genomes------------------------------------------------
 
@@ -69,6 +69,7 @@ cnv:
   repeats:
     repeats_database: "config/RepBase.fasta" # Relative path to the RepBase FASTA file.
     repeats_threads: 20 # Number of threads for RepeatModeler and RepeatMasker.
+    use_container: False # True to use Apptainer containers for RepeatModeler and RepeatMasker.
 
 # ------------------Annotation of SNP effects------------------------------------------------------
 

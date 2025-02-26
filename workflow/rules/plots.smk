@@ -12,7 +12,7 @@ rule loci:
     log:
         "logs/dataset/plots/loci.log",
     conda:
-        "../envs/snakemake.yaml"
+        "../envs/samtools.yaml"
     shell:
         "xonsh workflow/scripts/loci.xsh "
         "-g {input.loci} "

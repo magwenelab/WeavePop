@@ -28,7 +28,7 @@ rule join_depth_by_chrom_good:
     log:
         "logs/dataset/depth_quality/join_depth_by_chrom_good.log",
     conda:
-        "../envs/snakemake.yaml"
+        "../envs/pandas.yaml"
     script:
         "../scripts/join_tables.py"
 

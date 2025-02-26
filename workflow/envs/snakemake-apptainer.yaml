@@ -1,4 +1,4 @@
-name: snakemake
+name: snakemake-apptainer
 channels:
   - conda-forge
   - bioconda
@@ -7,3 +7,4 @@ dependencies:
   - snakemake-minimal=8.18.2
   - snakemake-executor-plugin-slurm=0.15.0
   - pandas=2.2.2
+  - apptainer=1.3.6

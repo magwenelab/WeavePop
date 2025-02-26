@@ -1,4 +1,4 @@
-name : plotting
+name: r
 channels:
   - conda-forge
   - bioconda
