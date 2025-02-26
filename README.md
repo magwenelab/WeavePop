@@ -50,7 +50,7 @@ conda config --set channel_priority strict
 #### Option 1: Download this GitHub repository
 
 Use the green button `<> Code` and click `Download ZIP`.  
-Extract the `.zip` file.
+Extract the `.zip` file to a directory called `FungalPop/`.
 
 #### Option 2: Use Snakedeploy (PENDING)
 
