@@ -14,5 +14,5 @@ data_small/
 config/RepBase.fasta
 *temp*
 *pycache*
-
+execution_scripts/
 
