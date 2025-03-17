@@ -97,43 +97,6 @@ else:
     exit(1)
 
 # =================================================================================================
-#   On start checks
-# =================================================================================================
-
-# onstart:
-
-#     print("Executed command:", " ".join(sys.argv))
-#     print("                                   ", flush=True)
-#     profile_config_path = None
-#     for arg in sys.argv: # Check if --profile option is used
-#         if arg.startswith("--profile"):     
-#             profile_path = arg.split("=")[1] if "=" in arg else sys.argv[sys.argv.index(arg) + 1]
-#             profile_config_path = os.path.join(profile_path, "config.yaml")
-#             break
-#     if profile_config_path and os.path.exists(profile_config_path):
-#         print("Command line options from profile config file:", flush=True)
-#         with open(profile_config_path, 'r') as file:
-#             for line in file:
-#                 if line.strip() and not line.strip().startswith("#"):
-#                     print(line.strip(), flush=True)
-#         print("                                   ", flush=True)
-
-#     params_config_path = None
-#     for arg in sys.argv: # Check if --configfile option is used
-#         if arg.startswith("--configfile"):     
-#             params_config_path = arg.split("=")[1] if "=" in arg else sys.argv[sys.argv.index(arg) + 1]
-#             break
-#         else:
-#             params_config_path = "config/config.yaml"
-#     if params_config_path and os.path.exists(params_config_path):
-#         print("Parameters from config file:", flush=True)
-#         with open(params_config_path, 'r') as file:
-#             for line in file:
-#                 if line.strip() and not line.strip().startswith("#"):
-#                     print(line.strip(), flush=True)
-#         print("                                   ", flush=True)
-
-# =================================================================================================
 #   On success messages
 # =================================================================================================
 

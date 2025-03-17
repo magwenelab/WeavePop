@@ -6,6 +6,7 @@ import pandas as pd
 import os.path
 import glob
 from pathlib import Path
+import sys
 from snakemake.utils import validate
 
 # =================================================================================================
@@ -20,10 +21,61 @@ print("                                   ", flush=True)
 print("                                   ", flush=True)
 
 # =================================================================================================
+#  Print configuration
+# =================================================================================================
+print("Executed command:", " ".join(sys.argv))
+print("", flush=True)
+
+profile_path = None
+if "--profile" in sys.argv:
+    profile_dir = sys.argv[sys.argv.index("--profile") + 1]
+    profile_path = os.path.join(profile_dir, "config.yaml")
+    print("", flush=True)
+    print(".........................Execution Profile File:", profile_path, ".........................", flush=True)
+    print("", flush=True)
+    if profile_path and os.path.exists(profile_path):
+        with open(profile_path, 'r') as file:
+            print(file.read(), flush=True)
+
+config_path = None
+if "--configfile" in sys.argv:
+    config_path = sys.argv[sys.argv.index("--configfile") + 1]
+elif "--profile" in sys.argv:
+    profile_dir = sys.argv[sys.argv.index("--profile") + 1]
+    profile_path = os.path.join(profile_dir, "config.yaml")
+    with open(profile_path, 'r') as file:
+        for line in file:
+            if line.startswith("configfile"):
+                config_path = line.split(":")[1].strip()
+                break
+            else:
+                config_path = "config/config.yaml"            
+else:
+    config_path = "config/config.yaml"
+
+print("", flush=True)
+print("............................Configuration File:", config_path, "............................", flush=True)
+print("", flush=True)
+if config_path and os.path.exists(config_path):
+    with open(config_path, 'r') as file:
+        print(file.read(), flush=True)
+
+print("", flush=True)
+print(".......................................Working directory.........................................", flush=True)
+print("", flush=True)
+print(os.getcwd(), flush=True)
+print("", flush=True)
+print("........................................Output directory.........................................", flush=True) 
+print("", flush=True)
+print(os.path.join(os.getcwd(),config["output_directory"]), flush=True)
+print("", flush=True)
+
+# =================================================================================================
 #   Validate input files and get metadata table
 # =================================================================================================
-print("...............Input...............", flush=True)
+print("..............................................Input..............................................", flush=True)
 print("                                   ", flush=True)
+
 # --Validate original metadata table---------------------------------------------------------------
 
 SAMPLE_ORIGINAL_FILE = config["metadata"]
@@ -137,34 +189,9 @@ else:
     with open(LOCI_FILE, "w") as f:
         f.write("")
 
-# =================================================================================================
-#  Print configuration
-# =================================================================================================
-print("                                  ", flush=True)
-print(".......Workflow Configuration......", flush=True)
-print("                                  ", flush=True)
-print("Selected workflow: ", config["workflow"], flush=True)
-print("                                  ", flush=True)
-print("Activated modules:", flush=True)
-if config["annotate_references"]["activate"]:
-    print("    Reference annotation", flush=True)
-if config["database"]["activate"]:
-    print("    Database", flush=True)
-if config["cnv"]["activate"]:
-    print("    CNV", flush=True)
-if config["depth_quality_features"]["activate"]:
-    print("    MAPQ and depth of genetic features", flush=True)
-if config["snpeff"]["activate"]:
-    print("    SnpEff", flush=True)
-if config["plotting"]["activate"]:
-    print("    Plotting", flush=True)
-print("                                  ", flush=True)
-print("Working directory:", os.getcwd(), flush=True)
-print("                                  ", flush=True)
-print("Output directory:", os.path.join(os.getcwd(),config["output_directory"]), flush=True)
-print("                                  ", flush=True)
-print(".........Starting Workflow.........", flush=True)
-print("                                  ", flush=True)
+print("", flush=True)
+print(".........................................Starting Workflow.........................................", flush=True)
+print("", flush=True)
 
 # =================================================================================================
 #   Define directories and variables
