@@ -191,7 +191,7 @@ Use the app in a browser: Copy the link that appears in the output (e.g. http://
 These steps assume that you are using a local machine. If you have FungalPop and your results in a remote machine you can either download `query_database/` and the `results/02.Datasets/database.db` file and do the installation and use the FungalPop-Shiny locally, or use VSCode with the Remote extension and Shiny extension to use the FungalPop-Shiny remotely.
 
 <div style="text-align: center;">
-  <img src=".figs/shiny.png" alt="Shiny window example" />
+  <img src=".figs/shiny.png" alt="Shiny CNV window example" />
 </div>
 
 
