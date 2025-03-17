@@ -16,3 +16,4 @@ config/RepBase.fasta
 *pycache*
 execution_scripts/
 marneffei/
+.latest_commit_hash.yaml
