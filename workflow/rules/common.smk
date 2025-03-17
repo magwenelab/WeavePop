@@ -8,6 +8,7 @@ import glob
 from pathlib import Path
 import sys
 from snakemake.utils import validate
+import subprocess
 
 # =================================================================================================
 #   Print welcome message
@@ -20,12 +21,17 @@ print("|  |_| | \\| |_| | | |_ |   |_| |  ", flush=True)
 print("                                   ", flush=True)
 print("                                   ", flush=True)
 
-version_file = os.path.join(os.getcwd(), ".latest_commit_hash.txt")
-if os.path.exists(version_file):
-    with open(version_file, "r") as f:
-        print(f"Version: {f.read()}", flush=True)
-else:
-    print("Version: unknown", flush=True)
+def get_latest_commit_hash():
+    try:
+        result = subprocess.run(['git', 'rev-parse', 'HEAD'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
+        return result.stdout.strip()
+    except subprocess.CalledProcessError as e:
+        print(f"Error occurred while getting the latest commit hash: {e.stderr}")
+        return None
+
+latest_commit_hash = get_latest_commit_hash()
+if latest_commit_hash:
+    print(f"Using version with commit hash: {latest_commit_hash}")
 
 # =================================================================================================
 #  Print configuration
