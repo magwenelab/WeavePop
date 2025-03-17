@@ -20,6 +20,13 @@ print("|  |_| | \\| |_| | | |_ |   |_| |  ", flush=True)
 print("                                   ", flush=True)
 print("                                   ", flush=True)
 
+version_file = os.path.join(os.getcwd(), ".latest_commit_hash.txt")
+if os.path.exists(version_file):
+    with open(version_file, "r") as f:
+        print(f"Version: {f.read()}", flush=True)
+else:
+    print("Version: unknown", flush=True)
+
 # =================================================================================================
 #  Print configuration
 # =================================================================================================
