@@ -4,6 +4,7 @@
 
 from snakemake.utils import min_version
 import sys
+import os
 
 min_version("8.2.1")
 
@@ -13,6 +14,28 @@ min_version("8.2.1")
 
 if not config:
     configfile: "config/config.yaml"
+
+# =================================================================================================
+#   Save stdout and stderr to log file
+# =================================================================================================
+
+if config["output_directory"]:
+    os.makedirs(config["output_directory"], exist_ok=True)
+    log_file_path = config["output_directory"] + "/fungalpop.log"
+else:
+    log_file_path = "fungalpop.log"
+
+if os.path.exists(log_file_path):
+    base, ext = os.path.splitext(log_file_path)
+    counter = 1
+    new_log_file_path = f"{base}_{counter}{ext}"
+    while os.path.exists(new_log_file_path):
+        counter += 1
+        new_log_file_path = f"{base}_{counter}{ext}"
+    log_file_path = new_log_file_path
+
+sys.stdout = open(log_file_path, "a")
+sys.stderr = sys.stdout
 
 # =================================================================================================
 #   Define names of directories
@@ -138,7 +161,7 @@ onerror:
     print("                                   ", flush=True)
     print("                                   ", flush=True)
     print("An error occurred during the workflow execution.", flush=True)
-    print("Check the log file for more information.", flush=True)
+    print("Above, find the rule that failed and check its log file for error details.", flush=True)
     print("                                   ", flush=True)
     print("Exiting...", flush=True)
     exit(1)
