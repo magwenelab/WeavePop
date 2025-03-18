@@ -8,7 +8,7 @@ workflow: "analysis" # Options: "analysis", "join_datasets"
 # Analysis workflow parameters
 # =================================================================================================
 
-# ------------------Input--------------------------------------------------------------------------
+# - - - - - - - - - Input - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 fastqs:
   directory: "" # Relative path to directory with all FASTQ files.
@@ -22,11 +22,11 @@ metadata: "config/metadata.csv" # Relative path to metadata CSV table.
 chromosomes: "config/chromosomes.csv" # Relative path to chromosomes CSV table.
 samples_to_exclude: # Optional: Relative path to list of samples to exclude from analyses.
 
-# ------------------Output-------------------------------------------------------------------------
+# - - - - - - - - - Output - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 output_directory: "" # Name for the output directory.
 
-# ------------------Annotation of reference genomes------------------------------------------------
+# - - - - - - - - - Annotation of reference genomes- - - - - - - - - - - - - - - - - - - - - - - - 
 
 annotate_references:
   activate: # True to run the annotation of the reference genomes. Empty or False to skip.
@@ -37,7 +37,7 @@ annotate_references:
     threads: 12 # Number of threads for Liftoff.
     extra: "" # Extra parameters for Liftoff.
 
-# ------------------Depth and quality analyses and filter-----------------------------------------------------
+# - - - - - - - - - Depth and quality analyses and filter- - - - - - - - - - - - - - - - - - - - -
 
 depth_quality: 
   mosdepth: 
@@ -55,12 +55,12 @@ depth_quality:
     min_percent_genome-wide_depth: 2 # If genome-wide depth (Global mode) is below this value, the sample is excluded.
     min_percent_properly_paired_reads: 25 # If percent of properly paired reads is below this value, the sample is excluded.
 
-# ------------------Depth and quality of genetic features---------------------------------------------
+# - - - - - - - - - Depth and quality of genetic features- - - - - - - - - - - - - - - - - - - - -
 
 depth_quality_features:
   activate: # True to activate the module. Empty or False to skip.
 
-# ------------------Copy-number variant calling----------------------------------------------------
+# - - - - - - - - - Copy-number variant calling- - - - - - - - - - - - - - - - - - - - - - - - - -
 
 cnv:
   activate: # True to activate the module. Empty or False to skip.
@@ -71,13 +71,13 @@ cnv:
     repeats_threads: 20 # Number of threads for RepeatModeler and RepeatMasker.
     use_container: False # True to use Apptainer containers for RepeatModeler and RepeatMasker.
 
-# ------------------Annotation of SNP effects------------------------------------------------------
+# - - - - - - - - - Annotation of SNP effects- - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 snpeff:
   activate: # True to activate the module. Empty or False to skip.
   extra: "" # Extra parameters for SnpEff.
 
-# ------------------Plotting-----------------------------------------------------------------------
+# - - - - - - - - - Plotting- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 plotting: 
   activate: # True to activate the module. Empty or False to skip.
@@ -85,7 +85,7 @@ plotting:
   metadata2color : "" # Column name in the samples table to color the samples in the plots.
   scale : 0.7 # Ggsave scale parameter to adjust the size of the dataset plots. Use lower values for fewer samples and bigger values for more samples.
 
-# ------------------Database-----------------------------------------------------------------------
+# - - - - - - - - - Database- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
 database:
   activate: # True to activate the module. Empty or False to skip.
