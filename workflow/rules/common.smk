@@ -23,7 +23,7 @@ print("                                   ", flush=True)
 
 def get_latest_commit_hash():
     try:
-        result = subprocess.run(['git', 'rev-parse', 'HEAD'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
+        result = subprocess.run(['sh', '-c', "tail -n1 .git/logs/HEAD | cut -d' ' -f2"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
         return result.stdout.strip()
     except subprocess.CalledProcessError as e:
         print(f"Error occurred while getting the latest commit hash: {e.stderr}")
@@ -36,7 +36,8 @@ if latest_commit_hash:
 # =================================================================================================
 #  Print configuration
 # =================================================================================================
-print("Executed command:", " ".join(sys.argv))
+print("Executed command:", flush=True)
+print(sys.argv, flush=True)
 print("", flush=True)
 
 profile_path = None
