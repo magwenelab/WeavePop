@@ -34,8 +34,8 @@ def get_head_hash():
 
 head_hash = get_head_hash()
 if not head_hash:
-    head_hash = subprocess.run(['sh', '-c', "cat .head_hash.txt"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
-    
+    result = subprocess.run(['sh', '-c', "cat .head_hash.txt"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
+    head_hash = result.stdout.strip()
 print("Commmit hash of current version:")
 print(f"{head_hash}")
 print("", flush=True)
