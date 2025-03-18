@@ -89,14 +89,13 @@ To see a full description of the input files and their format go to the [Input W
 * Reference genomes: FASTA and GFF files for each lineage. Or FASTA for each lineage and FASTA and GFF for a main reference to use to annotate the other references.
 * `metadata.csv`: A comma-separated table with one sample per row, with the columns  `sample`, `lineage`, `strain`. [Example](https://github.com/magwenelab/DiversityPipeline/blob/main/test/config/metadata.csv).  
 * `chromosomes.csv`: A comma-separated table with one row per chromosome per lineage, with the columns `lineage`,`accession` and `chromosome`. [Example](https://github.com/magwenelab/DiversityPipeline/blob/main/test/config/chromosomes.csv).  
-* `RepBase.fasta`: Database of repetitive sequences in FASTA format to use for RepeatMasker. Needed if the CNV, plotting, or database modules are activated. We recommend the [RepBase database](https://www.girinst.org/server/RepBase/). You need to download it, extract the files, and concatenate all in one FASTA file.
+* `RepBase.fasta`: Database of repetitive sequences in FASTA format to use for RepeatMasker. We recommend the [RepBase database](https://www.girinst.org/). You need to download it, extract the files, and concatenate all in one FASTA file. The database is needed if the CNV, plotting, or database modules are activated. If you want to run those steps but don't mind if the detected repeats are **wrong** you can use the provided **fake** database. 
 ```
-# Update the filename to the latest version and run the following commands
-wget https://www.girinst.org/server/RepBase/protected/RepBase29.01.fasta.tar.gz
-tar -xvzf RepBase29.01.fasta.tar.gz
-cat RepBase29.01.fasta/*.ref > RepBase.fasta
-cat RepBase29.01.fasta/appendix/*.ref >> RepBase.fasta
-rm -rf RepBase29.01.fasta/ RepBase29.01.fasta.tar.gz
+# Download the latest version and run the following:
+tar -xvzf RepBase<version>.fasta.tar.gz
+cat RepBase<version>.fasta/*.ref > RepBase.fasta
+cat RepBase<version>.fasta/appendix/*.ref >> RepBase.fasta
+rm -rf RepBase<version>.fasta/ RepBase<version>.fasta.tar.gz
 ```
 * `loci.csv`: If you want genetic features to be plotted in the depth and MAPQ plots, provide a comma-separated table with one row per gene, with the columns `gene_id` and `feature`. Max 8 features.   [Example](https://github.com/magwenelab/DiversityPipeline/blob/main/test/config/loci.csv).  
 * `exclude.txt`: If you want to exclude from all analysis some of the samples in your metadata file you can provide a file with a list of sample IDs to exclude. 
@@ -113,8 +112,6 @@ To execute the workflow you need to edit the configuration file located in `conf
 To see a full description of the configuration go to the [Configuration Wiki](https://github.com/magwenelab/DiversityPipeline/wiki/Configuration).
 
 ## Testing
-
-To test the installation of FungalPop, first **download the RepBase database** (the path must be `/<path-to>/FungalPop/config/RepBase.fasta`, see [Input files](#input-files) above) and then **run the following commands**:
 
 ```
 cd /<path-to>/FungalPop/
