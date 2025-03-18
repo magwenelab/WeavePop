@@ -6,6 +6,91 @@ import pandas as pd
 import os.path
 import glob
 from pathlib import Path
+import subprocess
+
+# =================================================================================================
+#   Print welcome message
+# =================================================================================================
+
+print("                                   ", flush=True)
+print(" _           _   _      _   _   _  ", flush=True)
+print("|_ | | |\\ | |_  |_| |  |_| | | |_|", flush=True)
+print("|  |_| | \\| |_| | | |_ |   |_| |  ", flush=True)
+print("                                   ", flush=True)
+print("                                   ", flush=True)
+
+# =================================================================================================
+#   Print commit hash of current version
+# =================================================================================================
+
+def get_head_hash():
+    try:
+        result = subprocess.run(['sh', '-c', "tail -n1 .git/logs/HEAD | cut -d' ' -f2"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
+        return result.stdout.strip()
+    except subprocess.CalledProcessError as e:
+        print(f"Error occurred while getting the latest commit hash: {e.stderr}")
+        return None
+head_hash = get_head_hash()
+
+if not head_hash:
+    result = subprocess.run(['sh', '-c', "cat .head_hash"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
+    head_hash = result.stdout.strip()
+
+print("Commmit hash of current version:")
+print(f"{head_hash}")
+print("", flush=True)
+
+# =================================================================================================
+#  Print configuration
+# =================================================================================================
+
+print("Executed command:", flush=True)
+print(" ".join(sys.argv))
+print("", flush=True)
+
+profile_path = None
+if "--profile" in sys.argv:
+    profile_dir = sys.argv[sys.argv.index("--profile") + 1]
+    profile_path = os.path.join(profile_dir, "config.yaml")
+    print("", flush=True)
+    print(".........................Execution Profile File:", profile_path, ".........................", flush=True)
+    print("", flush=True)
+    if profile_path and os.path.exists(profile_path):
+        with open(profile_path, 'r') as file:
+            print(file.read(), flush=True)
+
+config_path = None
+if "--configfile" in sys.argv:
+    config_path = sys.argv[sys.argv.index("--configfile") + 1]
+elif "--profile" in sys.argv:
+    profile_dir = sys.argv[sys.argv.index("--profile") + 1]
+    profile_path = os.path.join(profile_dir, "config.yaml")
+    with open(profile_path, 'r') as file:
+        for line in file:
+            if line.startswith("configfile"):
+                config_path = line.split(":")[1].strip()
+                break
+            else:
+                config_path = "config/config.yaml"            
+else:
+    config_path = "config/config.yaml"
+
+print("", flush=True)
+print("............................Configuration File:", config_path, "............................", flush=True)
+print("", flush=True)
+if config_path and os.path.exists(config_path):
+    with open(config_path, 'r') as file:
+        print(file.read(), flush=True)
+
+print("", flush=True)
+print(".......................................Working directory.........................................", flush=True)
+print("", flush=True)
+print(os.getcwd(), flush=True)
+print("", flush=True)
+print("........................................Output directory.........................................", flush=True) 
+print("", flush=True)
+print(os.path.join(os.getcwd(),config["joint_output_directory"]), flush=True)
+print("", flush=True)
 
 # =================================================================================================
 #   Define global variables
@@ -26,24 +111,40 @@ INPUT_PATHS = config["datasets_paths"].split(",")
 LIST_PATHS = [Path(dir) for dir in INPUT_PATHS]
 
 # =================================================================================================
-#  Print configuration
+#   Validate input files
 # =================================================================================================
-print("                                  ", flush=True)
-print(".......Workflow Configuration......", flush=True)
-print("                                  ", flush=True)
-print("Selected workflow: ", config["workflow"], flush=True)
-print("                                  ", flush=True)
-print("Working directory:", os.getcwd(), flush=True)
-print("                                  ", flush=True)
-print("Output directory:", os.path.join(os.getcwd(),config["joint_output_directory"]), flush=True)
-print("                                  ", flush=True)
-print(".........Starting Workflow.........", flush=True)
-print("                                  ", flush=True)
+
+print("..............................................Input..............................................", flush=True)
+print("                                   ", flush=True)
+for dir in LIST_PATHS:
+    if os.path.exists(dir):
+        print(f"Dataset directory: {dir}")
+    else:
+        print("", flush=True)
+        print(f"Directory {dir} not found.", flush=True)
+        print("Exiting...", flush=True)
+        exit(1)
+    if os.path.exists(os.path.join(dir, DATASET_DIR_NAME, "metadata.csv")):
+        print(f"Metadata file: {os.path.join(dir, DATASET_DIR_NAME, 'metadata.csv')}")
+    else:
+        print("", flush=True)
+        print(f"File {os.path.join(dir, DATASET_DIR_NAME, 'metadata.csv')} not found", flush=True)
+        print("Exiting...", flush=True)
+        exit(1)
+    if os.path.exists(os.path.join(dir, DATASET_DIR_NAME, "chromosomes.csv")):
+        print(f"Chromosomes file: {os.path.join(dir, DATASET_DIR_NAME, 'chromosomes.csv')}")
+    else:
+        print("", flush=True)
+        print(f"File {os.path.join(dir, DATASET_DIR_NAME, 'chromosomes.csv')} not found", flush=True)
+        print("Exiting...", flush=True)
+        exit(1)
+print("", flush=True)
+print(".........................................Starting Workflow.........................................", flush=True)
+print("", flush=True)
 
 # =================================================================================================
 #   Input functions for rules
 # =================================================================================================
-
 
 def input_joining(wildcards):
     paths_cnv = []
@@ -149,11 +250,9 @@ def input_symlink_ref_gff(wildcards):
     lineage_path = paths[wildcards.lineage]
     return lineage_path
 
-
 # =================================================================================================
 #   Checkpoint functions
 # =================================================================================================
-
 
 def listing_lineages(wildcards):
     checkpoint_output = checkpoints.get_lineages.get(**wildcards).output[0]
@@ -162,11 +261,9 @@ def listing_lineages(wildcards):
 
 LINEAGES = listing_lineages
 
-
 # =================================================================================================
 #   Final output definition functions
 # =================================================================================================
-
 
 def get_final_output():
     final_output = DATASET_DIR / "database.db"
