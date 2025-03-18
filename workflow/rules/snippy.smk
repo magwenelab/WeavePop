@@ -9,7 +9,7 @@ rule ref_fasta_symlinks:
     output:
         INT_REFS_DIR / "{lineage}" / "{lineage}.fasta",
     log:
-        "logs/references/ref_fasta_symlinks_{lineage}.log",
+        LOGS / "references" / "ref_fasta_symlinks_{lineage}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -23,7 +23,7 @@ rule agat_config:
     output:
         INT_REFS_DIR / "agat_config.yaml",
     log:
-        "logs/references/agat_config.log",
+        LOGS / "references" / "agat_config.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -53,7 +53,7 @@ rule snippy:
         tmpdir=TEMPDIR,
         extra=config["snippy"]["extra"],
     log:
-        "logs/samples/snippy/snippy_{unf_sample}.log",
+        LOGS / "samples" / "snippy" / "snippy_{unf_sample}.log",
     threads: config["snippy"]["threads"]
     conda:
         "../envs/snippy.yaml"

@@ -15,7 +15,7 @@ rule mosdepth_good:
         min_mapq=config["depth_quality"]["mosdepth"]["min_mapq"],
         outdir=INT_SAMPLES_DIR / "mosdepth",
     log:
-        "logs/samples/depth_quality/mosdepth_good_{sample}.log",
+        LOGS / "samples" / "depth_quality" / "mosdepth_good_{sample}.log",
     threads: config["depth_quality"]["mosdepth"]["threads"]
     resources:
         tmpdir=TEMPDIR,
@@ -47,7 +47,7 @@ rule depth_by_windows:
     params:
         smoothing_size=config["cnv"]["smoothing_size"],
     log:
-        "logs/samples/depth_quality/depth_by_windows_{sample}.log",
+        LOGS / "samples" / "depth_quality" / "depth_by_windows_{sample}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -75,7 +75,7 @@ rule cnv_calling:
         window_size=config["depth_quality"]["mosdepth"]["window"],
         depth_threshold=config["cnv"]["depth_threshold"],
     log:
-        "logs/samples/cnv/cnv_calling_{sample}.log",
+        LOGS / "samples" / "cnv" / "cnv_calling_{sample}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:

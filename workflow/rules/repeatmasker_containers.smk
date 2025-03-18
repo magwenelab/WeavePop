@@ -16,7 +16,7 @@ rule repeat_modeler_build:
         / "db_rmodeler"
         / wildcards.lineage,
     log:
-        "logs/references/repeats/repeatmodeler_build_{lineage}.log",
+        LOGS / "references" / "repeats" / "repeatmodeler_build_{lineage}.log",
     resources:
         tmpdir=TEMPDIR,
     singularity:
@@ -38,7 +38,7 @@ rule repeat_modeler:
     params:
         dir=lambda wildcards: INT_REFS_DIR / wildcards.lineage / "repeats",
     log:
-        "logs/references/repeats/repeatmodeler_{lineage}.log",
+        LOGS / "references" / "repeats" / "repeatmodeler_{lineage}.log",
     threads: config["cnv"]["repeats"]["repeats_threads"]
     resources:
         tmpdir=TEMPDIR,
@@ -62,7 +62,7 @@ rule repeat_modeler_separate:
         known=INT_REFS_DIR / "{lineage}" / "repeats" / "known.fasta",
         unknown=INT_REFS_DIR / "{lineage}" / "repeats" / "unknown.fasta",
     log:
-        "logs/references/repeats/repeatmodeler_separate_{lineage}.log",
+        LOGS / "references" / "repeats" / "repeatmodeler_separate_{lineage}.log",
     conda:
         "../envs/agat.yaml"
     shell:
@@ -83,7 +83,7 @@ rule repeat_masker_1:
         dir=lambda wildcards: INT_REFS_DIR / wildcards.lineage / "repeats" / "01_simple",
         tmp=lambda wildcards: INT_REFS_DIR / wildcards.lineage / "repeats",
     log:
-        "logs/references/repeats/repeatmasker1_{lineage}.log",
+        LOGS / "references" / "repeats" / "repeatmasker1_{lineage}.log",
     threads: config["cnv"]["repeats"]["repeats_threads"]
     resources:
         tmpdir=TEMPDIR,
@@ -116,7 +116,7 @@ rule repeat_masker_2:
         dir=lambda wildcards: INT_REFS_DIR / wildcards.lineage / "repeats" / "02_complex",
         tmp=lambda wildcards: INT_REFS_DIR / wildcards.lineage / "repeats",
     log:
-        "logs/references/repeats/repeatmasker2_{lineage}.log",
+        LOGS / "references" / "repeats" / "repeatmasker2_{lineage}.log",
     threads: config["cnv"]["repeats"]["repeats_threads"]
     resources:
         tmpdir=TEMPDIR,
@@ -148,7 +148,7 @@ rule repeat_masker_3:
         dir=lambda wildcards: INT_REFS_DIR / wildcards.lineage / "repeats" / "03_known",
         tmp=lambda wildcards: INT_REFS_DIR / wildcards.lineage / "repeats",
     log:
-        "logs/references/repeats/repeatmasker3_{lineage}.log",
+        LOGS / "references" / "repeats" / "repeatmasker3_{lineage}.log",
     threads: config["cnv"]["repeats"]["repeats_threads"]
     resources:
         tmpdir=TEMPDIR,
@@ -179,7 +179,7 @@ rule repeat_masker_4:
         dir=lambda wildcards: INT_REFS_DIR / wildcards.lineage / "repeats" / "04_unknown",
         tmp=lambda wildcards: INT_REFS_DIR / wildcards.lineage / "repeats",
     log:
-        "logs/references/repeats/repeatmasker4_{lineage}.log",
+        LOGS / "references" / "repeats" / "repeatmasker4_{lineage}.log",
     threads: config["cnv"]["repeats"]["repeats_threads"]
     resources:
         tmpdir=TEMPDIR,
@@ -212,7 +212,7 @@ rule repeat_masker_bed:
         known=INT_REFS_DIR / "{lineage}" / "repeats" / "03_known" / "{lineage}.bed",
         unknown=INT_REFS_DIR / "{lineage}" / "repeats" / "04_unknown" / "{lineage}.bed",
     log:
-        "logs/references/repeats/repeatmasker_combine_{lineage}.log",
+        LOGS / "references" / "repeats" / "repeatmasker_combine_{lineage}.log",
     conda:
         "../envs/shell.yaml"
     shell:
@@ -237,7 +237,7 @@ rule repeat_masker_combine:
     output:
         REFS_DIR / "{lineage}" / "{lineage}_repeats.bed",
     log:
-        "logs/references/repeats/repeatmasker_combine_{lineage}.log",
+        LOGS / "references" / "repeats" / "repeatmasker_combine_{lineage}.log",
     conda:
         "../envs/samtools.yaml"
     shell:

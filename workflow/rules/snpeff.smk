@@ -11,7 +11,7 @@ rule extract_cds_seqs:
     output:
         cds=INT_REFS_DIR / "{lineage}" / "{lineage}.cds.fa",
     log:
-        "logs/references/extract_cds_seqs_{lineage}.log",
+        LOGS / "references" / "snpeff" / "extract_cds_seqs_{lineage}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -34,7 +34,7 @@ rule extract_protein_seqs:
     output:
         prots=INT_REFS_DIR / "{lineage}" / "{lineage}.prots.fa",
     log:
-        "logs/references/extract_protein_seqs_{lineage}.log",
+        LOGS / "references" / "snpeff" / "extract_protein_seqs_{lineage}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -73,7 +73,7 @@ rule prepare_refs_db:
         name="Species_name_{lineage}",
         config=INT_REFS_DIR / "snpeff_data" / "snpEff.config",
     log:
-        "logs/references/prepare_dbs_{lineage}.log",
+        LOGS / "references" / "snpeff" / "prepare_dbs_{lineage}.log",
     shell:
         """
         echo "{params.name}.genome : {params.name}" >> {params.config} 2> {log} && 
@@ -98,7 +98,7 @@ rule build_refs_db:
         dir=os.getcwd() / INT_REFS_DIR / "snpeff_data",
         name="Species_name_{lineage}",
     log:
-        "logs/references/build_dbs_{lineage}.log",
+        LOGS / "references" / "snpeff" / "build_dbs_{lineage}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -127,7 +127,7 @@ rule intersect_vcfs:
     params:
         tmp_dir=os.path.join(TEMPDIR, "tmp_{lineage}"),
     log:
-        "logs/dataset/snpeff/intersect_vcfs_{lineage}.log",
+        LOGS / "dataset" / "snpeff" / "intersect_vcfs_{lineage}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -154,7 +154,7 @@ rule snpeff:
         config=INT_REFS_DIR / "snpeff_data" / "snpEff.config",
         name="Species_name_{lineage}",
     log:
-        "logs/dataset/snpeff/snpeff_{lineage}.log",
+        LOGS / "dataset" / "snpeff" / "snpeff_{lineage}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -179,7 +179,7 @@ rule extract_vcf_annotation:
         lofs=INT_DATASET_DIR / "snpeff" / "{lineage}_lofs.tsv",
         nmds=INT_DATASET_DIR / "snpeff" / "{lineage}_nmds.tsv",
     log:
-        "logs/dataset/snpeff/extract_vcf_annotation_{lineage}.log",
+        LOGS / "dataset" / "snpeff" / "extract_vcf_annotation_{lineage}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:

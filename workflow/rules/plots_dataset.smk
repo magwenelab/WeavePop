@@ -11,7 +11,7 @@ rule join_depth_by_chrom_raw:
     output:
         INT_DATASET_DIR / "depth_quality" / "depth_by_chrom_raw.tsv",
     log:
-        "logs/dataset/depth_quality/join_depth_by_chrom_raw.log",
+        LOGS / "dataset" / "depth_quality" / "join_depth_by_chrom_raw.log",
     conda:
         "../envs/shell.yaml"
     script:
@@ -26,7 +26,7 @@ rule join_depth_by_chrom_good:
     output:
         INT_DATASET_DIR / "depth_quality" / "depth_by_chrom_good.tsv",
     log:
-        "logs/dataset/depth_quality/join_depth_by_chrom_good.log",
+        LOGS / "dataset" / "depth_quality" / "join_depth_by_chrom_good.log",
     conda:
         "../envs/pandas.yaml"
     script:
@@ -50,7 +50,7 @@ rule dataset_summary_plot:
     params:
         config["plotting"]["scale"],
     log:
-        "logs/dataset/plots/dataset_summary.log",
+        LOGS / "dataset" / "plots" / "dataset_summary.log",
     conda:
         "../envs/r.yaml"
     script:
@@ -73,7 +73,7 @@ rule dataset_depth_by_chrom_plot:
         column=config["plotting"]["metadata2color"],
         scale=config["plotting"]["scale"],
     log:
-        "logs/dataset/plots/dataset_depth_by_chrom.log",
+        LOGS / "dataset" / "plots" / "dataset_depth_by_chrom.log",
     conda:
         "../envs/r.yaml"
     script:

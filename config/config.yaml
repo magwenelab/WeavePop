@@ -25,6 +25,7 @@ samples_to_exclude: # Optional: Relative path to list of samples to exclude from
 # - - - - - - - - - Output - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
 output_directory: "" # Name for the output directory.
+logs_directory: "" # Name for the logs directory.
 
 # - - - - - - - - - Annotation of reference genomes- - - - - - - - - - - - - - - - - - - - - - - - 
 
@@ -100,6 +101,7 @@ database:
 datasets_paths: "" # Commas separated list of paths to the directories with the results of the analysis workflow.
 datasets_names: "" # Commas separated list of names for the datasets, in the same order as the paths.
 joint_output_directory: "" # Relative path to the directory where the joined results will be saved.
+joint_logs_directory: "logs_joined"
 
 # =================================================================================================
 #   Parameters for individual tools

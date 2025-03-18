@@ -228,6 +228,7 @@ FQ1 = config["fastqs"]["fastq_suffix1"]
 FQ2 = config["fastqs"]["fastq_suffix2"]
 
 OUTPUT = Path(config["output_directory"])
+LOGS = Path(config["logs_directory"])
 SAMPLES_DIR = OUTPUT / SAMPLES_DIR_NAME
 DATASET_DIR = OUTPUT / DATASET_DIR_NAME
 REFS_DIR = OUTPUT / REFS_DIR_NAME

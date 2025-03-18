@@ -11,7 +11,7 @@ rule join_metadata:
     params:
         config["datasets_names"].split(","),
     log:
-        "logs/join_datasets/join_metadata.log",
+        LOGS / "join_datasets" / "join_metadata.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -26,7 +26,7 @@ rule join_chromosomes:
     output:
         DATASET_DIR / "chromosomes.csv",
     log:
-        "logs/join_datasets/join_chromosomes.log",
+        LOGS / "join_datasets" / "join_chromosomes.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -45,7 +45,7 @@ checkpoint get_lineages:
     output:
         directory(INT_REFS_DIR / "lineage_names"),
     log:
-        "logs/join_datasets/get_lineages.log",
+        LOGS / "join_datasets" / "get_lineages.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -68,7 +68,7 @@ rule join_sequences:
     conda:
         "../envs/pandas.yaml"
     log:
-        "logs/join_datasets/join_sequences.log",
+        LOGS / "join_datasets" / "join_sequences.log",
     script:
         "../scripts/join_sequences.py"
 
@@ -79,7 +79,7 @@ rule join_cnv:
     output:
         DATASET_DIR / "cnv" / "cnv_calls.tsv",
     log:
-        "logs/join_datasets/join_cnv.log",
+        LOGS / "join_datasets" / "join_cnv.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -94,7 +94,7 @@ rule join_mapq_depth:
     output:
         DATASET_DIR / "depth_quality" / "mapq_depth_by_feature.tsv",
     log:
-        "logs/join_datasets/join_mapq_depth.log",
+        LOGS / "join_datasets" / "join_mapq_depth.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -109,7 +109,7 @@ rule join_ref_annotations:
     output:
         INT_REFS_DIR / "all_lineages.gff.tsv",
     log:
-        "logs/join_datasets/join_ref_annotations.log",
+        LOGS / "join_datasets" / "join_ref_annotations.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -131,7 +131,7 @@ rule copy_snpeff_data:
     params:
         dir=INT_REFS_DIR / "snpeff_data",
     log:
-        "logs/join_datasets/copy_snpeff_data.log",
+        LOGS / "join_datasets" / "copy_snpeff_data.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -153,7 +153,7 @@ rule copy_snpeff_config:
     output:
         INT_REFS_DIR / "snpeff_data" / "snpEff.config",
     log:
-        "logs/join_datasets/copy_snpeff_config.log",
+        LOGS / "join_datasets" / "copy_snpeff_config.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -171,7 +171,7 @@ rule intersect_vcfs:
     params:
         tmp_dir=os.path.join(TEMPDIR, "tmp_{lineage}"),
     log:
-        "logs/join_datasets/intersect_vcfs_{lineage}.log",
+        LOGS / "join_datasets" / "intersect_vcfs_{lineage}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -197,7 +197,7 @@ rule snpeff:
         dir=os.getcwd() / INT_REFS_DIR / "snpeff_data",
         name="Species_name_{lineage}",
     log:
-        "logs/join_datasets/snpeff_{lineage}.log",
+        LOGS / "join_datasets" / "snpeff_{lineage}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -221,7 +221,7 @@ rule symlink_ref_gff:
     output:
         INT_REFS_DIR / "{lineage}.gff.tsv",
     log:
-        "logs/join_datasets/symlink_ref_gff_{lineage}.log",
+        LOGS / "join_datasets" / "symlink_ref_gff_{lineage}.log",
     conda:
         "../envs/shell.yaml"
     shell:
@@ -238,7 +238,7 @@ rule extract_vcf_annotation:
         lofs=INT_DATASET_DIR / "snpeff" / "{lineage}_lofs.tsv",
         nmds=INT_DATASET_DIR / "snpeff" / "{lineage}_nmds.tsv",
     log:
-        "logs/join_datasets/extract_vcf_annotation_{lineage}.log",
+        LOGS / "join_datasets" / "extract_vcf_annotation_{lineage}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -269,7 +269,7 @@ rule join_variant_annotation:
         nmds=DATASET_DIR / "snpeff" / "nmds.tsv",
         presence=DATASET_DIR / "snpeff" / "presence.tsv",
     log:
-        "logs/join_datasets/join_variant_annotation.log",
+        LOGS / "join_datasets" / "join_variant_annotation.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -299,7 +299,7 @@ rule complete_db:
     output:
         DATASET_DIR / "database.db",
     log:
-        "logs/join_datasets/complete_db.log",
+        LOGS / "join_datasets" / "complete_db.log",
     resources:
         tmpdir=TEMPDIR,
     conda:

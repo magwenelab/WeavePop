@@ -10,7 +10,7 @@ rule main_ref_fix_ids:
     output:
         fixed_ID=os.path.join(INT_REFS_DIR, f"{MAIN_NAME}_fixed_ID.gff"),
     log:
-        "logs/references/main_ref_fix_ids.log",
+        LOGS / "references" / "annotation" / "main_ref_fix_ids.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -30,7 +30,7 @@ rule main_ref_add_locus_tag:
     output:
         fixed_locus=os.path.join(INT_REFS_DIR, f"{MAIN_NAME}_fixed_locus.gff"),
     log:
-        "logs/references/main_ref_add_locus_tag.log",
+        LOGS / "references" / "annotation" / "main_ref_add_locus_tag.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -51,7 +51,7 @@ rule main_ref_fix_descriptions:
     output:
         fixed_description=os.path.join(INT_REFS_DIR, f"{MAIN_NAME}_fixed_description.gff"),
     log:
-        "logs/references/main_ref_fix_descriptions.log",
+        LOGS / "references" / "annotation" / "main_ref_fix_descriptions.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -72,7 +72,7 @@ rule main_ref_gff2tsv:
     output:
         tsv=os.path.join(INT_REFS_DIR, f"{MAIN_NAME}_fixed.tsv"),
     log:
-        "logs/references/main_ref_gff2tsv.log",
+        LOGS / "references" / "annotation" / "main_ref_gff2tsv.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -92,7 +92,7 @@ rule main_ref_recreate_ids:
         gff=os.path.join(INT_REFS_DIR, f"{MAIN_NAME}.gff"),
         tsv=os.path.join(INT_REFS_DIR, f"{MAIN_NAME}.tsv"),
     log:
-        "logs/references/main_ref_recreate_ids.log",
+        LOGS / "references" / "annotation" / "main_ref_recreate_ids.log",
     conda:
         "../envs/samtools.yaml"
     shell:
@@ -111,7 +111,7 @@ rule main_ref_symlinks:
         fasta=os.path.join(INT_REFS_DIR, "{lineage}", f"{MAIN_NAME}.fasta"),
         gff=os.path.join(INT_REFS_DIR, "{lineage}", f"{MAIN_NAME}.gff"),
     log:
-        "logs/references/main_liks_{lineage}.log",
+        LOGS / "references" / "annotation" / "main_liks_{lineage}.log",
     conda:
         "../envs/shell.yaml"
     shell:
@@ -141,7 +141,7 @@ rule ref2ref_liftoff:
         refdir=INT_REFS_DIR,
         extra=config["annotate_references"]["liftoff"]["extra"],
     log:
-        "logs/references/ref2ref_liftoff_{lineage}.log",
+        LOGS / "references" / "annotation" / "ref2ref_liftoff_{lineage}.log",
     threads: config["annotate_references"]["liftoff"]["threads"]
     resources:
         tmpdir=TEMPDIR,
@@ -172,7 +172,7 @@ rule refs_unmapped_features:
     params:
         refdir=INT_REFS_DIR,
     log:
-        "logs/references/refs_unmapped_features.log",
+        LOGS / "references" / "annotation" / "refs_unmapped_features.log",
     script:
         "../scripts/refs_unmapped_features.py"
 
@@ -191,7 +191,7 @@ rule ref_add_intergenic:
     params:
         extra=config["agat"]["extra"],
     log:
-        "logs/references/ref_add_intergenic_{lineage}.log",
+        LOGS / "references" / "annotation" / "ref_add_intergenic_{lineage}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -214,7 +214,7 @@ rule ref_add_introns:
     params:
         extra=config["agat"]["extra"],
     log:
-        "logs/references/ref_add_introns_{lineage}.log",
+        LOGS / "references" / "annotation" / "ref_add_introns_{lineage}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -235,7 +235,7 @@ rule ref_gff2tsv:
     output:
         tsv=INT_REFS_DIR / "{lineage}" / "{lineage}_interg_introns.gff.tsv",
     log:
-        "logs/references/gff2tsv_{lineage}.log",
+        LOGS / "references" / "annotation" / "gff2tsv_{lineage}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -254,7 +254,7 @@ rule ref_add_repeats:
     output:
         INT_REFS_DIR / "{lineage}" / "{lineage}_repeats.gff",
     log:
-        "logs/references/ref_add_repeats_{lineage}.log",
+        LOGS / "references" / "annotation" / "ref_add_repeats_{lineage}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -274,7 +274,7 @@ rule ref_gff2tsv_2:
     output:
         tsv=INT_REFS_DIR / "{lineage}" / "{lineage}_repeats.gff.tsv",
     log:
-        "logs/references/gff2tsv_{lineage}.log",
+        LOGS / "references" / "annotation" / "gff2tsv_{lineage}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -294,7 +294,7 @@ rule ref_reformat_annotation:
         tsv=REFS_DIR / "{lineage}" / "{lineage}.gff.tsv",
         gff=REFS_DIR / "{lineage}" / "{lineage}.gff",
     log:
-        "logs/references/ref_reformat_annotation_{lineage}.log",
+        LOGS / "references" / "annotation" / "ref_reformat_annotation_{lineage}.log",
     conda:
         "../envs/pandas.yaml"
     script:

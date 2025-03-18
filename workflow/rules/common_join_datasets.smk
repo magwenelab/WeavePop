@@ -12,6 +12,7 @@ from pathlib import Path
 # =================================================================================================
 
 OUTPUT = Path(config["joint_output_directory"])
+LOGS = Path(config["joint_logs_directory"])
 SAMPLES_DIR = OUTPUT / SAMPLES_DIR_NAME
 DATASET_DIR = OUTPUT / DATASET_DIR_NAME
 REFS_DIR = OUTPUT / REFS_DIR_NAME

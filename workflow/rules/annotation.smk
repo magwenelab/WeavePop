@@ -18,7 +18,7 @@ rule liftoff:
         extra=config["liftoff"]["extra"],
         outpath=INT_SAMPLES_DIR / "annotation"/ "liftoff" / "{sample}",
     log:
-        "logs/samples/annotation/liftoff_{sample}.log",
+        LOGS / "samples" / "annotation" / "liftoff_{sample}.log",
     threads: config["liftoff"]["threads"]
     resources:
         tmpdir=TEMPDIR,
@@ -53,7 +53,7 @@ rule add_intergenic:
     params:
         extra=config["agat"]["extra"],
     log:
-        "logs/samples/annotation/add_intergenic_{sample}.log",
+        LOGS / "samples" / "annotation" / "add_intergenic_{sample}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -76,7 +76,7 @@ rule add_introns:
     params:
         extra=config["agat"]["extra"],
     log:
-        "logs/samples/annotation/add_introns_{sample}.log",
+        LOGS / "samples" / "annotation" / "add_introns_{sample}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -97,7 +97,7 @@ rule annotation_gff2tsv:
     output:
         tsv=INT_SAMPLES_DIR / "annotation" / "{sample}" / "annotation.gff.tsv",
     log:
-        "logs/samples/annotation/annotation_gff2tsv_{sample}.log",
+        LOGS / "samples" / "annotation" / "annotation_gff2tsv_{sample}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -117,7 +117,7 @@ rule reformat_annotation:
         tsv=SAMPLES_DIR / "annotation" / "{sample}" / "annotation.gff.tsv",
         gff=SAMPLES_DIR / "annotation" / "{sample}" / "annotation.gff",
     log:
-        "logs/samples/annotation/reformat_annotation_{sample}.log",
+        LOGS / "samples" / "annotation" / "reformat_annotation_{sample}.log",
     conda:
         "../envs/shell.yaml"
     script:
@@ -139,7 +139,7 @@ rule extract_cds:
     params:
         extra=config["agat"]["extra"],
     log:
-        "logs/samples/annotation/extract_cds_{sample}.log",
+        LOGS / "samples" / "annotation" / "extract_cds_{sample}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -165,7 +165,7 @@ rule extract_prots:
     params:
         extra=config["agat"]["extra"],
     log:
-        "logs/samples/annotation/extract_prots_{sample}.log",
+        LOGS / "samples" / "annotation" / "extract_prots_{sample}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -193,7 +193,7 @@ rule cds2csv:
     output:
         csv=INT_SAMPLES_DIR / "annotation" / "{sample}" / "cds.csv",
     log:
-        "logs/samples/annotation/cds2csv_{sample}.log",
+        LOGS / "samples" / "annotation" / "cds2csv_{sample}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -213,7 +213,7 @@ rule prots2csv:
     output:
         csv=INT_SAMPLES_DIR / "annotation" / "{sample}" / "proteins.csv",
     log:
-        "logs/samples/annotation/prots2csv_{sample}.log",
+        LOGS / "samples" / "annotation" / "prots2csv_{sample}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:

@@ -14,7 +14,7 @@ rule mosdepth:
         extra=config["depth_quality"]["mosdepth"]["extra"],
         outdir=INT_SAMPLES_DIR / "mosdepth",
     log:
-        "logs/samples/depth_quality/mosdepth_{sample}.log",
+        LOGS / "samples" / "depth_quality" / "mosdepth_{sample}.log",
     threads: config["depth_quality"]["mosdepth"]["threads"]
     resources:
         tmpdir=TEMPDIR,
@@ -44,7 +44,7 @@ rule mapq:
         bed=INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "mapq.bed",
         window_bed=INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "mapq_by_window.bed",
     log:
-        "logs/samples/depth_quality/mapq_{sample}.log",
+        LOGS / "samples" / "depth_quality" / "mapq_{sample}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -68,7 +68,7 @@ rule mapq_depth:
         depthmapq=SAMPLES_DIR / "depth_quality" / "{sample}" / "mapq_depth_by_window.bed",
         tsv=SAMPLES_DIR / "depth_quality" / "{sample}" / "mapq_depth_by_feature.tsv",
     log:
-        "logs/samples/depth_quality/mapq_depth_{sample}.log",
+        LOGS / "samples" / "depth_quality" / "mapq_depth_{sample}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:

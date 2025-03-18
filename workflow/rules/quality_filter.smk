@@ -12,7 +12,7 @@ rule bam_good:
     params:
         min_mapq=config["depth_quality"]["mosdepth"]["min_mapq"],
     log:
-        "logs/samples/depth_quality/bam_good_{unf_sample}.log",
+        LOGS / "samples" / "depth_quality" / "bam_good_{unf_sample}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -30,7 +30,7 @@ rule depth_distribution:
         by_chrom_good=SAMPLES_DIR / "depth_quality" / "{unf_sample}" / "depth_by_chrom_good.tsv",
         by_chrom_raw=SAMPLES_DIR / "depth_quality" / "{unf_sample}" / "depth_by_chrom_raw.tsv",
     log:
-        "logs/samples/depth_quality/depth_distribution_{unf_sample}.log",
+        LOGS / "samples" / "depth_quality" / "depth_distribution_{unf_sample}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -66,7 +66,7 @@ rule mapping_stats:
         min_pp=config["depth_quality"]["flag_quality"]["min_percent_properly_paired_reads"],
         min_coverage=config["depth_quality"]["flag_quality"]["min_percent_coverage"],
     log:
-        "logs/samples/depth_quality/mapping_stats_{unf_sample}.log",
+        LOGS / "samples" / "depth_quality" / "mapping_stats_{unf_sample}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -100,7 +100,7 @@ rule join_mapping_stats:
     output:
         INT_DATASET_DIR / "depth_quality" / "unfiltered_mapping_stats.tsv",
     log:
-        "logs/dataset/depth_quality/join_mapping_stats.log",
+        LOGS / "samples" / "depth_quality" / "join_mapping_stats.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -126,7 +126,7 @@ rule quality_filter:
     params:
         exclude=config["depth_quality"]["flag_quality"]["exclude_samples"],
     log:
-        "logs/dataset/depth_quality/quality_filter.log",
+        LOGS / "samples" / "depth_quality" / "quality_filter.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -142,7 +142,7 @@ checkpoint filter_wildcards:
         directory(INT_SAMPLES_DIR / "filtered_samples"),
         directory(INT_REFS_DIR / "filtered_lineages"),
     log:
-        "logs/dataset/depth_quality/filter_wildcards.log",
+        LOGS / "samples" / "depth_quality" / "filter_wildcards.log",
     conda:
         "../envs/pandas.yaml"
     script:

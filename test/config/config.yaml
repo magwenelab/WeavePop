@@ -25,6 +25,8 @@ samples_to_exclude: # Optional: Relative path to list of samples to exclude from
 # ------------------Output-----------------------------------------------------
 
 output_directory: "test/results" # Name for the output directory.
+logs_directory: "test/logs" # Name for the logs directory.
+
 # ------------------Annotation of reference genomes----------------------------
 
 annotate_references:
@@ -87,7 +89,7 @@ plotting:
 # ------------------Database---------------------------------------------------
 
 database:
-  activate: # True to activate the module. Empty or False to skip.
+  activate: True # True to activate the module. Empty or False to skip.
 
 # =============================================================================
 # Join datasets workflow parameters
@@ -99,7 +101,7 @@ database:
 datasets_paths: "" # Commas separated list of paths to the directories with the results of the analysis workflow.
 datasets_names: "" # Commas separated list of names for the datasets, in the same order as the paths.
 joint_output_directory: "results_joined" # Relative path to the directory where the joined results will be saved.
-
+joint_logs_directory: "logs_joined"
 # =============================================================================
 #   Parameters for individual tools
 # =============================================================================

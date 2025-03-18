@@ -9,7 +9,7 @@ rule join_ref_annotations:
     output:
         REFS_DIR / "all_lineages.gff.tsv",
     log:
-        "logs/references/join_ref_annotations.log",
+        LOGS / "references" / "annotation" / "join_ref_annotations.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -30,7 +30,7 @@ rule join_sequences:
     output:
         sequences=INT_DATASET_DIR / "sequences.csv",
     log:
-        "logs/dataset/join_sequences.log",
+        LOGS / "dataset" / "annotation" / "join_sequences.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -47,7 +47,7 @@ rule join_mapq_depth:
     output:
         DATASET_DIR / "depth_quality" / "mapq_depth_by_feature.tsv",
     log:
-        "logs/dataset/depth_quality/join_mapq_depth.log",
+        LOGS / "dataset" / "depth_quality" / "join_mapq_depth.log",
     conda:
         "../envs/pandas.yaml"
     script:
@@ -60,7 +60,7 @@ rule join_cnv:
     output:
         DATASET_DIR / "cnv" / "cnv_calls.tsv",
     log:
-        "logs/dataset/cnv/join_cnv_calls.log",
+        LOGS / "dataset" / "cnv" / "join_cnv_calls.log",
     conda:
         "../envs/pandas.yaml"
     script:
@@ -81,7 +81,7 @@ rule join_variant_annotation:
         nmds=DATASET_DIR / "snpeff" / "nmds.tsv",
         presence=DATASET_DIR / "snpeff" / "presence.tsv",
     log:
-        "logs/dataset/snpeff/join_variant_annotation.log",
+        LOGS / "dataset" / "annotation" / "join_variant_annotation.log",
     conda:
         "../envs/pandas.yaml"
     script:
@@ -108,7 +108,7 @@ rule complete_db:
     output:
         DATASET_DIR / "database.db",
     log:
-        "logs/dataset/complete_db.log",
+        LOGS / "dataset" / "complete_db.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
