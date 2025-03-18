@@ -21,7 +21,7 @@ print("|  |_| | \\| |_| | | |_ |   |_| |  ", flush=True)
 print("                                   ", flush=True)
 print("                                   ", flush=True)
 
-def get_latest_commit_hash():
+def get_head_hash():
     try:
         result = subprocess.run(['sh', '-c', "tail -n1 .git/logs/HEAD | cut -d' ' -f2"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
         return result.stdout.strip()
@@ -29,15 +29,18 @@ def get_latest_commit_hash():
         print(f"Error occurred while getting the latest commit hash: {e.stderr}")
         return None
 
-latest_commit_hash = get_latest_commit_hash()
-if latest_commit_hash:
-    print(f"Using version with commit hash: {latest_commit_hash}")
+head_hash = get_head_hash()
+if head_hash:
+    print("Commmit hash of current version:")
+    print(f"{head_hash}")
+else:
+    head_hash = subprocess.run(['sh', '-c', "cat .head_hash.txt"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
 
 # =================================================================================================
 #  Print configuration
 # =================================================================================================
 print("Executed command:", flush=True)
-print(sys.argv, flush=True)
+print(" ".join(sys.argv))
 print("", flush=True)
 
 profile_path = None
