@@ -21,6 +21,9 @@ print("|  |_| | \\| |_| | | |_ |   |_| |  ", flush=True)
 print("                                   ", flush=True)
 print("                                   ", flush=True)
 
+# =================================================================================================
+#   Print commit hash of current version
+# =================================================================================================
 def get_head_hash():
     try:
         result = subprocess.run(['sh', '-c', "tail -n1 .git/logs/HEAD | cut -d' ' -f2"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
