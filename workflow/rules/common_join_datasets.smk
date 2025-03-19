@@ -89,15 +89,16 @@ print(os.getcwd(), flush=True)
 print("", flush=True)
 print("........................................Output directory.........................................", flush=True) 
 print("", flush=True)
-print(os.path.join(os.getcwd(),config["joint_output_directory"]), flush=True)
+print(os.path.join(os.getcwd(), OUTPUT), flush=True)
 print("", flush=True)
-
+print(".........................................Logs directory..........................................", flush=True) 
+print("", flush=True)
+print(os.path.join(os.getcwd(), LOGS), flush=True)
+print("", flush=True)
 # =================================================================================================
 #   Define global variables
 # =================================================================================================
 
-OUTPUT = Path(config["joint_output_directory"])
-LOGS = Path(config["joint_logs_directory"])
 SAMPLES_DIR = OUTPUT / SAMPLES_DIR_NAME
 DATASET_DIR = OUTPUT / DATASET_DIR_NAME
 REFS_DIR = OUTPUT / REFS_DIR_NAME

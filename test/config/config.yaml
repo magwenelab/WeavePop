@@ -5,30 +5,27 @@
 workflow: "analysis" # Options: "analysis", "join_datasets"
 
 # =============================================================================
-# Analysis workflow parameters
+#   Output (for either workflow)
+# =============================================================================
+
+project_directory: "test" # Optional: Path of the project directory, relative to FungalPop/.
+run_id: "" # Optional: Suffix to append to the results and logs directories.
+
+# =============================================================================
+#   Analysis workflow parameters
 # =============================================================================
 
 # ------------------Input------------------------------------------------------
 
-#project_directory: "test" # Relative path of the project directory.
-#run_id: "test" # Name for the run.
+fastqs_directory: "data/samples" # Path to directory with all FASTQ files. Relative to project_directory or absolute.
+fastq_suffix1: "_R1.fastq.gz" # Suffix after the sample id of the forward reads file.
+fastq_suffix2: "_R2.fastq.gz" # Suffix after the sample id of the reverse reads file.
 
-fastqs:
-  directory: "/FastData/czirion/FungalPop/test/data/samples" # Relative path to directory with all FASTQ files.
-  fastq_suffix1: "_R1.fastq.gz" # Suffix after the sample name of the forward reads file.
-  fastq_suffix2: "_R2.fastq.gz" # Suffix after the sample name of the reverse reads file.
-
-references: 
-  directory: "test/data/references" # Path to directory with reference genomes.
+references_directory: "data/references" # Path to directory with reference genomes. Relative to project_directory or absolute.
 
 metadata: "test/config/metadata.csv" # Relative path to metadata CSV table.
 chromosomes: "test/config/chromosomes.csv" # Relative path to chromosomes CSV table.
 samples_to_exclude: # Optional: Relative path to list of samples to exclude from analyses.
-
-# ------------------Output-----------------------------------------------------
-
-output_directory: "test/results" # Name for the output directory.
-logs_directory: "test/logs" # Name for the logs directory.
 
 # ------------------Annotation of reference genomes----------------------------
 
@@ -94,20 +91,7 @@ plotting:
 database:
   activate: True # True to activate the module. Empty or False to skip.
 
-# =============================================================================
-# Join datasets workflow parameters
-# =============================================================================
-# This workflow joins the results of running the sample_workflow in different datasets. 
-# It assumes that if the same lineage is present in the different datasets, 
-# the same reference genome was used.
-
-datasets_paths: "" # Commas separated list of paths to the directories with the results of the analysis workflow.
-datasets_names: "" # Commas separated list of names for the datasets, in the same order as the paths.
-joint_output_directory: "results_joined" # Relative path to the directory where the joined results will be saved.
-joint_logs_directory: "logs_joined"
-# =============================================================================
-#   Parameters for individual tools
-# =============================================================================
+# ------------------Parameters for individual tools----------------------------
 
 snippy:
   threads: 12
@@ -119,3 +103,13 @@ liftoff:
 
 agat:
   extra: ""
+
+# =============================================================================
+#   Join datasets workflow parameters
+# =============================================================================
+# This workflow joins the results of running the sample_workflow in different datasets. 
+# It assumes that if the same lineage is present in the different datasets, 
+# the same reference genome was used.
+
+datasets_paths: "test/results_2025-03-19,test/results2" # Commas separated list of paths to the directories with the results of the analysis workflow.
+datasets_names: "one,two" # Commas separated list of names for the datasets, in the same order as the paths.

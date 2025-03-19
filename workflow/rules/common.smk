@@ -91,9 +91,12 @@ print(os.getcwd(), flush=True)
 print("", flush=True)
 print("........................................Output directory.........................................", flush=True) 
 print("", flush=True)
-print(os.path.join(os.getcwd(),config["output_directory"]), flush=True)
+print(os.path.join(os.getcwd(), OUTPUT ), flush=True)
 print("", flush=True)
-
+print(".........................................Logs directory..........................................", flush=True) 
+print("", flush=True)
+print(os.path.join(os.getcwd(), LOGS ), flush=True)
+print("", flush=True)
 # =================================================================================================
 #   Validate input files and get metadata table
 # =================================================================================================
@@ -224,14 +227,24 @@ print("", flush=True)
 
 UNFILT_SAMPLES = list(set(UNFILT_SAMPLE_TABLE["sample"]))
 
-# --Define directories----------------------------------------------------------------------------
-REF_DATA = Path(config["references"]["directory"])
-FQ_DATA = Path(config["fastqs"]["directory"])
-FQ1 = config["fastqs"]["fastq_suffix1"]
-FQ2 = config["fastqs"]["fastq_suffix2"]
+# --Define input data variables--------------------------------------------------------------------
 
-OUTPUT = Path(config["output_directory"])
-LOGS = Path(config["logs_directory"])
+if config["references_directory"].startswith("/"):
+    REF_DATA = Path(config["references_directory"])
+else:
+    REF_DATA = Path(os.path.join(config["project_directory"], config["references_directory"]))
+
+if config["fastqs_directory"].startswith("/"):
+    FQ_DATA = Path(config["fastqs_directory"])
+else:
+    FQ_DATA = Path(os.path.join(config["project_directory"], config["fastqs_directory"]))
+
+FQ1 = config["fastq_suffix1"]
+FQ2 = config["fastq_suffix2"]
+
+
+# --Define directories----------------------------------------------------------------------------
+
 SAMPLES_DIR = OUTPUT / SAMPLES_DIR_NAME
 DATASET_DIR = OUTPUT / DATASET_DIR_NAME
 REFS_DIR = OUTPUT / REFS_DIR_NAME
