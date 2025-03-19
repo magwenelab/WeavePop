@@ -67,7 +67,7 @@ cnv:
   smoothing_size: 15 # Parameter for median filtering smoothing of the read depth.
   depth_threshold: 0.6 # Min deviation from the global depth to be considered a CNV.
   repeats:
-    repeats_database: "" # Path to the RepBase FASTA file. Relative to project_directory or absolute.
+    repeats_database: "" # # Path to the RepBase FASTA file. Relative to project_directory or absolute. If empty, fake database is used.
     repeats_threads: 20 # Number of threads for RepeatModeler and RepeatMasker.
     use_container: False # True to use Apptainer containers for RepeatModeler and RepeatMasker.
 
@@ -81,7 +81,7 @@ snpeff:
 
 plotting: 
   activate: True # True to activate the module. Empty or False to skip.
-  loci: "" # Path to table with loci to add to plots. Relative to project_directory.
+  loci: "" # Path to table with loci to add to plots. Relative to project_directory or absolute.
   metadata2color : "source" # Column name in the samples table to color the samples in the plots.
   scale : 0.7 # Ggsave scale parameter to adjust the size of the dataset plots. Use lower values for fewer samples and bigger values for more samples.
 

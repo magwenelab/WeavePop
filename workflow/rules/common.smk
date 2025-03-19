@@ -221,17 +221,21 @@ except Exception as e:
 # --Validate loci file----------------------------------------------------------------------------
 
 if config["plotting"]["loci"]:
-    LOCI_FILE = Path(os.path.join(config["project_directory"], config["plotting"]["loci"]))
-    if os.path.exists(LOCI_FILE):
-        print("                                  ", flush=True)
-        print("Validating provided file of loci to plot...", flush=True)
-        LOCI_TABLE = pd.read_csv(LOCI_FILE, sep=",", header=0)
-        validate(LOCI_TABLE, schema="../schemas/loci.schema.yaml")
-        print(f"    Number of loci to plot: {LOCI_TABLE.shape[0]}", flush=True)
+    if config["plotting"]["loci"].startswith("/"):
+        LOCI_FILE = Path(config["plotting"]["loci"])
+        LOCI_FILE = os.path.relpath(LOCI_FILE, Path(os.getcwd()))
     else:
-        print(f"File {LOCI_FILE} not found.", flush=True)
-        print("Exiting...", flush=True)
-        exit(1)
+        LOCI_FILE = Path(os.path.join(config["project_directory"], config["plotting"]["loci"]))
+        if os.path.exists(LOCI_FILE):
+            print("                                  ", flush=True)
+            print("Validating provided file of loci to plot...", flush=True)
+            LOCI_TABLE = pd.read_csv(LOCI_FILE, sep=",", header=0)
+            validate(LOCI_TABLE, schema="../schemas/loci.schema.yaml")
+            print(f"    Number of loci to plot: {LOCI_TABLE.shape[0]}", flush=True)
+        else:
+            print(f"File {LOCI_FILE} not found.", flush=True)
+            print("Exiting...", flush=True)
+            exit(1)
 else:
     LOCI_FILE = SAMPLES_DIR / "loci_empty.txt"
     with open(LOCI_FILE, "w") as f:
