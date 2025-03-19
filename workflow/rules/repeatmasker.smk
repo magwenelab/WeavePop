@@ -74,7 +74,7 @@ rule repeat_modeler_separate:
 
 rule repeat_masker_1:
     input:
-        database=config["cnv"]["repeats"]["repeats_database"],
+        database=REPEATS_FILE,
         fasta=rules.ref_fasta_symlinks.output,
         rule_order=rules.repeat_modeler_separate.output.known,
     output:
@@ -107,7 +107,7 @@ rule repeat_masker_1:
 
 rule repeat_masker_2:
     input:
-        database=config["cnv"]["repeats"]["repeats_database"],
+        database=REPEATS_FILE,
         fasta=rules.ref_fasta_symlinks.output,
         rule_order=rules.repeat_masker_1.output,
     output:

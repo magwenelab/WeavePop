@@ -117,6 +117,13 @@ LIST_PATHS = [Path(dir) for dir in INPUT_PATHS]
 
 print("..............................................Input..............................................", flush=True)
 print("                                   ", flush=True)
+
+if OUTPUT in LIST_PATHS:
+    print("", flush=True)
+    print("Output directory is the same as an input directory. Try adding a run_id.", flush=True)
+    print("Exiting...", flush=True)
+    exit(1)
+
 for dir in LIST_PATHS:
     if os.path.exists(dir):
         print(f"Dataset directory: {dir}")

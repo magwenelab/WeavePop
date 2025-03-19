@@ -97,6 +97,7 @@ print(".........................................Logs directory..................
 print("", flush=True)
 print(os.path.join(os.getcwd(), LOGS ), flush=True)
 print("", flush=True)
+
 # =================================================================================================
 #   Validate input files and get metadata table
 # =================================================================================================
@@ -104,9 +105,25 @@ print("", flush=True)
 print("..............................................Input..............................................", flush=True)
 print("                                   ", flush=True)
 
+# --Define input data variables--------------------------------------------------------------------
+
+if config["references_directory"].startswith("/"):
+    REF_DATA = Path(config["references_directory"])
+else:
+    REF_DATA = Path(os.path.join(config["project_directory"], config["references_directory"]))
+
+if config["fastqs_directory"].startswith("/"):
+    FQ_DATA = Path(config["fastqs_directory"])
+else:
+    FQ_DATA = Path(os.path.join(config["project_directory"], config["fastqs_directory"]))
+
+FQ1 = config["fastq_suffix1"]
+FQ2 = config["fastq_suffix2"]
+
 # --Validate original metadata table---------------------------------------------------------------
 
-SAMPLE_ORIGINAL_FILE = config["metadata"]
+SAMPLE_ORIGINAL_FILE = Path(os.path.join(config["project_directory"], config["metadata"]))
+
 if not SAMPLE_ORIGINAL_FILE:
     print("Metadata file not provided.", flush=True)
     print("Exiting...", flush=True)
@@ -116,6 +133,10 @@ if os.path.exists(SAMPLE_ORIGINAL_FILE):
     SAMPLE_ORIGINAL = pd.read_csv(SAMPLE_ORIGINAL_FILE, sep=",", header=0)
     validate(SAMPLE_ORIGINAL, schema="../schemas/metadata.schema.yaml")
     print(f"    Number of samples in the metadata file: {SAMPLE_ORIGINAL.shape[0]}", flush=True)
+    if SAMPLE_ORIGINAL.shape[0] == 0:
+        print("Metadata file is empty.", flush=True)
+        print("Exiting...", flush=True)
+        exit(1)
 else:
     print(f"Metadata file {SAMPLE_ORIGINAL_FILE} not found.", flush=True)
     print("Exiting...", flush=True)
@@ -123,8 +144,8 @@ else:
 
 # --Exclude samples--------------------------------------------------------------------------------
 
-EXCLUDE_FILE = config["samples_to_exclude"]
-if EXCLUDE_FILE:
+if config["samples_to_exclude"]:
+    EXCLUDE_FILE = Path(os.path.join(config["project_directory"], config["samples_to_exclude"]))    
     if os.path.exists(EXCLUDE_FILE):
         print(f"Excluding samples in the file {EXCLUDE_FILE} from the analysis...", flush=True)
         EXCLUDE_SAMPLES = set(list(pd.read_csv(EXCLUDE_FILE, header=None, names=["sample"])["sample"]))
@@ -141,7 +162,8 @@ else:
 # --Validate chromosome names file--------------------------------------------------------------------
 
 print("                                  ", flush=True)
-CHROM_NAMES = config["chromosomes"]
+CHROM_NAMES = Path(os.path.join(config["project_directory"], config["chromosomes"]))
+
 if not CHROM_NAMES:
     print("Chromosome names file not provided.", flush=True)
     print("Exiting...", flush=True)
@@ -156,19 +178,17 @@ else:
     exit(1)
 
 try:
-    if CHROM_NAMES_TABLE.isnull().values.any():
-        raise ValueError("Chromosome names file has missing values.")
-    if set(UNFILT_SAMPLE_TABLE["lineage"].unique()) == set(CHROM_NAMES_TABLE["lineage"].unique()):
+    if all(item in CHROM_NAMES_TABLE["lineage"].unique() for item in UNFILT_SAMPLE_TABLE["lineage"].unique()):
         print("    All lineages are in the chromosome names file.", flush=True)
     else:
-        raise ValueError("Lineages in metadata and chromosome names file do not match.")
+        print("Not all lineages from the metadata table are present in the chromosomes file.", flush=True)
+        print("Exiting...", flush=True)
+        exit(1)
 
-    reference_dir = config["references"]["directory"]
-
-    for lineage in CHROM_NAMES_TABLE["lineage"].unique():
+    for lineage in UNFILT_SAMPLE_TABLE["lineage"].unique():
         print(f"Checking the chromosome names of lineage {lineage}...", flush=True)
         accessions = CHROM_NAMES_TABLE[CHROM_NAMES_TABLE["lineage"] == lineage]["accession"].tolist()
-        ref_file = Path(reference_dir) / f"{lineage}.fasta"
+        ref_file = REF_DATA / f"{lineage}.fasta"
         if ref_file.exists():
             with open(ref_file) as f:
                 seq_ids = [
@@ -200,8 +220,8 @@ except Exception as e:
 
 # --Validate loci file----------------------------------------------------------------------------
 
-LOCI_FILE = config["plotting"]["loci"]
-if LOCI_FILE:
+if config["plotting"]["loci"]:
+    LOCI_FILE = Path(os.path.join(config["project_directory"], config["plotting"]["loci"]))
     if os.path.exists(LOCI_FILE):
         print("                                  ", flush=True)
         print("Validating provided file of loci to plot...", flush=True)
@@ -216,6 +236,34 @@ else:
     LOCI_FILE = SAMPLES_DIR / "loci_empty.txt"
     with open(LOCI_FILE, "w") as f:
         f.write("")
+print("", flush=True)
+
+# --Validate repeats file--------------------------------------------------------------------------
+
+if config["cnv"]["activate"] or config["plotting"]["activate"] or config["database"]["activate"]:
+    if config["cnv"]["repeats"]["repeats_database"]:
+        if config["cnv"]["repeats"]["repeats_database"].startswith("/"):
+            REPEATS_FILE = Path(config["cnv"]["repeats"]["repeats_database"])
+            REPEATS_FILE = os.path.relpath(REPEATS_FILE, Path(os.getcwd()))
+        else:
+            REPEATS_FILE = Path(os.path.join(config["project_directory"], config["cnv"]["repeats"]["repeats_database"]))
+        if not os.path.exists(REPEATS_FILE):
+            print(f"Database of repetitive sequences file {REPEATS_FILE} not found.", flush=True)
+            print("Exiting...", flush=True)
+            exit(1)
+        else:
+            print(f"Database of repetitive sequences file {REPEATS_FILE} found.", flush=True)
+
+    else:
+        print("Database of repetitive sequences not provided.", flush=True)
+        REPEATS_FILE = Path(os.path.join(config["project_directory"], "config/fake_repeats.fasta"))
+        REPEATS_FILE.parent.mkdir(parents=True, exist_ok=True)
+        with open(REPEATS_FILE, "w") as f:
+            f.write(">fake\naaaaaaaaaaaaaa\n")
+        print(f"WARNING: Using a fake database file {REPEATS_FILE}.", flush=True)
+        print("The identification of repeats will not be accurate.", flush=True)
+       
+
 
 print("", flush=True)
 print(".........................................Starting Workflow.........................................", flush=True)
@@ -226,22 +274,6 @@ print("", flush=True)
 # =================================================================================================
 
 UNFILT_SAMPLES = list(set(UNFILT_SAMPLE_TABLE["sample"]))
-
-# --Define input data variables--------------------------------------------------------------------
-
-if config["references_directory"].startswith("/"):
-    REF_DATA = Path(config["references_directory"])
-else:
-    REF_DATA = Path(os.path.join(config["project_directory"], config["references_directory"]))
-
-if config["fastqs_directory"].startswith("/"):
-    FQ_DATA = Path(config["fastqs_directory"])
-else:
-    FQ_DATA = Path(os.path.join(config["project_directory"], config["fastqs_directory"]))
-
-FQ1 = config["fastq_suffix1"]
-FQ2 = config["fastq_suffix2"]
-
 
 # --Define directories----------------------------------------------------------------------------
 
@@ -259,9 +291,8 @@ TEMPDIR = str(INTDIR / TEMPDIR_NAME)
 # =================================================================================================
 
 if config["annotate_references"]["activate"]:
-    MAIN_DIR = Path(config["annotate_references"]["directory"])
-    MAIN_FASTA = MAIN_DIR / config["annotate_references"]["fasta"]
-    MAIN_GFF = MAIN_DIR / config["annotate_references"]["gff"]
+    MAIN_FASTA = REF_DATA / config["annotate_references"]["fasta"]
+    MAIN_GFF = REF_DATA / config["annotate_references"]["gff"]
 
 # =================================================================================================
 #   Tables for input functions
