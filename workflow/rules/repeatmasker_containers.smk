@@ -67,8 +67,8 @@ rule repeat_modeler_separate:
         "../envs/agat.yaml"
     shell:
         """
-        cat {input} | seqkit fx2tab | grep -v "Unknown" | seqkit tab2fx > {output.known} 2> {log}
-        cat {input} | seqkit fx2tab | grep "Unknown" | seqkit tab2fx > {output.unknown} 2>> {log}
+        cat {input} | seqkit fx2tab | grep -v "Unknown" | seqkit tab2fx > {output.known} 2> {log} || true
+        cat {input} | seqkit fx2tab | grep "Unknown" | seqkit tab2fx > {output.unknown} 2>> {log} || true
         """
 
 
@@ -155,6 +155,12 @@ rule repeat_masker_3:
     singularity:
         "docker://dfam/tetools:1.90"
     shell:
+        "mkdir -p $(dirname {output}) && "
+        "if [ ! -s {input.known} ]; then "
+        "touch {output} && "
+        "echo 'Skipping RepeatMasker of known repeats because no known families were identified' "
+        "&> {log}; "
+        "else "
         "wd=$(pwd) && "
         "cd {params.tmp} && "
         "export HOME={params.dir} && "
@@ -165,7 +171,8 @@ rule repeat_masker_3:
         "-e ncbi "
         "-dir $wd/{params.dir} "
         "-nolow $wd/{input.fasta} "
-        "&> $wd/{log}"
+        "&> $wd/{log}; "
+        "fi"
 
 
 rule repeat_masker_4:
@@ -186,6 +193,12 @@ rule repeat_masker_4:
     singularity:
         "docker://dfam/tetools:1.90"
     shell:
+        "mkdir -p $(dirname {output}) && "
+        "if [ ! -s {input.unknown} ]; then "
+        "touch {output} && "
+        "echo 'Skipping RepeatMasker of unknown repeats because no unknown families were identified' "
+        "&> {log}; "
+        "else "
         "wd=$(pwd) && "
         "cd {params.tmp} && "
         "export HOME={params.dir} && "
@@ -197,7 +210,8 @@ rule repeat_masker_4:
         "-dir $wd/{params.dir} "
         "-nolow "
         "$wd/{input.fasta} "
-        "&> $wd/{log}"
+        "&> $wd/{log}; "
+        "fi"
 
 
 rule repeat_masker_bed:
