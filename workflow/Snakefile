@@ -16,14 +16,31 @@ if not config:
     configfile: "config/config.yaml"
 
 # =================================================================================================
+#   Define output and logs directories
+# =================================================================================================
+
+if config["project_directory"]:
+    os.makedirs(config["project_directory"], exist_ok=True)
+    if config["run_id"]:
+        OUTPUT = Path(config["project_directory"], "results_" + config["run_id"])
+        LOGS = Path(config["project_directory"], "logs_" + config["run_id"])
+    else:
+        OUTPUT = Path(config["project_directory"], "results")
+        LOGS = Path(config["project_directory"], "logs")
+else:
+    if config["run_id"]:
+        OUTPUT = Path("results_" + config["run_id"])
+        LOGS = Path("logs_" + config["run_id"])
+    else:
+        OUTPUT = Path("results")
+        LOGS = Path("logs")
+
+# =================================================================================================
 #   Save stdout and stderr to log file
 # =================================================================================================
 
-if config["output_directory"]:
-    os.makedirs(config["output_directory"], exist_ok=True)
-    log_file_path = config["output_directory"] + "/fungalpop.log"
-else:
-    log_file_path = "fungalpop.log"
+os.makedirs(LOGS, exist_ok=True)
+log_file_path = LOGS / "fungalpop.log"
 
 if os.path.exists(log_file_path):
     base, ext = os.path.splitext(log_file_path)
