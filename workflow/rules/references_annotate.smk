@@ -8,7 +8,7 @@ rule main_ref_fix_ids:
         gff=MAIN_GFF,
         config=rules.agat_config.output,
     output:
-        fixed_ID=os.path.join(INT_REFS_DIR, f"{MAIN_NAME}_fixed_ID.gff"),
+        fixed_ID=INT_REFS_DIR / "main_ref_fixed_ID.gff",
     log:
         LOGS / "references" / "annotation" / "main_ref_fix_ids.log",
     resources:
@@ -28,7 +28,7 @@ rule main_ref_add_locus_tag:
         fixed_ID=rules.main_ref_fix_ids.output.fixed_ID,
         config=rules.agat_config.output,
     output:
-        fixed_locus=os.path.join(INT_REFS_DIR, f"{MAIN_NAME}_fixed_locus.gff"),
+        fixed_locus=INT_REFS_DIR / "main_ref_fixed_locus.gff",
     log:
         LOGS / "references" / "annotation" / "main_ref_add_locus_tag.log",
     resources:
@@ -49,7 +49,7 @@ rule main_ref_fix_descriptions:
         fixed_locus=rules.main_ref_add_locus_tag.output.fixed_locus,
         config=rules.agat_config.output,
     output:
-        fixed_description=os.path.join(INT_REFS_DIR, f"{MAIN_NAME}_fixed_description.gff"),
+        fixed_description=INT_REFS_DIR / "main_ref_fixed_description.gff",
     log:
         LOGS / "references" / "annotation" / "main_ref_fix_descriptions.log",
     resources:
@@ -70,7 +70,7 @@ rule main_ref_gff2tsv:
         fixed_description=rules.main_ref_fix_descriptions.output.fixed_description,
         config=rules.agat_config.output,
     output:
-        tsv=os.path.join(INT_REFS_DIR, f"{MAIN_NAME}_fixed.tsv"),
+        tsv=INT_REFS_DIR / "main_ref_fixed.tsv",
     log:
         LOGS / "references" / "annotation" / "main_ref_gff2tsv.log",
     resources:
@@ -89,8 +89,8 @@ rule main_ref_recreate_ids:
     input:
         tsv=rules.main_ref_gff2tsv.output.tsv,
     output:
-        gff=os.path.join(INT_REFS_DIR, f"{MAIN_NAME}.gff"),
-        tsv=os.path.join(INT_REFS_DIR, f"{MAIN_NAME}.tsv"),
+        gff=INT_REFS_DIR / "main_ref.gff",
+        tsv=INT_REFS_DIR / "main_ref.tsv",
     log:
         LOGS / "references" / "annotation" / "main_ref_recreate_ids.log",
     conda:
@@ -108,8 +108,8 @@ rule main_ref_symlinks:
         fasta=MAIN_FASTA,
         gff=rules.main_ref_recreate_ids.output.gff,
     output:
-        fasta=os.path.join(INT_REFS_DIR, "{lineage}", f"{MAIN_NAME}.fasta"),
-        gff=os.path.join(INT_REFS_DIR, "{lineage}", f"{MAIN_NAME}.gff"),
+        fasta=INT_REFS_DIR / "{lineage}" / "main_ref.fasta",
+        gff=INT_REFS_DIR / "{lineage}" / "main_ref.gff",
     log:
         LOGS / "references" / "annotation" / "main_liks_{lineage}.log",
     conda:
@@ -134,7 +134,7 @@ rule ref2ref_liftoff:
         target_gff=INT_REFS_DIR / "{lineage}" / "liftoff.gff_polished",
         unmapped=INT_REFS_DIR / "{lineage}" / "unmapped_features.txt",
         intermediate=directory(INT_REFS_DIR / "{lineage}" / "intermediate_liftoff"),
-        fai_main=os.path.join(INT_REFS_DIR, "{lineage}", f"{MAIN_NAME}.fasta.fai"),
+        fai_main=INT_REFS_DIR / "{lineage}" / "main_ref.fasta.fai",
         fai=INT_REFS_DIR / "{lineage}" / "{lineage}.fasta.fai",
         mmi=INT_REFS_DIR / "{lineage}" / "{lineage}.fasta.mmi",
     params:

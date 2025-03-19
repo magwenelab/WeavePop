@@ -249,7 +249,6 @@ if config["annotate_references"]["activate"]:
     MAIN_DIR = Path(config["annotate_references"]["directory"])
     MAIN_FASTA = MAIN_DIR / config["annotate_references"]["fasta"]
     MAIN_GFF = MAIN_DIR / config["annotate_references"]["gff"]
-    MAIN_NAME, _ = os.path.splitext(os.path.basename(MAIN_GFF))
 
 # =================================================================================================
 #   Tables for input functions

@@ -10,8 +10,11 @@ workflow: "analysis" # Options: "analysis", "join_datasets"
 
 # ------------------Input------------------------------------------------------
 
+#project_directory: "test" # Relative path of the project directory.
+#run_id: "test" # Name for the run.
+
 fastqs:
-  directory: "test/data/samples" # Relative path to directory with all FASTQ files.
+  directory: "/FastData/czirion/FungalPop/test/data/samples" # Relative path to directory with all FASTQ files.
   fastq_suffix1: "_R1.fastq.gz" # Suffix after the sample name of the forward reads file.
   fastq_suffix2: "_R2.fastq.gz" # Suffix after the sample name of the reverse reads file.
 
@@ -32,8 +35,8 @@ logs_directory: "test/logs" # Name for the logs directory.
 annotate_references:
   activate: True # True to run the annotation of the reference genomes. Empty or False to skip.
   directory: "test/data/references" # Relative path to directory with main reference files.
-  fasta: "main_reference.fasta" # Filename of the main reference genome FASTA file.
-  gff: "main_reference.gff" # Filename of the main reference genome GFF file.
+  fasta: "VNI.fasta" # Filename of the main reference genome FASTA file.
+  gff: "VNI.gff" # Filename of the main reference genome GFF file.
   liftoff:
     threads: 12 # Number of threads for Liftoff.
     extra: "" # Extra parameters for Liftoff.
