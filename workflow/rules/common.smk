@@ -260,12 +260,16 @@ if config["cnv"]["activate"] or config["plotting"]["activate"] or config["databa
 
     else:
         print("Database of repetitive sequences not provided.", flush=True)
-        REPEATS_FILE = Path(os.path.join(config["project_directory"], "config/fake_repeats.fasta"))
-        REPEATS_FILE.parent.mkdir(parents=True, exist_ok=True)
-        with open(REPEATS_FILE, "w") as f:
-            f.write(">fake\naaaaaaaaaaaaaa\n")
-        print(f"WARNING: Using a fake database file {REPEATS_FILE}.", flush=True)
-        print("The identification of repeats will not be accurate.", flush=True)
+        if config["cnv"]["repeats"]["use_fake_database"]:
+            REPEATS_FILE = Path(os.path.join(config["project_directory"], "config/fake_repeats.fasta"))
+            REPEATS_FILE.parent.mkdir(parents=True, exist_ok=True)
+            with open(REPEATS_FILE, "w") as f:
+                f.write(">fake\naaaaaaaaaaaaaa\n")
+            print(f"WARNING: Using a fake database file {REPEATS_FILE}.", flush=True)
+            print("The identification of repeats will not be accurate.", flush=True)
+        else:
+            print("Exiting...", flush=True)
+            exit(1)
        
 
 

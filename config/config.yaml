@@ -67,7 +67,8 @@ cnv:
   smoothing_size: 15 # Parameter for median filtering smoothing of the read depth.
   depth_threshold: 0.6 # Min deviation from the global depth to be considered a CNV.
   repeats:
-    repeats_database: "" # # Path to the RepBase FASTA file. Relative to project_directory or absolute. If empty, fake database is used.
+    repeats_database: "" # # Path to the RepBase FASTA file. Relative to project_directory or absolute. 
+    use_fake_database: False # True to use a fake database in absence of a real one.
     repeats_threads: 20 # Number of threads for RepeatModeler and RepeatMasker.
     use_container: False # True to use Apptainer containers for RepeatModeler and RepeatMasker.
 
