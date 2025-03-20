@@ -105,9 +105,9 @@ rm -rf RepBase<version>.fasta/ RepBase<version>.fasta.tar.gz
 To execute the workflow you need to edit the configuration file located in `config/config.yaml` to:   
 
 * Select the workflow to run: The `analysis` workflow will run the analysis for one dataset. If you have the complete results (database module activated) of the `analysis` workflow for multiple datasets, you can use the `join_datasets` workflow to create a database with all of them.  
-* Provide the paths to the input files and output directory: The config file has default paths to the input files or directories, which are relative to the working directory. The working directory should be `FungalPop/`, which contains `config/` and `workflow/`.
-* Activate modules: For the `analysis` workflow activate each module. The output description in [Output Wiki](https://github.com/magwenelab/DiversityPipeline/wiki/Output) explains which files are created by each module. Activating the `database` module automatically activates the modules `cnv`, `genes_mapq_depth`, and `snpeff`.  
-* Specify parameters.  
+* Provide the paths to the input files and project directory. The working directory should be `FungalPop/`, which contains `config/` and `workflow/`.  
+* Activate modules: When running the `analysis` workflow, you can select which of its modules to activate.  Activating the `database` module automatically activates the modules `cnv`, `genes_mapq_depth`, and `snpeff`.  
+* Specify parameters. The output description in [Output Wiki](https://github.com/magwenelab/DiversityPipeline/wiki/Output) explains which files are created by each module.  
 
 To see a full description of the configuration go to the [Configuration Wiki](https://github.com/magwenelab/DiversityPipeline/wiki/Configuration).
 
@@ -118,6 +118,7 @@ cd /<path-to>/FungalPop/
 conda activate snakemake
 snakemake --profile test/config/default
 ```
+See more detail in the Wiki [Testing](https://github.com/magwenelab/FungalPop/wiki/Testing).  
 
 ## Execution
 
