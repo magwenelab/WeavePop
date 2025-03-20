@@ -89,7 +89,7 @@ To see a full description of the input files and their format go to the [Input W
 * Reference genomes: FASTA and GFF files for each lineage. Or FASTA for each lineage and FASTA and GFF for a main reference to use to annotate the other references.
 * `metadata.csv`: A comma-separated table with one sample per row, with the columns  `sample`, `lineage`, `strain`. [Example](https://github.com/magwenelab/DiversityPipeline/blob/main/test/config/metadata.csv).  
 * `chromosomes.csv`: A comma-separated table with one row per chromosome per lineage, with the columns `lineage`,`accession` and `chromosome`. [Example](https://github.com/magwenelab/DiversityPipeline/blob/main/test/config/chromosomes.csv).  
-* `RepBase.fasta`: Database of repetitive sequences in FASTA format to use for RepeatMasker. We recommend the [RepBase database](https://www.girinst.org/). You need to download it, extract the files, and concatenate all in one FASTA file. The database is needed if the CNV, plotting, or database modules are activated. If you want to run those steps but don't mind if the detected repeats are **wrong** you can use the provided **fake** database. 
+* `RepBase.fasta`: Database of repetitive sequences in FASTA format to use for RepeatMasker. We recommend the [RepBase database](https://www.girinst.org/). You need to download it, extract the files, and concatenate them all in one FASTA file. The database is needed if the CNV, plotting, or database modules are activated. If you don't provide a database, you can choose to run it with a **fake database, which will generate inaccurate identification of repetitive sequences**.
 ```
 # Download the latest version and run the following:
 tar -xvzf RepBase<version>.fasta.tar.gz
