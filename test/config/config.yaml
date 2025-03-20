@@ -12,20 +12,20 @@ project_directory: "test" # Optional: Path of the project directory, relative to
 run_id: "" # Optional: Suffix to append to the 'results/' and 'logs/' directories. 
 
 # =============================================================================
-#   Analysis workflow parameters
+#   Parameters for the analysis workflow
 # =============================================================================
 
 # ------------------Input------------------------------------------------------
+
+metadata: "config/metadata.csv" # Path of metadata CSV table. Relative to project_directory.
+chromosomes: "config/chromosomes.csv" # Path of chromosomes CSV table. Relative to project_directory.
+samples_to_exclude: # Optional: Path of list of samples to exclude from analyses. Relative to project_directory.
 
 fastqs_directory: "data/samples" # Path of directory with all FASTQ files. Relative to project_directory or absolute.
 fastq_suffix1: "_R1.fastq.gz" # Suffix after the sample id of the forward reads file.
 fastq_suffix2: "_R2.fastq.gz" # Suffix after the sample id of the reverse reads file.
 
 references_directory: "data/references" # Path of directory with reference genomes. Relative to project_directory or absolute.
-
-metadata: "config/metadata.csv" # Path of metadata CSV table. Relative to project_directory.
-chromosomes: "config/chromosomes.csv" # Path of chromosomes CSV table. Relative to project_directory.
-samples_to_exclude: # Optional: Path of list of samples to exclude from analyses. Relative to project_directory.
 
 # ------------------Annotation of reference genomes----------------------------
 
@@ -48,11 +48,11 @@ depth_quality:
   flag_quality: 
     low_MAPQ_limit: 20 # Max MAPQ to be considered low quality.
     high_MAPQ_limit: 60 # Min MAPQ to be considered high quality.
-    exclude_samples: False # True to exclude samples that do not meet the quality thresholds.
+    exclude_samples: False # True to exclude samples that do not meet the quality thresholds below.
     min_position_depth: 5 # Minimum depth for a position to be considered covered.
     min_percent_coverage: 50 # If percent of genome covered is below this value, the sample is excluded.
     min_percent_MAPQ: 75 # If percent of high quality reads is below this value, the sample is excluded.
-    min_percent_genome-wide_depth: 2 # If genome-wide depth (Global mode) is below this value, the sample is excluded.
+    min_percent_genome-wide_depth: 2 # If genome-wide depth is below this value, the sample is excluded.
     min_percent_properly_paired_reads: 25 # If percent of properly paired reads is below this value, the sample is excluded.
 
 # ------------------Depth and quality of genetic features----------------------
@@ -83,7 +83,7 @@ snpeff:
 plotting: 
   activate: True # True to activate the module. Empty or False to skip.
   loci: "config/loci.csv" # Path to table with loci to add to plots. Relative to project_directory or absolute.
-  metadata2color : "source" # Column name in the samples table to color the samples in the plots.
+  metadata2color : "source" # Column name in the metadata table to color the samples in the plots.
   scale : 0.7 # Ggsave scale parameter to adjust the size of the dataset plots. Use lower values for fewer samples and bigger values for more samples.
 
 # ------------------Database---------------------------------------------------
@@ -105,9 +105,9 @@ agat:
   extra: ""
 
 # =============================================================================
-#   Join datasets workflow parameters
+#   Parameters for the join_datasets workflow
 # =============================================================================
-# This workflow joins the results of running the sample_workflow in different datasets. 
+# This workflow joins the results of running the analysis workflow in different datasets. 
 # It assumes that if the same lineage is present in the different datasets, 
 # the same reference genome was used.
 

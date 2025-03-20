@@ -42,6 +42,17 @@ print("Commmit hash of current version:")
 print(f"{head_hash}")
 print("", flush=True)
 
+# --Define directories----------------------------------------------------------------------------
+
+SAMPLES_DIR = OUTPUT / SAMPLES_DIR_NAME
+DATASET_DIR = OUTPUT / DATASET_DIR_NAME
+REFS_DIR = OUTPUT / REFS_DIR_NAME
+INTDIR = OUTPUT / INTDIR_NAME
+INT_SAMPLES_DIR = INTDIR / SAMPLES_DIR_NAME
+INT_DATASET_DIR = INTDIR / DATASET_DIR_NAME
+INT_REFS_DIR = INTDIR / REFS_DIR_NAME
+TEMPDIR = str(INTDIR / TEMPDIR_NAME)
+
 # =================================================================================================
 #  Print configuration
 # =================================================================================================
@@ -107,27 +118,48 @@ print("                                   ", flush=True)
 
 # --Define input data variables--------------------------------------------------------------------
 
-if config["references_directory"].startswith("/"):
-    REF_DATA = Path(config["references_directory"])
+if not config["references_directory"]:
+    print("Directory with reference genomes not provided.", flush=True)
+    print("Exiting...", flush=True)
+    exit(1)
 else:
-    REF_DATA = Path(os.path.join(config["project_directory"], config["references_directory"]))
+    if config["references_directory"].startswith("/"):
+        REF_DATA = Path(config["references_directory"])
+    else:
+        REF_DATA = Path(os.path.join(config["project_directory"], config["references_directory"]))
 
-if config["fastqs_directory"].startswith("/"):
-    FQ_DATA = Path(config["fastqs_directory"])
+if not config["fastqs_directory"]:
+    print("Directory with FASTQ files not provided.", flush=True)
+    print("Exiting...", flush=True)
+    exit(1)
 else:
-    FQ_DATA = Path(os.path.join(config["project_directory"], config["fastqs_directory"]))
+    if config["fastqs_directory"].startswith("/"):
+        FQ_DATA = Path(config["fastqs_directory"])
+    else:
+        FQ_DATA = Path(os.path.join(config["project_directory"], config["fastqs_directory"]))
 
-FQ1 = config["fastq_suffix1"]
-FQ2 = config["fastq_suffix2"]
+if not config["fastq_suffix1"]:
+    print("Suffix for forward reads not provided.", flush=True)
+    print("Exiting...", flush=True)
+    exit(1)
+else:
+    FQ1 = config["fastq_suffix1"]
+
+if not config["fastq_suffix2"]:
+    print("Suffix for reverse reads not provided.", flush=True)
+    print("Exiting...", flush=True)
+    exit(1)
+else:
+    FQ2 = config["fastq_suffix2"]
 
 # --Validate original metadata table---------------------------------------------------------------
 
-SAMPLE_ORIGINAL_FILE = Path(os.path.join(config["project_directory"], config["metadata"]))
-
-if not SAMPLE_ORIGINAL_FILE:
+if not config["metadata"]:
     print("Metadata file not provided.", flush=True)
     print("Exiting...", flush=True)
     exit(1)
+
+SAMPLE_ORIGINAL_FILE = Path(os.path.join(config["project_directory"], config["metadata"]))
 if os.path.exists(SAMPLE_ORIGINAL_FILE):
     print(f"Validating metadata file {SAMPLE_ORIGINAL_FILE}...", flush=True)
     SAMPLE_ORIGINAL = pd.read_csv(SAMPLE_ORIGINAL_FILE, sep=",", header=0)
@@ -137,6 +169,15 @@ if os.path.exists(SAMPLE_ORIGINAL_FILE):
         print("Metadata file is empty.", flush=True)
         print("Exiting...", flush=True)
         exit(1)
+    if config["plotting"]["activate"]:
+        if not config["plotting"]["metadata2color"]:
+            print("The plotting module is activated but the parameter metadata2color was not provided.", flush=True)
+            print("Exiting...", flush=True)
+            exit(1)
+        elif config["plotting"]["metadata2color"] not in SAMPLE_ORIGINAL.columns:
+            print(f"Column {config['plotting']['metadata2color']} from the parameter metadata2color is not found in the metadata table.", flush=True)
+            print("Exiting...", flush=True)
+            exit(1)
 else:
     print(f"Metadata file {SAMPLE_ORIGINAL_FILE} not found.", flush=True)
     print("Exiting...", flush=True)
@@ -162,12 +203,13 @@ else:
 # --Validate chromosome names file--------------------------------------------------------------------
 
 print("                                  ", flush=True)
-CHROM_NAMES = Path(os.path.join(config["project_directory"], config["chromosomes"]))
 
-if not CHROM_NAMES:
-    print("Chromosome names file not provided.", flush=True)
+if not config["chromosomes"]:
+    print("Files with chromosome names not provided.", flush=True)
     print("Exiting...", flush=True)
     exit(1)
+
+CHROM_NAMES = Path(os.path.join(config["project_directory"], config["chromosomes"]))
 if os.path.exists(CHROM_NAMES):
     print(f"Validating chromosome names file {CHROM_NAMES}...", flush=True)
     CHROM_NAMES_TABLE = pd.read_csv(CHROM_NAMES, header=0, dtype={"chromosome": "string"})
@@ -220,26 +262,27 @@ except Exception as e:
 
 # --Validate loci file----------------------------------------------------------------------------
 
-if config["plotting"]["loci"]:
-    if config["plotting"]["loci"].startswith("/"):
-        LOCI_FILE = Path(config["plotting"]["loci"])
-        LOCI_FILE = os.path.relpath(LOCI_FILE, Path(os.getcwd()))
-    else:
-        LOCI_FILE = Path(os.path.join(config["project_directory"], config["plotting"]["loci"]))
-        if os.path.exists(LOCI_FILE):
-            print("                                  ", flush=True)
-            print("Validating provided file of loci to plot...", flush=True)
-            LOCI_TABLE = pd.read_csv(LOCI_FILE, sep=",", header=0)
-            validate(LOCI_TABLE, schema="../schemas/loci.schema.yaml")
-            print(f"    Number of loci to plot: {LOCI_TABLE.shape[0]}", flush=True)
+if config["plotting"]["activate"]:
+    if config["plotting"]["loci"]:
+        if config["plotting"]["loci"].startswith("/"):
+            LOCI_FILE = Path(config["plotting"]["loci"])
+            LOCI_FILE = os.path.relpath(LOCI_FILE, Path(os.getcwd()))
         else:
-            print(f"File {LOCI_FILE} not found.", flush=True)
-            print("Exiting...", flush=True)
-            exit(1)
-else:
-    LOCI_FILE = SAMPLES_DIR / "loci_empty.txt"
-    with open(LOCI_FILE, "w") as f:
-        f.write("")
+            LOCI_FILE = Path(os.path.join(config["project_directory"], config["plotting"]["loci"]))
+            if os.path.exists(LOCI_FILE):
+                print("                                  ", flush=True)
+                print("Validating provided file of loci to plot...", flush=True)
+                LOCI_TABLE = pd.read_csv(LOCI_FILE, sep=",", header=0)
+                validate(LOCI_TABLE, schema="../schemas/loci.schema.yaml")
+                print(f"    Number of loci to plot: {LOCI_TABLE.shape[0]}", flush=True)
+            else:
+                print(f"File {LOCI_FILE} not found.", flush=True)
+                print("Exiting...", flush=True)
+                exit(1)
+    else:
+        LOCI_FILE = Path(os.path.join(config["project_directory"], "config/loci_empty.txt"))
+        with open(LOCI_FILE, "w") as f:
+            f.write("")
 print("", flush=True)
 
 # --Validate repeats file--------------------------------------------------------------------------
@@ -283,24 +326,31 @@ print("", flush=True)
 
 UNFILT_SAMPLES = list(set(UNFILT_SAMPLE_TABLE["sample"]))
 
-# --Define directories----------------------------------------------------------------------------
-
-SAMPLES_DIR = OUTPUT / SAMPLES_DIR_NAME
-DATASET_DIR = OUTPUT / DATASET_DIR_NAME
-REFS_DIR = OUTPUT / REFS_DIR_NAME
-INTDIR = OUTPUT / INTDIR_NAME
-INT_SAMPLES_DIR = INTDIR / SAMPLES_DIR_NAME
-INT_DATASET_DIR = INTDIR / DATASET_DIR_NAME
-INT_REFS_DIR = INTDIR / REFS_DIR_NAME
-TEMPDIR = str(INTDIR / TEMPDIR_NAME)
-
 # =================================================================================================
 #   Variables for the module Reference annotation
 # =================================================================================================
 
 if config["annotate_references"]["activate"]:
-    MAIN_FASTA = REF_DATA / config["annotate_references"]["fasta"]
-    MAIN_GFF = REF_DATA / config["annotate_references"]["gff"]
+    if not config["annotate_references"]["fasta"]:
+        print("Genome file of main reference not provided.", flush=True)
+        print("Exiting...", flush=True)
+        exit(1)
+    else:
+       MAIN_FASTA = REF_DATA / config["annotate_references"]["fasta"]
+       if not MAIN_FASTA.exists():
+           print(f"Genome file of main reference {MAIN_FASTA} not found.", flush=True)
+           print("Exiting...", flush=True)
+           exit(1)
+    if not config["annotate_references"]["gff"]:
+        print("GFF file of main reference not provided.", flush=True)
+        print("Exiting...", flush=True)
+        exit(1)
+    else:
+        MAIN_GFF = REF_DATA / config["annotate_references"]["gff"]
+        if not MAIN_GFF.exists():
+            print(f"GFF file of main reference {MAIN_GFF} not found.", flush=True)
+            print("Exiting...", flush=True)
+            exit(1)
 
 # =================================================================================================
 #   Tables for input functions
