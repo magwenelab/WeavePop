@@ -118,7 +118,7 @@ cd /<path-to>/FungalPop/
 conda activate snakemake
 snakemake --profile test/config/default
 ```
-See more detail in the Wiki [Testing](https://github.com/magwenelab/FungalPop/wiki/Testing).  
+See more details in the Wiki [Testing](https://github.com/magwenelab/FungalPop/wiki/Testing).  
 
 ## Execution
 
@@ -133,6 +133,8 @@ snakemake --profile config/default
 Learn more about the execution options in the Wiki pages [Basic usage](https://github.com/magwenelab/DiversityPipeline/wiki/Basic-usage), [Execution profiles](https://github.com/magwenelab/DiversityPipeline/wiki/Execution-profiles) and [Working with multiple projects and runs](https://github.com/magwenelab/DiversityPipeline/wiki/Working-with-multiple-projects-and-runs).
 
 ## Output
+
+The output will be generated in the `results/` directory by default. Check the Wiki [Working with multiple projects and runs](https://github.com/magwenelab/DiversityPipeline/wiki/Working-with-multiple-projects-and-runs). for more information.  
 
 Here is a list of the most relevant output, to see the full list and know which module produces each file go to the [Output Wiki](https://github.com/magwenelab/DiversityPipeline/wiki/Output).  
 
