@@ -6,7 +6,6 @@ import pandas as pd
 import os.path
 import glob
 from pathlib import Path
-import sys
 from snakemake.utils import validate
 import subprocess
 
@@ -25,24 +24,28 @@ print("                                   ", flush=True)
 #   Print commit hash of current version
 # =================================================================================================
 
-def get_head_hash():
-    try:
-        result = subprocess.run(['sh', '-c', "tail -n1 .git/logs/HEAD | cut -d' ' -f2"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
-        return result.stdout.strip()
-    except subprocess.CalledProcessError as e:
-        print(f"Error occurred while getting the latest commit hash: {e.stderr}")
-        return None
-head_hash = get_head_hash()
+try:
+    result = subprocess.run(['sh', '-c', "tail -n1 .git/logs/HEAD | cut -d' ' -f2"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
+    head_hash = result.stdout.strip()
+    print("Commmit hash of current version:")
+    print(f"{head_hash}")
+    print("", flush=True)
+except subprocess.CalledProcessError as e:
+    print(f"Error occurred while getting the latest commit hash: {e.stderr}")
 
 if not head_hash:
-    result = subprocess.run(['sh', '-c', "cat .head_hash"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
-    head_hash = result.stdout.strip()
+    try:
+        result = subprocess.run(['sh', '-c', "cat .head_hash"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
+        head_hash = result.stdout.strip()
+        print("Commmit hash of current version:")
+        print(f"{head_hash}")
+        print("", flush=True)
+    except subprocess.CalledProcessError as e:
+        print(f"Error occurred while getting the latest commit hash: {e.stderr}")
 
-print("Commmit hash of current version:")
-print(f"{head_hash}")
-print("", flush=True)
-
-# --Define directories----------------------------------------------------------------------------
+# =================================================================================================
+#  Define variables of global paths
+# =================================================================================================
 
 SAMPLES_DIR = OUTPUT / SAMPLES_DIR_NAME
 DATASET_DIR = OUTPUT / DATASET_DIR_NAME
@@ -113,17 +116,15 @@ print("", flush=True)
 #   Validate input files and get metadata table
 # =================================================================================================
 
+# --Validate input paths---------------------------------------------------------------------------
 print("..............................................Input..............................................", flush=True)
-print("                                   ", flush=True)
-
-# --Define input data variables--------------------------------------------------------------------
-
+print("", flush=True)
 if not config["references_directory"]:
     print("Directory with reference genomes not provided.", flush=True)
     print("Exiting...", flush=True)
     exit(1)
 else:
-    if config["references_directory"].startswith("/"):
+    if os.path.isabs(config["references_directory"]):
         REF_DATA = Path(config["references_directory"])
     else:
         REF_DATA = Path(os.path.join(config["project_directory"], config["references_directory"]))
@@ -133,7 +134,7 @@ if not config["fastqs_directory"]:
     print("Exiting...", flush=True)
     exit(1)
 else:
-    if config["fastqs_directory"].startswith("/"):
+    if os.path.isabs(config["fastqs_directory"]):
         FQ_DATA = Path(config["fastqs_directory"])
     else:
         FQ_DATA = Path(os.path.join(config["project_directory"], config["fastqs_directory"]))
@@ -159,7 +160,12 @@ if not config["metadata"]:
     print("Exiting...", flush=True)
     exit(1)
 
-SAMPLE_ORIGINAL_FILE = Path(os.path.join(config["project_directory"], config["metadata"]))
+if os.path.isabs(config["metadata"]):
+    SAMPLE_ORIGINAL_FILE = Path(config["metadata"])
+    SAMPLE_ORIGINAL_FILE = os.path.relpath(SAMPLE_ORIGINAL_FILE, Path(os.getcwd()))
+else:
+    SAMPLE_ORIGINAL_FILE = Path(os.path.join(config["project_directory"], config["metadata"]))
+
 if os.path.exists(SAMPLE_ORIGINAL_FILE):
     print(f"Validating metadata file {SAMPLE_ORIGINAL_FILE}...", flush=True)
     SAMPLE_ORIGINAL = pd.read_csv(SAMPLE_ORIGINAL_FILE, sep=",", header=0)
@@ -169,15 +175,6 @@ if os.path.exists(SAMPLE_ORIGINAL_FILE):
         print("Metadata file is empty.", flush=True)
         print("Exiting...", flush=True)
         exit(1)
-    if config["plotting"]["activate"]:
-        if not config["plotting"]["metadata2color"]:
-            print("The plotting module is activated but the parameter metadata2color was not provided.", flush=True)
-            print("Exiting...", flush=True)
-            exit(1)
-        elif config["plotting"]["metadata2color"] not in SAMPLE_ORIGINAL.columns:
-            print(f"Column {config['plotting']['metadata2color']} from the parameter metadata2color is not found in the metadata table.", flush=True)
-            print("Exiting...", flush=True)
-            exit(1)
 else:
     print(f"Metadata file {SAMPLE_ORIGINAL_FILE} not found.", flush=True)
     print("Exiting...", flush=True)
@@ -202,14 +199,19 @@ else:
 
 # --Validate chromosome names file--------------------------------------------------------------------
 
-print("                                  ", flush=True)
+print("", flush=True)
 
 if not config["chromosomes"]:
     print("Files with chromosome names not provided.", flush=True)
     print("Exiting...", flush=True)
     exit(1)
 
-CHROM_NAMES = Path(os.path.join(config["project_directory"], config["chromosomes"]))
+if os.path.isabs(config["chromosomes"]):
+    CHROM_NAMES = Path(config["chromosomes"])
+    CHROM_NAMES = os.path.relpath(CHROM_NAMES, Path(os.getcwd()))
+else:
+    CHROM_NAMES = Path(os.path.join(config["project_directory"], config["chromosomes"]))
+
 if os.path.exists(CHROM_NAMES):
     print(f"Validating chromosome names file {CHROM_NAMES}...", flush=True)
     CHROM_NAMES_TABLE = pd.read_csv(CHROM_NAMES, header=0, dtype={"chromosome": "string"})
@@ -219,58 +221,53 @@ else:
     print("Exiting...", flush=True)
     exit(1)
 
-try:
-    if all(item in CHROM_NAMES_TABLE["lineage"].unique() for item in UNFILT_SAMPLE_TABLE["lineage"].unique()):
-        print("    All lineages are in the chromosome names file.", flush=True)
-    else:
-        print("Not all lineages from the metadata table are present in the chromosomes file.", flush=True)
-        print("Exiting...", flush=True)
-        exit(1)
-
-    for lineage in UNFILT_SAMPLE_TABLE["lineage"].unique():
-        print(f"Checking the chromosome names of lineage {lineage}...", flush=True)
-        accessions = CHROM_NAMES_TABLE[CHROM_NAMES_TABLE["lineage"] == lineage]["accession"].tolist()
-        ref_file = REF_DATA / f"{lineage}.fasta"
-        if ref_file.exists():
-            with open(ref_file) as f:
-                seq_ids = [
-                    line.strip().split()[0][1:] for line in f if line.startswith(">")
-                ]
-
-                if not all([acc in seq_ids for acc in accessions]):
-                    raise ValueError(
-                        f"Not all chromosomes in provided file are present in {ref_file}."
-                    )
-                else:
-                    print(f"    All chromosomes in provided file are present in {ref_file}.", flush=True)
-                                    
-                if not all([seq_id in accessions for seq_id in seq_ids]):
-                    raise ValueError(
-                        f"Not all chromosomes in {ref_file} are present in the provided file."
-                    )
-                else:
-                    print(f"    All chromosomes in {ref_file} are present in the provided file.", flush=True)
-
-        else:
-            raise ValueError(f"Reference {ref_file} not found.")
-
-except Exception as e:
-    print("Error in input files:", flush=True)
-    print(e)
+if all(item in CHROM_NAMES_TABLE["lineage"].unique() for item in UNFILT_SAMPLE_TABLE["lineage"].unique()):
+    print("    All lineages are in the chromosome names file.", flush=True)
+else:
+    print("Not all lineages from the metadata table are present in the chromosomes file.", flush=True)
     print("Exiting...", flush=True)
     exit(1)
+
+for lineage in UNFILT_SAMPLE_TABLE["lineage"].unique():
+    print(f"Checking the chromosome names of lineage {lineage}...", flush=True)
+    accessions = CHROM_NAMES_TABLE[CHROM_NAMES_TABLE["lineage"] == lineage]["accession"].tolist()
+    ref_file = REF_DATA / f"{lineage}.fasta"
+    if ref_file.exists():
+        with open(ref_file) as f:
+            seq_ids = [
+                line.strip().split()[0][1:] for line in f if line.startswith(">")
+            ]
+
+            if not all([acc in seq_ids for acc in accessions]):
+                print(f"Not all chromosomes in provided file are present in {ref_file}.", flush=True)
+                print("Exiting...", flush=True)
+                exit(1)
+            else:
+                print(f"    All chromosomes in provided file are present in {ref_file}.", flush=True)
+                                
+            if not all([seq_id in accessions for seq_id in seq_ids]):
+                print(f"Not all chromosomes in {ref_file} are present in the provided file.", flush=True)
+                print("Exiting...", flush=True)
+                exit(1)
+            else:
+                print(f"    All chromosomes in {ref_file} are present in the provided file.", flush=True)
+
+    else:
+        print(f"Reference {ref_file} not found.", flush=True)
+        print("Exiting...", flush=True)
+        exit(1)
 
 # --Validate loci file----------------------------------------------------------------------------
 
 if config["plotting"]["activate"]:
     if config["plotting"]["loci"]:
-        if config["plotting"]["loci"].startswith("/"):
+        if os.path.isabs(config["plotting"]["loci"]):
             LOCI_FILE = Path(config["plotting"]["loci"])
             LOCI_FILE = os.path.relpath(LOCI_FILE, Path(os.getcwd()))
         else:
             LOCI_FILE = Path(os.path.join(config["project_directory"], config["plotting"]["loci"]))
             if os.path.exists(LOCI_FILE):
-                print("                                  ", flush=True)
+                print("", flush=True)
                 print("Validating provided file of loci to plot...", flush=True)
                 LOCI_TABLE = pd.read_csv(LOCI_FILE, sep=",", header=0)
                 validate(LOCI_TABLE, schema="../schemas/loci.schema.yaml")
@@ -283,13 +280,20 @@ if config["plotting"]["activate"]:
         LOCI_FILE = Path(os.path.join(config["project_directory"], "config/loci_empty.txt"))
         with open(LOCI_FILE, "w") as f:
             f.write("")
-print("", flush=True)
+    if not config["plotting"]["metadata2color"]:
+        print("The plotting module is activated but the parameter metadata2color is not provided.", flush=True)
+        print("Exiting...", flush=True)
+        exit(1)
+    elif config["plotting"]["metadata2color"] not in SAMPLE_ORIGINAL.columns:
+        print(f"Column {config['plotting']['metadata2color']} from the parameter metadata2color is not found in the metadata table.", flush=True)
+        print("Exiting...", flush=True)
+        exit(1)
 
 # --Validate repeats file--------------------------------------------------------------------------
 
 if config["cnv"]["activate"] or config["plotting"]["activate"] or config["database"]["activate"]:
     if config["cnv"]["repeats"]["repeats_database"]:
-        if config["cnv"]["repeats"]["repeats_database"].startswith("/"):
+        if os.path.isabs(config["cnv"]["repeats"]["repeats_database"]):
             REPEATS_FILE = Path(config["cnv"]["repeats"]["repeats_database"])
             REPEATS_FILE = os.path.relpath(REPEATS_FILE, Path(os.getcwd()))
         else:
@@ -299,9 +303,10 @@ if config["cnv"]["activate"] or config["plotting"]["activate"] or config["databa
             print("Exiting...", flush=True)
             exit(1)
         else:
+            print("", flush=True)
             print(f"Database of repetitive sequences file {REPEATS_FILE} found.", flush=True)
-
     else:
+        print("", flush=True)
         print("Database of repetitive sequences not provided.", flush=True)
         if config["cnv"]["repeats"]["use_fake_database"]:
             REPEATS_FILE = Path(os.path.join(config["project_directory"], "config/fake_repeats.fasta"))
@@ -313,18 +318,10 @@ if config["cnv"]["activate"] or config["plotting"]["activate"] or config["databa
         else:
             print("Exiting...", flush=True)
             exit(1)
-       
-
 
 print("", flush=True)
 print(".........................................Starting Workflow.........................................", flush=True)
 print("", flush=True)
-
-# =================================================================================================
-#   Define directories and variables
-# =================================================================================================
-
-UNFILT_SAMPLES = list(set(UNFILT_SAMPLE_TABLE["sample"]))
 
 # =================================================================================================
 #   Variables for the module Reference annotation
@@ -446,7 +443,6 @@ def listing_samples(wildcards):
 
 SAMPLES = listing_samples
 
-
 def listing_lineages(wildcards):
     checkpoint_output = checkpoints.filter_wildcards.get(**wildcards).output[1]
     return expand(
@@ -456,10 +452,11 @@ def listing_lineages(wildcards):
 
 LINEAGES = listing_lineages
 
-
 # =================================================================================================
 #   Final output definition functions
 # =================================================================================================
+
+UNFILT_SAMPLES = list(set(UNFILT_SAMPLE_TABLE["sample"]))
 
 # --Output per sample previous to sample filtering-------------------------------------------------
 def get_unfiltered_output():

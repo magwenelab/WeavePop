@@ -86,7 +86,6 @@ if config["workflow"] == "analysis":
 
         include: "rules/references_no_annotate.smk"
 
-
     # ------------------Module rules---------------------------------------------------------------
     if config["database"]["activate"]:
 
@@ -97,7 +96,6 @@ if config["workflow"] == "analysis":
             include: "rules/repeatmasker_containers.smk"
         else:
             include: "rules/repeatmasker.smk"
-
 
     else:
 
