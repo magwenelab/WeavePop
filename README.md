@@ -89,7 +89,7 @@ To see a full description of the input files and their format go to the [Input W
 * Reference genomes: FASTA and GFF files for each lineage. Or FASTA for each lineage and FASTA and GFF for a main reference to use to annotate the other references.
 * `metadata.csv`: A comma-separated table with one sample per row, with the columns  `sample`, `lineage`, `strain`. [Example](https://github.com/magwenelab/DiversityPipeline/blob/main/test/config/metadata.csv).  
 * `chromosomes.csv`: A comma-separated table with one row per chromosome per lineage, with the columns `lineage`,`accession` and `chromosome`. [Example](https://github.com/magwenelab/DiversityPipeline/blob/main/test/config/chromosomes.csv).  
-* `RepBase.fasta`: Database of repetitive sequences in FASTA format to use for RepeatMasker. We recommend the [RepBase database](https://www.girinst.org/). You need to download it, extract the files, and concatenate all in one FASTA file. The database is needed if the CNV, plotting, or database modules are activated. If you want to run those steps but don't mind if the detected repeats are **wrong** you can use the provided **fake** database. 
+* `RepBase.fasta`: Database of repetitive sequences in FASTA format to use for RepeatMasker. We recommend the [RepBase database](https://www.girinst.org/). You need to download it, extract the files, and concatenate them all in one FASTA file. The database is needed if the CNV, plotting, or database modules are activated. If you don't provide a database, you can choose to run it with a **fake database, which will generate inaccurate identification of repetitive sequences**.
 ```
 # Download the latest version and run the following:
 tar -xvzf RepBase<version>.fasta.tar.gz
@@ -105,9 +105,9 @@ rm -rf RepBase<version>.fasta/ RepBase<version>.fasta.tar.gz
 To execute the workflow you need to edit the configuration file located in `config/config.yaml` to:   
 
 * Select the workflow to run: The `analysis` workflow will run the analysis for one dataset. If you have the complete results (database module activated) of the `analysis` workflow for multiple datasets, you can use the `join_datasets` workflow to create a database with all of them.  
-* Provide the paths to the input files and output directory: The config file has default paths to the input files or directories, which are relative to the working directory. The working directory should be `FungalPop/`, which contains `config/` and `workflow/`.
-* Activate modules: For the `analysis` workflow activate each module. The output description in [Output Wiki](https://github.com/magwenelab/DiversityPipeline/wiki/Output) explains which files are created by each module. Activating the `database` module automatically activates the modules `cnv`, `genes_mapq_depth`, and `snpeff`.  
-* Specify parameters.  
+* Provide the paths to the input files and project directory. The working directory should be `FungalPop/`, which contains `config/` and `workflow/`.  
+* Activate modules: When running the `analysis` workflow, you can select which of its modules to activate.  Activating the `database` module automatically activates the modules `cnv`, `genes_mapq_depth`, and `snpeff`.  
+* Specify parameters. The output description in [Output Wiki](https://github.com/magwenelab/DiversityPipeline/wiki/Output) explains which files are created by each module.  
 
 To see a full description of the configuration go to the [Configuration Wiki](https://github.com/magwenelab/DiversityPipeline/wiki/Configuration).
 
@@ -118,6 +118,7 @@ cd /<path-to>/FungalPop/
 conda activate snakemake
 snakemake --profile test/config/default
 ```
+See more details in the Wiki [Testing](https://github.com/magwenelab/FungalPop/wiki/Testing).  
 
 ## Execution
 
@@ -132,6 +133,8 @@ snakemake --profile config/default
 Learn more about the execution options in the Wiki pages [Basic usage](https://github.com/magwenelab/DiversityPipeline/wiki/Basic-usage), [Execution profiles](https://github.com/magwenelab/DiversityPipeline/wiki/Execution-profiles) and [Working with multiple projects and runs](https://github.com/magwenelab/DiversityPipeline/wiki/Working-with-multiple-projects-and-runs).
 
 ## Output
+
+The output will be generated in the `results/` directory by default. Check the Wiki [Working with multiple projects and runs](https://github.com/magwenelab/DiversityPipeline/wiki/Working-with-multiple-projects-and-runs). for more information.  
 
 Here is a list of the most relevant output, to see the full list and know which module produces each file go to the [Output Wiki](https://github.com/magwenelab/DiversityPipeline/wiki/Output).  
 
