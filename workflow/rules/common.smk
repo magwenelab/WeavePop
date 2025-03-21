@@ -183,7 +183,11 @@ else:
 # --Exclude samples--------------------------------------------------------------------------------
 
 if config["samples_to_exclude"]:
-    EXCLUDE_FILE = Path(os.path.join(config["project_directory"], config["samples_to_exclude"]))    
+    if os.path.isabs(config["samples_to_exclude"]):
+        EXCLUDE_FILE = Path(config["samples_to_exclude"])
+        EXCLUDE_FILE = os.path.relpath(EXCLUDE_FILE, Path(os.getcwd()))
+    else:
+        EXCLUDE_FILE = Path(os.path.join(config["project_directory"], config["samples_to_exclude"]))    
     if os.path.exists(EXCLUDE_FILE):
         print(f"Excluding samples in the file {EXCLUDE_FILE} from the analysis...", flush=True)
         EXCLUDE_SAMPLES = set(list(pd.read_csv(EXCLUDE_FILE, header=None, names=["sample"])["sample"]))

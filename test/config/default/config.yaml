@@ -4,7 +4,7 @@
 # snakemake --profile test/config/default
 
 # Config you can change
-cores: 8
+cores: 60
 keep-going: False
 rerun-incomplete: True
 printshellcmds: True

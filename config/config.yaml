@@ -19,7 +19,7 @@ run_id: "" # Optional: Suffix to append to the 'results/' and 'logs/' directorie
 
 metadata: "config/metadata.csv" # Path of metadata CSV table. Relative to project_directory or absolute.
 chromosomes: "config/chromosomes.csv" # Path of chromosomes CSV table. Relative to project_directory or absolute.
-samples_to_exclude: # Optional: Path of list of samples to exclude from analyses. Relative to project_directory.
+samples_to_exclude: # Optional: Path of list of samples to exclude from analyses. Relative to project_directory or absolute.
 
 fastqs_directory: "data/samples" # Path of directory with all FASTQ files. Relative to project_directory or absolute.
 fastq_suffix1: "_R1.fastq.gz" # Suffix after the sample id of the forward reads file.
