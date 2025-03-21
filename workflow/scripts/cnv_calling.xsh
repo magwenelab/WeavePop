@@ -69,7 +69,7 @@ def cnv_calling(depth_input, repeats_input, sample_name, window_size, depth_thre
     print("Converting from 0-based to 1-based coordinates...")    
     cnv_regions['start'] = cnv_regions['start'] + 1
 
-    print("Saveing CNV regions to file...")
+    print("Saving CNV regions to file...")
     output_path = Path(cnv_output)
     output_path.parent.mkdir(parents=True, exist_ok=True)
     cnv_regions.to_csv(output_path, sep='\t', index=False, header=True)
