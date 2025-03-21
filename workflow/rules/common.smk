@@ -292,12 +292,12 @@ if config["plotting"]["activate"]:
 # --Validate repeats file--------------------------------------------------------------------------
 
 if config["cnv"]["activate"] or config["plotting"]["activate"] or config["database"]["activate"]:
-    if config["cnv"]["repeats"]["repeats_database"]:
-        if os.path.isabs(config["cnv"]["repeats"]["repeats_database"]):
-            REPEATS_FILE = Path(config["cnv"]["repeats"]["repeats_database"])
+    if config["repeats_database"]:
+        if os.path.isabs(config["repeats_database"]):
+            REPEATS_FILE = Path(config["repeats_database"])
             REPEATS_FILE = os.path.relpath(REPEATS_FILE, Path(os.getcwd()))
         else:
-            REPEATS_FILE = Path(os.path.join(config["project_directory"], config["cnv"]["repeats"]["repeats_database"]))
+            REPEATS_FILE = Path(os.path.join(config["project_directory"], config["repeats_database"]))
         if not os.path.exists(REPEATS_FILE):
             print(f"Database of repetitive sequences file {REPEATS_FILE} not found.", flush=True)
             print("Exiting...", flush=True)
@@ -308,7 +308,7 @@ if config["cnv"]["activate"] or config["plotting"]["activate"] or config["databa
     else:
         print("", flush=True)
         print("Database of repetitive sequences not provided.", flush=True)
-        if config["cnv"]["repeats"]["use_fake_database"]:
+        if config["use_fake_database"]:
             REPEATS_FILE = Path(os.path.join(config["project_directory"], "config/fake_repeats.fasta"))
             REPEATS_FILE.parent.mkdir(parents=True, exist_ok=True)
             with open(REPEATS_FILE, "w") as f:
