@@ -90,13 +90,6 @@ To see a full description of the input files and their format go to the [Input W
 * `metadata.csv`: A comma-separated table with one sample per row, with the columns  `sample`, `lineage`, `strain`. [Example](https://github.com/magwenelab/DiversityPipeline/blob/main/test/config/metadata.csv).  
 * `chromosomes.csv`: A comma-separated table with one row per chromosome per lineage, with the columns `lineage`,`accession` and `chromosome`. [Example](https://github.com/magwenelab/DiversityPipeline/blob/main/test/config/chromosomes.csv).  
 * `RepBase.fasta`: Database of repetitive sequences in FASTA format to use for RepeatMasker. We recommend the [RepBase database](https://www.girinst.org/). You need to download it, extract the files, and concatenate them all in one FASTA file. The database is needed if the CNV, plotting, or database modules are activated. If you don't provide a database, you can choose to run it with a **fake database, which will generate inaccurate identification of repetitive sequences**.
-```
-# Download the latest version and run the following:
-tar -xvzf RepBase<version>.fasta.tar.gz
-cat RepBase<version>.fasta/*.ref > RepBase.fasta
-cat RepBase<version>.fasta/appendix/*.ref >> RepBase.fasta
-rm -rf RepBase<version>.fasta/ RepBase<version>.fasta.tar.gz
-```
 * `loci.csv`: If you want genetic features to be plotted in the depth and MAPQ plots, provide a comma-separated table with one row per gene, with the columns `gene_id` and `feature`. Max 8 features.   [Example](https://github.com/magwenelab/DiversityPipeline/blob/main/test/config/loci.csv).  
 * `exclude.txt`: If you want to exclude from all analysis some of the samples in your metadata file you can provide a file with a list of sample IDs to exclude. 
 
