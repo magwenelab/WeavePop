@@ -6,6 +6,8 @@ print("Loading libraries...")
 suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(RColorBrewer))
 suppressPackageStartupMessages(library(scales))
+suppressPackageStartupMessages(library(patchwork))
+
 
 print("Reading files and joining data with chromosome names...")
 sample <- snakemake@wildcards$sample
@@ -32,6 +34,7 @@ if (length(unique_levels) %% 2 != 0){
   new_order <- new_order[-length(new_order)]
 }
 chrom_names$accession_chromosome <- factor(chrom_names$accession_chromosome, levels = new_order)
+chrom_names$chromosome <- factor(chrom_names$chromosome, levels = unique(chrom_names$chromosome))
 
 print("Joining and arranging data...")
 depth <- left_join(depth, chrom_names, by = "accession")
@@ -42,24 +45,6 @@ raw_color = "gray50"
 good_color = "black" 
 color_quality = c("Good quality alignments" = good_color, "All alignments" = raw_color)
 
-print("Plotting depth distribution by chromosome...")
-plot_chrom <- ggplot(depth, aes(x=depth))+
-  geom_col(aes(y = count_raw, fill= "All alignments"))+ 
-  geom_col(aes(y = count_good, fill= "Good quality alignments"))+ 
-  facet_wrap(~chromosome,ncol = 2)+
-  scale_y_log10(name = "Number of Sites", labels = comma)+
-  scale_x_continuous(name = "Depth (X) ", labels = comma, n.breaks = 10)+
-  scale_fill_manual(name= "Alignment quality", values= color_quality)+
-  # theme(legend.position="none")+
-  labs(title = paste("Lineage:",lineage, " Sample:", sample,  sep = " "))+
-  theme(panel.grid.minor.x = element_blank(),
-        panel.grid.minor.y = element_blank(),
-        panel.grid.major = element_line(color = "gray95"),
-        panel.background = element_rect(fill = "white"),
-        panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 2))
-
-
-
 print("Calculating global depth distribution...")
 depth_global <- depth %>%
   select(depth, count_good, count_raw)%>%
@@ -67,54 +52,98 @@ depth_global <- depth %>%
   summarize(count_good_global = sum(count_good), count_raw_global = sum(count_raw))%>%
   ungroup()
 
-print("Plotting genome-wide depth distribution...")
-plot_global <- ggplot()+
-  geom_col(data = depth_global, aes(x=depth, y = count_raw_global, fill= "All alignments"))+ 
-  geom_col(data = depth_global, aes(x=depth,y = count_good_global, fill= "Good quality alignments"))+ 
-  scale_y_log10(name = "Number of Sites", labels = comma)+
-  scale_x_continuous(name = "Depth (X) ", labels = comma, n.breaks = 10)+
-  scale_fill_manual(name= "Alignment quality", values= color_quality)+
-  theme_bw()+
-  theme(legend.position="none",
-    axis.title = element_blank(),
-    panel.background = element_rect(fill = "white"),
-    axis.text.x = element_text(angle = 45, hjust = 1)
-  )
-  # labs(title = paste("Lineage:",lineage, " Sample:", sample,  sep = " "))
-
-# getting mode
+print("Calculating depth witht the highest number of sites to truncate x axis...")
 max_depth <- depth_global %>%
   filter(count_good_global == max(count_good_global)) %>%
   pull(depth)
 
-# Truncated plot
-plot_truncated <- ggplot()+
-  geom_col(data = depth_global, aes(x=depth, y = count_raw_global, fill= "All alignments"))+ 
-  geom_col(data = depth_global, aes(x=depth,y = count_good_global, fill= "Good quality alignments"))+ 
+print("Plotting genome-wide depth distribution...")
+plot_global <- ggplot()+
+  geom_line(data = depth_global, aes(x=depth,y = count_good_global), fill = good_color)+ 
   scale_y_log10(name = "Number of Sites", labels = comma)+
-  scale_x_continuous(name = "Depth (X) ", labels = comma, n.breaks = 10, limits = c(0,max_depth*10))+
-  scale_fill_manual(name= "Alignment quality", values= color_quality)+
-  theme(legend.position="none")+
-  labs(title = paste("Lineage:",lineage, " Sample:", sample,  sep = " "))+
-  theme_bw()
+  scale_x_continuous(name = "Depth (X)", labels = comma, n.breaks = 10)+
+  theme_bw()+
+  theme(axis.title.x = element_blank())+
+  labs(title = "Good quality alignments", subtitle = "Log10 scale in Y-axis")
 
-overlay_grob <- ggplotGrob(plot_global)
+plot_truncated_log <- ggplot()+
+  geom_line(data = depth_global, aes(x=depth,y = count_good_global), fill = good_color)+ 
+  scale_y_log10(name = "Number of Sites", labels = comma)+
+  scale_x_continuous(name = "Depth (X)", labels = comma, n.breaks = 10, limits = c(0,max_depth*10))+
+  theme_bw()+
+  theme(axis.title.x = element_blank())+
+  labs(subtitle = "Log10 scale in Y-axis, truncated X-axis")
 
-# Add the overlay plot to the main plot
-combined_plot <- plot_truncated +
-  annotation_custom(grob = overlay_grob,
-      xmin = 0.5 * max_depth * 10,
-      xmax = max_depth * 10, 
-      ymin = 0.5 * max(log10(depth_global$count_good_global)),
-      ymax = max(log10(depth_global$count_good_global)))
+plot_truncated <- ggplot()+
+  geom_line(data = depth_global, aes(x=depth,y = count_good_global), fill = good_color)+ 
+  scale_y_continuous(name = "Number of Sites", labels = comma)+
+  scale_x_continuous(name = "Depth (X)", labels = comma, n.breaks = 10, limits = c(0,max_depth*10))+
+  theme_bw()+
+  labs(subtitle = "Truncated X-axis")
+
+plot_global_raw <- ggplot()+
+  geom_line(data = depth_global, aes(x=depth,y = count_raw_global), fill = raw_color)+ 
+  scale_y_log10(name = "Number of Sites", labels = comma)+
+  scale_x_continuous(name = "Depth (X)", labels = comma, n.breaks = 10)+
+  theme_bw()+
+  theme(axis.title.x = element_blank(), axis.title.y = element_blank())+
+  labs(title = "All alignments", subtitle = "Log10 scale in Y-axis")
+
+plot_truncated_log_raw <- ggplot()+
+  geom_line(data = depth_global, aes(x=depth,y = count_raw_global), fill = raw_color)+ 
+  scale_y_log10(name = "Number of Sites", labels = comma)+
+  scale_x_continuous(name = "Depth (X)", labels = comma, n.breaks = 10, limits = c(0,max_depth*10))+
+  theme_bw()+
+  theme(axis.title.x = element_blank(), axis.title.y = element_blank())+
+  labs(subtitle = "Log10 scale in Y-axis, truncated X-axis")
+
+plot_truncated_raw <- ggplot()+
+  geom_line(data = depth_global, aes(x=depth,y = count_raw_global), fill = raw_color)+ 
+  scale_y_continuous(name = "Number of Sites", labels = comma)+
+  scale_x_continuous(name = "Depth (X)", labels = comma, n.breaks = 10, limits = c(0,max_depth*10))+
+  theme_bw()+
+  theme(axis.title.y = element_blank())+
+  labs(subtitle = "Truncated X-axis")
+
+combined <- plot_global / plot_truncated_log / plot_truncated | plot_global_raw / plot_truncated_log_raw / plot_truncated_raw
+combined <- combined +
+  plot_annotation(title = paste("Depth Distribution for Sample", sample, " of Lineage", lineage)) &
+    theme(plot.title = element_text(hjust = 0.5))
+
+
+print("Plotting depth distribution by chromosome...")
+by_chrom <- ggplot(depth)+
+  geom_line(aes(x=depth, y = count_good, color = chromosome))+ 
+  scale_y_continuous(name = "Number of Sites", labels = comma)+
+  scale_x_continuous(name = "Depth (X)", labels = comma, n.breaks = 10, limits = c(0,max_depth*10))+
+  labs(subtitle = "Truncated X-axis")+
+  theme_bw()+
+  theme(axis.title.x = element_blank(),
+        legend.position = "none")
+
+by_chrom_log <- ggplot(depth)+
+  geom_line(aes(x=depth, y = count_good, color = chromosome))+ 
+  scale_y_log10(name = "Number of Sites", labels = comma)+
+  scale_x_continuous(name = "Depth (X)", labels = comma, n.breaks = 10, limits = c(0,max_depth*10))+
+  labs(subtitle = "Log10 scale in Y-axis, truncated X-axis")+
+  theme_bw()+
+  theme(legend.position = "bottom", legend.direction= "horizontal") +
+  guides(color = guide_legend(override.aes = list(size = 5), nrow = 1))
+
+plot_chrom <- by_chrom / by_chrom_log
+plot_chrom <- plot_chrom +
+  plot_annotation(title = paste("Depth Distribution for Sample", sample, " of Lineage", lineage)) &
+    theme(plot.title = element_text(hjust = 0.5))
 
 print("Saving plots...")
-ggsave(snakemake@output[[1]], plot = plot_chrom, units = "in", height = 4.5, width = 8, dpi = 600)
-# ggsave(snakemake@output[[2]], plot = plot_global,  units = "in", height = 4.5, width = 8, dpi = 600)
-ggsave(snakemake@output[[2]], plot = combined_plot,  units = "in", height = 4.5, width = 8, dpi = 600)
+ggsave(snakemake@output[[1]], plot = plot_chrom, units = "in", height = 4.5, width = 8, dpi = 600, scale = 1.5)
+ggsave(snakemake@output[[2]], plot = combined,  units = "in", height = 4.5, width = 8, dpi = 600, scale = 2)
 
 
 print("Done!")
+
+
+
 
 
 
