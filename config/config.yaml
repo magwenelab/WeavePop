@@ -51,7 +51,7 @@ depth_quality:
   flag_quality: 
     low_MAPQ_limit: 20 # Max MAPQ to be considered low quality.
     high_MAPQ_limit: 60 # Min MAPQ to be considered high quality.
-    exclude_samples: False # True to exclude samples that do not meet the quality thresholds below.
+    filter: False # True to exclude samples that do not meet the quality thresholds below.
     min_position_depth: 5 # Minimum depth for a position to be considered covered.
     min_percent_coverage: 50 # If percent of genome covered is below this value, the sample is excluded.
     min_percent_MAPQ: 75 # If percent of high quality reads is below this value, the sample is excluded.

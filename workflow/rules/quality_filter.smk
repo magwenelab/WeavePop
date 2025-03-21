@@ -117,14 +117,14 @@ rule join_mapping_stats:
 rule quality_filter:
     input:
         rules.join_mapping_stats.output,
-        SAMPLE_ORIGINAL_FILE,
         CHROM_NAMES,
     output:
         stats=DATASET_DIR / "depth_quality" / "mapping_stats.tsv",
         metadata=DATASET_DIR / "metadata.csv",
         chromosomes=DATASET_DIR / "chromosomes.csv",
     params:
-        exclude=config["depth_quality"]["flag_quality"]["exclude_samples"],
+        filter=config["depth_quality"]["flag_quality"]["filter"],
+        metadata=UNFILT_SAMPLE_TABLE
     log:
         LOGS / "samples" / "depth_quality" / "quality_filter.log",
     resources:

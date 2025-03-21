@@ -1,24 +1,27 @@
 
 import pandas as pd
 import logging
+import os
+import sys
 
 log_file=snakemake.log[0]
-input_stats=snakemake.input[0]
-input_metadata=snakemake.input[1]
-input_chromosomes=snakemake.input[2]
-exclude=snakemake.params.exclude
-output_stats=snakemake.output.stats
-output_metadata=snakemake.output.metadata
-output_chromosomes=snakemake.output.chromosomes
 
 logging.basicConfig(filename=log_file, level=logging.INFO, format='%(message)s')
 
+input_stats=snakemake.input[0]
+input_chromosomes=snakemake.input[1]
+filter=snakemake.params.filter
+output_stats=snakemake.output.stats
+output_metadata=snakemake.output.metadata
+output_chromosomes=snakemake.output.chromosomes
+metadata = snakemake.params.metadata
+
+
 try:
     logging.info("Reading tables...")
-    stats = pd.read_csv(input_stats, sep="\t", header = 0)
-    metadata = pd.read_csv(input_metadata, header=0)
+    stats = pd.read_csv(input_stats, sep="\t", header=0)
     chromosomes = pd.read_csv(input_chromosomes, header=0)
-    if exclude:
+    if filter:
         logging.info("Filtering samples...")
         stats_filtered = stats[stats["quality_warning"].isna()]
         metadata_filtered = metadata.loc[metadata["sample"].isin(stats_filtered["sample"]),]
