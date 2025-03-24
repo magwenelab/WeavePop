@@ -12,7 +12,7 @@ rule mosdepth_good:
     params:
         window=config["depth_quality"]["mosdepth"]["window"],
         extra=config["depth_quality"]["mosdepth"]["extra"],
-        min_mapq=config["depth_quality"]["mosdepth"]["min_mapq"],
+        min_mapq=config["depth_quality"]["flag_quality"]["min_mapq"],
         outdir=INT_SAMPLES_DIR / "mosdepth",
     log:
         LOGS / "samples" / "depth_quality" / "mosdepth_good_{sample}.log",
@@ -41,7 +41,7 @@ rule mosdepth_good:
 rule depth_by_windows:
     input:
         depth=rules.mosdepth_good.output.bed,
-        global_mode=SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom_good.tsv",
+        genome_wide_depth=SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom_good.tsv",
     output:
         INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_windows.tsv",
     params:
@@ -55,7 +55,7 @@ rule depth_by_windows:
     shell:
         "xonsh workflow/scripts/depth_by_windows.xsh "
         "-di {input.depth} "
-        "-gi {input.global_mode} "
+        "-gi {input.genome_wide_depth} "
         "-do {output} "
         "-s {params.smoothing_size} "
         "&> {log}"

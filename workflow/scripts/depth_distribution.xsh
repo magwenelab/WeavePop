@@ -71,14 +71,17 @@ def stats(sample, bamfile, bamgood, distribution_out, chromosome_good_out, chrom
     depth_by_chrom_good = distribution.groupby('accession').apply(calculate_mean_median, 'count_good', include_groups=False).reset_index()
     global_good = calculate_mean_median(distribution, 'count_good').reset_index()
 
-    print("Gathering results of good alignments in dataframe and normalizing...")
+    print("Gathering results of good alignments in dataframe ...")
     depth_by_chrom_good['global_mean'] = global_good[0][0]
     depth_by_chrom_good['global_median'] = global_good[0][1]
     depth_by_chrom_good['global_mode'] = global_mode
-    depth_by_chrom_good['norm_chrom_mean'] = depth_by_chrom_good['chrom_mean'] / global_mode
-    depth_by_chrom_good['norm_chrom_median'] = depth_by_chrom_good['chrom_median'] / global_mode
-    depth_by_chrom_good['norm_global_mean'] = depth_by_chrom_good['global_mean'] / global_mode
-    depth_by_chrom_good['norm_global_median'] = depth_by_chrom_good['global_median'] / global_mode
+
+    print("Normalizing ...")
+    genome_wide_depth = global_mode
+    depth_by_chrom_good['norm_chrom_mean'] = depth_by_chrom_good['chrom_mean'] / genome_wide_depth
+    depth_by_chrom_good['norm_chrom_median'] = depth_by_chrom_good['chrom_median'] / genome_wide_depth
+    depth_by_chrom_good['norm_global_mean'] = depth_by_chrom_good['global_mean'] / genome_wide_depth
+    depth_by_chrom_good['norm_global_median'] = depth_by_chrom_good['global_median'] / genome_wide_depth
     depth_by_chrom_good['sample'] = sample
     depth_by_chrom_good = depth_by_chrom_good.round(2)
     depth_by_chrom_good = depth_by_chrom_good[ ['sample'] + [ col for col in depth_by_chrom_good.columns if col != 'sample' ] ]

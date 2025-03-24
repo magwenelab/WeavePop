@@ -1,5 +1,5 @@
 # =================================================================================================
-#   Per sample | Get distribution and genome-wide depth (global_mode) to normalize
+#   Per sample | Get distribution and genome-wide depth to normalize
 # =================================================================================================
 
 
@@ -10,7 +10,7 @@ rule bam_good:
         bam_good=INT_SAMPLES_DIR / "depth_quality" / "{unf_sample}" / "snps_good.bam",
         bai_good=INT_SAMPLES_DIR / "depth_quality" / "{unf_sample}" / "snps_good.bam.bai",
     params:
-        min_mapq=config["depth_quality"]["mosdepth"]["min_mapq"],
+        min_mapq=config["depth_quality"]["flag_quality"]["min_mapq"],
     log:
         LOGS / "samples" / "depth_quality" / "bam_good_{unf_sample}.log",
     resources:
@@ -54,15 +54,15 @@ rule mapping_stats:
     input:
         bam=rules.snippy.output.bam,
         bai=rules.snippy.output.bai,
-        global_mode=rules.depth_distribution.output.by_chrom_good,
+        genome_wide_depth=rules.depth_distribution.output.by_chrom_good,
     output:
         SAMPLES_DIR / "depth_quality" / "{unf_sample}" / "mapping_stats.tsv",
     params:
         low_mapq=config["depth_quality"]["flag_quality"]["low_MAPQ_limit"],
         high_mapq=config["depth_quality"]["flag_quality"]["high_MAPQ_limit"],
-        min_position_depth=config["depth_quality"]["flag_quality"]["min_position_depth"],
+        min_mapq=config["depth_quality"]["flag_quality"]["min_mapq"],
         min_depth=config["depth_quality"]["flag_quality"]["min_percent_genome-wide_depth"],
-        min_mapq=config["depth_quality"]["flag_quality"]["min_percent_MAPQ"],
+        min_high_mapq=config["depth_quality"]["flag_quality"]["min_percent_MAPQ"],
         min_pp=config["depth_quality"]["flag_quality"]["min_percent_properly_paired_reads"],
         min_coverage=config["depth_quality"]["flag_quality"]["min_percent_coverage"],
     log:
@@ -75,12 +75,12 @@ rule mapping_stats:
         "xonsh workflow/scripts/mapping_stats.xsh "
         "-b {input.bam} "
         "-s {wildcards.unf_sample} "
-        "-m {input.global_mode} "
+        "-m {input.genome_wide_depth} "
         "-l {params.low_mapq} "
         "-h {params.high_mapq} "
-        "-pd {params.min_position_depth} "
+        "-mq {params.min_mapq} "
         "-d {params.min_depth} "
-        "-q {params.min_mapq} "
+        "-q {params.min_high_mapq} "
         "-p {params.min_pp} "
         "-c {params.min_coverage} "
         "-o {output} &> {log}"

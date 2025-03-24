@@ -63,7 +63,7 @@ rule mapq_depth:
         mapqbed=rules.mapq.output.window_bed,
         depthbed=rules.mosdepth.output.bed,
         gff=rules.reformat_annotation.output.gff,
-        global_mode=SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom_good.tsv",
+        genome_wide_depth=SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom_good.tsv",
     output:
         depthmapq=SAMPLES_DIR / "depth_quality" / "{sample}" / "mapq_depth_by_window.bed",
         tsv=SAMPLES_DIR / "depth_quality" / "{sample}" / "mapq_depth_by_feature.tsv",
@@ -78,7 +78,7 @@ rule mapq_depth:
         "-mi {input.mapqbed} "
         "-di {input.depthbed} "
         "-gi {input.gff} "
-        "-gmi {input.global_mode} "
+        "-gmi {input.genome_wide_depth} "
         "-sp {wildcards.sample} "
         "-dmo {output.depthmapq} "
         "-o {output.tsv} &> {log}"

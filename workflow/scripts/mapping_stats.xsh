@@ -8,34 +8,33 @@ import os
 @click.command()
 @click.option("-s", "--sample", type=str, help="Sample name")
 @click.option("-b", "--bamfile", type=click.Path(exists=True), help="Input BAM file")
-@click.option("-m", "--global_mode", type=click.Path(), help="Path to table with global mode of the sample")
+@click.option("-m", "--genome_wide_depth", type=click.Path(), help="Path to table with genome-wide depth of the sample")
 @click.option("-l", "--low_mapq", type=int, help="Threshold of low MAPQ bin")
 @click.option("-h", "--high_mapq", type=int, help="Threshold of high MAPQ bin")
-@click.option("-pd", "--min_position_depth", type=int, help="Minimum depth of a position to be considered covered")
-@click.option("-d", "--min_depth", type=int, help="Minimum percentage of genome-wide depth (Global mode)")
-@click.option("-q", "--min_mapq", type=int, help="Minimum percentage of MAPQ high")
+@click.option("-mq", "--min_mapq", type=int, help="Minimum MAPQ of a read to be considered in the coverage")
+@click.option("-d", "--min_depth", type=int, help="Minimum percentage of genome-wide depth")
+@click.option("-q", "--min_high_mapq", type=int, help="Minimum percentage of MAPQ high")
 @click.option("-p", "--min_pp", type=int, help="Minimum percentage of properly paired reads")
 @click.option("-c", "--min_coverage", type=int, help="Minimum percentage of genome covered")
 @click.option("-o", "--output", type=click.Path(), help="Output file with mapped reads metrics")
 
-def stats(sample, bamfile,  global_mode, low_mapq, high_mapq, min_position_depth, min_depth, min_mapq, min_pp, min_coverage, output):
+def stats(sample, bamfile,  genome_wide_depth, low_mapq, high_mapq, min_mapq, min_depth, min_high_mapq, min_pp, min_coverage, output):
+
+    print("Getting chromosome names...")
     chromosomes = $(samtools idxstats @(bamfile) | cut -f1 | grep -v "*")
     chromosomes = pd.Series(list(filter(None, chromosomes.split("\n"))))
 
     print("Getting MAPQ distribution...")
-    out_mapq = []
+    quality = pd.DataFrame(columns=["accession", "mapq", "count"])
     for chromosome in chromosomes:
         print("Analysing chromosome", chromosome, "...")
         mapq = $(samtools stats @(bamfile) @(chromosome) | grep ^MAPQ | cut -f 2-)
-        mapq = pd.Series(list(mapq.split("\n")))
-        mapq = chromosome + "\t" + mapq
-        mapq = mapq.str.split("\t", expand = True)
-        out_mapq.append(mapq)
-
-    print("Concatenating MAPQ distribution of all chromosomes...")
-    quality = pd.concat(out_mapq)
-    quality = quality.dropna()
-    quality.columns = ["accession", "mapq", "count"]
+        mapq = mapq.split("\n")
+        mapq = [x.split("\t") for x in mapq if x]
+        mapq_df = pd.DataFrame(mapq, columns=["mapq", "count"])
+        mapq_df["accession"] = chromosome
+        quality = pd.concat([quality, mapq_df], ignore_index=True)
+        del mapq, mapq_df
 
     print("Binning MAPQ values...")
     quality['mapq'] = quality['mapq'].astype(int)
@@ -45,65 +44,72 @@ def stats(sample, bamfile,  global_mode, low_mapq, high_mapq, min_position_depth
     quality_sum.rename(columns={'count': 'count_bins'}, inplace=True)
     quality_sum['sample'] = sample
     quality_sum = quality_sum.round(2)
-    quality_wider = quality_sum.pivot(index='sample', columns='low_mapq', values='count_bins').reset_index()
+    quality_sum = quality_sum.pivot(index='sample', columns='low_mapq', values='count_bins').reset_index()
 
     print("Getting mapped reads metrics...")
     stats = $(samtools stats @(bamfile) -c 1,1000000000,1)
-    sn_lines = [line.split('#')[0] for line in stats.split('\n') if line.startswith('SN')]
-    sn_stats = '\n'.join(sn_lines)
-    sn_stats = sn_stats.replace("SN", "")
-    sn_stats = sn_stats.replace("\t", "")
-    sn_stats = sn_stats.replace(":", "\t")
-    sn_stats = sn_stats.split("\n")
-    sn_stats = [x.split("\t") for x in sn_stats]
-    sn_stats = pd.DataFrame(sn_stats)
-    sn_stats.columns = ["metric", "value"]
-    sn_stats['value'] = sn_stats['value'].astype(float)
-    sn_stats['metric'] = sn_stats['metric'].str.replace(' ', '_')
-    filtered_stats = sn_stats[sn_stats['metric'].isin(['raw_total_sequences', 'reads_mapped', 'reads_properly_paired', 'average_quality'])].copy()
-    filtered_stats['sample'] = sample
-    stats_wider = filtered_stats.pivot(index='sample', columns='metric', values='value').reset_index()
-    stats_wider['reads_unmapped'] = stats_wider['raw_total_sequences'] - stats_wider['reads_mapped']
-    stats_wider['percent_unmapped'] = stats_wider['reads_unmapped'] / stats_wider['raw_total_sequences'] * 100
-    stats_wider['percent_mapped'] = stats_wider['reads_mapped'] / stats_wider['raw_total_sequences'] * 100
-    stats_wider['percent_paired'] = stats_wider['reads_properly_paired'] / stats_wider['raw_total_sequences'] * 100
-    stats_wider['reads_only_mapped'] = stats_wider['reads_mapped'] - stats_wider['reads_properly_paired']
-    stats_wider['percent_only_mapped'] = stats_wider['reads_only_mapped'] / stats_wider['raw_total_sequences'] * 100
-    stats_wider['percent_properly_paired'] = stats_wider['reads_properly_paired'] / stats_wider['raw_total_sequences'] * 100
+    stats = [line.split('#')[0] for line in stats.split('\n') if line.startswith('SN')]
+    stats = '\n'.join(stats)
+    stats = stats.replace("SN", "")
+    stats = stats.replace("\t", "")
+    stats = stats.replace(":", "\t")
+    stats = stats.split("\n")
+    stats = [x.split("\t") for x in stats]
+    stats = pd.DataFrame(stats)
+    stats.columns = ["metric", "value"]
+    stats['value'] = stats['value'].astype(float)
+    stats['metric'] = stats['metric'].str.replace(' ', '_')
+    stats = stats[stats['metric'].isin(['raw_total_sequences', 'reads_mapped', 'reads_properly_paired', 'average_quality'])].copy()
+    stats['sample'] = sample
+    stats = stats.pivot(index='sample', columns='metric', values='value').reset_index()
+    stats['reads_unmapped'] = stats['raw_total_sequences'] - stats['reads_mapped']
+    stats['percent_unmapped'] = stats['reads_unmapped'] / stats['raw_total_sequences'] * 100
+    stats['percent_mapped'] = stats['reads_mapped'] / stats['raw_total_sequences'] * 100
+    stats['percent_paired'] = stats['reads_properly_paired'] / stats['raw_total_sequences'] * 100
+    stats['reads_only_mapped'] = stats['reads_mapped'] - stats['reads_properly_paired']
+    stats['percent_only_mapped'] = stats['reads_only_mapped'] / stats['raw_total_sequences'] * 100
+    stats['percent_properly_paired'] = stats['reads_properly_paired'] / stats['raw_total_sequences'] * 100
 
     print("Joining mapped reads metrics with MAPQ metrics...")
-    stats_wider = pd.merge(stats_wider, quality_wider, on = 'sample', how = 'outer')
-    stats_wider['percent_low_mapq'] = stats_wider['low_mapq'] / stats_wider['reads_mapped'] * 100
-    stats_wider['percent_inter_mapq'] = stats_wider['intermediate_mapq'] / stats_wider['reads_mapped'] * 100
-    stats_wider['percent_high_mapq'] = stats_wider['high_mapq'] / stats_wider['reads_mapped'] * 100
-    stats_wider = stats_wider.round(2)
+    stats = pd.merge(stats, quality_sum, on = 'sample', how = 'outer')
+    stats['percent_low_mapq'] = stats['low_mapq'] / stats['reads_mapped'] * 100
+    stats['percent_inter_mapq'] = stats['intermediate_mapq'] / stats['reads_mapped'] * 100
+    stats['percent_high_mapq'] = stats['high_mapq'] / stats['reads_mapped'] * 100
+    stats = stats.round(2)
 
-    print("Joining mapped reads metrics with global mode...")
-    global_mode = pd.read_csv(global_mode, sep = "\t", header = 0)
-    global_mode = global_mode['global_mode'][0]
-    stats_wider['genome-wide_depth'] = global_mode
-    
+    print("Joining mapped reads metrics with genome-wide depth...")
+    genome_wide_depth = pd.read_csv(genome_wide_depth, sep = "\t", header = 0)
+    genome_wide_depth = genome_wide_depth['global_mode'][0]
+    stats['genome-wide_depth'] = genome_wide_depth
+
     print("Calculating coverage...")
-    depth = $(samtools depth -a @(bamfile))
-    depth_string_list = depth.split('\n')
-    depth_df = pd.DataFrame([x.split('\t') for x in depth_string_list], columns=['chrom', 'pos', 'depth'])
-    depth_df = depth_df.iloc[:-1]
-    depth_df['depth'] = depth_df['depth'].astype(int)
-    coverage = (depth_df[depth_df['depth'] > min_position_depth].shape[0]/ depth_df.shape[0]) * 100
-    stats_wider['percent_covered'] = round(coverage, 2)
+    coverage_good = $(samtools coverage @(bamfile) --min-MQ @(min_mapq))
+    coverage_good = coverage_good.split('\n')
+    coverage_good = [x.split('\t') for x in coverage_good if x]
+    coverage_good = pd.DataFrame(coverage_good[1:], columns=coverage_good[0])
+    coverage_good = (coverage_good['covbases'].astype(int).sum() / coverage_good['endpos'].astype(int).sum()) * 100
+    stats['coverage_good'] = round(coverage_good, 2)
+
+    coverage_raw = $(samtools coverage @(bamfile))
+    coverage_raw = coverage_raw.split('\n')
+    coverage_raw = [x.split('\t') for x in coverage_raw if x]
+    coverage_raw = pd.DataFrame(coverage_raw[1:], columns=coverage_raw[0])
+    coverage_raw = (coverage_raw['covbases'].astype(int).sum() / coverage_raw['endpos'].astype(int).sum()) * 100
+    stats['coverage_raw'] = round(coverage_raw, 2)
+
 
     print("Adding quality warning flag...")
-    stats_wider['mapq_warning'] = stats_wider.apply(lambda row: "MAPQ-Low" if row['percent_high_mapq'] < min_mapq else None, axis=1)
-    stats_wider['pp_warning'] = stats_wider.apply(lambda row: "Properly-paired-Low" if row['percent_properly_paired'] < min_pp else None, axis=1)
-    stats_wider['depth_warning'] = stats_wider.apply(lambda row: "Depth-Low" if row['genome-wide_depth'] < min_depth else None, axis=1)
-    stats_wider['coverage_warning'] = stats_wider.apply(lambda row: "Coverage-Low" if row['percent_covered'] < min_coverage else None, axis=1)
+    stats['mapq_warning'] = stats.apply(lambda row: "MAPQ-Low" if row['percent_high_mapq'] < min_mapq else None, axis=1)
+    stats['pp_warning'] = stats.apply(lambda row: "Properly-paired-Low" if row['percent_properly_paired'] < min_pp else None, axis=1)
+    stats['depth_warning'] = stats.apply(lambda row: "Depth-Low" if row['genome-wide_depth'] < min_depth else None, axis=1)
+    stats['coverage_warning'] = stats.apply(lambda row: "Coverage-Low" if row['coverage_good'] < min_coverage else None, axis=1)
 
     print("Joining warnings...")
-    stats_wider['quality_warning'] = stats_wider[['mapq_warning', 'pp_warning', 'depth_warning','coverage_warning']].apply(lambda x: '_'.join(x.dropna()), axis=1)
-    stats_wider = stats_wider.drop(columns = ['mapq_warning', 'pp_warning', 'depth_warning','coverage_warning'])
+    stats['quality_warning'] = stats[['mapq_warning', 'pp_warning', 'depth_warning','coverage_warning']].apply(lambda x: '_'.join(x.dropna()), axis=1)
+    stats = stats.drop(columns = ['mapq_warning', 'pp_warning', 'depth_warning','coverage_warning'])
     
     print("Saving mapped reads metrics...")
-    stats_wider.to_csv(output, index=False, sep = "\t")
+    stats.to_csv(output, index=False, sep = "\t")
     
     print("Done!")
 if __name__ == "__main__":
