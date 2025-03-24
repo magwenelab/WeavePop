@@ -150,7 +150,7 @@ onsuccess:
         original_metadata = UNFILT_SAMPLE_TABLE
         filtered_metadata = pd.read_csv(rules.quality_filter.output.metadata, header=0)
         if original_metadata["sample"].nunique() == filtered_metadata["sample"].nunique():
-            print("All samples passed the quality filter.", flush=True)
+            print("No samples were removed.", flush=True)
         else:
             print(
                 f"The quality filter removed "
