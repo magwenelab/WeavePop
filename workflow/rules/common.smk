@@ -478,18 +478,23 @@ def get_unfiltered_output():
 
 # --Output per sample after sample filtering-------------------------------------------------------
 def get_filtered_output():
+
     final_output = expand(
-        SAMPLES_DIR / "annotation" / "{sample}" / "annotation.gff", sample=SAMPLES
-    )
-    final_output = final_output, expand(
-        SAMPLES_DIR / "annotation" / "{sample}" / "proteins.fa", sample=SAMPLES
-    )
-    final_output = final_output, expand(
-        SAMPLES_DIR / "annotation" / "{sample}" / "cds.fa", sample=SAMPLES
-    )
-    final_output = final_output, expand(
         INT_REFS_DIR / "filtered_lineages" / "{lineage}.txt", lineage=LINEAGES
     )
+
+    if config["annotation"]["activate"]:
+
+        final_output = final_output, expand(
+            SAMPLES_DIR / "annotation" / "{sample}" / "annotation.gff", sample=SAMPLES
+        )
+        final_output = final_output, expand(
+            SAMPLES_DIR / "annotation" / "{sample}" / "proteins.fa", sample=SAMPLES
+        )
+        final_output = final_output, expand(
+            SAMPLES_DIR / "annotation" / "{sample}" / "cds.fa", sample=SAMPLES
+        )
+
     if config["plotting"]["activate"]:
         final_output = final_output, expand(
             SAMPLES_DIR / "plots" / "{sample}" / "depth_by_windows.png", sample=SAMPLES
@@ -518,7 +523,7 @@ def get_dataset_output():
     if config["annotate_references"]["activate"]:
         final_output.append(REFS_DIR / "refs_unmapped_features.tsv")
     if config["depth_quality_features"]["activate"]:
-        final_output.append(DATASET_DIR / "depth_quality" / "mapq_depth_by_feature.tsv")
+        final_output.append(DATASET_DIR / "depth_quality" / "mapq_depth_by_feature.tsv")        
     if config["snpeff"]["activate"]:
         final_output.append(DATASET_DIR / "snpeff" / "effects.tsv")
     if config["cnv"]["activate"]:

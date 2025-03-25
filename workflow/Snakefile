@@ -74,7 +74,6 @@ if config["workflow"] == "analysis":
     include: "rules/common.smk"
     include: "rules/snippy.smk"
     include: "rules/quality_filter.smk"
-    include: "rules/annotation.smk"
     include: "rules/database.smk"
 
     # ------------------Reference annotation rules-------------------------------------------------
@@ -89,6 +88,7 @@ if config["workflow"] == "analysis":
     # ------------------Module rules---------------------------------------------------------------
     if config["database"]["activate"]:
 
+        include: "rules/annotation.smk"
         include: "rules/cnv.smk"
         include: "rules/snpeff.smk"
         include: "rules/depth_quality_features.smk"
@@ -98,6 +98,13 @@ if config["workflow"] == "analysis":
             include: "rules/repeatmasker.smk"
 
     else:
+        if config["annotation"]["activate"]:
+
+            include: "rules/annotation.smk"
+        
+        if config["snpeff"]["activate"]:
+
+            include: "rules/snpeff.smk"
 
         if config["cnv"]["activate"] or config["plotting"]["activate"]:
 
@@ -109,12 +116,9 @@ if config["workflow"] == "analysis":
 
         if config["depth_quality_features"]["activate"] or config["plotting"]["activate"]:
 
+            include: "rules/annotation.smk"
             include: "rules/depth_quality_features.smk"
 
-        if config["snpeff"]["activate"]:
-
-            include: "rules/snpeff.smk"
-    
     if config["plotting"]["activate"]:
 
         include: "rules/plots.smk"

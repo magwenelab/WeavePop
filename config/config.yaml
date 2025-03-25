@@ -41,14 +41,13 @@ annotate_references:
     extra: "" # Extra parameters for Liftoff.
 
 # ------------------Depth and quality analyses and filter----------------------
-
 depth_quality: 
   flag_quality: 
     low_MAPQ_limit: 20 # Max MAPQ to be considered low quality.
     high_MAPQ_limit: 60 # Min MAPQ to be considered high quality.
     min_mapq: 20 # Minimum mapping quality to be considered a good read alignement.
     filter: False # True to exclude samples that are flagged by the thresholds bellow.
-    min_percent_coverage: 90 # If percent of genome covered is below this value, the sample is flagged.
+    min_percent_coverage: 90 # If percent of genome covered by good quality read alignments is below this value, the sample is flagged.
     min_percent_MAPQ: 90 # If percent of high quality reads is below this value, the sample is flagged.
     min_percent_genome-wide_depth: 2 # If genome-wide depth is below this value, the sample is flagged.
     min_percent_properly_paired_reads: 25 # If percent of properly paired reads is below this value, the sample is flagged.
@@ -56,6 +55,11 @@ depth_quality:
     threads: 12  # Number of threads for mosdepth.
     window: 500 # Window size for mosdepth.
     extra: "" # Extra parameters for mosdepth.
+
+# ------------------Functional Annotation--------------------------------------
+
+annotation:
+  activate: # True to activate the module. Empty or False to skip.
 
 # ------------------Depth and quality of genetic features----------------------
 
