@@ -85,7 +85,7 @@ snpeff:
 # ------------------Plotting---------------------------------------------------
 
 plotting: 
-  activate: # True to activate the module. Empty or False to skip.
+  activate: True # True to activate the module. Empty or False to skip.
   loci: "config/loci.csv" # Path to table with loci to add to plots. Relative to project_directory or absolute.
   metadata2color : "source" # Column name in the metadata table to color the samples in the plots.
   scale : 0.7 # Ggsave scale parameter to adjust the size of the dataset plots. Use lower values for fewer samples and bigger values for more samples.
@@ -93,7 +93,7 @@ plotting:
 # ------------------Database---------------------------------------------------
 
 database:
-  activate: # True to activate the module. Empty or False to skip.
+  activate: True # True to activate the module. Empty or False to skip.
 
 # ------------------Parameters for individual tools----------------------------
 
