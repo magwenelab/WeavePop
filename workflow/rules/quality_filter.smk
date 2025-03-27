@@ -7,8 +7,8 @@ rule bam_good:
     input:
         bam=rules.snippy.output.bam,
     output:
-        bam_good=INT_SAMPLES_DIR / "depth_quality" / "{unf_sample}" / "snps_good.bam",
-        bai_good=INT_SAMPLES_DIR / "depth_quality" / "{unf_sample}" / "snps_good.bam.bai",
+        bam_good=temp(INT_SAMPLES_DIR / "depth_quality" / "{unf_sample}" / "snps_good.bam"),
+        bai_good=temp(INT_SAMPLES_DIR / "depth_quality" / "{unf_sample}" / "snps_good.bam.bai"),
     params:
         min_mapq=config["depth_quality"]["flag_quality"]["min_mapq"],
     log:
