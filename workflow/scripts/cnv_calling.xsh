@@ -8,11 +8,13 @@ from pathlib import Path
 @click.command()
 @click.option('-di', '--depth_input', help='Path to BED file with depth of each window.', type=click.Path(exists=True))
 @click.option('-ri', '--repeats_input', help='Path to BED file with coordinates of repetititve sequences of reference genome.', type=click.Path(exists=True))
+@click.option('-ai', '--annotation_input', help='Path to BED file with annotation of sample.', type=click.Path(exists=True))
 @click.option('-sp', '--sample_name', help='Sample name as a string.', type=str)
 @click.option('-wp', '--window_size', help='Size of windows in the depth BED file.', type=int)
 @click.option('-dp', '--depth_threshold', help='Threshold to define copy number variation in smoothed normalzed depth.', type=click.types.FloatRange(min=0.0))
 @click.option('-co', '--cnv_output', help='Path to output table of CNV calling.', type=click.Path())
-def cnv_calling(depth_input, repeats_input, sample_name, window_size, depth_threshold, cnv_output):
+@click.option('-t', '--temp_dir', help='Path to temporary directory.', type=click.Path())
+def cnv_calling(depth_input, repeats_input, annotation_input, sample_name, window_size, depth_threshold, cnv_output, temp_dir):
     print("Merging overlapping repeats and intersect with windows...")
     intersect = $(bedtools intersect -a @(depth_input) -b @(repeats_input) -wao)
 
@@ -61,7 +63,8 @@ def cnv_calling(depth_input, repeats_input, sample_name, window_size, depth_thre
         regions['repeat_fraction'] = (regions['overlap_bp'] / regions['region_size']).round(2)
         regions = regions.drop(['region_index'], axis=1)
         cnv_regions = pd.concat([cnv_regions, regions], ignore_index=True)
-    print("Joining regions with copy-number variants of all chromosomes...")
+
+    print("Filtering out single-copy regions...")
     cnv_regions = cnv_regions[cnv_regions['cnv'] != 'haploid']
     cnv_regions = cnv_regions.round(2)
     cnv_regions['sample'] = sample_name
@@ -69,12 +72,28 @@ def cnv_calling(depth_input, repeats_input, sample_name, window_size, depth_thre
     print("Converting from 0-based to 1-based coordinates...")    
     cnv_regions['start'] = cnv_regions['start'] + 1
 
+    print("Adding genetic features in CNV regions...")
+    temp_cnv_file = Path(temp_dir) / f"{sample_name}_temp_cnv.bed"
+    cnv_regions.to_csv(temp_cnv_file, sep='\t', index=False, header=False)
+    annot_intersection = $(bedtools intersect -loj -a @(temp_cnv_file) -b @(annotation_input) | bedtools merge -c 4,5,6,7,8,9,10,11,15 -o distinct)
+    annot_intersection = pd.read_csv(io.StringIO(annot_intersection), sep='\t', header=None)
+    temp_cnv_file.unlink()
+
+    annot_header = ['accession', 'start', 'end', 'depth', 'norm_depth', 'smooth_depth', 'cnv', 'overlap_bp', 'region_size', 'repeat_fraction', 'sample', 'feature_id']
+    annot_intersection.columns = annot_header
+
+    annot_intersection['feature_id'] = annot_intersection['feature_id'].replace('.', np.nan)
+
+    print("Reorder columns...")
+    col_order = ['accession', 'start', 'end', 'cnv','region_size', 'depth', 'norm_depth', 'smooth_depth', 'repeat_fraction', 'overlap_bp', 'feature_id', 'sample']
+    annot_intersection = annot_intersection[col_order]
+
     print("Saving CNV regions to file...")
     output_path = Path(cnv_output)
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    cnv_regions.to_csv(output_path, sep='\t', index=False, header=True)
+    annot_intersection.to_csv(output_path, sep='\t', index=False, header=True)
 
     print("Done!")
-    
+
 if __name__ == '__main__':
     cnv_calling()

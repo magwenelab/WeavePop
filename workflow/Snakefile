@@ -108,6 +108,7 @@ if config["workflow"] == "analysis":
 
         if config["cnv"]["activate"] or config["plotting"]["activate"]:
 
+            include: "rules/annotation.smk"
             include: "rules/cnv.smk"
             if config["cnv"]["repeats"]["use_container"]:
                 include: "rules/repeatmasker_containers.smk"

@@ -433,7 +433,7 @@ def get_cnv(db, dataset = None, lineage=None, sample=None, strain=None, chromoso
         
     query = f"""
         SELECT metadata.strain, metadata.sample, metadata.lineage, chromosomes.chromosome, cnvs.start, cnvs."end",
-            cnvs.cnv, cnvs.region_size, cnvs.repeat_fraction,
+            cnvs.cnv, cnvs.region_size, cnvs.repeat_fraction, cnvs.feature_id,
             metadata.dataset
         FROM cnvs
         JOIN metadata ON cnvs.sample = metadata.sample

@@ -425,6 +425,7 @@ def cnv_calling_input(wildcards):
     return {
         "depth": INT_SAMPLES_DIR / "depth_quality" / s["sample"] / "depth_by_windows.tsv",
         "repeats": REFS_DIR / s["lineage"] / (s["lineage"] + "_repeats.bed"),
+        "annotation" : INT_SAMPLES_DIR / "annotation" / s["sample"] / "annotation.bed",
     }
 
 
