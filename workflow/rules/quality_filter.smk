@@ -73,8 +73,8 @@ rule mapping_stats:
         "../envs/samtools.yaml"
     shell:
         "xonsh workflow/scripts/mapping_stats.xsh "
-        "-b {input.bam} "
         "-s {wildcards.unf_sample} "
+        "-b {input.bam} "
         "-m {input.genome_wide_depth} "
         "-l {params.low_mapq} "
         "-h {params.high_mapq} "

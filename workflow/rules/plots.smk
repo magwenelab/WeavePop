@@ -29,7 +29,7 @@ rule loci:
 rule depth_distribution_plots:
     input:
         INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_distribution.tsv",
-        chrom_names=rules.quality_filter.output.chromosomes,
+        CHROM_NAMES,
     output:
         SAMPLES_DIR / "plots" / "{sample}" / "depth_chrom_distribution.png",
         SAMPLES_DIR / "plots" / "{sample}" / "depth_global_distribution.png",
@@ -45,7 +45,7 @@ rule depth_by_chrom_plots:
     input:
         SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom_raw.tsv",
         SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom_good.tsv",
-        rules.quality_filter.output.chromosomes,
+        CHROM_NAMES,
     output:
         SAMPLES_DIR / "plots" / "{sample}" / "depth_by_chrom.png",
     conda:

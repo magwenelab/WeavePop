@@ -19,6 +19,18 @@ import os
 @click.option("-o", "--output", type=click.Path(), help="Output file with mapped reads metrics")
 
 def stats(sample, bamfile,  genome_wide_depth, low_mapq, high_mapq, min_mapq, min_depth, min_high_mapq, min_pp, min_coverage, output):
+    print("Input parameters:")
+    print(f"Sample: {sample}")
+    print(f"BAM file: {bamfile}")
+    print(f"Genome-wide depth file: {genome_wide_depth}")
+    print(f"Low MAPQ threshold: {low_mapq}")
+    print(f"High MAPQ threshold: {high_mapq}")
+    print(f"Minimum MAPQ: {min_mapq}")
+    print(f"Minimum depth percentage: {min_depth}")
+    print(f"Minimum high MAPQ percentage: {min_high_mapq}")
+    print(f"Minimum properly paired percentage: {min_pp}")
+    print(f"Minimum coverage percentage: {min_coverage}")
+    print(f"Output file: {output}")
 
     print("Getting chromosome names...")
     chromosomes = $(samtools idxstats @(bamfile) | cut -f1 | grep -v "*")
@@ -99,7 +111,7 @@ def stats(sample, bamfile,  genome_wide_depth, low_mapq, high_mapq, min_mapq, mi
 
 
     print("Adding quality warning flag...")
-    stats['mapq_warning'] = stats.apply(lambda row: "MAPQ-Low" if row['percent_high_mapq'] < min_mapq else None, axis=1)
+    stats['mapq_warning'] = stats.apply(lambda row: "MAPQ-Low" if row['percent_high_mapq'] < min_high_mapq else None, axis=1)
     stats['pp_warning'] = stats.apply(lambda row: "Properly-paired-Low" if row['percent_properly_paired'] < min_pp else None, axis=1)
     stats['depth_warning'] = stats.apply(lambda row: "Depth-Low" if row['genome-wide_depth'] < min_depth else None, axis=1)
     stats['coverage_warning'] = stats.apply(lambda row: "Coverage-Low" if row['coverage_good'] < min_coverage else None, axis=1)
@@ -107,8 +119,11 @@ def stats(sample, bamfile,  genome_wide_depth, low_mapq, high_mapq, min_mapq, mi
     print("Joining warnings...")
     stats['quality_warning'] = stats[['mapq_warning', 'pp_warning', 'depth_warning','coverage_warning']].apply(lambda x: '_'.join(x.dropna()), axis=1)
     stats = stats.drop(columns = ['mapq_warning', 'pp_warning', 'depth_warning','coverage_warning'])
+
+    print("Quality warnings added:")
+    print(stats[['quality_warning']])
     
-    print("Saving mapped reads metrics...")
+    print("Saving mapping stats table...")
     stats.to_csv(output, index=False, sep = "\t")
     
     print("Done!")

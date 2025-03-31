@@ -473,6 +473,17 @@ def get_unfiltered_output():
     final_output.extend(
         expand(SAMPLES_DIR / "snippy" / "{unf_sample}" / "snps.vcf.gz", unf_sample=UNFILT_SAMPLES)
     )
+    if config["plotting"]["activate"]:
+        final_output.extend(
+            expand(SAMPLES_DIR / "plots" / "{unf_sample}" / "depth_chrom_distribution.png", unf_sample=UNFILT_SAMPLES)
+        )
+        final_output.extend(
+            expand(SAMPLES_DIR / "plots" / "{unf_sample}" / "depth_global_distribution.png", unf_sample=UNFILT_SAMPLES)
+        )
+        final_output.extend(
+            expand(SAMPLES_DIR / "plots" / "{unf_sample}" / "depth_by_chrom.png", unf_sample=UNFILT_SAMPLES)
+        )
+
     return final_output
 
 
@@ -496,21 +507,13 @@ def get_filtered_output():
         )
 
     if config["plotting"]["activate"]:
-        final_output = final_output, expand(
-            SAMPLES_DIR / "plots" / "{sample}" / "depth_by_windows.png", sample=SAMPLES
-        )
-        final_output = final_output, expand(
-            SAMPLES_DIR / "plots" / "{sample}" / "mapq.png", sample=SAMPLES
-        )
-        final_output = final_output, expand(
-            SAMPLES_DIR / "plots" / "{sample}" / "depth_chrom_distribution.png", sample=SAMPLES
-        )
-        final_output = final_output, expand(
-            SAMPLES_DIR / "plots" / "{sample}" / "depth_global_distribution.png", sample=SAMPLES
-        )
-        final_output = final_output, expand(
-            SAMPLES_DIR / "plots" / "{sample}" / "depth_by_chrom.png", sample=SAMPLES
-        )
+        if config["cnv"]["activate"] or config["database"]["activate"]:
+            final_output = final_output, expand(
+                SAMPLES_DIR / "plots" / "{sample}" / "depth_by_windows.png", sample=SAMPLES
+            )
+            final_output = final_output, expand(
+                SAMPLES_DIR / "plots" / "{sample}" / "mapq.png", sample=SAMPLES
+            )
     return final_output
 
 
