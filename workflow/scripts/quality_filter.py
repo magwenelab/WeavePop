@@ -10,7 +10,6 @@ import pandas as pd
 input_stats=snakemake.input[0]
 input_chromosomes=snakemake.input[1]
 filter=snakemake.params.filter
-output_stats=snakemake.output.stats
 output_metadata=snakemake.output.metadata
 output_chromosomes=snakemake.output.chromosomes
 metadata = snakemake.params.metadata
@@ -27,7 +26,6 @@ if filter:
     print("Successfully filtered samples from tables.\n")
 else:
     print("No filtering requested, copying tables...")
-    stats_filtered = stats
     metadata_filtered = metadata
     chromosomes_filtered = chromosomes
 
@@ -38,7 +36,6 @@ print("Adding dataset column...")
 metadata_filtered.loc[:, 'dataset'] = "X"
     
 print("Saving filtered tables...")
-stats_filtered.to_csv(output_stats, index=False, header=True, sep = "\t")
 metadata_filtered.to_csv(output_metadata, index=False)
 chromosomes_filtered.to_csv(output_chromosomes, index=False)
 print("Done!")

@@ -90,7 +90,7 @@ rule join_mapping_stats:
             unf_sample=UNFILT_SAMPLES,
         ),
     output:
-        INT_DATASET_DIR / "depth_quality" / "unfiltered_mapping_stats.tsv",
+        DATASET_DIR / "depth_quality" / "mapping_stats.tsv",
     params:
         min_depth=config["depth_quality"]["flag_quality"]["min_percent_genome-wide_depth"],
         min_high_mapq=config["depth_quality"]["flag_quality"]["min_percent_MAPQ"],
@@ -116,7 +116,6 @@ rule quality_filter:
         rules.join_mapping_stats.output,
         CHROM_NAMES,
     output:
-        stats=DATASET_DIR / "depth_quality" / "mapping_stats.tsv",
         metadata=DATASET_DIR / "metadata.csv",
         chromosomes=DATASET_DIR / "chromosomes.csv",
     params:

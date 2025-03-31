@@ -159,8 +159,8 @@ onsuccess:
             print(
                 f"The quality filter removed "
                 f"{original_metadata['sample'].nunique()- filtered_metadata['sample'].nunique()} "
-                f"samples. See 04.Intermediate_files/02.Dataset/depth_quality/"
-                f"unfiltered_mapping_stats.tsv to check the quality warning of the removed samples.",
+                f"samples. See 02.Dataset/depth_quality/"
+                f"mapping_stats.tsv to check the quality warning of the removed samples.",
                 flush=True,
             )
     elif config["workflow"] == "join_datasets":
