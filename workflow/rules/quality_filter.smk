@@ -61,10 +61,6 @@ rule mapping_stats:
         low_mapq=config["depth_quality"]["flag_quality"]["low_MAPQ_limit"],
         high_mapq=config["depth_quality"]["flag_quality"]["high_MAPQ_limit"],
         min_mapq=config["depth_quality"]["flag_quality"]["min_mapq"],
-        min_depth=config["depth_quality"]["flag_quality"]["min_percent_genome-wide_depth"],
-        min_high_mapq=config["depth_quality"]["flag_quality"]["min_percent_MAPQ"],
-        min_pp=config["depth_quality"]["flag_quality"]["min_percent_properly_paired_reads"],
-        min_coverage=config["depth_quality"]["flag_quality"]["min_percent_coverage"],
     log:
         LOGS / "samples" / "depth_quality" / "mapping_stats_{unf_sample}.log",
     resources:
@@ -79,10 +75,6 @@ rule mapping_stats:
         "-l {params.low_mapq} "
         "-h {params.high_mapq} "
         "-mq {params.min_mapq} "
-        "-d {params.min_depth} "
-        "-q {params.min_high_mapq} "
-        "-p {params.min_pp} "
-        "-c {params.min_coverage} "
         "-o {output} &> {log}"
 
 
@@ -99,6 +91,11 @@ rule join_mapping_stats:
         ),
     output:
         INT_DATASET_DIR / "depth_quality" / "unfiltered_mapping_stats.tsv",
+    params:
+        min_depth=config["depth_quality"]["flag_quality"]["min_percent_genome-wide_depth"],
+        min_high_mapq=config["depth_quality"]["flag_quality"]["min_percent_MAPQ"],
+        min_pp=config["depth_quality"]["flag_quality"]["min_percent_properly_paired_reads"],
+        min_coverage=config["depth_quality"]["flag_quality"]["min_percent_coverage"],
     log:
         LOGS / "samples" / "depth_quality" / "join_mapping_stats.log",
     resources:
@@ -106,7 +103,7 @@ rule join_mapping_stats:
     conda:
         "../envs/pandas.yaml"
     script:
-        "../scripts/join_tables.py"
+        "../scripts/join_mapping_stats.py"
 
 
 # =================================================================================================
