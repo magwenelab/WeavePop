@@ -1,53 +1,6 @@
 # =================================================================================================
-#   Per lineage | Extract CDS and protein sequences from reference genomes
+#   Per lineage | Create snpeff database
 # =================================================================================================
-
-
-rule extract_cds_seqs:
-    input:
-        gff=INT_REFS_DIR / "{lineage}" / "{lineage}_interg_introns.gff",
-        fasta=INT_REFS_DIR / "{lineage}" / "{lineage}.fasta",
-        config=rules.agat_config.output,
-    output:
-        cds=INT_REFS_DIR / "{lineage}" / "{lineage}.cds.fa",
-    log:
-        LOGS / "references" / "snpeff" / "extract_cds_seqs_{lineage}.log",
-    resources:
-        tmpdir=TEMPDIR,
-    conda:
-        "../envs/agat.yaml"
-    shell:
-        "agat_sp_extract_sequences.pl "
-        "-g {input.gff} "
-        "-f {input.fasta} "
-        "-o {output.cds} "
-        "-c {input.config} "
-        "&> {log}"
-
-
-rule extract_protein_seqs:
-    input:
-        gff=INT_REFS_DIR / "{lineage}" / "{lineage}_interg_introns.gff",
-        fasta=INT_REFS_DIR / "{lineage}" / "{lineage}.fasta",
-        config=rules.agat_config.output,
-        cds=rules.extract_cds_seqs.output.cds,
-    output:
-        prots=INT_REFS_DIR / "{lineage}" / "{lineage}.prots.fa",
-    log:
-        LOGS / "references" / "snpeff" / "extract_protein_seqs_{lineage}.log",
-    resources:
-        tmpdir=TEMPDIR,
-    conda:
-        "../envs/agat.yaml"
-    shell:
-        "agat_sp_extract_sequences.pl "
-        "-g {input.gff} "
-        "-f {input.fasta} "
-        "-o {output.prots} "
-        "-p "
-        "-c {input.config} "
-        "&> {log}"
-
 
 # Make symbolic links in the snpeff_data directory and create config file
 rule prepare_refs_db:
