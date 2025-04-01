@@ -1,3 +1,46 @@
+
+# =================================================================================================
+#   Per lineage | Pass sequences to tables
+# =================================================================================================
+
+rule ref_cds2csv:
+    input:
+        fa=INT_REFS_DIR / "{lineage}" / "{lineage}.cds.fa",
+    output:
+        csv=INT_REFS_DIR / "{lineage}" / "{lineage}.cds.csv",
+    log:
+        LOGS / "references" / "annotation" / "ref_cds2csv_{lineage}.log",
+    resources:
+        tmpdir=TEMPDIR,
+    conda:
+        "../envs/variants.yaml"
+    shell:
+        "python workflow/scripts/fasta_to_csv.py "
+        "-f {input.fa} "
+        "-l {wildcards.lineage} "
+        "-t DNA "
+        "-o {output.csv} "
+        "&> {log}"
+
+rule ref_prots2csv:
+    input:
+        fa=INT_REFS_DIR / "{lineage}" / "{lineage}.prots.fa",
+    output:
+        csv=INT_REFS_DIR / "{lineage}" / "{lineage}.prots.csv",
+    log:
+        LOGS / "references" / "annotation" / "ref_prots2csv_{lineage}.log",
+    resources:
+        tmpdir=TEMPDIR,
+    conda:
+        "../envs/variants.yaml"
+    shell:
+        "python workflow/scripts/fasta_to_csv.py "
+        "-f {input.fa} "
+        "-l {wildcards.lineage} "
+        "-t PROTEIN "
+        "-o {output.csv} "
+        "&> {log}"
+
 # =================================================================================================
 #   Join lineages | Create a single table with the annotation of all lineages
 # =================================================================================================
@@ -16,6 +59,21 @@ rule join_ref_annotations:
         "../envs/pandas.yaml"
     script:
         "../scripts/join_ref_annotations.py"
+
+rule join_ref_sequences:
+    input:
+        cds=expand(INT_REFS_DIR / "{lineage}" / "{lineage}.cds.csv", lineage=LINEAGES),
+        prots=expand(INT_REFS_DIR / "{lineage}" / "{lineage}.prots.csv", lineage=LINEAGES),
+    output:
+        sequences=INT_REFS_DIR / "all_refs_sequences.csv",
+    log:
+        LOGS / "references" / "annotation" / "join_ref_sequences.log",
+    resources:
+        tmpdir=TEMPDIR,
+    conda:
+        "../envs/pandas.yaml"
+    script:
+        "../scripts/join_sequences.py"
 
 
 # =================================================================================================
@@ -105,6 +163,7 @@ rule complete_db:
         lofs=rules.join_variant_annotation.output.lofs,
         nmds=rules.join_variant_annotation.output.nmds,
         seqs=rules.join_sequences.output,
+        ref_seqs=rules.join_ref_sequences.output.sequences,
     output:
         DATASET_DIR / "database.db",
     log:
@@ -126,4 +185,5 @@ rule complete_db:
         "-l {input.lofs} "
         "-n {input.nmds} "
         "-s {input.seqs} "
+        "-r {input.ref_seqs} "
         "-o {output} &> {log}"

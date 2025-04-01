@@ -19,9 +19,10 @@ import sqlite3
 @click.option('--lofs', '-l', type=click.Path(), help='Path to the lofs file of all lineages.')
 @click.option('--nmds', '-n', type=click.Path(), help='Path to the nmds file of all lineages.')
 @click.option('--sequences', '-s', type=click.Path(), help='Path to the sequences table.')
+@click.option('--ref_sequences', '-r', type=click.Path(), help='Path to the reference sequences table.')
 @click.option('--output', '-o', type=click.Path(), help='Output database file.')
 
-def build_db(metadata, chrom_names, cnvs, mapq_depth, gff_tsv, effects, variants, presence, lofs, nmds, sequences, output):
+def build_db(metadata, chrom_names, cnvs, mapq_depth, gff_tsv, effects, variants, presence, lofs, nmds, sequences, ref_sequences, output):
     print("Using the following arguments:")
     print(f"1. metadata: {metadata}")
     print(f"2. chrom_names: {chrom_names}")
@@ -34,7 +35,8 @@ def build_db(metadata, chrom_names, cnvs, mapq_depth, gff_tsv, effects, variants
     print(f"9. lofs: {lofs}")
     print(f"10. nmds: {nmds}")
     print(f"11. sequences: {sequences}")
-    print(f"12. output: {output}")
+    print(f"12. ref_sequences: {ref_sequences}")
+    print(f"13. output: {output}")
     
     print("Reading metadata table...")
     df_metadata = pd.read_csv(metadata) 
@@ -80,6 +82,10 @@ def build_db(metadata, chrom_names, cnvs, mapq_depth, gff_tsv, effects, variants
     df_sequences = pd.read_csv(sequences, header = 0, sep=',')
     print("Sequences table done!")
 
+    print("Reading reference sequences table...")
+    df_ref_sequences = pd.read_csv(ref_sequences, header = 0, sep=',')
+    print("Reference sequences table done!")
+
     print("Formatting dataframes done!")
 
     print("Connecting to database")
@@ -96,6 +102,7 @@ def build_db(metadata, chrom_names, cnvs, mapq_depth, gff_tsv, effects, variants
     con.register('df_lofs', df_lofs)
     con.register('df_nmds', df_nmds)
     con.register('df_sequences', df_sequences)
+    con.register('df_ref_sequences', df_ref_sequences)
     
     print("Adding dataframes to database")
     con.execute("CREATE TABLE IF NOT EXISTS metadata AS SELECT * FROM df_metadata")   
@@ -109,6 +116,7 @@ def build_db(metadata, chrom_names, cnvs, mapq_depth, gff_tsv, effects, variants
     con.execute("CREATE TABLE IF NOT EXISTS lofs AS SELECT * FROM df_lofs")
     con.execute("CREATE TABLE IF NOT EXISTS nmds AS SELECT * FROM df_nmds")
     con.execute("CREATE TABLE IF NOT EXISTS sequences AS SELECT * FROM df_sequences")
+    con.execute("CREATE TABLE IF NOT EXISTS ref_sequences AS SELECT * FROM df_ref_sequences")
 
     print("Closing connection to database")
     con.close()

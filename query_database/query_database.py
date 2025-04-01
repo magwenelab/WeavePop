@@ -398,11 +398,78 @@ def sequences(db, dataset=None, seq_type='DNA', sample=None, strain=None, lineag
     con.close()
     return result
 
+def ref_sequences(db, seq_type='DNA', lineage=None, gene_id=None, gene_name=None):
+    if gene_name and gene_id:
+        raise ValueError("Only one of Gene names or Gene IDs should be provided.")
+    else:
+        pass
+    if not (gene_name or gene_id or lineage):
+        raise ValueError("At least one of Gene names, Gene IDs, or Lineage should be provided.")
+    else:
+        pass
+    
+    con = duckdb.connect(database=db, read_only=True)
+    con = con.execute(f"SET temp_directory = '{cwd}'")
+    
+    if gene_name:
+        gene_name = tuple(gene_name)
+        query_gene_id = f"""
+            SELECT *
+            FROM gff
+            WHERE gene_name IN {gene_name}
+            """
+        gene_id_df = con.execute(query_gene_id).fetchdf()
+        gene_id = tuple(gene_id_df['gene_id'].unique().tolist())
+        print(gene_id)
+    elif gene_id:
+        gene_id = tuple(gene_id)
+        print(gene_id)
+
+    if lineage:
+        lineage = tuple(lineage)
+
+    query = f"""
+        SELECT ref_sequences.lineage, ref_sequences.transcript_id, ref_sequences.seq,
+                gff.gene_id, gff.gene_name,
+                chromosomes.chromosome, chromosomes.accession,
+        FROM ref_sequences
+        JOIN gff ON ref_sequences.transcript_id = gff.feature_id AND gff.lineage = ref_sequences.lineage
+        JOIN chromosomes ON gff.accession = chromosomes.accession
+        WHERE seq_type = '{seq_type}'
+            """
+    if gene_id and not lineage:
+        query += f"""
+            AND transcript_id IN (
+                SELECT DISTINCT feature_id
+                FROM gff
+                WHERE gene_id IN {gene_id}
+            )"""
+    elif gene_id and lineage:
+        query += f"""
+            AND transcript_id IN (
+                SELECT DISTINCT feature_id
+                FROM gff
+                WHERE gene_id IN {gene_id}
+            )
+            AND ref_sequences.lineage IN {lineage}
+            """
+    elif lineage:
+        query += f"""
+            AND ref_sequences.lineage IN {lineage}
+            """
+    print(query)
+    result = con.execute(query).fetchdf()
+    con.close()
+    return result
+
 def df_to_seqrecord(df):
     records = []
     for index, row in df.iterrows():
         seq = Seq(row['seq'])
-        record = SeqRecord(seq, id=f"{row['strain']}|{row['transcript_id']}", description=f"sample={row['sample']} gene_id={row['gene_id']} gene_name={row['gene_name']} chromosome={row['chromosome']} accession={row['accession']}")
+        if 'sample' in df.columns:
+            record = SeqRecord(seq, id=f"{row['strain']}|{row['transcript_id']}", description=f"sample={row['sample']} gene_id={row['gene_id']} gene_name={row['gene_name']} chromosome={row['chromosome']} accession={row['accession']}")
+        elif 'lineage' in df.columns:
+            record = SeqRecord(seq, id=f"{row['lineage']}|{row['transcript_id']}", description=f"lineage={row['lineage']} gene_id={row['gene_id']} gene_name={row['gene_name']} chromosome={row['chromosome']} accession={row['accession']}")
         records.append(record)
     return records
 

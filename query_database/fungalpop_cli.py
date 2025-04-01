@@ -304,14 +304,102 @@ def get_sequences(db, dataset=None, seq_type='DNA', sample=None, strain=None, li
     # Close the connection #
     con.close()
     return result
+def get_ref_sequences(db, seq_type='DNA', lineage=None, gene_id=None, gene_name=None):
+    # Test valid combinations of input #
+    if db is None:
+        raise ValueError("Database file must be provided.")
+        sys.exit()
+    if gene_name and gene_id:
+        print("Only one of Gene names or Gene IDs should be provided. Exiting.", file=sys.stderr)
+        sys.exit()
+    
+    # Connect to the database #
+    con = duckdb.connect(database=db, read_only=True)
+    con = con.execute(f"SET temp_directory = '{cwd}'")
+    
+    # Check if input values are valid and reformat input to be used in the query #
+    # seq_type
+    query_seq_type = f"""
+        SELECT DISTINCT seq_type
+        FROM ref_sequences
+        """
+    seq_type_df = con.execute(query_seq_type).fetchdf()
+    seq_type_tuple = tuple(seq_type_df['seq_type'])
+    if seq_type not in seq_type_tuple:
+        print(f"seq_type must be one of {seq_type_tuple}. Exiting.", file=sys.stderr)
+        sys.exit()
+    
+    # lineage
+    lineage_tuple = list_lineages(db)
+    if lineage is None:
+        lineage = lineage_tuple
+    else:
+        lineage_input = tuple(lineage.split(','))
+        lineage = validate_input(lineage_input, lineage_tuple, 'lineage')
+    
+    # gene_id and gene_name
+    if gene_name is not None:
+        gene_name_tuple = list_gene_names(db)
+        gene_name_input = tuple(gene_name.split(','))
+        gene_name = validate_input(gene_name_input, gene_name_tuple, 'gene_name')
+        query_gene_id = f"""
+            SELECT DISTINCT gene_id
+            FROM gff
+            WHERE gene_name IN {gene_name}
+            """
+        gene_id_df = con.execute(query_gene_id).fetchdf()
+        gene_id = tuple(gene_id_df['gene_id'])
+    elif gene_id is not None:
+        gene_id_tuple = list_gene_ids(db) 
+        gene_id_input = tuple(gene_id.split(','))
+        gene_id = validate_input(gene_id_input, gene_id_tuple, 'gene_id')
+        
+    # Create the query #
+    query = f"""
+        SELECT ref_sequences.lineage, ref_sequences.transcript_id, ref_sequences.seq,
+                gff.gene_id, gff.gene_name,
+                chromosomes.chromosome, chromosomes.accession,
+        FROM ref_sequences
+        JOIN gff ON ref_sequences.transcript_id = gff.feature_id AND gff.lineage = ref_sequences.lineage
+        JOIN chromosomes ON gff.accession = chromosomes.accession
+        WHERE seq_type = '{seq_type}'
+            """
+    if gene_id and not lineage:
+        query += f"""
+            AND transcript_id IN (
+                SELECT DISTINCT feature_id
+                FROM gff
+                WHERE gene_id IN {gene_id}
+            )"""
+    elif gene_id and lineage:
+        query += f"""
+            AND transcript_id IN (
+                SELECT DISTINCT feature_id
+                FROM gff
+                WHERE gene_id IN {gene_id}
+            )
+            AND ref_sequences.lineage IN {lineage}
+            """
+    elif lineage:
+        query += f"""
+            AND ref_sequences.lineage IN {lineage}
+            """
+
+    # Execute the query #
+    result = con.execute(query).fetchdf()
+    
+    # Close the connection #
+    con.close()
+    return result
 
 def df_to_seqrecord(df):
     records = []
     for index, row in df.iterrows():
         seq = Seq(row['seq'])
-        record = SeqRecord(seq, id=f"{row['strain']}|{row['transcript_id']}", 
-                           description=f"sample={row['sample']} gene_id={row['gene_id']} gene_name={row['gene_name']} "
-                                       f"chromosome={row['chromosome']} accession={row['accession']}")
+        if 'sample' in df.columns:
+            record = SeqRecord(seq, id=f"{row['strain']}|{row['transcript_id']}", description=f"sample={row['sample']} gene_id={row['gene_id']} gene_name={row['gene_name']} chromosome={row['chromosome']} accession={row['accession']}")
+        elif 'lineage' in df.columns:
+            record = SeqRecord(seq, id=f"{row['lineage']}|{row['transcript_id']}", description=f"lineage={row['lineage']} gene_id={row['gene_id']} gene_name={row['gene_name']} chromosome={row['chromosome']} accession={row['accession']}")
         records.append(record)
     return records
 
@@ -799,6 +887,24 @@ def annotation(db, lineage, gene_id, gene_name, description, chromosome, start, 
 def sequences(db, gene_id, gene_name, dataset, sample, strain, lineage, seq_type, output):
     result = get_sequences(db, gene_id=gene_id, gene_name=gene_name, dataset=dataset, sample=sample, 
                            strain=strain, lineage=lineage, seq_type=seq_type)
+    records = df_to_seqrecord(result)
+    fasta_text = seqrecord_to_text(records)
+    if output is None:
+        print(fasta_text)
+    else:
+        with open(output, 'w') as f:
+            f.write(fasta_text)
+
+@fungalpop.command()
+@click.option('--db', help='Path to the database file', type=click.Path(exists=True, dir_okay=False))
+@click.option('--gene_id', default=None, help='Comma separated list of gene IDs', type=str)
+@click.option('--gene_name', default=None, help='Comma separated list of gene names', type=str)
+@click.option('--lineage', default=None, help='Comma separated list of lineage names', type=str)
+@click.option('--seq_type', default='DNA', help='Sequence type. Options are DNA and PROTEIN', show_default=True, type=str)
+@click.option('--output', default=None, help='Path to output file. Printed to standard output if not provided.', type=click.File('w'))
+def ref_sequences(db, gene_id, gene_name,  lineage, seq_type, output):
+    result = get_ref_sequences(db, gene_id=gene_id, gene_name=gene_name, 
+                           lineage=lineage, seq_type=seq_type)
     records = df_to_seqrecord(result)
     fasta_text = seqrecord_to_text(records)
     if output is None:
