@@ -313,7 +313,7 @@ if config["cnv"]["activate"] or config["plotting"]["activate"] or config["databa
         print("", flush=True)
         print("Database of repetitive sequences not provided.", flush=True)
         if config["use_fake_database"]:
-            REPEATS_FILE = Path(os.path.join(config["project_directory"], "config/fake_repeats.fasta"))
+            REPEATS_FILE = Path(os.path.join(INT_REFS_DIR , "fake_repeats.fasta"))
             REPEATS_FILE.parent.mkdir(parents=True, exist_ok=True)
             with open(REPEATS_FILE, "w") as f:
                 f.write(">fake\naaaaaaaaaaaaaa\n")
