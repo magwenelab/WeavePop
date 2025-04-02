@@ -9,7 +9,7 @@ workflow: "analysis" # Options: "analysis", "join_datasets"
 # =============================================================================
 
 project_directory: "test" # Optional: Path of the project directory, relative to FungalPop/. If empty, the working directory is used.
-run_id: "modules" # Optional: Suffix to append to the 'results/' and 'logs/' directories. 
+run_id: "" # Optional: Suffix to append to the 'results/' and 'logs/' directories. 
 
 # =============================================================================
 #   Parameters for the analysis workflow
@@ -79,7 +79,7 @@ cnv:
 # ------------------Annotation of SNP effects----------------------------------
 
 snpeff:
-  activate: True # True to activate the module. Empty or False to skip.
+  activate: # True to activate the module. Empty or False to skip.
   extra: "" # Extra parameters for SnpEff.
 
 # ------------------Plotting---------------------------------------------------
