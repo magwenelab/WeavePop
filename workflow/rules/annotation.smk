@@ -123,18 +123,6 @@ rule reformat_annotation:
     script:
         "../scripts/reformat_annotation.py"
 
-rule annotation2bed:
-    input:
-        tsv=rules.reformat_annotation.output.tsv,
-    output:
-        bed=INT_SAMPLES_DIR / "annotation" / "{sample}" / "annotation.bed",
-    log:
-        LOGS / "samples" / "annotation" / "annotation2bed_{sample}.log",
-    conda:
-        "../envs/shell.yaml"
-    script:
-        "../scripts/annotation2bed.py"
-
 
 # =================================================================================================
 # Per sample | Run AGAT to extract CDS and protein sequences

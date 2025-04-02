@@ -8,7 +8,7 @@ from pathlib import Path
 @click.command()
 @click.option('-di', '--depth_input', help='Path to BED file with depth of each window.', type=click.Path(exists=True))
 @click.option('-ri', '--repeats_input', help='Path to BED file with coordinates of repetititve sequences of reference genome.', type=click.Path(exists=True))
-@click.option('-ai', '--annotation_input', help='Path to BED file with annotation of sample.', type=click.Path(exists=True))
+@click.option('-ai', '--annotation_input', help='Path to TSV file with annotation of sample.', type=click.Path(exists=True))
 @click.option('-sp', '--sample_name', help='Sample name as a string.', type=str)
 @click.option('-wp', '--window_size', help='Size of windows in the depth BED file.', type=int)
 @click.option('-dp', '--depth_threshold', help='Threshold to define copy number variation in smoothed normalzed depth.', type=click.types.FloatRange(min=0.0))
@@ -75,16 +75,16 @@ def cnv_calling(depth_input, repeats_input, annotation_input, sample_name, windo
     print("Adding genetic features in CNV regions...")
     temp_cnv_file = Path(temp_dir) / f"{sample_name}_temp_cnv.bed"
     cnv_regions.to_csv(temp_cnv_file, sep='\t', index=False, header=False)
-    annot_intersection = $(bedtools intersect -loj -a @(temp_cnv_file) -b @(annotation_input) | bedtools merge -c 4,5,6,7,8,9,10,11,15 -o distinct)
+
+    print("Intersecting with annotation...")
+    annot_intersection = $(awk '$3 == "gene" {print $1,$4,$5,$10}' OFS='\t' @(annotation_input) | tr -d "'" | bedtools intersect -loj -a @(temp_cnv_file) -b stdin | bedtools merge -c 4,5,6,7,8,9,10,11,15 -o distinct)
     annot_intersection = pd.read_csv(io.StringIO(annot_intersection), sep='\t', header=None)
     temp_cnv_file.unlink()
 
+    print("Naming and reording columns...")
     annot_header = ['accession', 'start', 'end', 'depth', 'norm_depth', 'smooth_depth', 'cnv', 'overlap_bp', 'region_size', 'repeat_fraction', 'sample', 'feature_id']
     annot_intersection.columns = annot_header
-
     annot_intersection['feature_id'] = annot_intersection['feature_id'].replace('.', np.nan)
-
-    print("Reorder columns...")
     col_order = ['accession', 'start', 'end', 'cnv','region_size', 'depth', 'norm_depth', 'smooth_depth', 'repeat_fraction', 'overlap_bp', 'feature_id', 'sample']
     annot_intersection = annot_intersection[col_order]
 
