@@ -103,6 +103,10 @@ if config["workflow"] == "analysis":
 
             include: "rules/annotation.smk"
         
+        if config["depth_quality_features"]["activate"] or config["cnv"]["activate"]:
+            
+            include: "rules/depth_quality_features.smk"
+        
         if config["snpeff"]["activate"]:
 
             include: "rules/snpeff.smk"
