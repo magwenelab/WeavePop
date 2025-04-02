@@ -211,6 +211,28 @@ def input_join_ref_annotations(wildcards):
             paths.append(gff)
     return paths
 
+def input_join_ref_sequences(wildcards):
+    paths_cds = []
+    paths_prots = []
+    for dir in LIST_PATHS:
+        metadata = os.path.join(dir, DATASET_DIR_NAME, "metadata.csv")
+        lineages_dir_df = pd.read_csv(metadata, header=0)
+        lineages = set(lineages_dir_df["lineage"])
+        for lineage in lineages:
+            cds = os.path.join(dir, INTDIR_NAME, REFS_DIR_NAME, lineage, f"{lineage}.cds.csv")
+            prots = os.path.join(dir, INTDIR_NAME, REFS_DIR_NAME, lineage, f"{lineage}.prots.csv")
+            paths_cds.append(cds)
+            paths_prots.append(prots)
+    return {
+        "cds": paths_cds,
+        "prots": paths_prots,
+    }
+
+def input_join_ref_cds(wildcards):
+    return input_join_ref_sequences(wildcards)["cds"]
+    
+def input_join_ref_prots(wildcards):
+    return input_join_ref_sequences(wildcards)["prots"]
 
 def input_copy_speff_data(wildcards):
     paths_snpeff_Data = {}

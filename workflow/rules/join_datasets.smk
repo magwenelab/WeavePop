@@ -118,6 +118,21 @@ rule join_ref_annotations:
         "../scripts/join_ref_annotations.py"
 
 
+rule join_ref_sequences:
+    input:
+        cds=input_join_ref_cds,
+        prots=input_join_ref_prots,
+    output:
+        sequences=INT_REFS_DIR / "all_refs_sequences.csv",
+    log:
+        LOGS / "join_datasets" / "join_ref_sequences.log",
+    resources:
+        tmpdir=TEMPDIR,
+    conda:
+        "../envs/pandas.yaml"
+    script:
+        "../scripts/join_ref_sequences.py"
+
 # =================================================================================================
 #   Redo intersection of VCFs and variant annotation
 # =================================================================================================
@@ -296,6 +311,7 @@ rule complete_db:
         lofs=rules.join_variant_annotation.output.lofs,
         nmds=rules.join_variant_annotation.output.nmds,
         seqs=rules.join_sequences.output.sequences,
+        ref_seqs=rules.join_ref_sequences.output.sequences,
     output:
         DATASET_DIR / "database.db",
     log:
@@ -317,5 +333,6 @@ rule complete_db:
         "-l {input.lofs} "
         "-n {input.nmds} "
         "-s {input.seqs} "
+        "-r {input.ref_seqs} "
         "-o {output} "
         "&> {log}"
