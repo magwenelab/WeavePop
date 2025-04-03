@@ -5,14 +5,14 @@
 
 WeavePop is a [Snakemake](https://snakemake.github.io/) workflow that maps short sequencing reads of multiple haploid eukaryotic genomes to selected reference genomes and analyzes the genomic variants between them.
 The core analysis is done by [Snippy](https://github.com/tseemann/snippy) to obtain alignment files (BAM), variant calling files (VCFs), and reference-based assemblies. 
-From these results WeavePop analyzes the mapping quality and depth, 
+From these results, WeavePop analyzes the mapping quality and depth, 
 annotates the assemblies with [Litoff](https://github.com/agshumate/Liftoff) using the corresponding reference genome annotation, 
 extracts the DNA and amino acid sequences of all transcripts using [AGAT](https://github.com/NBISweden/AGAT), 
-annotate the effects of the small variants with [SnpEff](https://pcingola.github.io/SnpEff/), 
+annotates the effects of the small variants with [SnpEff](https://pcingola.github.io/SnpEff/), 
 calls Copy-Number Variants, 
 generates a variety of useful diagnostic plots, 
 and integrates all the results into an SQL database. 
-The database is useful to easily explore the results using WeavePop-Shiny, an interactive web app, or the command-line interface WeavePop-CLI.  
+The database allows users to easily explore the results using WeavePop-Shiny, an interactive web app, or the command-line interface WeavePop-CLI. 
 
 Check the [Wiki](https://github.com/magwenelab/WeavePop/wiki) for detailed information on how to use WeavePop.
 
