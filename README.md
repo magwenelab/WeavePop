@@ -1,6 +1,5 @@
 
-# WeavePop
-Workflow to Explore and Analyze Genomic Variants of Eukaryotic Populations
+# WeavePop: Workflow to Explore and Analyze genomic Variants of Eukaryotic Populations
 
 [![Snakemake](https://img.shields.io/badge/snakemake-≥8.2.1-brightgreen.svg?style=flat)](https://snakemake.readthedocs.io)
 
