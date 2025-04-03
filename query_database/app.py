@@ -9,10 +9,10 @@ import pandas as pd
 mydb='..database.db'
 with ui.navset_pill(id="Database"):
     with ui.nav_panel("Home"):
-        ui.h1(ui.markdown("FungalPop Database"), style="padding-top: 20px;padding-bottom: 20px;")
+        ui.h1(ui.markdown("WeavePop Database"), style="padding-top: 20px;padding-bottom: 20px;")
         ui.markdown(
             """
-            This database is the result of FungalPop, a workflow for the discovery of genomic diversity in a population.   
+            This database is the result of WeavePop, a workflow for the discovery of genomic diversity in a population.   
             In summary, the analyses consisted of the following steps:
             1. Processing of the annotation of the reference genome. 
             2. Map the short reads of each sample to the corresponding reference genome using [Snippy](https://github.com/tseemann/snippy).  
@@ -72,7 +72,7 @@ with ui.navset_pill(id="Database"):
                 filters=True,
             )
 
-    with ui.nav_panel(" Reference Genomes’ Annotations"):
+    with ui.nav_panel(" Reference Annotations"):
         ui.h1(" Reference Genomes’ Annotations", style="padding-top: 20px;padding-bottom: 20px;")
         with ui.layout_columns(col_widths=(6,3,3), min_height="200px"):
             with ui.navset_card_pill():
@@ -172,7 +172,103 @@ with ui.navset_pill(id="Database"):
                     with io.BytesIO() as buf:
                         df.to_csv(buf, index=False, sep="\t")
                         yield buf.getvalue()
-                                   
+                            
+    with ui.nav_panel("Reference Sequences"):
+        ui.h1("Reference Sequences", style="padding-top: 20px;padding-bottom: 20px;")
+        with ui.layout_columns(col_widths=(6,6), min_height="200px"):
+            with ui.navset_card_pill(): 
+                with ui.nav_panel("Lineage"):
+                    @render.ui
+                    def show_lineage_sq_ref():
+                        return ui.TagList(
+                            ui.input_selectize(
+                                "lineage_sq_ref",
+                                "Lineages",
+                                choices=qdb.list_lineages(db = mydb),
+                                multiple=True,
+                                width="100%"))
+            with ui.navset_card_pill(): 
+                with ui.nav_panel("Gene names"):
+                    ui.input_selectize(
+                        "gene_name_sq_ref",
+                        "Gene names",
+                        choices=qdb.list_gene_names(db = mydb),
+                        multiple=True,
+                        width="100%",
+                    )
+                with ui.nav_panel("Gene IDs"):
+                    ui.input_selectize(
+                        "gene_id_sq_ref",
+                        "Gene IDs",
+                        choices=qdb.list_gene_ids(db = mydb),
+                        multiple=True,
+                        width="100%",
+                    )   
+        with ui.navset_card_pill(): 
+            with ui.nav_panel("Preview sequence counts"):
+                ui.input_action_button("count_seqs_ref", "Show number of sequences")
+                @render.data_frame
+                @reactive.event(input.count_seqs_ref)
+                def seq_counts_ref():
+                    available_input = input.__dict__.get('_map', {}).keys()
+                    l = input.lineage_sq_ref() if 'lineage_sq_ref' in available_input else None
+                    
+                    seqs_df = qdb.ref_sequences(db = mydb, seq_type = "PROTEIN",
+                        gene_id = input.gene_id_sq_ref(), gene_name=input.gene_name_sq_ref(),
+                        lineage= l)
+
+                    df_counts = pd.DataFrame({"Total lineages": [seqs_df["lineage"].nunique()],
+                                                "Total genes": [seqs_df["gene_id"].nunique()],
+                                                "Total sequences": [seqs_df.shape[0]]})
+                    return df_counts
+
+            with ui.nav_panel("Download FASTA files"):
+                with ui.layout_columns(col_widths=(6,6)):
+                    @render.download(
+                        label="Download protein sequences",
+                        filename=lambda: f"sequences-{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.faa")
+                    def down_prots_ref():
+                        try:
+                            available_input = input.__dict__.get('_map', {}).keys()
+                            l = input.lineage_sq_ref() if 'lineage_sq_ref' in available_input else None
+                            
+                            seqs_df = qdb.ref_sequences(db = mydb, seq_type = "PROTEIN",
+                                gene_id = input.gene_id_sq_ref(), gene_name=input.gene_name_sq_ref(),
+                                lineage= l)
+
+                            seqs_records = qdb.df_to_seqrecord(seqs_df)
+                            seqs_text = qdb.seqrecord_to_text(seqs_records)
+                        except Exception as e:
+                            with io.BytesIO() as buf:
+                                buf.write(f"Error: {e}".encode())
+                                yield buf.getvalue()
+                            return f"Error: {e}"
+                        with io.BytesIO() as buf:
+                            buf.write(seqs_text.encode())
+                            yield buf.getvalue()  
+                    @render.download(
+                        label="Download DNA sequences",
+                        filename=lambda: f"sequences-{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.fna")
+                    def down_dna_ref():
+                        try:
+                            available_input = input.__dict__.get('_map', {}).keys()
+                            l = input.lineage_sq_ref() if 'lineage_sq_ref' in available_input else None
+                            
+                            seqs_df = qdb.ref_sequences(db = mydb, seq_type = "DNA",
+                                gene_id = input.gene_id_sq_ref(), gene_name=input.gene_name_sq_ref(),
+                                lineage= l)
+
+                            seqs_records = qdb.df_to_seqrecord(seqs_df)
+                            seqs_text = qdb.seqrecord_to_text(seqs_records)
+                        except Exception as e:
+                            with io.BytesIO() as buf:
+                                buf.write(f"Error: {e}".encode())
+                                yield buf.getvalue()
+                            return f"Error: {e}"
+                        with io.BytesIO() as buf:
+                            buf.write(seqs_text.encode())
+                            yield buf.getvalue() 
+                                                  
     with ui.nav_panel("Sequences"):
         ui.h1("Sequences", style="padding-top: 20px;padding-bottom: 20px;")
         list_datasets = qdb.list_datasets(db = mydb)
@@ -316,103 +412,7 @@ with ui.navset_pill(id="Database"):
                         with io.BytesIO() as buf:
                             buf.write(seqs_text.encode())
                             yield buf.getvalue() 
-  
-    with ui.nav_panel("Reference Sequences"):
-        ui.h1("Reference Sequences", style="padding-top: 20px;padding-bottom: 20px;")
-        with ui.layout_columns(col_widths=(6,6), min_height="200px"):
-            with ui.navset_card_pill(): 
-                with ui.nav_panel("Lineage"):
-                    @render.ui
-                    def show_lineage_sq_ref():
-                        return ui.TagList(
-                            ui.input_selectize(
-                                "lineage_sq_ref",
-                                "Lineages",
-                                choices=qdb.list_lineages(db = mydb),
-                                multiple=True,
-                                width="100%"))
-            with ui.navset_card_pill(): 
-                with ui.nav_panel("Gene names"):
-                    ui.input_selectize(
-                        "gene_name_sq_ref",
-                        "Gene names",
-                        choices=qdb.list_gene_names(db = mydb),
-                        multiple=True,
-                        width="100%",
-                    )
-                with ui.nav_panel("Gene IDs"):
-                    ui.input_selectize(
-                        "gene_id_sq_ref",
-                        "Gene IDs",
-                        choices=qdb.list_gene_ids(db = mydb),
-                        multiple=True,
-                        width="100%",
-                    )   
-        with ui.navset_card_pill(): 
-            with ui.nav_panel("Preview sequence counts"):
-                ui.input_action_button("count_seqs_ref", "Show number of sequences")
-                @render.data_frame
-                @reactive.event(input.count_seqs_ref)
-                def seq_counts_ref():
-                    available_input = input.__dict__.get('_map', {}).keys()
-                    l = input.lineage_sq_ref() if 'lineage_sq_ref' in available_input else None
-                    
-                    seqs_df = qdb.ref_sequences(db = mydb, seq_type = "PROTEIN",
-                        gene_id = input.gene_id_sq_ref(), gene_name=input.gene_name_sq_ref(),
-                        lineage= l)
-
-                    df_counts = pd.DataFrame({"Total lineages": [seqs_df["lineage"].nunique()],
-                                                "Total genes": [seqs_df["gene_id"].nunique()],
-                                                "Total sequences": [seqs_df.shape[0]]})
-                    return df_counts
-
-            with ui.nav_panel("Download FASTA files"):
-                with ui.layout_columns(col_widths=(6,6)):
-                    @render.download(
-                        label="Download protein sequences",
-                        filename=lambda: f"sequences-{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.faa")
-                    def down_prots_ref():
-                        try:
-                            available_input = input.__dict__.get('_map', {}).keys()
-                            l = input.lineage_sq_ref() if 'lineage_sq_ref' in available_input else None
-                            
-                            seqs_df = qdb.ref_sequences(db = mydb, seq_type = "PROTEIN",
-                                gene_id = input.gene_id_sq_ref(), gene_name=input.gene_name_sq_ref(),
-                                lineage= l)
-
-                            seqs_records = qdb.df_to_seqrecord(seqs_df)
-                            seqs_text = qdb.seqrecord_to_text(seqs_records)
-                        except Exception as e:
-                            with io.BytesIO() as buf:
-                                buf.write(f"Error: {e}".encode())
-                                yield buf.getvalue()
-                            return f"Error: {e}"
-                        with io.BytesIO() as buf:
-                            buf.write(seqs_text.encode())
-                            yield buf.getvalue()  
-                    @render.download(
-                        label="Download DNA sequences",
-                        filename=lambda: f"sequences-{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.fna")
-                    def down_dna_ref():
-                        try:
-                            available_input = input.__dict__.get('_map', {}).keys()
-                            l = input.lineage_sq_ref() if 'lineage_sq_ref' in available_input else None
-                            
-                            seqs_df = qdb.ref_sequences(db = mydb, seq_type = "DNA",
-                                gene_id = input.gene_id_sq_ref(), gene_name=input.gene_name_sq_ref(),
-                                lineage= l)
-
-                            seqs_records = qdb.df_to_seqrecord(seqs_df)
-                            seqs_text = qdb.seqrecord_to_text(seqs_records)
-                        except Exception as e:
-                            with io.BytesIO() as buf:
-                                buf.write(f"Error: {e}".encode())
-                                yield buf.getvalue()
-                            return f"Error: {e}"
-                        with io.BytesIO() as buf:
-                            buf.write(seqs_text.encode())
-                            yield buf.getvalue() 
-                                          
+ 
     with ui.nav_panel("Variants"):
         ui.h1("Variants and their predicted effects", style="padding-top: 20px;padding-bottom: 20px;")
         ui.markdown(

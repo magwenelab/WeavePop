@@ -8,7 +8,7 @@ workflow: "analysis" # Options: "analysis", "join_datasets"
 #   Output (for either workflow)
 # =============================================================================
 
-project_directory: "test" # Optional: Path of the project directory, relative to FungalPop/. If empty, the working directory is used.
+project_directory: "test" # Optional: Path of the project directory, relative to WeavePop/. If empty, the working directory is used.
 run_id: "" # Optional: Suffix to append to the 'results/' and 'logs/' directories. 
 
 # =============================================================================
@@ -115,5 +115,5 @@ agat:
 # It assumes that if the same lineage is present in the different datasets, 
 # the same reference genome was used.
 
-datasets_paths: "test/results,test/results2" # Commas separated list of paths to the directories with the results of the analysis workflow.
+datasets_paths: "test/results,test/results_2" # Commas separated list of paths to the directories with the results of the analysis workflow.
 datasets_names: "one,two" # Commas separated list of names for the datasets, in the same order as the paths.

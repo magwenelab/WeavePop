@@ -40,7 +40,7 @@ else:
 # =================================================================================================
 
 os.makedirs(LOGS, exist_ok=True)
-log_file_path = LOGS / "fungalpop.log"
+log_file_path = LOGS / "weavepop.log"
 
 if os.path.exists(log_file_path):
     base, ext = os.path.splitext(log_file_path)
@@ -144,12 +144,14 @@ else:
 # =================================================================================================
 
 onsuccess:
-    print("                                   ", flush=True)
-    print(" _           _   _      _   _   _  ", flush=True)
-    print("|_ | | |\\ | |_  |_| |  |_| | | |_|", flush=True)
-    print("|  |_| | \\| |_| | | |_ |   |_| |  ", flush=True)
-    print("                                   ", flush=True)
-    print("                                   ", flush=True)
+    print(r"""
+    __        __                   ____             
+    \ \      / /__  __ ___   _____|  _ \ ___  _ __  
+     \ \ /\ / / _ \/ _` \ \ / / _ \ |_) / _ \| '_ \ 
+      \ V  V /  __/ (_| |\ V /  __/  __/ (_) | |_) |
+       \_/\_/ \___|\__,_| \_/ \___|_|   \___/| .__/ 
+                                             |_|    
+    """, flush=True)
     if config["workflow"] == "analysis":
         print("The analysis workflow finished successfully!", flush=True)
         original_metadata = UNFILT_SAMPLE_TABLE
@@ -174,12 +176,14 @@ onsuccess:
 # =================================================================================================
 
 onerror:
-    print("                                   ", flush=True)
-    print(" _           _   _      _   _   _  ", flush=True)
-    print("|_ | | |\\ | |_  |_| |  |_| | | |_|", flush=True)
-    print("|  |_| | \\| |_| | | |_ |   |_| |  ", flush=True)
-    print("                                   ", flush=True)
-    print("                                   ", flush=True)
+    print(r"""
+    __        __                   ____             
+    \ \      / /__  __ ___   _____|  _ \ ___  _ __  
+     \ \ /\ / / _ \/ _` \ \ / / _ \ |_) / _ \| '_ \ 
+      \ V  V /  __/ (_| |\ V /  __/  __/ (_) | |_) |
+       \_/\_/ \___|\__,_| \_/ \___|_|   \___/| .__/ 
+                                             |_|    
+    """, flush=True)
     print("An error occurred during the workflow execution.", flush=True)
     print("Above, find the rule that failed and check its log file for error details.", flush=True)
     print("                                   ", flush=True)

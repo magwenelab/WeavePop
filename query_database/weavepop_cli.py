@@ -851,10 +851,10 @@ def get_query(db, query=None, query_file=None):
 
 # CLI #
 @click.group()
-def fungalpop():
+def weavepop():
     pass
 
-@fungalpop.command()
+@weavepop.command()
 @click.option('--db', help='Path to the database file', type=click.Path(exists=True, dir_okay=False))
 @click.option('--lineage', default=None, help='Comma separated list of lineage names', type=str)
 @click.option('--gene_id', default=None, help='Comma separated list of gene IDs', type=str)
@@ -874,7 +874,7 @@ def annotation(db, lineage, gene_id, gene_name, description, chromosome, start, 
         result.to_csv(output, sep='\t', index=False)
     
 
-@fungalpop.command()
+@weavepop.command()
 @click.option('--db', help='Path to the database file', type=click.Path(exists=True, dir_okay=False))
 @click.option('--dataset', default=None, help='Comma separated list of dataset names', type=str)
 @click.option('--gene_id', default=None, help='Comma separated list of gene IDs', type=str)
@@ -895,7 +895,7 @@ def sequences(db, gene_id, gene_name, dataset, sample, strain, lineage, seq_type
         with open(output, 'w') as f:
             f.write(fasta_text)
 
-@fungalpop.command()
+@weavepop.command()
 @click.option('--db', help='Path to the database file', type=click.Path(exists=True, dir_okay=False))
 @click.option('--gene_id', default=None, help='Comma separated list of gene IDs', type=str)
 @click.option('--gene_name', default=None, help='Comma separated list of gene names', type=str)
@@ -913,7 +913,7 @@ def ref_sequences(db, gene_id, gene_name,  lineage, seq_type, output):
         with open(output, 'w') as f:
             f.write(fasta_text)
 
-@fungalpop.command()
+@weavepop.command()
 @click.option('--db', help='Path to the database file', type=click.Path(exists=True, dir_okay=False))
 @click.option('--dataset', default=None, help='Comma separated list of dataset names', type=str)
 @click.option('--gene_id', default=None, help='Comma separated list of gene IDs', type=str)
@@ -937,7 +937,7 @@ def variants(db, dataset, gene_id, gene_name, sample, strain, lineage, impact, e
     else:
         result.to_csv(output, sep='\t', index=False)
         
-@fungalpop.command()
+@weavepop.command()
 @click.option('--db', help='Path to the database file', type=click.Path(exists=True, dir_okay=False))
 @click.option('--dataset', default=None, help='Comma separated list of dataset names', type=str)
 @click.option('--strain', default=None, help='Comma separated list of strain names', type=str)
@@ -960,7 +960,7 @@ def cnv(db, dataset, strain, sample, lineage, chromosome, start, end, min_size, 
     else:
         result.to_csv(output, sep='\t', index=False)
 
-@fungalpop.command()
+@weavepop.command()
 @click.option('--db', help='Path to the database file', type=click.Path(exists=True, dir_okay=False))
 @click.option('--dataset', default=None, help='Comma separated list of dataset names', type=str)
 @click.option('--lineage', default=None, help='Comma separated list of lineage names', type=str)
@@ -974,7 +974,7 @@ def metadata(db, dataset, lineage, sample, strain, output):
     else:
         result.to_csv(output, sep='\t', index=False)
 
-@fungalpop.command()
+@weavepop.command()
 @click.option('--db', help='Path to the database file', type=click.Path(exists=True, dir_okay=False))
 @click.option('--output', default=None, help='Path to output file. Printed to standard output if not provided.', type=click.File('w'))
 @click.option('--query', default=None, help='SQL query to execute', type=str)
@@ -988,4 +988,4 @@ def query(db, output, query, query_file):
 
 
 if __name__ == '__main__':
-    fungalpop()
+    weavepop()
