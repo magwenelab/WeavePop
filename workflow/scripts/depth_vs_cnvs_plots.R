@@ -30,7 +30,10 @@ sample <- snakemake@wildcards$sample
 # sample <- "sample1"
 
 print("Processing chromosome information...")
+chrom_names$chromosome <- factor(chrom_names$chromosome, levels = unique(chrom_names$chromosome))
+
 chromosomes <- left_join(chrom_names, chrom_lengths, by = "accession")
+
 
 depth <- depth %>%
     select(sample, accession, norm_chrom_median)%>%
