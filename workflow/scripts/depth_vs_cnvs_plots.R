@@ -4,8 +4,7 @@ sink(log, type = "message")
 
 print("Loading libraries...")
 suppressPackageStartupMessages(library(tidyverse))
-suppressPackageStartupMessages(library(scales))
-suppressPackageStartupMessages(library(ggnewscale))
+suppressPackageStartupMessages(library(ggrepel))
 
 print("Reading files...")
 depth <- read.delim(snakemake@input[[1]], sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
@@ -99,7 +98,7 @@ print("Plotting...")
 p <- ggplot(chrom_metrics, aes(x = coverage_percent, y = norm_chrom_median, color = chromosome, shape = cnv)) +
         geom_hline(yintercept = c(0, 1, 2), color = "black", linetype = "solid") +
         geom_point() +
-        # geom_text_repel(aes(label = chromosome), size = 3, max.overlaps = 10, show.legend = FALSE) +
+        geom_text_repel(aes(label = chromosome), size = 3, max.overlaps = 10, show.legend = FALSE) +
         scale_x_continuous(limits = c(0, 100), breaks = seq(0, 100, by = 10)) +
         theme_bw() +
         theme(legend.position = "right") +
