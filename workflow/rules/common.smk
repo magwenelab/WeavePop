@@ -27,23 +27,13 @@ print(r"""
 # =================================================================================================
 
 try:
-    result = subprocess.run(['sh', '-c', "tail -n1 .git/logs/HEAD | cut -d' ' -f2"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
+    result = subprocess.run(['sh', '-c', "cat workflow/.head_hash"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
     head_hash = result.stdout.strip()
     print("Commmit hash of current version:")
     print(f"{head_hash}")
     print("", flush=True)
 except subprocess.CalledProcessError as e:
     print(f"Error occurred while getting the latest commit hash: {e.stderr}")
-
-if not head_hash:
-    try:
-        result = subprocess.run(['sh', '-c', "cat .head_hash"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
-        head_hash = result.stdout.strip()
-        print("Commmit hash of current version:")
-        print(f"{head_hash}")
-        print("", flush=True)
-    except subprocess.CalledProcessError as e:
-        print(f"Error occurred while getting the latest commit hash: {e.stderr}")
 
 # =================================================================================================
 #  Define variables of global paths
