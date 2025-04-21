@@ -10,7 +10,7 @@ rule loci:
     output:
         locitable=INT_REFS_DIR / "loci_to_plot.tsv",
     log:
-        LOGS / "dataset" / "plots" / "loci.log",
+        LOGS / "references" / "plots" / "loci.log",
     conda:
         "../envs/samtools.yaml"
     shell:
@@ -36,7 +36,7 @@ rule depth_distribution_plots:
     conda:
         "../envs/r.yaml"
     log:
-        LOGS / "dataset" / "plots" / "depth_distribution_{sample}.log",
+        LOGS / "samples" / "plots" / "depth_distribution_{sample}.log",
     script:
         "../scripts/depth_distribution_plots.R"
 
@@ -51,7 +51,7 @@ rule depth_by_chrom_plots:
     conda:
         "../envs/r.yaml"
     log:
-        LOGS / "dataset" / "plots" / "depth_by_chrom_{sample}.log",
+        LOGS / "samples" / "plots" / "depth_by_chrom_{sample}.log",
     script:
         "../scripts/depth_by_chrom_plots.R"
 
@@ -71,9 +71,23 @@ rule depth_by_windows_plots:
     conda:
         "../envs/r.yaml"
     log:
-        LOGS / "dataset" / "plots" / "depth_by_windows_{sample}.log",
+        LOGS / "samples" / "plots" / "depth_by_windows_{sample}.log",
     script:
         "../scripts/depth_by_windows_plots.R"
+
+rule depth_vs_cnvs_plots:
+    input:
+        unpack(depth_vs_cnvs_plots_input),
+        chrom_names=rules.quality_filter.output.chromosomes,
+        chrom_length=rules.chromosome_lengths.output,
+    output:
+        SAMPLES_DIR / "plots" / "{sample}" / "depth_vs_cnvs.png",
+    conda:
+        "../envs/r.yaml"
+    log:
+        LOGS / "samples" / "plots" / "depth_vs_cnvs_{sample}.log",
+    script:
+        "../scripts/depth_vs_cnvs_plots.R"
 
 
 rule mapq_plots:
@@ -86,6 +100,6 @@ rule mapq_plots:
     conda:
         "../envs/r.yaml"
     log:
-        LOGS / "dataset" / "plots" / "mapq_plots_{sample}.log",
+        LOGS / "dsamples" / "plots" / "mapq_plots_{sample}.log",
     script:
         "../scripts/mapq_plots.R"

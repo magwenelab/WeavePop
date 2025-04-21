@@ -402,6 +402,12 @@ def depth_by_windows_plots_input(wildcards):
         "repeats": REFS_DIR / s["lineage"] / (s["lineage"] + "_repeats.bed"),
     }
 
+def depth_vs_cnvs_plots_input(wildcards):
+    s = SAMPLE_REFERENCE.loc[wildcards.sample,]
+    return {
+        "depth": SAMPLES_DIR / "depth_quality" / s["sample"] / "depth_by_chrom_good.tsv",
+        "cnv": SAMPLES_DIR / "cnv" / s["sample"] / "cnv_calls.tsv",
+    }
 
 def mapq_plot_input(wildcards):
     s = SAMPLE_REFERENCE.loc[wildcards.sample,]
@@ -503,6 +509,9 @@ def get_filtered_output():
         if config["cnv"]["activate"] or config["database"]["activate"]:
             final_output = final_output, expand(
                 SAMPLES_DIR / "plots" / "{sample}" / "depth_by_windows.png", sample=SAMPLES
+            )
+            final_output = final_output, expand(
+                SAMPLES_DIR / "plots" / "{sample}" / "depth_vs_cnvs.png", sample=SAMPLES
             )
             final_output = final_output, expand(
                 SAMPLES_DIR / "plots" / "{sample}" / "mapq.png", sample=SAMPLES

@@ -204,3 +204,22 @@ rule ref_prots2csv:
         "-t PROTEIN "
         "-o {output.csv} "
         "&> {log}"
+
+# =================================================================================================
+#   All refernces | Obtain chromosome lengths
+# =================================================================================================
+
+
+rule chromosome_lengths:
+    input:
+        expand(INT_REFS_DIR / "{lineage}" / "{lineage}.fasta", lineage=LINEAGES),
+    output:
+        INT_REFS_DIR / "chromosome_lengths.tsv",
+    log:
+        LOGS / "references" / "annotation" / "chromosome_lengths.log",
+    resources:
+        tmpdir=TEMPDIR,
+    conda:
+        "../envs/agat.yaml"
+    shell:
+        "cat {input} | seqkit fx2tab -l -i -n 1> {output} 2> {log}"
