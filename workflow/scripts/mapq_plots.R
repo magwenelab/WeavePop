@@ -17,13 +17,13 @@ loci <- read.delim(snakemake@input[[5]], header = TRUE, stringsAsFactors = TRUE,
 sample <- snakemake@wildcards$sample
 metadata <- read.delim(snakemake@input[[6]], sep = ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
 
-
 print("Obtaining lineage of sample...")
-lineage <- metadata$lineage[metadata$sample == sample]
+
+lineage_name <- as.character(metadata$lineage[metadata$sample == sample])
 
 print("Filtering chromosome names...")
 chrom_names <- chrom_names %>%
-  filter(lineage %in% lineage) %>%
+  filter(lineage == lineage_name) %>%
   filter(accession %in% unique(raw$accession))
 
 print("Ordering chromosome names...")
@@ -84,7 +84,7 @@ plot <- ggplot()+
     new_scale_color()+
   facet_wrap(~accession_chromosome, strip.position = "right", ncol = 2, labeller = as_labeller(my_labeller)) +
   scale_x_continuous(name = "Position (bp) ", labels = comma)+
-  labs(title = paste("Lineage: ", lineage," Sample: ", sample,  sep = " "), y = "Mapping quality (phred score)")+
+  labs(title = paste("Lineage: ", lineage_name," Sample: ", sample,  sep = " "), y = "Mapping quality (phred score)")+
   theme(panel.grid = element_blank(),
         panel.grid.major.x = element_blank(),
         panel.grid.minor.x = element_blank(),
@@ -97,10 +97,8 @@ plot <- ggplot()+
 print("Adding loci to plot if available...")
 y_loci = max(raw$mapq) + 20
 if (nrow(loci) != 0){
-  loci <- loci %>%
-    filter(lineage %in% lineage)
   loci_chrom <- left_join(loci, chrom_names, by = "accession")
-  loci_chrom <- loci_chrom %>% filter(lineage %in% lineage)
+  loci_chrom <- loci_chrom %>% filter(lineage %in% lineage_name)
   loci_colors <- combined_palette[1:nlevels(loci_chrom$loci)]
   plot <- plot +
     geom_point(data = loci_chrom, aes(x= start, y = y_loci, color = loci), size = 2, shape = 19)+

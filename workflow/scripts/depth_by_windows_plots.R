@@ -19,11 +19,11 @@ metadata <- read.delim(snakemake@input[[6]], sep = ",", header = TRUE, stringsAs
 
 print("Obtaining lineage of sample...")
 
-lineage <- metadata$lineage[metadata$sample == sample]
+lineage_name <- as.character(metadata$lineage[metadata$sample == sample])
 
 print("Filtering chromosome names...")
 chrom_names <- chrom_names %>%
-  filter(lineage %in% lineage) %>%
+  filter(lineage == lineage_name) %>%
   filter(accession %in% unique(depth_windows$accession))
 
 print("Ordering chromosome names...")
@@ -92,7 +92,7 @@ c <- ggplot()+
     guides(color = guide_legend(order=2))+
     new_scale_color()+
   facet_wrap(~accession_chromosome, strip.position = "right", ncol = 2, labeller = as_labeller(my_labeller)) +
-  labs(y = "Normalized depth", title = paste("Lineage:", lineage, " Sample:", sample, sep = " "))+
+  labs(y = "Normalized depth", title = paste("Lineage:", lineage_name, " Sample:", sample, sep = " "))+
   scale_y_continuous(breaks = c(1, 2)) +
   theme(panel.grid = element_blank(),
         panel.grid.major.x = element_blank(),
