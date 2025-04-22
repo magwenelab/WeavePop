@@ -59,5 +59,5 @@ plot <- ggplot()+
   scale_x_discrete(labels = function(x) gsub("xxx.*", "", x))
 
 print("Saving plot...")
-ggsave(snakemake@output[[1]], plot = plot, units = "in", height = 7.5, width = 7, dpi = 600 )
+ggsave(snakemake@output[[1]], plot = plot, units = "in", height = 7.5, width = 7, dpi = 300 )
 print("Done!") 

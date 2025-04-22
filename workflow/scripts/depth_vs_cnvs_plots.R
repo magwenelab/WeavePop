@@ -97,12 +97,12 @@ lineage <- unique(chrom_metrics$lineage)
 print("Plotting...")
 p <- ggplot(chrom_metrics, aes(x = coverage_percent, y = norm_chrom_median, color = chromosome, shape = cnv)) +
         geom_hline(yintercept = c(0, 1, 2), color = "black", linetype = "solid") +
-        geom_point() +
+        geom_point(size = 2) +
         geom_text_repel(aes(label = chromosome), size = 3, max.overlaps = 10, show.legend = FALSE) +
         scale_x_continuous(limits = c(0, 100), breaks = seq(0, 100, by = 10)) +
         theme_bw() +
         theme(legend.position = "right") +
-        labs(title = "Normalized Depth vs. Percent of CNV Coverage per Chromosome",
+        labs(title = "Normalized Depth vs.\nPercent of CNV Coverage per Chromosome",
             subtitle = paste("Lineage:", lineage, " Sample:", sample, sep = " "),
              y = "Normalized Median Depth of Chromosome",
              x = "Percent of Chromosome Covered by CNVs",
