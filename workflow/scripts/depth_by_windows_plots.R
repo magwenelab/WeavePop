@@ -15,10 +15,16 @@ repeats_table <- read.delim(snakemake@input[[3]], sep= "\t", header = FALSE, col
 loci_table <- read.delim(snakemake@input[[4]], header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
 chrom_names <- read.csv(snakemake@input[[5]], sep = ",", header = TRUE, col.names = c("lineage", "accession", "chromosome"), stringsAsFactors = TRUE, na = c("", "N/A"))
 sample <- snakemake@wildcards$sample
+metadata <- read.delim(snakemake@input[[6]], sep = ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
+
+print("Obtaining lineage of sample...")
+
+lineage <- metadata$lineage[metadata$sample == sample]
 
 print("Filtering chromosome names...")
 chrom_names <- chrom_names %>%
-  filter(accession %in% unique(depth_windows$accession) )
+  filter(lineage %in% lineage) %>%
+  filter(accession %in% unique(depth_windows$accession))
 
 print("Ordering chromosome names...")
 chrom_names['accession_chromosome'] <- paste(chrom_names$chromosome, chrom_names$accession, sep = "xxx")
@@ -63,8 +69,6 @@ set2 <- rev(brewer.pal(8, "Set2")[1:6])
 s_colors <- set2[1:nlevels(feature$cnv)]
 r_lim <- topcov + 2
 r_colors <- colorRampPalette(brewer.pal(12, "Paired"))(nlevels(repeats$repeat_type))
-
-lineage <- unique(depth_windows$lineage)
 
 print("Making labeler function...")
 my_labeller <- function(value){

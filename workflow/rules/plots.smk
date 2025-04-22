@@ -66,6 +66,7 @@ rule depth_by_windows_plots:
         unpack(depth_by_windows_plots_input),
         loci=rules.loci.output.locitable,
         chrom_names=rules.quality_filter.output.chromosomes,
+        metadata=rules.quality_filter.output.metadata,
     output:
         SAMPLES_DIR / "plots" / "{sample}" / "depth_by_windows.png",
     conda:
