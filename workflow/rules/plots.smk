@@ -96,11 +96,12 @@ rule mapq_plots:
         unpack(mapq_plot_input),
         chrom_names=rules.quality_filter.output.chromosomes,
         loci=rules.loci.output.locitable,
+        metadata=rules.quality_filter.output.metadata,
     output:
         SAMPLES_DIR / "plots" / "{sample}" / "mapq.png",
     conda:
         "../envs/r.yaml"
     log:
-        LOGS / "dsamples" / "plots" / "mapq_plots_{sample}.log",
+        LOGS / "samples" / "plots" / "mapq_plots_{sample}.log",
     script:
         "../scripts/mapq_plots.R"

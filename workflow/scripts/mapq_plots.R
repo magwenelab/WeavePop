@@ -15,10 +15,16 @@ repeats_table <- read.delim(snakemake@input[[3]], sep= "\t", header = FALSE, col
 chrom_names <- read.csv(snakemake@input[[4]], header = FALSE, col.names = c("lineage", "accession", "chromosome"))
 loci <- read.delim(snakemake@input[[5]], header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
 sample <- snakemake@wildcards$sample
+metadata <- read.delim(snakemake@input[[6]], sep = ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
+
+
+print("Obtaining lineage of sample...")
+lineage <- metadata$lineage[metadata$sample == sample]
 
 print("Filtering chromosome names...")
 chrom_names <- chrom_names %>%
-  filter(accession %in% unique(raw$accession) )
+  filter(lineage %in% lineage) %>%
+  filter(accession %in% unique(raw$accession))
 
 print("Ordering chromosome names...")
 chrom_names['accession_chromosome'] <- paste(chrom_names$chromosome, chrom_names$accession, sep = "xxx")
@@ -35,7 +41,6 @@ raw <- left_join(raw, chrom_names, by = "accession")
 loci <- loci %>% 
   select(accession, start, loci)%>%
   filter(accession %in% unique(raw$accession))
-lineage <- levels(as.factor(raw$lineage))
 
 cnv <- left_join(cnv, chrom_names, by = "accession")
 cnv$cnv <- str_to_title(cnv$cnv)
