@@ -9,7 +9,10 @@ import pandas as pd
 input_tsv=snakemake.input.tsv
 output_tsv=snakemake.output.tsv
 output_gff=snakemake.output.gff
-lineage=snakemake.params.lineage
+version=snakemake.params.version
+if version == "lineage":
+    lineage=snakemake.params.lineage
+
 
 print("Reading GFF table...")
 df = pd.read_csv(input_tsv, sep='\t', header=[0], dtype=str)
@@ -103,8 +106,9 @@ existing_priority_columns = [column for column in priority_columns if column in 
 other_columns = [column for column in existing_columns if column not in existing_priority_columns]
 df = df[existing_priority_columns + other_columns]
 
-print("Add new column with lineage name...")
-df['lineage'] = lineage
+if version == "lineage":
+    print("Add new column with lineage name...")
+    df['lineage'] = lineage
 
 print("Final column names:")
 print(df.columns.tolist())

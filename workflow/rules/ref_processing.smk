@@ -113,6 +113,7 @@ rule ref_reformat_annotation:
         gff=REFS_DIR / "{lineage}" / "{lineage}.gff",
     params:
         lineage="{lineage}",
+        version="lineage",
     log:
         LOGS / "references" / "ref_processing" / "ref_reformat_annotation_{lineage}.log",
     conda:
