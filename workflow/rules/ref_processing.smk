@@ -212,14 +212,31 @@ rule ref_prots2csv:
 
 rule chromosome_lengths:
     input:
-        expand(INT_REFS_DIR / "{lineage}" / "{lineage}.fasta", lineage=LINEAGES),
+        INT_REFS_DIR / "{lineage}" / "{lineage}.fasta",         
     output:
-        INT_REFS_DIR / "chromosome_lengths.tsv",
+        INT_REFS_DIR / "{lineage}" / "chromosome_lengths.tsv",
     log:
-        LOGS / "references" / "annotation" / "chromosome_lengths.log",
+        LOGS / "references" / "ref_processing" / "{lineage}_chromosome_lengths.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
         "../envs/agat.yaml"
     shell:
-        "cat {input} | seqkit fx2tab -l -i -n 1> {output} 2> {log}"
+        """
+        seqkit fx2tab -l -i -n {input} |\
+        awk -v lin={wildcards.lineage} '{{print lin, $0}}' OFS='\t' \
+        1> {output} 2> {log}
+        """
+
+rule join_chromosome_lengths:
+    input:
+        chrom_names=CHROM_NAMES,  
+        chrom_lengths=expand(INT_REFS_DIR / "{lineage}" / "chromosome_lengths.tsv", lineage=LINEAGES),
+    output:
+        INT_REFS_DIR / "chromosome_lengths.tsv",
+    log:
+        LOGS / "references" / "ref_processing" / "join_chromosome_lengths.log",
+    conda:
+        "../envs/pandas.yaml"
+    script:
+        "../scripts/join_chromosome_lengths.py"        

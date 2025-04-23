@@ -9,9 +9,9 @@ suppressPackageStartupMessages(library(ggrepel))
 print("Reading files...")
 depth <- read.delim(snakemake@input[[1]], sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
 cnv_calls <- read.delim(snakemake@input[[2]], sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
-chrom_names <- read.csv(snakemake@input[[3]], sep = ",", header = FALSE, col.names = c("lineage", "accession", "chromosome"), stringsAsFactors = TRUE, na = c("", "N/A"))
-chrom_lengths <- read.delim(snakemake@input[[4]], sep = "\t", header = FALSE, col.names = c("accession", "length"), stringsAsFactors = TRUE, na = c("", "N/A"))
+chromosomes <- read.delim(snakemake@input[[3]], sep = ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
 sample <- snakemake@wildcards$sample
+metadata <- read.delim(snakemake@input[[4]], sep = ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
 
 # depth_by_chrom_good_path <-
 #     "test/results/01.Samples/depth_quality/sample1/depth_by_chrom_good.tsv"
@@ -28,11 +28,17 @@ sample <- snakemake@wildcards$sample
 
 # sample <- "sample1"
 
+print("Obtaining lineage of sample...")
+
+lineage_name <- as.character(metadata$lineage[metadata$sample == sample])
+
+print("Filtering chromosome names...")
+chromosomes <- chromosomes %>%
+  filter(lineage == lineage_name)
+
 print("Processing chromosome information...")
-chrom_names$chromosome <- factor(chrom_names$chromosome, levels = unique(chrom_names$chromosome))
-
-chromosomes <- left_join(chrom_names, chrom_lengths, by = "accession")
-
+chromosomes$chromosome <- factor(chromosomes$chromosome, levels = unique(chromosomes$chromosome))
+print(chromosomes$chromosome)
 
 depth <- depth %>%
     select(sample, accession, norm_chrom_median)%>%
@@ -92,8 +98,6 @@ print("Joining chromosome metrics of deletions and duplications...")
 chrom_metrics <- bind_rows(del_metrics, dup_metrics)%>%
     mutate(coverage_percent = ifelse(is.na(coverage_percent), 0, coverage_percent))
         
-lineage <- unique(chrom_metrics$lineage)
-
 print("Plotting...")
 p <- ggplot(chrom_metrics, aes(x = coverage_percent, y = norm_chrom_median, color = chromosome, shape = cnv)) +
         geom_hline(yintercept = c(0, 1, 2), color = "black", linetype = "solid") +
@@ -103,7 +107,7 @@ p <- ggplot(chrom_metrics, aes(x = coverage_percent, y = norm_chrom_median, colo
         theme_bw() +
         theme(legend.position = "right") +
         labs(title = "Normalized Depth vs.\nPercent of CNV Coverage per Chromosome",
-            subtitle = paste("Lineage:", lineage, " Sample:", sample, sep = " "),
+            subtitle = paste("Lineage:", lineage_name, " Sample:", sample, sep = " "),
              y = "Normalized Median Depth of Chromosome",
              x = "Percent of Chromosome Covered by CNVs",
              color = "Chromosome",

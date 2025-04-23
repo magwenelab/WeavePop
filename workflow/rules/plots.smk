@@ -79,8 +79,8 @@ rule depth_by_windows_plots:
 rule depth_vs_cnvs_plots:
     input:
         unpack(depth_vs_cnvs_plots_input),
-        chrom_names=rules.quality_filter.output.chromosomes,
-        chrom_length=rules.chromosome_lengths.output,
+        chrom_length=rules.join_chromosome_lengths.output,
+        metadata=rules.quality_filter.output.metadata,
     output:
         SAMPLES_DIR / "plots" / "{sample}" / "depth_vs_cnvs.png",
     conda:
