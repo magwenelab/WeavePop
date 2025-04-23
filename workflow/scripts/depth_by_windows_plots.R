@@ -23,8 +23,7 @@ lineage_name <- as.character(metadata$lineage[metadata$sample == sample])
 
 print("Filtering chromosome names...")
 chrom_names <- chrom_names %>%
-  filter(lineage == lineage_name) %>%
-  filter(accession %in% unique(depth_windows$accession))
+  filter(lineage == lineage_name)
 
 print("Ordering chromosome names...")
 chrom_names['accession_chromosome'] <- paste(chrom_names$chromosome, chrom_names$accession, sep = "xxx")
@@ -36,29 +35,26 @@ if (length(unique_levels) %% 2 != 0){
 }
 chrom_names$accession_chromosome <- factor(chrom_names$accession_chromosome, levels = new_order)
 
-print("Joining and arranging data...")
+print("Arranging depth data...")
 depth_windows <- left_join(depth_windows, chrom_names, by = "accession")
 depth <- depth_windows %>%
-  select(accession_chromosome, chromosome, start, end, depth = norm_depth)%>%
-  mutate(track = "depth", .after = chromosome)
+  select(accession_chromosome, chromosome, start, end, depth = norm_depth)
+
+print("Truncating extremele high depth values...")
 topcov <- quantile(depth$depth, 0.75) * 3
 depth$depth<- ifelse(depth$depth >= topcov, topcov, depth$depth)
 
-smooth <- depth_windows %>%
-  select(accession_chromosome, chromosome, start, end, smooth = smooth_depth)%>%
-  mutate(track = "smooth", .after = chromosome)
-
+print("Arranging CNV data...")
 cnv$cnv <- str_to_title(cnv$cnv)
 cnv$cnv <- as.factor(cnv$cnv)
 cnv <- left_join(cnv, chrom_names, by = "accession")
 
 feature <- cnv %>%
-  select(accession_chromosome, chromosome, start, end, cnv)%>%
-  mutate(track = "copy_number_variants")
+  select(accession_chromosome, chromosome, start, end, cnv)
 
+print("Arranging repeats data...")
 repeats<- left_join(repeats_table, chrom_names, by = "accession")%>%
-  select(accession_chromosome, chromosome, start, end, repeat_type)%>%
-  mutate(track = "repeats", .after= chromosome)
+  select(accession_chromosome, chromosome, start, end, repeat_type)
 
 repeats$repeat_type <- ifelse(repeats$repeat_type == "Simple_repeat", "Simple repeat", "Others")
 repeats$repeat_type <- factor(repeats$repeat_type, levels = c("Simple repeat", "Others"))
@@ -84,15 +80,17 @@ c <- ggplot()+
   geom_col(data = depth, aes(x=start, y = depth), color = "black")+
     scale_x_continuous(name = "Position (bp) ", labels = comma)+
   geom_segment(data = repeats, aes(x = start, xend = end, y = r_lim, yend = r_lim, color = repeat_type), linewidth = 2)+
-    scale_color_manual(name = "Type of repetitive sequence", values = r_colors)+
+    scale_color_manual(name = "Type of Repetitive\nSequences", values = r_colors)+
     guides(color = guide_legend(order=1))+
     new_scale_color()+
   geom_segment(data = feature, aes(x = start, xend = end, y = s_lim, yend = s_lim, color = cnv), linewidth = 2)+
-    scale_color_manual(name = "Copy number variants", values = s_colors)+
+    scale_color_manual(name = "Copy-Number\nVariants", values = s_colors)+
     guides(color = guide_legend(order=2))+
     new_scale_color()+
   facet_wrap(~accession_chromosome, strip.position = "right", ncol = 2, labeller = as_labeller(my_labeller)) +
-  labs(y = "Normalized depth", title = paste("Lineage:", lineage_name, " Sample:", sample, sep = " "))+
+  labs(y = "Normalized Depth",
+      title = "Normalized Depth of Windows Along Chromosomes", 
+      subtitle = paste("Lineage:", lineage_name, " Sample:", sample, sep = " "))+
   scale_y_continuous(breaks = c(1, 2)) +
   theme(panel.grid = element_blank(),
         panel.grid.major.x = element_blank(),
@@ -104,19 +102,18 @@ c <- ggplot()+
 
 print("Adding loci data if available...")
 if (nrow(loci_table)!= 0){
-  print("Rearrange loci data")
   loci_sample <- loci_table %>% 
-      select(accession, start , end , loci)%>%
-      filter(accession %in% depth_windows$accession)%>%
-      mutate(track = "loci")%>%
-      droplevels()
+    filter(lineage == lineage_name) %>%
+    select(accession, start , end , loci)%>%
+    droplevels()
   loci <- left_join(loci_sample, chrom_names, by = c("accession"))%>%
-    select(accession_chromosome, chromosome, track, start, end, loci)
+    select(accession_chromosome, chromosome, start, end, loci)
   dark2 <- brewer.pal(8, "Dark2")[1:6]
   l_colors <- dark2[1:nlevels(loci$loci)]
   l_lim <- topcov 
   print("Adding loci to plot...")
-  c <- c +  geom_point(data = loci, aes(x=start, y = l_lim, color = loci))+  
+  c <- c +  
+      geom_point(data = loci, aes(x=start, y = l_lim, color = loci))+  
       scale_color_manual(name = "Features", values = l_colors)+
       guides(color = guide_legend(order=3))
 }

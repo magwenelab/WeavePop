@@ -111,6 +111,8 @@ rule ref_reformat_annotation:
     output:
         tsv=REFS_DIR / "{lineage}" / "{lineage}.gff.tsv",
         gff=REFS_DIR / "{lineage}" / "{lineage}.gff",
+    params:
+        lineage="{lineage}",
     log:
         LOGS / "references" / "ref_processing" / "ref_reformat_annotation_{lineage}.log",
     conda:
