@@ -158,6 +158,7 @@ print("", flush=True)
 
 def input_joining(wildcards):
     paths_cnv = []
+    paths_cnv_chrom = []
     paths_mapq_depth = []
     paths_cds = []
     paths_prots = []
@@ -167,6 +168,7 @@ def input_joining(wildcards):
         samps = samps_dir_df["sample"]
         for samp in samps:
             cnv = os.path.join(dir, SAMPLES_DIR_NAME, "cnv", samp, "cnv_calls.tsv")
+            cnv_chrom = os.path.join(dir, SAMPLES_DIR_NAME, "cnv", samp, "cnv_chromosomes.tsv")
             mapq_depth = os.path.join(
                 dir, SAMPLES_DIR_NAME, "depth_quality", samp, "mapq_depth_by_feature.tsv"
             )
@@ -175,11 +177,13 @@ def input_joining(wildcards):
                 dir, INTDIR_NAME, SAMPLES_DIR_NAME, "annotation", samp, "proteins.csv"
             )
             paths_cnv.append(cnv)
+            paths_cnv_chrom.append(cnv_chrom)
             paths_mapq_depth.append(mapq_depth)
             paths_cds.append(cds)
             paths_prots.append(prots)
     return {
         "cnv": paths_cnv,
+        "cnv_chrom": paths_cnv_chrom,
         "mapq_depth": paths_mapq_depth,
         "cds": paths_cds,
         "prots": paths_prots,
@@ -188,6 +192,9 @@ def input_joining(wildcards):
 
 def input_join_cnv(wildcards):
     return input_joining(wildcards)["cnv"]
+
+def input_join_cnv_chrom(wildcards):
+    return input_joining(wildcards)["cnv_chrom"]
 
 
 def input_join_mapq_depth(wildcards):

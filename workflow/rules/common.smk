@@ -406,7 +406,7 @@ def depth_vs_cnvs_plots_input(wildcards):
     s = SAMPLE_REFERENCE.loc[wildcards.sample,]
     return {
         "depth": SAMPLES_DIR / "depth_quality" / s["sample"] / "depth_by_chrom_good.tsv",
-        "cnv": SAMPLES_DIR / "cnv" / s["sample"] / "cnv_calls.tsv",
+        "cnv": SAMPLES_DIR / "cnv" / s["sample"] / "cnv_chromosomes.tsv",
     }
 
 def mapq_plot_input(wildcards):
@@ -533,6 +533,7 @@ def get_dataset_output():
         final_output.append(DATASET_DIR / "snpeff" / "effects.tsv")
     if config["cnv"]["activate"]:
         final_output.append(DATASET_DIR / "cnv" / "cnv_calls.tsv")
+        final_output.append(DATASET_DIR / "cnv" / "cnv_chromosomes.tsv")
     if config["plotting"]["activate"]:
         final_output.append(DATASET_DIR / "plots" / "dataset_depth_by_chrom.png")
         final_output.append(DATASET_DIR / "plots" / "dataset_summary.png")

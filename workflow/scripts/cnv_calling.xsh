@@ -4,17 +4,22 @@ import click
 from scipy import ndimage
 import numpy as np
 from pathlib import Path
+from itertools import product
+
 
 @click.command()
 @click.option('-di', '--depth_input', help='Path to BED file with depth of each window.', type=click.Path(exists=True))
 @click.option('-ri', '--repeats_input', help='Path to BED file with coordinates of repetititve sequences of reference genome.', type=click.Path(exists=True))
 @click.option('-ai', '--annotation_input', help='Path to TSV file with annotation of sample.', type=click.Path(exists=True))
+@click.option('-ci', '--chromosome_input', help='Path to TSV file of chromosome lengths.', type=click.Path(exists=True))
 @click.option('-sp', '--sample_name', help='Sample name as a string.', type=str)
 @click.option('-wp', '--window_size', help='Size of windows in the depth BED file.', type=int)
 @click.option('-dp', '--depth_threshold', help='Threshold to define copy number variation in smoothed normalzed depth.', type=click.types.FloatRange(min=0.0))
 @click.option('-co', '--cnv_output', help='Path to output table of CNV calling.', type=click.Path())
+@click.option('-mo', '--chromosome_metrics_output', help='Path to output table of CNV metrics per chromosome.', type=click.Path())
 @click.option('-t', '--temp_dir', help='Path to temporary directory.', type=click.Path())
-def cnv_calling(depth_input, repeats_input, annotation_input, sample_name, window_size, depth_threshold, cnv_output, temp_dir):
+def cnv_calling(depth_input, repeats_input, annotation_input, chromosome_input, sample_name, window_size, depth_threshold, cnv_output, chromosome_metrics_output, temp_dir):
+
     print("Merging overlapping repeats and intersect with windows...")
     intersect = $(bedtools intersect -a @(depth_input) -b @(repeats_input) -wao)
 
@@ -42,7 +47,7 @@ def cnv_calling(depth_input, repeats_input, annotation_input, sample_name, windo
     cnv_regions = pd.DataFrame()
     for accession in repeats_fragments['accession'].unique():
         regions_merged = repeats_fragments[repeats_fragments['accession'] == accession].copy()
-        regions_merged.loc[:, 'cnv'] = 'haploid'
+        regions_merged.loc[:, 'cnv'] = 'single_copy'
         regions_merged = regions_merged.reset_index(drop=True)
         for i in range(len(regions_merged)):
             if regions_merged.loc[i, 'smooth_depth'] > 1 + depth_threshold:
@@ -50,7 +55,7 @@ def cnv_calling(depth_input, repeats_input, annotation_input, sample_name, windo
             elif regions_merged.loc[i, 'smooth_depth'] < 1 - depth_threshold:
                 regions_merged.loc[i, 'cnv'] = "deletion"
             else:
-                regions_merged.loc[i, 'cnv'] = "haploid"
+                regions_merged.loc[i, 'cnv'] = "single_copy"
         regions_merged.loc[:,'region_index'] = 1
         for i in range(1, len(regions_merged)):
             if regions_merged.loc[i, 'cnv'] == regions_merged.loc[i - 1, 'cnv']:
@@ -64,8 +69,7 @@ def cnv_calling(depth_input, repeats_input, annotation_input, sample_name, windo
         regions = regions.drop(['region_index'], axis=1)
         cnv_regions = pd.concat([cnv_regions, regions], ignore_index=True)
 
-    print("Filtering out single-copy regions...")
-    cnv_regions = cnv_regions[cnv_regions['cnv'] != 'haploid']
+    print("Rounding values and adding sample names...")
     cnv_regions = cnv_regions.round(2)
     cnv_regions['sample'] = sample_name
 
@@ -73,8 +77,10 @@ def cnv_calling(depth_input, repeats_input, annotation_input, sample_name, windo
     cnv_regions['start'] = cnv_regions['start'] + 1
 
     print("Adding genetic features in CNV regions...")
+    print("Filtering out single_copy regions from temporary dataframe...")
+    temp_cnv_regions = cnv_regions[cnv_regions['cnv'] != 'single_copy']
     temp_cnv_file = Path(temp_dir) / f"{sample_name}_temp_cnv.bed"
-    cnv_regions.to_csv(temp_cnv_file, sep='\t', index=False, header=False)
+    temp_cnv_regions.to_csv(temp_cnv_file, sep='\t', index=False, header=False)
 
     print("Intersecting with annotation...")
     annot_intersection = $(awk '$3 == "gene" {print $1,$4,$5,$10}' OFS='\t' @(annotation_input) | tr -d "'" | bedtools intersect -loj -a @(temp_cnv_file) -b stdin | bedtools merge -c 4,5,6,7,8,9,10,11,15 -o distinct)
@@ -93,7 +99,74 @@ def cnv_calling(depth_input, repeats_input, annotation_input, sample_name, windo
     output_path.parent.mkdir(parents=True, exist_ok=True)
     annot_intersection.to_csv(output_path, sep='\t', index=False, header=True)
 
-    print("Done!")
+
+    print("Summarizing information for each chromosome and type of region...")
+    regions = cnv_regions.groupby(['sample','accession', 'cnv']).agg({'norm_depth':['mean', 'median'],
+                                                                        'smooth_depth':['mean', 'median'],   
+                                                                        'region_size' :['sum', 'min', 'max', 'std'],     
+                                                                        'start': ['size','min'],
+                                                                        'end': 'max',
+                                                                        },
+                                                                        ).reset_index()
+
+    regions.columns = ['sample','accession', 'cnv', 
+                                        'norm_depth_mean',
+                                        'norm_depth_median', 
+                                        'smooth_depth_mean',
+                                        'smooth_depth_median',
+                                        'total_size_regions',
+                                        'size_smallest_region',
+                                        'size_largest_region',
+                                        'std_regions_size',
+                                        'n_regions',
+                                        'first', 
+                                        'last']
+
+    print("Reading chromosome lengths...")
+    chromosomes = pd.read_csv(chromosome_input, sep='\t', header=0)
+
+    lineage = Path(repeats_input).parent.name
+
+    chromosomes = chromosomes[chromosomes['lineage'] == lineage]
+
+
+    print("Making sure that all types of CNV are present in all chromosomes...")
+    all_combinations = pd.DataFrame(product([sample_name], 
+                                            chromosomes['accession'].unique(), 
+                                            ['duplication', 'deletion', 'single_copy']), 
+                                    columns=['sample', 'accession', 'cnv'])
+
+    all_combinations = pd.merge(all_combinations, 
+                                    chromosomes, 
+                                    how='left', 
+                                    left_on='accession', 
+                                    right_on='accession')
+
+
+    print("Adding chromosome information to CNV regions...")
+    regions_per_chromosome = pd.merge(all_combinations, regions, how='left', left_on=['sample','accession', 'cnv'], right_on=['sample','accession', 'cnv']) 
+    regions_per_chromosome.loc[:, ['n_regions',  'total_size_regions']] = regions_per_chromosome.loc[:, ['n_regions', 'total_size_regions']].fillna(0).astype(int)
+
+    print("Calculating coverage and span percentages...")
+    regions_per_chromosome['coverage_percent'] = regions_per_chromosome['total_size_regions'] / regions_per_chromosome['length'] * 100
+    regions_per_chromosome['span_percent'] = (regions_per_chromosome['last'] - regions_per_chromosome['first']) / regions_per_chromosome['length'] * 100
+    regions_per_chromosome = regions_per_chromosome.drop(columns=['first', 'last'])
+    regions_per_chromosome['span_percent'] = regions_per_chromosome['span_percent'].fillna(0)
+
+    regions_per_chromosome = round(regions_per_chromosome, 2)
+
+    print("Reorganizing columns...")
+    regions_per_chromosome = regions_per_chromosome[['sample', 'lineage', 'accession', 'chromosome', 'length', 'cnv', 'n_regions', 'total_size_regions', 'coverage_percent', 'span_percent', 'size_smallest_region', 'size_largest_region', 'std_regions_size', 'norm_depth_mean', 'norm_depth_median', 'smooth_depth_mean', 'smooth_depth_median']]
+
+    print("Saving summary of CNV regions to file...")
+    regions_per_chromosome.to_csv(chromosome_metrics_output, sep='\t', index=False, header=True)
+
+print("Done!")
 
 if __name__ == '__main__':
     cnv_calling()
+
+
+
+
+

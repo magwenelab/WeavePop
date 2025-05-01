@@ -69,8 +69,10 @@ rule depth_by_windows:
 rule cnv_calling:
     input:
         unpack(cnv_calling_input),
+        chrom_length=rules.join_chromosome_lengths.output,
     output:
-        SAMPLES_DIR / "cnv" / "{sample}" / "cnv_calls.tsv",
+        cnvs=SAMPLES_DIR / "cnv" / "{sample}" / "cnv_calls.tsv",
+        chrom_cnvs=SAMPLES_DIR / "cnv" / "{sample}" / "cnv_chromosomes.tsv",
     params:
         window_size=config["depth_quality"]["mosdepth"]["window"],
         depth_threshold=config["cnv"]["depth_threshold"],
@@ -85,7 +87,9 @@ rule cnv_calling:
         "-di {input.depth} "
         "-ri {input.repeats} "
         "-ai {input.annotation} "
-        "-co {output} "
+        "-ci {input.chrom_length} "
+        "-co {output.cnvs} "
+        "-mo {output.chrom_cnvs} "
         "-sp {wildcards.sample} "
         "-wp {params.window_size} "
         "-dp {params.depth_threshold} "

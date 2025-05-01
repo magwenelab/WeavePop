@@ -86,6 +86,20 @@ rule join_cnv:
         "../envs/pandas.yaml"
     script:
         "../scripts/join_tables.py"
+    
+rule join_cnv_chromosomes:
+    input:
+        input_join_cnv_chrom,
+    output:
+        DATASET_DIR / "cnv" / "cnv_chromosomes.tsv",
+    log:
+        LOGS / "join_datasets" / "join_cnv_chromosomes.log",
+    resources:
+        tmpdir=TEMPDIR,
+    conda:
+        "../envs/pandas.yaml"
+    script:
+        "../scripts/join_tables.py"
 
 
 rule join_mapq_depth:
@@ -303,6 +317,7 @@ rule complete_db:
         metadata=DATASET_DIR / "metadata.csv",
         chrom_names=DATASET_DIR / "chromosomes.csv",
         cnv=rules.join_cnv.output,
+        cnv_chromosomes=rules.join_cnv_chromosomes.output,
         md=rules.join_mapq_depth.output,
         gffs=rules.join_ref_annotations.output,
         effects=rules.join_variant_annotation.output.effects,

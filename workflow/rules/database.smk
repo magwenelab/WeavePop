@@ -82,6 +82,19 @@ rule join_cnv:
         "../scripts/join_tables.py"
 
 
+rule join_cnv_chromosomes:
+    input:
+        expand(SAMPLES_DIR / "cnv" / "{sample}" / "cnv_chromosomes.tsv", sample=SAMPLES),
+    output:
+        DATASET_DIR / "cnv" / "cnv_chromosomes.tsv",
+    log:
+        LOGS / "dataset" / "cnv" / "join_cnv_chromosomes.log",
+    conda:
+        "../envs/pandas.yaml"
+    script:
+        "../scripts/join_tables.py"
+
+
 rule join_variant_annotation:
     input:
         effects=expand(INT_DATASET_DIR / "snpeff" / "{lineage}_effects.tsv", lineage=LINEAGES),
@@ -112,6 +125,7 @@ rule complete_db:
         metadata=rules.quality_filter.output.metadata,
         chrom_names=rules.quality_filter.output.chromosomes,
         cnv=rules.join_cnv.output,
+        cnv_chromosomes=rules.join_cnv_chromosomes.output,
         md=rules.join_mapq_depth.output,
         gffs=rules.join_ref_annotations.output,
         effects=rules.join_variant_annotation.output.effects,
