@@ -36,38 +36,46 @@ def cnv_calling(depth_input, repeats_input, annotation_input, chromosome_input, 
     df = df.drop_duplicates()
     df.rename(columns={'r_type_mix': 'r_type', 'overlap_bp_sum': 'overlap_bp'}, inplace=True)    
     df = df.reset_index(drop=True)
-
-    print("Calculating fraction of window with repetitive sequences...")
-    repeats_fragments = df.copy()
-    repeats_fragments['repeat_fraction'] = (repeats_fragments['overlap_bp'] / window_size).round(2)
-    repeats_fragments.columns = repeats_fragments.columns.str.replace('bed_', '')
-    repeats_fragments['sample'] = sample_name
+    df.columns = df.columns.str.replace('bed_', '')
 
     print("Defining copy-number of regions...")
-    cnv_regions = pd.DataFrame()
-    for accession in repeats_fragments['accession'].unique():
-        regions_merged = repeats_fragments[repeats_fragments['accession'] == accession].copy()
-        regions_merged.loc[:, 'cnv'] = 'single_copy'
-        regions_merged = regions_merged.reset_index(drop=True)
-        for i in range(len(regions_merged)):
-            if regions_merged.loc[i, 'smooth_depth'] > 1 + depth_threshold:
-                regions_merged.loc[i, 'cnv'] = "duplication"
-            elif regions_merged.loc[i, 'smooth_depth'] < 1 - depth_threshold:
-                regions_merged.loc[i, 'cnv'] = "deletion"
+    cnv_windows = pd.DataFrame()
+
+    for accession in df['accession'].unique():
+        windows = df[df['accession'] == accession].copy()
+        windows.loc[:, 'cnv'] = 'single_copy'
+        windows = windows.reset_index(drop=True)
+
+        for i in range(len(windows)):
+            if windows.loc[i, 'smooth_depth'] > 1 + depth_threshold:
+                windows.loc[i, 'cnv'] = "duplication"
+            elif windows.loc[i, 'smooth_depth'] < 1 - depth_threshold:
+                windows.loc[i, 'cnv'] = "deletion"
             else:
-                regions_merged.loc[i, 'cnv'] = "single_copy"
-        regions_merged.loc[:,'region_index'] = 1
-        for i in range(1, len(regions_merged)):
-            if regions_merged.loc[i, 'cnv'] == regions_merged.loc[i - 1, 'cnv']:
-                regions_merged.loc[i, 'region_index'] = regions_merged.loc[i - 1, 'region_index']
+                windows.loc[i, 'cnv'] = "single_copy"
+
+        windows.loc[:,'region_index'] = 1
+
+        for i in range(1, len(windows)):
+            if windows.loc[i, 'cnv'] == windows.loc[i - 1, 'cnv']:
+                windows.loc[i, 'region_index'] = windows.loc[i - 1, 'region_index']
             else:
-                regions_merged.loc[i, 'region_index'] = regions_merged.loc[i - 1, 'region_index'] + 1
-        regions = regions_merged.groupby('region_index').agg(accession = ('accession', 'first'),start=('start', 'first'), end=('end', 'last'), depth = ('depth', 'median'),norm_depth=('norm_depth', 'median'), smooth_depth=('smooth_depth', 'median'), cnv=('cnv', 'first'), overlap_bp=('overlap_bp', 'sum')).reset_index()
-        
-        regions['region_size'] = regions['end'] - regions['start']
-        regions['repeat_fraction'] = (regions['overlap_bp'] / regions['region_size']).round(2)
-        regions = regions.drop(['region_index'], axis=1)
-        cnv_regions = pd.concat([cnv_regions, regions], ignore_index=True)
+                windows.loc[i, 'region_index'] = windows.loc[i - 1, 'region_index'] + 1
+
+        cnv_windows = pd.concat([cnv_windows, windows], ignore_index=True)
+
+    print("Merging windows with same CNV into regions...")
+    cnv_regions = cnv_windows.groupby(['accession','region_index']).agg(start=('start', 'first'), 
+                                                                        end=('end', 'last'),
+                                                                        depth = ('depth', 'median'), 
+                                                                        norm_depth=('norm_depth', 'median'), 
+                                                                        smooth_depth=('smooth_depth', 'median'),
+                                                                        cnv=('cnv', 'first'), 
+                                                                        overlap_bp=('overlap_bp', 'sum')).reset_index()
+
+    cnv_regions['region_size'] = cnv_regions['end'] - cnv_regions['start']
+    cnv_regions['repeat_fraction'] = (cnv_regions['overlap_bp'] / cnv_regions['region_size']).round(2)
+    cnv_regions = cnv_regions.drop(['region_index'], axis=1)
 
     print("Rounding values and adding sample names...")
     cnv_regions = cnv_regions.round(2)
@@ -101,19 +109,20 @@ def cnv_calling(depth_input, repeats_input, annotation_input, chromosome_input, 
 
 
     print("Summarizing information for each chromosome and type of region...")
-    regions = cnv_regions.groupby(['sample','accession', 'cnv']).agg({'norm_depth':['mean', 'median'],
-                                                                        'smooth_depth':['mean', 'median'],   
-                                                                        'region_size' :['sum', 'min', 'max', 'std'],     
-                                                                        'start': ['size','min'],
-                                                                        'end': 'max',
-                                                                        },
-                                                                        ).reset_index()
-
-    regions.columns = ['sample','accession', 'cnv', 
+    summary_windows = cnv_windows.groupby(['accession', 'cnv']).agg({'norm_depth':['mean', 'median'],
+                                                            'smooth_depth':['mean', 'median'],   
+                                                            }).reset_index()
+    summary_windows.columns = ['accession', 'cnv', 
                                         'norm_depth_mean',
                                         'norm_depth_median', 
                                         'smooth_depth_mean',
-                                        'smooth_depth_median',
+                                        'smooth_depth_median']
+
+    summary_regions = cnv_regions.groupby(['accession', 'cnv']).agg({'region_size' :['sum', 'min', 'max', 'std'],     
+                                                            'start': ['size','min'],
+                                                            'end': 'max',
+                                                            }).reset_index()
+    summary_regions.columns = ['accession', 'cnv', 
                                         'total_size_regions',
                                         'size_smallest_region',
                                         'size_largest_region',
@@ -121,6 +130,10 @@ def cnv_calling(depth_input, repeats_input, annotation_input, chromosome_input, 
                                         'n_regions',
                                         'first', 
                                         'last']
+
+    summary = pd.merge(summary_windows, summary_regions, how='left', left_on=['accession', 'cnv'], right_on=['accession', 'cnv'])
+    summary['sample'] = sample_name
+
 
     print("Reading chromosome lengths...")
     chromosomes = pd.read_csv(chromosome_input, sep='\t', header=0)
@@ -144,7 +157,10 @@ def cnv_calling(depth_input, repeats_input, annotation_input, chromosome_input, 
 
 
     print("Adding chromosome information to CNV regions...")
-    regions_per_chromosome = pd.merge(all_combinations, regions, how='left', left_on=['sample','accession', 'cnv'], right_on=['sample','accession', 'cnv']) 
+    regions_per_chromosome = pd.merge(all_combinations, summary, 
+                                    how='left', 
+                                    left_on=['sample','accession', 'cnv'], 
+                                    right_on=['sample','accession', 'cnv']) 
     regions_per_chromosome.loc[:, ['n_regions',  'total_size_regions']] = regions_per_chromosome.loc[:, ['n_regions', 'total_size_regions']].fillna(0).astype(int)
 
     print("Calculating coverage and span percentages...")
