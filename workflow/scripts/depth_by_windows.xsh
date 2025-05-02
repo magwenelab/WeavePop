@@ -17,7 +17,7 @@ def normalize(depth_input, genome_wide_depth_input, depth_output, smoothing_size
 
     print("Reading genome-wide depth file...")
     genome_wide_depth_df = pd.read_csv(genome_wide_depth_input, sep='\t', header= 0)
-    genome_wide_depth = genome_wide_depth_df['global_mode'][0]
+    genome_wide_depth = genome_wide_depth_df['global_median'][0]
 
     print("Normalizing depth...")
     windows.loc[:,'norm_depth'] = windows['depth'] / genome_wide_depth
