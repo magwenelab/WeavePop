@@ -56,10 +56,24 @@ rule depth_by_chrom_plots:
         "../scripts/depth_by_chrom_plots.R"
 
 
+
 # =================================================================================================
 #   Per sample | Plot depth and mapq by windows
 # =================================================================================================
 
+rule depth_boxplot:
+    input:
+        depth=rules.depth_by_windows.output,
+        chrom_length=rules.join_chromosome_lengths.output,
+        metadata=rules.quality_filter.output.metadata,
+    output:
+        SAMPLES_DIR / "plots" / "{sample}" / "depth_boxplot.png",
+    conda:
+        "../envs/r.yaml"
+    log:
+        LOGS / "samples" / "plots" / "depth_boxplot_{sample}.log",
+    script:
+        "../scripts/depth_boxplots.R"
 
 rule depth_by_windows_plots:
     input:

@@ -511,6 +511,9 @@ def get_filtered_output():
                 SAMPLES_DIR / "plots" / "{sample}" / "depth_by_windows.png", sample=SAMPLES
             )
             final_output = final_output, expand(
+                SAMPLES_DIR / "plots" / "{sample}" / "depth_boxplot.png", sample=SAMPLES
+            )
+            final_output = final_output, expand(
                 SAMPLES_DIR / "plots" / "{sample}" / "depth_vs_cnvs.png", sample=SAMPLES
             )
             final_output = final_output, expand(
