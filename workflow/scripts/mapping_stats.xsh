@@ -84,7 +84,7 @@ def stats(sample, bamfile,  genome_wide_depth, low_mapq, high_mapq, min_mapq,  o
 
     print("Joining mapped reads metrics with genome-wide depth...")
     genome_wide_depth = pd.read_csv(genome_wide_depth, sep = "\t", header = 0)
-    genome_wide_depth = genome_wide_depth['global_mode'][0]
+    genome_wide_depth = genome_wide_depth['global_median'][0]
     stats['genome-wide_depth'] = genome_wide_depth
 
     print("Calculating coverage...")
