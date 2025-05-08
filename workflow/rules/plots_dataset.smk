@@ -78,3 +78,18 @@ rule dataset_depth_by_chrom_plot:
         "../envs/r.yaml"
     script:
         "../scripts/dataset_depth_by_chrom_plot.R"
+
+rule dataset_depth_vs_cnvs_plot:
+    input:
+        rules.join_depth_by_chrom_good.output,
+        rules.join_cnv_chromosomes.output
+    output:
+        DATASET_DIR / "plots" / "dataset_depth_vs_cnvs.png",
+    params:
+        scale=config["plotting"]["scale"],
+    log:
+        LOGS / "dataset" / "plots" / "dataset_depth_vs_cnvs_plot.log",
+    conda:
+        "../envs/r.yaml"
+    script:
+        "../scripts/dataset_depth_vs_cnvs_plot.R"

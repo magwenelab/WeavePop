@@ -540,6 +540,7 @@ def get_dataset_output():
     if config["plotting"]["activate"]:
         final_output.append(DATASET_DIR / "plots" / "dataset_depth_by_chrom.png")
         final_output.append(DATASET_DIR / "plots" / "dataset_summary.png")
+        final_output.append(DATASET_DIR / "plots" / "dataset_depth_vs_cnvs.png")
     if config["database"]["activate"]:
         final_output.append(expand(DATASET_DIR / "database.db"))
     return final_output
