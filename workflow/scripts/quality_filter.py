@@ -17,7 +17,7 @@ metadata = snakemake.params.metadata
 
 print("Reading tables...")
 stats = pd.read_csv(input_stats, sep="\t", header=0)
-chromosomes = pd.read_csv(input_chromosomes, header=0)
+chromosomes = pd.read_csv(input_chromosomes, sep= "\t", header=0)
 if filter:
     print("Filtering samples...")
     stats_filtered = stats[stats["quality_warning"].isna()]

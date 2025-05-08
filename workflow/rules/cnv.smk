@@ -41,9 +41,9 @@ rule mosdepth_good:
 rule depth_by_windows:
     input:
         depth=rules.mosdepth_good.output.bed,
-        genome_wide_depth=SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom_good.tsv",
     output:
-        INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_windows.tsv",
+        windows=INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_windows.tsv",
+        chroms=INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom.tsv"
     params:
         smoothing_size=config["cnv"]["smoothing_size"],
     log:
@@ -55,9 +55,10 @@ rule depth_by_windows:
     shell:
         "xonsh workflow/scripts/depth_by_windows.xsh "
         "-di {input.depth} "
-        "-gi {input.genome_wide_depth} "
-        "-do {output} "
-        "-s {params.smoothing_size} "
+        "-do {output.windows} "
+        "-co {output.chroms} "
+        "-ss {params.smoothing_size} "
+        "-sm {wildcards.sample} "
         "&> {log}"
 
 
@@ -69,7 +70,7 @@ rule depth_by_windows:
 rule cnv_calling:
     input:
         unpack(cnv_calling_input),
-        chrom_length=rules.join_chromosome_lengths.output,
+        chrom_length=rules.quality_filter.output.chromosomes,
     output:
         cnvs=SAMPLES_DIR / "cnv" / "{sample}" / "cnv_calls.tsv",
         chrom_cnvs=SAMPLES_DIR / "cnv" / "{sample}" / "cnv_chromosomes.tsv",

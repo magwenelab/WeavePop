@@ -10,7 +10,7 @@ suppressPackageStartupMessages(library(patchwork))
 
 print("Reading files...")
 metadata <- read.csv(snakemake@input[[1]], header = TRUE, stringsAsFactors = TRUE)
-chrom_names <- read.csv(snakemake@input[[2]], header = TRUE, col.names = c("lineage", "accession", "chromosome"), colClasses = "factor")
+chrom_names <- read.csv(snakemake@input[[2]], header = TRUE, colClasses = "factor")
 good_stats <- read.delim(snakemake@input[[3]], sep = "\t", header = TRUE, stringsAsFactors = TRUE)
 raw_stats <- read.delim(snakemake@input[[4]], sep = "\t", header = TRUE, stringsAsFactors = TRUE)
 map_stats <- read.table(snakemake@input[[5]], header = TRUE, stringsAsFactors = TRUE, sep = "\t")

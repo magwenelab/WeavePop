@@ -224,7 +224,9 @@ else:
     print("Exiting...", flush=True)
     exit(1)
 
-for lineage in UNFILT_SAMPLE_TABLE["lineage"].unique():
+UNF_LINEAGES = UNFILT_SAMPLE_TABLE["lineage"].unique()
+
+for lineage in UNF_LINEAGES:
     print(f"Checking the chromosome names of lineage {lineage}...", flush=True)
     accessions = CHROM_NAMES_TABLE[CHROM_NAMES_TABLE["lineage"] == lineage]["accession"].tolist()
     ref_file = REF_DATA / f"{lineage}.fasta"
@@ -252,6 +254,7 @@ for lineage in UNFILT_SAMPLE_TABLE["lineage"].unique():
         print(f"Reference {ref_file} not found.", flush=True)
         print("Exiting...", flush=True)
         exit(1)
+
 
 # --Validate loci file----------------------------------------------------------------------------
 
@@ -405,7 +408,7 @@ def depth_by_windows_plots_input(wildcards):
 def depth_vs_cnvs_plots_input(wildcards):
     s = SAMPLE_REFERENCE.loc[wildcards.sample,]
     return {
-        "depth": SAMPLES_DIR / "depth_quality" / s["sample"] / "depth_by_chrom_good.tsv",
+        "depth": INT_SAMPLES_DIR / "depth_quality" / s["sample"] / "depth_by_chrom.tsv",
         "cnv": SAMPLES_DIR / "cnv" / s["sample"] / "cnv_chromosomes.tsv",
     }
 

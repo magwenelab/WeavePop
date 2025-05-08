@@ -7,11 +7,10 @@ import click
 @click.option("--mapqbed", "-mi", help='BED file with MAPQ per window', type=click.Path(exists=True))
 @click.option("--depthbed", "-di", help='BED file with depth per window', type=click.Path(exists=True))
 @click.option("--gff", "-gi", help='Sample gff', type=click.Path(exists=True))
-@click.option("--genome_wide_depth", "-gmi", help='Genome-wide depth', type=click.Path(exists=True))
 @click.option("--sample", "-sp", help='Sample name', type=str)
 @click.option("--depthmapq", "-dmo", help ='Intermediate BED file with MAPQ and Depth', type=click.Path())
 @click.option("--output", "-o", help= 'Output table with average MAPQ and Depth per genetic feature.', type=click.Path())
-def mapqdepth(mapqbed, depthbed, gff, depthmapq, genome_wide_depth, sample, output):
+def mapqdepth(mapqbed, depthbed, gff, depthmapq, sample, output):
     print("Making merged version of BED file with MAPQ and Depth columns...")
     mapq = pd.read_csv(mapqbed, names = ["chromosome", "start_w", "end_w", "mapq"], sep = "\t" )
     depth = pd.read_csv(depthbed, names = ["chromosome", "start_w", "end_w", "depth"], sep = "\t" )
@@ -40,10 +39,9 @@ def mapqdepth(mapqbed, depthbed, gff, depthmapq, genome_wide_depth, sample, outp
     tsv = new_gff.loc[:, ['feature_id','primary_tag', 'mean_mapq', 'mean_depth']]
 
     print("Normalizing mean_depth...")
-    global_df = pd.read_csv(genome_wide_depth, sep = "\t", header = 0)
-    global_depth = global_df.at[0, 'global_mode']
-    tsv['mean_depth_normalized'] = tsv['mean_depth'].astype(float) / global_depth
-    tsv['mean_depth_normalized'] = tsv['mean_depth_normalized'].round(2)
+    genome_wide_depth = df['depth'].median().round(4)
+    tsv.loc[:,'mean_depth_normalized'] = tsv['mean_depth'].astype(float) / genome_wide_depth
+    tsv.loc[:,'mean_depth_normalized'] = tsv.loc[:,'mean_depth_normalized'].round(2)
     
     print("Adding sample name..")
     tsv.insert(0, 'sample', sample)

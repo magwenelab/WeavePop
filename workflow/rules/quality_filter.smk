@@ -105,6 +105,41 @@ rule join_mapping_stats:
     script:
         "../scripts/join_mapping_stats.py"
 
+# =================================================================================================
+#   All refernces | Obtain chromosome lengths
+# =================================================================================================
+
+
+rule chromosome_lengths:
+    input:
+        INT_REFS_DIR / "{unf_lineage}" / "{unf_lineage}.fasta",         
+    output:
+        INT_REFS_DIR / "{unf_lineage}" / "chromosome_lengths.tsv",
+    log:
+        LOGS / "references" / "depth_quality" / "{unf_lineage}_chromosome_lengths.log",
+    resources:
+        tmpdir=TEMPDIR,
+    conda:
+        "../envs/agat.yaml"
+    shell:
+        """
+        seqkit fx2tab -l -i -n {input} |\
+        awk -v lin={wildcards.unf_lineage} '{{print lin, $0}}' OFS='\t' \
+        1> {output} 2> {log}
+        """
+
+rule join_chromosome_lengths:
+    input:
+        chrom_names=CHROM_NAMES,  
+        chrom_lengths=expand(INT_REFS_DIR / "{unf_lineage}" / "chromosome_lengths.tsv", unf_lineage=UNF_LINEAGES),
+    output:
+        INT_REFS_DIR / "chromosome_lengths.tsv",
+    log:
+        LOGS / "references" / "ref_processing" / "join_chromosome_lengths.log",
+    conda:
+        "../envs/pandas.yaml"
+    script:
+        "../scripts/join_chromosome_lengths.py"        
 
 # =================================================================================================
 #   Per dataset | Checkpoint to filter out low quality samples
@@ -114,7 +149,7 @@ rule join_mapping_stats:
 rule quality_filter:
     input:
         rules.join_mapping_stats.output,
-        CHROM_NAMES,
+        rules.join_chromosome_lengths.output,
     output:
         metadata=DATASET_DIR / "metadata.csv",
         chromosomes=DATASET_DIR / "chromosomes.csv",

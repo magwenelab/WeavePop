@@ -6,18 +6,32 @@ import numpy as np
 
 @click.command()
 @click.option('-di', '--depth_input', help='Path to BED file with depth of each window.', type=click.Path(exists=True))
-@click.option('-gi', '--genome_wide_depth_input', help='Path to TSV file with the genome-wide depth.', type=click.Path(exists=True))
 @click.option('-do', '--depth_output', help='Path to output BED file with normalized depth.', type=click.Path())
-@click.option('-s', '--smoothing_size', help='Size parameter for the smoothing function.', type=int)
+@click.option('-co', '--chrom_output', help='Path to table with depth of chromosomes', type=click.Path())
+@click.option('-ss', '--smoothing_size', help='Size parameter for the smoothing function.', type=int)
+@click.option('-sm', '--sample', help='Sample name.', type=str)
 
-def normalize(depth_input, genome_wide_depth_input, depth_output, smoothing_size):
+
+def normalize(depth_input, depth_output, chrom_output, smoothing_size, sample):
     print("Reading depth BED file...")
     windows = pd.read_csv(depth_input, sep='\t', header=None)
     windows.columns = ['accession', 'start', 'end', 'depth']
 
-    print("Reading genome-wide depth file...")
-    genome_wide_depth_df = pd.read_csv(genome_wide_depth_input, sep='\t', header= 0)
-    genome_wide_depth = genome_wide_depth_df['global_median'][0]
+    print("Calculating genome-wide depth from windows...")
+    genome_wide_depth = windows['depth'].median().round(4)
+
+    print("Calculating depth of chromosomes...")
+    chromosome_depth = windows.groupby('accession')['depth'].median().round(2).reset_index()
+    chromosome_depth.columns = ['accession', 'chrom_median']
+
+    print("Normalizing chromosome depth...")
+    chromosome_depth['genome_wide_depth'] = genome_wide_depth
+    chromosome_depth['norm_chrom_median'] = chromosome_depth['chrom_median'] / genome_wide_depth
+    chromosome_depth['norm_chrom_median'] = chromosome_depth['norm_chrom_median'].round(2)
+
+    print("Saving chromosome depth table...")
+    chromosome_depth['sample'] = sample
+    chromosome_depth.to_csv(chrom_output, sep='\t', index=False, header=True)
 
     print("Normalizing depth...")
     windows.loc[:,'norm_depth'] = windows['depth'] / genome_wide_depth

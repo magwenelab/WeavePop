@@ -63,8 +63,8 @@ rule depth_by_chrom_plots:
 
 rule depth_boxplot:
     input:
-        depth=rules.depth_by_windows.output,
-        chrom_length=rules.join_chromosome_lengths.output,
+        depth=rules.depth_by_windows.output.windows,
+        chrom_length=rules.quality_filter.output.chromosomes,
         metadata=rules.quality_filter.output.metadata,
     output:
         SAMPLES_DIR / "plots" / "{sample}" / "depth_boxplot.png",

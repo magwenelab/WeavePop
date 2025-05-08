@@ -10,7 +10,7 @@ suppressPackageStartupMessages(library(patchwork))
 
 print("Reading files...")
 metadata <- read.csv(snakemake@input[[1]], header = TRUE, stringsAsFactors = TRUE)
-chrom_names <- read.csv(snakemake@input[[2]], header = TRUE, col.names = c("lineage", "accession", "chromosome"), stringsAsFactors = TRUE)
+chrom_names <- read.csv(snakemake@input[[2]], header = TRUE, stringsAsFactors = TRUE)
 good_stats <- read.delim(snakemake@input[[3]], sep = "\t", header = TRUE, stringsAsFactors = TRUE)
 
 print("Filtering chromosome names...")

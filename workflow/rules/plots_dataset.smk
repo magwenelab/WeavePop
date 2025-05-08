@@ -32,6 +32,19 @@ rule join_depth_by_chrom_good:
     script:
         "../scripts/join_tables.py"
 
+rule join_depth_by_chrom:
+    input:
+        expand(
+            INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom.tsv", sample=SAMPLES
+        ),
+    output:
+        INT_DATASET_DIR / "depth_quality" / "depth_by_chrom.tsv",
+    log:
+        LOGS / "dataset" / "depth_quality" / "join_depth_by_chrom.log",
+    conda:
+        "../envs/pandas.yaml"
+    script:
+        "../scripts/join_tables.py"
 
 # =================================================================================================
 #   Per dataset | Plot dataset mapping quality and depth summary
@@ -81,7 +94,7 @@ rule dataset_depth_by_chrom_plot:
 
 rule dataset_depth_vs_cnvs_plot:
     input:
-        rules.join_depth_by_chrom_good.output,
+        rules.join_depth_by_chrom.output,
         rules.join_cnv_chromosomes.output
     output:
         DATASET_DIR / "plots" / "dataset_depth_vs_cnvs.png",

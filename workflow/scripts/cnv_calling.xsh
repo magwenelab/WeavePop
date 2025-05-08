@@ -136,7 +136,7 @@ def cnv_calling(depth_input, repeats_input, annotation_input, chromosome_input, 
 
 
     print("Reading chromosome lengths...")
-    chromosomes = pd.read_csv(chromosome_input, sep='\t', header=0)
+    chromosomes = pd.read_csv(chromosome_input, sep=',', header=0)
 
     lineage = Path(repeats_input).parent.name
 
