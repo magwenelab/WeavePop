@@ -14,10 +14,6 @@ sample <- snakemake@wildcards$sample
 depth<- read.table(snakemake@input[[1]], header = TRUE, stringsAsFactors = TRUE, sep = "\t")
 chrom_names <- read.csv(snakemake@input[[2]], header = TRUE, col.names = c("lineage", "accession", "chromosome"))
 
-# sample <- "ERS542301"
-# depth <- read.table("/FastData/czirion/Crypto_Diversity_Pipeline/Crypto_Ashton/results/04.Intermediate_files/01.Samples/depth_quality/ERS542301/depth_distribution.tsv", header = TRUE, stringsAsFactors = TRUE, sep = "\t")
-# chrom_names <- read.csv("/FastData/czirion/Crypto_Diversity_Pipeline/Crypto_Ashton/results/02.Dataset/chromosomes.csv", header = TRUE, col.names = c("lineage", "accession", "chromosome"))
-
 print("Adding 0 to null depth values...")
 depth[is.na(depth)] <- 0
 
@@ -37,7 +33,7 @@ depth_global <- depth %>%
   summarize(count_good_global = sum(count_good), count_raw_global = sum(count_raw))%>%
   ungroup()
 
-print("Calculating depth witht the highest number of sites to truncate x axis...")
+print("Calculating depth with the highest number of sites to truncate x axis...")
 max_depth <- depth_global %>%
   filter(count_good_global == max(count_good_global)) %>%
   pull(depth)
@@ -76,7 +72,8 @@ plot_truncated <- ggplot()+
 
 combined <- plot_global / plot_truncated_log / plot_truncated 
 combined <- combined +
-  plot_annotation(title = paste("Depth Distribution of Whole Genome of Sample", sample, "of Lineage", lineage, "by Quality of Read Alignments"),) &
+  plot_annotation(title = "Depth Distribution of Whole Genome by Quality of Read Alignments",
+                  subtitle = paste("Lineage:", lineage, " Sample:", sample, sep = " ")) &
     theme(plot.title = element_text(hjust = 0.5))
 
 print("Plotting depth distribution by chromosome...")
@@ -110,7 +107,8 @@ by_chrom_truncated <- ggplot(depth)+
 
 plot_chrom <- by_chrom / by_chrom_log / by_chrom_truncated
 plot_chrom <- plot_chrom +
-  plot_annotation(title = paste("Depth Distribution of Good Quality Alignments of Each Chromosome of Sample", sample, "of Lineage", lineage)) &
+  plot_annotation(title = "Depth Distribution of Good Quality Alignments of each Chromosome",
+                  subtitle = paste("Lineage:", lineage, " Sample:", sample, sep = " ")) &
     theme(plot.title = element_text(hjust = 0.5))
 
 print("Saving plots...")

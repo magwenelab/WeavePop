@@ -27,8 +27,7 @@ rule depth_distribution:
         unpack(depth_distribution_input),
     output:
         distrib=INT_SAMPLES_DIR / "depth_quality" / "{unf_sample}" / "depth_distribution.tsv",
-        by_chrom_good=SAMPLES_DIR / "depth_quality" / "{unf_sample}" / "depth_by_chrom_good.tsv",
-        by_chrom_raw=SAMPLES_DIR / "depth_quality" / "{unf_sample}" / "depth_by_chrom_raw.tsv",
+        summary=INT_SAMPLES_DIR / "depth_quality" / "{unf_sample}" / "depth_summary.tsv",
     log:
         LOGS / "samples" / "depth_quality" / "depth_distribution_{unf_sample}.log",
     resources:
@@ -41,8 +40,7 @@ rule depth_distribution:
         "-b {input.bam} "
         "-g {input.bam_good} "
         "-do {output.distrib} "
-        "-go {output.by_chrom_good} "
-        "-ro {output.by_chrom_raw} &> {log} "
+        "-so {output.summary} &> {log} "
 
 
 # =================================================================================================
@@ -54,7 +52,7 @@ rule mapping_stats:
     input:
         bam=rules.snippy.output.bam,
         bai=rules.snippy.output.bai,
-        genome_wide_depth=rules.depth_distribution.output.by_chrom_good,
+        depth=rules.depth_distribution.output.summary,
     output:
         SAMPLES_DIR / "depth_quality" / "{unf_sample}" / "mapping_stats.tsv",
     params:
@@ -71,7 +69,7 @@ rule mapping_stats:
         "xonsh workflow/scripts/mapping_stats.xsh "
         "-s {wildcards.unf_sample} "
         "-b {input.bam} "
-        "-m {input.genome_wide_depth} "
+        "-d {input.depth} "
         "-l {params.low_mapq} "
         "-h {params.high_mapq} "
         "-mq {params.min_mapq} "

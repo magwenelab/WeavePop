@@ -8,18 +8,19 @@ import os
 @click.command()
 @click.option("-s", "--sample", type=str, help="Sample name")
 @click.option("-b", "--bamfile", type=click.Path(exists=True), help="Input BAM file")
-@click.option("-m", "--genome_wide_depth", type=click.Path(), help="Path to table with genome-wide depth of the sample")
+@click.option("-d", "--depth", type=click.Path(), help="Path to table with depth summary")
 @click.option("-l", "--low_mapq", type=int, help="Threshold of low MAPQ bin")
 @click.option("-h", "--high_mapq", type=int, help="Threshold of high MAPQ bin")
 @click.option("-mq", "--min_mapq", type=int, help="Minimum MAPQ of a read to be considered in the coverage")
 
 @click.option("-o", "--output", type=click.Path(), help="Output file with mapped reads metrics")
 
-def stats(sample, bamfile,  genome_wide_depth, low_mapq, high_mapq, min_mapq,  output):
+def stats(sample, bamfile,  depth, low_mapq, high_mapq, min_mapq,  output):
+
     print("Input parameters:")
     print(f"Sample: {sample}")
     print(f"BAM file: {bamfile}")
-    print(f"Genome-wide depth file: {genome_wide_depth}")
+    print(f"Depth file: {depth}")
     print(f"Low MAPQ threshold: {low_mapq}")
     print(f"High MAPQ threshold: {high_mapq}")
     print(f"Minimum MAPQ: {min_mapq}")
@@ -83,9 +84,12 @@ def stats(sample, bamfile,  genome_wide_depth, low_mapq, high_mapq, min_mapq,  o
     stats = stats.round(2)
 
     print("Joining mapped reads metrics with genome-wide depth...")
-    genome_wide_depth = pd.read_csv(genome_wide_depth, sep = "\t", header = 0)
-    genome_wide_depth = genome_wide_depth['global_median'][0]
-    stats['genome-wide_depth'] = genome_wide_depth
+    depth_stats = pd.read_csv(depth, sep = "\t", header = 0)
+    depth_stats = depth_stats [['sample','genome_mean_good',  'genome_median_good', 'genome_mean_raw', 'genome_median_raw']]
+    depth_stats.columns = ['sample', 'genome_mean_depth_good', 'genome_median_depth_good', 'genome_mean_depth_raw', 'genome_median_depth_raw']
+    depth_stats.drop_duplicates(inplace=True)
+
+    stats = pd.merge(stats, depth_stats , on = 'sample', how = 'outer')
 
     print("Calculating coverage...")
     coverage_good = $(samtools coverage @(bamfile) --min-MQ @(min_mapq))
@@ -104,7 +108,7 @@ def stats(sample, bamfile,  genome_wide_depth, low_mapq, high_mapq, min_mapq,  o
 
     print("Saving mapping stats table...")
     stats.to_csv(output, index=False, sep = "\t")
-    
+
     print("Done!")
 if __name__ == "__main__":
         stats() 

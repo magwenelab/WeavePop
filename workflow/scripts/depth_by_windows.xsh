@@ -17,16 +17,16 @@ def normalize(depth_input, depth_output, chrom_output, smoothing_size, sample):
     windows = pd.read_csv(depth_input, sep='\t', header=None)
     windows.columns = ['accession', 'start', 'end', 'depth']
 
-    print("Calculating genome-wide depth from windows...")
-    genome_wide_depth = windows['depth'].median().round(4)
+    print("Calculating genome-wide median depth from windows...")
+    genome_median_depth = windows['depth'].median().round(4)
 
     print("Calculating depth of chromosomes...")
     chromosome_depth = windows.groupby('accession')['depth'].median().round(2).reset_index()
     chromosome_depth.columns = ['accession', 'chrom_median']
 
     print("Normalizing chromosome depth...")
-    chromosome_depth['genome_wide_depth'] = genome_wide_depth
-    chromosome_depth['norm_chrom_median'] = chromosome_depth['chrom_median'] / genome_wide_depth
+    chromosome_depth['genome_median_depth'] = genome_median_depth
+    chromosome_depth['norm_chrom_median'] = chromosome_depth['chrom_median'] / genome_median_depth
     chromosome_depth['norm_chrom_median'] = chromosome_depth['norm_chrom_median'].round(2)
 
     print("Saving chromosome depth table...")
@@ -34,7 +34,7 @@ def normalize(depth_input, depth_output, chrom_output, smoothing_size, sample):
     chromosome_depth.to_csv(chrom_output, sep='\t', index=False, header=True)
 
     print("Normalizing depth...")
-    windows.loc[:,'norm_depth'] = windows['depth'] / genome_wide_depth
+    windows.loc[:,'norm_depth'] = windows['depth'] / genome_median_depth
     windows.loc[:,'norm_depth'] = windows.loc[:,'norm_depth'].round(2)
     cov_array = np.array(windows["norm_depth"])
     smoothed_array = ndimage.median_filter(cov_array, size=smoothing_size)

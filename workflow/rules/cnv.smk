@@ -3,10 +3,10 @@
 # =================================================================================================
 
 
-rule mosdepth_good:
+rule mosdepth:
     input:
-        bam=SAMPLES_DIR / "snippy" / "{sample}" / "snps.bam",
-        bai=SAMPLES_DIR / "snippy" / "{sample}" / "snps.bam.bai",
+        bam=INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "snps_good.bam",
+        bai=INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "snps_good.bam.bai",
     output:
         bed=INT_SAMPLES_DIR / "mosdepth" / "{sample}" / "coverage_good.regions.bed.gz",
     params:
@@ -15,7 +15,7 @@ rule mosdepth_good:
         min_mapq=config["depth_quality"]["flag_quality"]["min_mapq"],
         outdir=INT_SAMPLES_DIR / "mosdepth",
     log:
-        LOGS / "samples" / "depth_quality" / "mosdepth_good_{sample}.log",
+        LOGS / "samples" / "depth_quality" / "mosdepth_{sample}.log",
     threads: config["depth_quality"]["mosdepth"]["threads"]
     resources:
         tmpdir=TEMPDIR,
@@ -40,10 +40,10 @@ rule mosdepth_good:
 
 rule depth_by_windows:
     input:
-        depth=rules.mosdepth_good.output.bed,
+        depth=rules.mosdepth.output.bed,
     output:
         windows=INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_windows.tsv",
-        chroms=INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom.tsv"
+        chroms=SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom.tsv"
     params:
         smoothing_size=config["cnv"]["smoothing_size"],
     log:

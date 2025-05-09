@@ -24,7 +24,7 @@ print(f"Minimum coverage percentage: {min_coverage}")
 print("Adding quality warning flag...")
 stats['mapq_warning'] = stats.apply(lambda row: "MAPQ-Low" if row['percent_high_mapq'] < min_high_mapq else None, axis=1)
 stats['pp_warning'] = stats.apply(lambda row: "Properly-paired-Low" if row['percent_properly_paired'] < min_pp else None, axis=1)
-stats['depth_warning'] = stats.apply(lambda row: "Depth-Low" if row['genome-wide_depth'] < min_depth else None, axis=1)
+stats['depth_warning'] = stats.apply(lambda row: "Depth-Low" if row['genome_median_depth_good'] < min_depth else None, axis=1)
 stats['coverage_warning'] = stats.apply(lambda row: "Coverage-Low" if row['coverage_good'] < min_coverage else None, axis=1)
 
 print("Joining warnings...")

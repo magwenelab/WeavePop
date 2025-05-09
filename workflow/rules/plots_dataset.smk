@@ -3,42 +3,13 @@
 # =================================================================================================
 
 
-rule join_depth_by_chrom_raw:
-    input:
-        expand(
-            SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom_raw.tsv", sample=SAMPLES
-        ),
-    output:
-        INT_DATASET_DIR / "depth_quality" / "depth_by_chrom_raw.tsv",
-    log:
-        LOGS / "dataset" / "depth_quality" / "join_depth_by_chrom_raw.log",
-    conda:
-        "../envs/shell.yaml"
-    script:
-        "../scripts/join_tables.py"
-
-
-rule join_depth_by_chrom_good:
-    input:
-        expand(
-            SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom_good.tsv", sample=SAMPLES
-        ),
-    output:
-        INT_DATASET_DIR / "depth_quality" / "depth_by_chrom_good.tsv",
-    log:
-        LOGS / "dataset" / "depth_quality" / "join_depth_by_chrom_good.log",
-    conda:
-        "../envs/pandas.yaml"
-    script:
-        "../scripts/join_tables.py"
-
 rule join_depth_by_chrom:
     input:
         expand(
-            INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom.tsv", sample=SAMPLES
+            SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom.tsv", sample=SAMPLES
         ),
     output:
-        INT_DATASET_DIR / "depth_quality" / "depth_by_chrom.tsv",
+        DATASET_DIR / "depth_quality" / "depth_by_chrom.tsv",
     log:
         LOGS / "dataset" / "depth_quality" / "join_depth_by_chrom.log",
     conda:
@@ -55,8 +26,6 @@ rule dataset_summary_plot:
     input:
         rules.quality_filter.output.metadata,
         rules.quality_filter.output.chromosomes,
-        rules.join_depth_by_chrom_good.output,
-        rules.join_depth_by_chrom_raw.output,
         rules.join_mapping_stats.output,
     output:
         DATASET_DIR / "plots" / "dataset_summary.png",
@@ -79,7 +48,7 @@ rule dataset_depth_by_chrom_plot:
     input:
         rules.quality_filter.output.metadata,
         rules.quality_filter.output.chromosomes,
-        rules.join_depth_by_chrom_good.output,
+        rules.join_depth_by_chrom.output,
     output:
         DATASET_DIR / "plots" / "dataset_depth_by_chrom.png",
     params:
@@ -91,18 +60,3 @@ rule dataset_depth_by_chrom_plot:
         "../envs/r.yaml"
     script:
         "../scripts/dataset_depth_by_chrom_plot.R"
-
-rule dataset_depth_vs_cnvs_plot:
-    input:
-        rules.join_depth_by_chrom.output,
-        rules.join_cnv_chromosomes.output
-    output:
-        DATASET_DIR / "plots" / "dataset_depth_vs_cnvs.png",
-    params:
-        scale=config["plotting"]["scale"],
-    log:
-        LOGS / "dataset" / "plots" / "dataset_depth_vs_cnvs_plot.log",
-    conda:
-        "../envs/r.yaml"
-    script:
-        "../scripts/dataset_depth_vs_cnvs_plot.R"

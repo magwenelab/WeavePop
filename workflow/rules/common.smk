@@ -408,7 +408,7 @@ def depth_by_windows_plots_input(wildcards):
 def depth_vs_cnvs_plots_input(wildcards):
     s = SAMPLE_REFERENCE.loc[wildcards.sample,]
     return {
-        "depth": INT_SAMPLES_DIR / "depth_quality" / s["sample"] / "depth_by_chrom.tsv",
+        "depth": SAMPLES_DIR / "depth_quality" / s["sample"] / "depth_by_chrom.tsv",
         "cnv": SAMPLES_DIR / "cnv" / s["sample"] / "cnv_chromosomes.tsv",
     }
 
@@ -482,9 +482,6 @@ def get_unfiltered_output():
         final_output.extend(
             expand(SAMPLES_DIR / "plots" / "{unf_sample}" / "depth_global_distribution.png", unf_sample=UNFILT_SAMPLES)
         )
-        final_output.extend(
-            expand(SAMPLES_DIR / "plots" / "{unf_sample}" / "depth_by_chrom.png", unf_sample=UNFILT_SAMPLES)
-        )
 
     return final_output
 
@@ -543,7 +540,6 @@ def get_dataset_output():
     if config["plotting"]["activate"]:
         final_output.append(DATASET_DIR / "plots" / "dataset_depth_by_chrom.png")
         final_output.append(DATASET_DIR / "plots" / "dataset_summary.png")
-        final_output.append(DATASET_DIR / "plots" / "dataset_depth_vs_cnvs.png")
     if config["database"]["activate"]:
         final_output.append(expand(DATASET_DIR / "database.db"))
     return final_output

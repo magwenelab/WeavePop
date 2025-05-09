@@ -41,22 +41,6 @@ rule depth_distribution_plots:
         "../scripts/depth_distribution_plots.R"
 
 
-rule depth_by_chrom_plots:
-    input:
-        SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom_raw.tsv",
-        SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom_good.tsv",
-        CHROM_NAMES,
-    output:
-        SAMPLES_DIR / "plots" / "{sample}" / "depth_by_chrom.png",
-    conda:
-        "../envs/r.yaml"
-    log:
-        LOGS / "samples" / "plots" / "depth_by_chrom_{sample}.log",
-    script:
-        "../scripts/depth_by_chrom_plots.R"
-
-
-
 # =================================================================================================
 #   Per sample | Plot depth and mapq by windows
 # =================================================================================================

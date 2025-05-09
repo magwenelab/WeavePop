@@ -6,7 +6,7 @@
 rule mapq:
     input:
         INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "snps_good.bam",
-        rules.mosdepth_good.output.bed,
+        rules.mosdepth.output.bed,
     output:
         bed=INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "mapq.bed",
         window_bed=INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "mapq_by_window.bed",
@@ -28,10 +28,10 @@ rule mapq:
 rule mapq_depth:
     input:
         mapqbed=rules.mapq.output.window_bed,
-        depthbed=rules.mosdepth_good.output.bed,
+        depthbed=rules.mosdepth.output.bed,
         gff=rules.reformat_annotation.output.gff,
     output:
-        depthmapq=SAMPLES_DIR / "depth_quality" / "{sample}" / "mapq_depth_by_window.bed",
+        depthmapq=INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "mapq_depth_by_window.bed",
         tsv=SAMPLES_DIR / "depth_quality" / "{sample}" / "mapq_depth_by_feature.tsv",
     log:
         LOGS / "samples" / "depth_quality" / "mapq_depth_{sample}.log",
