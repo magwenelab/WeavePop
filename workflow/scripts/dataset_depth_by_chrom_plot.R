@@ -13,6 +13,10 @@ metadata <- read.csv(snakemake@input[[1]], header = TRUE, stringsAsFactors = TRU
 chrom_names <- read.csv(snakemake@input[[2]], header = TRUE, stringsAsFactors = TRUE)
 chrom_depth <- read.delim(snakemake@input[[3]], sep = "\t", header = TRUE, stringsAsFactors = TRUE)
 
+chrom_depth <- chrom_depth %>%
+    select("sample", "accession", "genome_median_depth", "norm_chrom_median") %>%
+    distinct()
+
 print("Filtering chromosome names...")
 chrom_names <- chrom_names %>%
     select(lineage, accession, chromosome)

@@ -43,7 +43,6 @@ rule depth_by_windows:
         depth=rules.mosdepth.output.bed,
     output:
         windows=INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_windows.tsv",
-        chroms=SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_chrom.tsv"
     params:
         smoothing_size=config["cnv"]["smoothing_size"],
     log:
@@ -56,7 +55,6 @@ rule depth_by_windows:
         "xonsh workflow/scripts/depth_by_windows.xsh "
         "-di {input.depth} "
         "-do {output.windows} "
-        "-co {output.chroms} "
         "-ss {params.smoothing_size} "
         "-sm {wildcards.sample} "
         "&> {log}"

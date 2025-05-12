@@ -107,6 +107,16 @@ def cnv_calling(depth_input, repeats_input, annotation_input, chromosome_input, 
     output_path.parent.mkdir(parents=True, exist_ok=True)
     annot_intersection.to_csv(output_path, sep='\t', index=False, header=True)
 
+    print("Calculating depth of chromosomes...")
+    chromosome_depth = cnv_windows.groupby('accession')['depth'].median().round(2).reset_index()
+    chromosome_depth.columns = ['accession', 'chrom_median']
+
+    print("Normalizing chromosome depth...")
+    genome_median_depth = cnv_windows['depth'].median().round(4)
+
+    chromosome_depth['genome_median_depth'] = genome_median_depth
+    chromosome_depth['norm_chrom_median'] = chromosome_depth['chrom_median'] / genome_median_depth
+    chromosome_depth['norm_chrom_median'] = chromosome_depth['norm_chrom_median'].round(2)
 
     print("Summarizing information for each chromosome and type of region...")
     summary_windows = cnv_windows.groupby(['accession', 'cnv']).agg({'norm_depth':['mean', 'median'],
@@ -133,7 +143,6 @@ def cnv_calling(depth_input, repeats_input, annotation_input, chromosome_input, 
 
     summary = pd.merge(summary_windows, summary_regions, how='left', left_on=['accession', 'cnv'], right_on=['accession', 'cnv'])
     summary['sample'] = sample_name
-
 
     print("Reading chromosome lengths...")
     chromosomes = pd.read_csv(chromosome_input, sep=',', header=0)
@@ -173,6 +182,9 @@ def cnv_calling(depth_input, repeats_input, annotation_input, chromosome_input, 
 
     print("Reorganizing columns...")
     regions_per_chromosome = regions_per_chromosome[['sample', 'lineage', 'accession', 'chromosome', 'length', 'cnv', 'n_regions', 'total_size_regions', 'coverage_percent', 'span_percent', 'size_smallest_region', 'size_largest_region', 'std_regions_size', 'norm_depth_mean', 'norm_depth_median', 'smooth_depth_mean', 'smooth_depth_median']]
+
+    print("Adding chromosome depth to summary...")
+    regions_per_chromosome = pd.merge(regions_per_chromosome, chromosome_depth, how='left', left_on='accession', right_on='accession')
 
     print("Saving summary of CNV regions to file...")
     regions_per_chromosome.to_csv(chromosome_metrics_output, sep='\t', index=False, header=True)

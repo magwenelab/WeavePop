@@ -7,15 +7,14 @@ suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(ggrepel))
 
 print("Reading files...")
-depth <- read.delim(snakemake@input[[1]], sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
-cnv_chromosomes <- read.delim(snakemake@input[[2]], sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
+cnv_chromosomes <- read.delim(snakemake@input[[1]], sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
 sample <- snakemake@wildcards$sample
 
 print("Obtaining lineage of sample...")
 
 lineage_name <- unique(cnv_chromosomes$lineage)
 
-chrom_metrics <- left_join(cnv_chromosomes, depth, by = c("accession", "sample"))%>%
+chrom_metrics <- cnv_chromosomes %>%
     filter(cnv != "single_copy")
 
 chrom_metrics$chromosome <- factor(chrom_metrics$chromosome)

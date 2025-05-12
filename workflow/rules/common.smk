@@ -408,7 +408,6 @@ def depth_by_windows_plots_input(wildcards):
 def depth_vs_cnvs_plots_input(wildcards):
     s = SAMPLE_REFERENCE.loc[wildcards.sample,]
     return {
-        "depth": SAMPLES_DIR / "depth_quality" / s["sample"] / "depth_by_chrom.tsv",
         "cnv": SAMPLES_DIR / "cnv" / s["sample"] / "cnv_chromosomes.tsv",
     }
 
