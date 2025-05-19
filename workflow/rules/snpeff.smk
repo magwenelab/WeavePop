@@ -106,6 +106,7 @@ rule snpeff:
         dir=os.getcwd() / INT_REFS_DIR / "snpeff_data",
         config=INT_REFS_DIR / "snpeff_data" / "snpEff.config",
         name="Species_name_{lineage}",
+        extra=config["snpeff"]["extra"],
     log:
         LOGS / "dataset" / "snpeff" / "snpeff_{lineage}.log",
     resources:
@@ -117,6 +118,7 @@ rule snpeff:
         "-dataDir {params.dir} "
         "-config {params.config} "
         "-s {output.html} "
+        "{params.extra} "
         "{params.name} "
         "{input.vcf} "
         "1> {output.vcf} 2> {log}"

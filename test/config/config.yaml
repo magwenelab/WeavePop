@@ -38,7 +38,7 @@ annotate_references:
   gff: "VNI.gff" # Filename of the main reference genome GFF file in references_directory.
   liftoff:
     threads: 12 # Number of threads for Liftoff.
-    extra: "" # Extra parameters for Liftoff.
+    extra: "-infer_genes" # Extra parameters for Liftoff.
 
 # ------------------Depth and quality analyses and filter----------------------
 depth_quality: 
@@ -54,7 +54,7 @@ depth_quality:
   mosdepth: 
     threads: 12  # Number of threads for mosdepth.
     window: 5000 # Window size for mosdepth.
-    extra: "" # Extra parameters for mosdepth.
+    extra: "--use-median" # Extra parameters for mosdepth.
 
 # ------------------Functional Annotation--------------------------------------
 
@@ -103,9 +103,6 @@ snippy:
 
 liftoff:
   threads: 12
-  extra: ""
-
-agat:
   extra: ""
 
 # =============================================================================

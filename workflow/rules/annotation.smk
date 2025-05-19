@@ -50,8 +50,6 @@ rule add_intergenic:
         config=rules.agat_config.output,
     output:
         gff=INT_SAMPLES_DIR / "annotation" / "{sample}" / "intergenic.gff",
-    params:
-        extra=config["agat"]["extra"],
     log:
         LOGS / "samples" / "annotation" / "add_intergenic_{sample}.log",
     resources:
@@ -63,7 +61,6 @@ rule add_intergenic:
         "-g {input.gff} "
         "-o {output.gff} "
         "-c {input.config} "
-        "{params.extra} "
         "&> {log} "
 
 
@@ -73,8 +70,6 @@ rule add_introns:
         config=rules.agat_config.output,
     output:
         gff=INT_SAMPLES_DIR / "annotation" / "{sample}" / "interg_introns.gff",
-    params:
-        extra=config["agat"]["extra"],
     log:
         LOGS / "samples" / "annotation" / "add_introns_{sample}.log",
     resources:
@@ -86,7 +81,6 @@ rule add_introns:
         "-g {input.gff} "
         "-o {output.gff} "
         "-c {input.config} "
-        "{params.extra} "
         "&> {log} "
 
 
@@ -138,8 +132,6 @@ rule extract_cds:
         config=rules.agat_config.output,
     output:
         fa=SAMPLES_DIR / "annotation" / "{sample}" / "cds.fa",
-    params:
-        extra=config["agat"]["extra"],
     log:
         LOGS / "samples" / "annotation" / "extract_cds_{sample}.log",
     resources:
@@ -152,7 +144,6 @@ rule extract_cds:
         "-f {input.fa} "
         "-o {output.fa} "
         "-c {input.config} "
-        "{params.extra} "
         "&> {log} "
 
 
@@ -164,8 +155,6 @@ rule extract_prots:
         cds=rules.extract_cds.output.fa,
     output:
         fa=SAMPLES_DIR / "annotation" / "{sample}" / "proteins.fa",
-    params:
-        extra=config["agat"]["extra"],
     log:
         LOGS / "samples" / "annotation" / "extract_prots_{sample}.log",
     resources:
@@ -178,8 +167,7 @@ rule extract_prots:
         "-f {input.fa} "
         "-o {output.fa} "
         "-p "
-        "-c {input.config}"
-        "{params.extra} &> {log} "
+        "-c {input.config} &> {log} "
         "&& "
         "sed -i 's/type=cds//g' {output} &>> {log} "
 

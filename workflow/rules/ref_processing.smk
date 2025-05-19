@@ -7,8 +7,6 @@ rule ref_add_intergenic:
         config=rules.agat_config.output,
     output:
         INT_REFS_DIR / "{lineage}" / "{lineage}_intergenic.gff",
-    params:
-        extra=config["agat"]["extra"],
     log:
         LOGS / "references" / "annotation" / "ref_add_intergenic_{lineage}.log",
     resources:
@@ -20,7 +18,6 @@ rule ref_add_intergenic:
         "-g {input.gff} "
         "-o {output} "
         "-c {input.config} "
-        "{params.extra} "
         "&> {log}"
 
 rule ref_add_introns:
@@ -29,8 +26,6 @@ rule ref_add_introns:
         config=rules.agat_config.output,
     output:
         gff=INT_REFS_DIR / "{lineage}" / "{lineage}_interg_introns.gff",
-    params:
-        extra=config["agat"]["extra"],
     log:
         LOGS / "references" / "ref_processing" / "ref_add_introns_{lineage}.log",
     resources:
@@ -42,7 +37,6 @@ rule ref_add_introns:
         "-g {input.gff} "
         "-o {output.gff} "
         "-c {input.config} "
-        "{params.extra} "
         "&> {log}"
 
 
