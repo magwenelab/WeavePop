@@ -177,3 +177,37 @@ checkpoint filter_wildcards:
     script:
         "../scripts/filter_wildcards.py"
 
+
+# =================================================================================================
+#   Per sample | Run Mosdepth to get depth per window of good quality reads
+# =================================================================================================
+
+
+rule mosdepth:
+    input:
+        bam=INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "snps_good.bam",
+        bai=INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "snps_good.bam.bai",
+    output:
+        bed=INT_SAMPLES_DIR / "mosdepth" / "{sample}" / "coverage_good.regions.bed.gz",
+    params:
+        window=config["depth_quality"]["mosdepth"]["window"],
+        extra=config["depth_quality"]["mosdepth"]["extra"],
+        min_mapq=config["depth_quality"]["flag_quality"]["min_mapq"],
+        outdir=INT_SAMPLES_DIR / "mosdepth",
+    log:
+        LOGS / "samples" / "depth_quality" / "mosdepth_{sample}.log",
+    threads: config["depth_quality"]["mosdepth"]["threads"]
+    resources:
+        tmpdir=TEMPDIR,
+    conda:
+        "../envs/depth.yaml"
+    shell:
+        "mosdepth "
+        "-n "
+        "--by {params.window} "
+        "--mapq {params.min_mapq} "
+        "-t {threads} "
+        "{params.extra} "
+        "{params.outdir}/{wildcards.sample}/coverage_good "
+        "{input.bam} "
+        "&> {log}"
