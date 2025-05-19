@@ -20,9 +20,8 @@ metadata <- metadata %>%
 
 chrom_names <- select(chrom_names, lineage, accession, chromosome)
 
-map_stats <- left_join(map_stats, metadata, by = "sample")
+map_stats <- left_join(metadata, map_stats, by = "sample")
 map_stats$name <- reorder(map_stats$name, -map_stats$genome_mean_depth_good, sum)
-
 
 depth_good <- map_stats %>%
     select(sample, name, lineage, Mean = genome_mean_depth_good, Median = genome_median_depth_good) %>%
@@ -33,8 +32,6 @@ depth_raw <- map_stats %>%
     pivot_longer(cols = c(Mean, Median), names_to = "measurement", values_to = "value") %>%
     mutate(quality = "All mappings")
 depth <- rbind(depth_good, depth_raw)
-
-
 
 print("Getting plot parameters...")
 topylim <- max(depth$value) + max(depth$value/ 10)
@@ -56,7 +53,7 @@ g <- ggplot(depth) +
           panel.grid.minor = element_blank(),
           strip.background = element_blank(),
           panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 1),
-        #   axis.text.x = element_blank(), 
+          axis.text.x = element_blank(), 
           axis.ticks.x = element_blank())+
     labs(title = "Genome-Wide Read Depth",
          y = "Read Depth (X)",
@@ -69,7 +66,6 @@ stats_metad <- map_stats %>%
 
 stats_long <- stats_metad %>%
     pivot_longer(cols = -c(sample, name, lineage, strain), names_to = "metric", values_to = "value")
-# stats_long$name <- factor(stats_long$name, levels = levels(depth$name))
 
 stats_reads <- stats_long %>%
     filter(metric %in% c("percent_only_mapped", "percent_unmapped", "percent_properly_paired"))
@@ -95,7 +91,7 @@ reads <- ggplot()+
           strip.background = element_blank(),
           strip.text = element_blank(),
           panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 1),
-        #   axis.text.x = element_blank(),
+          axis.text.x = element_blank(),
           axis.ticks.x = element_blank())+
     labs(x = "", y = "Percentage of Reads", fill = "Metric", title = "Percentage of Reads by Mapping Status")+
     scale_fill_manual(values = palette_reads, name = "")
