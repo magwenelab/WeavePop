@@ -46,11 +46,11 @@ depth_quality:
     low_MAPQ_limit: 20 # Max MAPQ to be considered low quality.
     high_MAPQ_limit: 60 # Min MAPQ to be considered high quality.
     min_mapq: 20 # Minimum mapping quality to be considered a good read alignement.
-    filter: False # True to exclude samples that are flagged by the thresholds bellow.
-    min_percent_coverage: 97 # If percent of genome covered by good quality read alignments is below this value, the sample is flagged.
-    min_percent_MAPQ: 90 # If percent of high quality reads is below this value, the sample is flagged.
+    filter: True # True to exclude samples that are flagged by the thresholds bellow.
+    min_percent_coverage: 90 # If percent of genome covered by good quality read alignments is below this value, the sample is flagged.
+    min_percent_MAPQ: 80 # If percent of high quality reads is below this value, the sample is flagged.
     min_percent_genome-wide_depth: 2 # If genome-wide depth is below this value, the sample is flagged.
-    min_percent_properly_paired_reads: 25 # If percent of properly paired reads is below this value, the sample is flagged.
+    min_percent_mapped_reads: 90 # If percent of mapped reads is below this value, the sample is flagged.
   mosdepth: 
     threads: 12  # Number of threads for mosdepth.
     window: 5000 # Window size for mosdepth.
@@ -59,12 +59,12 @@ depth_quality:
 # ------------------Functional Annotation--------------------------------------
 
 annotation:
-  activate: # True to activate the module. Empty or False to skip.
+  activate:  # True to activate the module. Empty or False to skip.
 
 # ------------------Depth and quality of genetic features----------------------
 
 depth_quality_features:
-  activate: # True to activate the module. Empty or False to skip.
+  activate:  # True to activate the module. Empty or False to skip.
 
 # ------------------Copy-number variant calling--------------------------------
 

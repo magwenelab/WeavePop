@@ -92,7 +92,7 @@ rule join_mapping_stats:
     params:
         min_depth=config["depth_quality"]["flag_quality"]["min_percent_genome-wide_depth"],
         min_high_mapq=config["depth_quality"]["flag_quality"]["min_percent_MAPQ"],
-        min_pp=config["depth_quality"]["flag_quality"]["min_percent_properly_paired_reads"],
+        min_pm=config["depth_quality"]["flag_quality"]["min_percent_mapped_reads"],
         min_coverage=config["depth_quality"]["flag_quality"]["min_percent_coverage"],
     log:
         LOGS / "samples" / "depth_quality" / "join_mapping_stats.log",
