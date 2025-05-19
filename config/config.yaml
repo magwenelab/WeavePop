@@ -60,7 +60,9 @@ depth_quality:
 
 annotation:
   activate: # True to activate the module. Empty or False to skip.
-
+  liftoff:
+    threads: 12
+    extra: ""
 # ------------------Depth and quality of genetic features----------------------
 
 depth_quality_features:
@@ -95,13 +97,9 @@ plotting:
 database:
   activate: True # True to activate the module. Empty or False to skip.
 
-# ------------------Parameters for individual tools----------------------------
+# ------------------Snippy parameters------------------------------------------
 
 snippy:
-  threads: 12
-  extra: ""
-
-liftoff:
   threads: 12
   extra: ""
 

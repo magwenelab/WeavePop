@@ -15,11 +15,11 @@ rule liftoff:
         fai=SAMPLES_DIR / "snippy" / "{sample}" / "snps.consensus.fa.fai",
         mmi=SAMPLES_DIR / "snippy" / "{sample}" / "snps.consensus.fa.mmi",
     params:
-        extra=config["liftoff"]["extra"],
+        extra=config["annotation"]["liftoff"]["extra"],
         outpath=INT_SAMPLES_DIR / "annotation"/ "liftoff" / "{sample}",
     log:
         LOGS / "samples" / "annotation" / "liftoff_{sample}.log",
-    threads: config["liftoff"]["threads"]
+    threads: config["annotation"]["liftoff"]["threads"]
     resources:
         tmpdir=TEMPDIR,
     conda:
