@@ -16,6 +16,7 @@ sample <- snakemake@wildcards$sample
 print("Obtaining lineage of sample...")
 
 lineage_name <- as.character(metadata$lineage[metadata$sample == sample])
+strain_name <- as.character(metadata$strain[metadata$sample == sample])
 
 print("Obtaining lineage of sample...")
 
@@ -62,7 +63,7 @@ c <- ggplot(windows, aes(x = chromosome, y = depth))+
         axis.title.x = element_blank())+
     labs(y="Depth\n(truncated)",
         title = "Distribution of all Depth Metrics of Windows per Chromosome and Whole Genome",
-        subtitle = paste("Lineage:", lineage_name, " Sample:", sample, sep = " "))
+        subtitle = paste("Lineage:", lineage_name, " Sample:", sample, "Strain:", strain_name, sep = " "))
 
 g <- ggplot(windows, aes(y = depth, x = 1))+
     geom_quasirandom(alpha = 0.05)+

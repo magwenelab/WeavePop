@@ -20,6 +20,7 @@ metadata <- read.delim(snakemake@input[[6]], sep = ",", header = TRUE, stringsAs
 print("Obtaining lineage of sample...")
 
 lineage_name <- as.character(metadata$lineage[metadata$sample == sample])
+strain_name <- as.character(metadata$strain[metadata$sample == sample])
 
 print("Filtering chromosome names...")
 chrom_names <- chrom_names %>%
@@ -80,7 +81,7 @@ plot <- ggplot()+
   facet_wrap(~accession_chromosome, strip.position = "right", ncol = 2, labeller = as_labeller(my_labeller)) +
   scale_x_continuous(name = "Position (bp) ", labels = comma)+
   labs(title = "Mapping Quality of Windows Along Chromosomes",
-      subtitle = paste("Lineage: ", lineage_name," Sample: ", sample,  sep = " "), 
+      subtitle = paste("Lineage: ", lineage_name," Sample: ", sample, "Strain:", strain_name,  sep = " "), 
       y = "Mapping Quality (Phred score)")+
   theme(panel.grid = element_blank(),
         panel.grid.major.x = element_blank(),

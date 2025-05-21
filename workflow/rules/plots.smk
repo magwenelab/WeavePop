@@ -30,6 +30,7 @@ rule depth_distribution_plots:
     input:
         INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_distribution.tsv",
         CHROM_NAMES,
+        metadata=rules.quality_filter.output.metadata,
     output:
         SAMPLES_DIR / "plots" / "{sample}" / "depth_chrom_distribution.png",
         SAMPLES_DIR / "plots" / "{sample}" / "depth_global_distribution.png",
@@ -77,6 +78,7 @@ rule depth_by_windows_plots:
 rule depth_vs_cnvs_plots:
     input:
         unpack(depth_vs_cnvs_plots_input),
+        metadata=rules.quality_filter.output.metadata,
     output:
         SAMPLES_DIR / "plots" / "{sample}" / "depth_vs_cnvs.png",
     conda:

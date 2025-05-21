@@ -13,6 +13,12 @@ print("Reading files and joining data with chromosome names...")
 sample <- snakemake@wildcards$sample
 depth<- read.table(snakemake@input[[1]], header = TRUE, stringsAsFactors = TRUE, sep = "\t")
 chrom_names <- read.csv(snakemake@input[[2]], header = TRUE, col.names = c("lineage", "accession", "chromosome"))
+metadata <- read.delim(snakemake@input[[3]], sep = ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
+
+print("Obtaining lineage of sample...")
+
+lineage_name <- as.character(metadata$lineage[metadata$sample == sample])
+strain_name <- as.character(metadata$strain[metadata$sample == sample])
 
 print("Adding 0 to null depth values...")
 depth[is.na(depth)] <- 0
@@ -25,7 +31,6 @@ chrom_names$chromosome <- factor(chrom_names$chromosome, levels = unique(chrom_n
 
 print("Joining and arranging data...")
 depth <- left_join(depth, chrom_names, by = "accession")
-lineage <- levels(as.factor(depth$lineage))
 
 depth_global <- depth %>%
   select(depth, count_good, count_raw)%>%
@@ -73,7 +78,7 @@ plot_truncated <- ggplot()+
 combined <- plot_global / plot_truncated_log / plot_truncated 
 combined <- combined +
   plot_annotation(title = "Depth Distribution of Whole Genome by Quality of Read Alignments",
-                  subtitle = paste("Lineage:", lineage, " Sample:", sample, sep = " ")) &
+                  subtitle = paste("Lineage:", lineage_name, " Sample:", sample,"Strain:", strain_name, sep = " ")) &
     theme(plot.title = element_text(hjust = 0.5))
 
 print("Plotting depth distribution by chromosome...")
@@ -108,7 +113,7 @@ by_chrom_truncated <- ggplot(depth)+
 plot_chrom <- by_chrom / by_chrom_log / by_chrom_truncated
 plot_chrom <- plot_chrom +
   plot_annotation(title = "Depth Distribution of Good Quality Alignments of each Chromosome",
-                  subtitle = paste("Lineage:", lineage, " Sample:", sample, sep = " ")) &
+                  subtitle = paste("Lineage:", lineage_name, " Sample:", sample, "Strain:", strain_name, sep = " ")) &
     theme(plot.title = element_text(hjust = 0.5))
 
 print("Saving plots...")
