@@ -1,11 +1,9 @@
 import pandas as pd
 import io
 import click
-from scipy import ndimage
 import numpy as np
 from pathlib import Path
 from itertools import product
-
 
 @click.command()
 @click.option('-di', '--depth_input', help='Path to BED file with depth of each window.', type=click.Path(exists=True))
