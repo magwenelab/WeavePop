@@ -148,6 +148,7 @@ rule complete_db:
         "-m {input.metadata} "
         "-ch {input.chrom_names} "
         "-cnv {input.cnv} "
+        "-cnch {input.cnv_chromosomes} "
         "-md {input.md} "
         "-g {input.gffs} "
         "-e {input.effects} "
