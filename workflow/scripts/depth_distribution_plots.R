@@ -11,8 +11,8 @@ suppressPackageStartupMessages(library(patchwork))
 
 print("Reading files and joining data with chromosome names...")
 sample <- snakemake@wildcards$sample
-depth<- read.table(snakemake@input[[1]], header = TRUE, stringsAsFactors = TRUE, sep = "\t")
-chrom_names <- read.csv(snakemake@input[[2]], header = TRUE, col.names = c("lineage", "accession", "chromosome"))
+depth <- read.table(snakemake@input[[1]], header = TRUE, stringsAsFactors = TRUE, sep = "\t")
+chrom_names <- read.csv(snakemake@input[[2]], header = TRUE , sep = ",")
 metadata <- read.delim(snakemake@input[[3]], sep = ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
 
 print("Obtaining lineage of sample...")

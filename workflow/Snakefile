@@ -154,7 +154,7 @@ onsuccess:
     """, flush=True)
     if config["workflow"] == "analysis":
         print("The analysis workflow finished successfully!", flush=True)
-        original_metadata = UNFILT_SAMPLE_TABLE
+        original_metadata = METADATA_UNFILTERED
         filtered_metadata = pd.read_csv(rules.quality_filter.output.metadata, header=0)
         if original_metadata["sample"].nunique() == filtered_metadata["sample"].nunique():
             print("No samples were removed.", flush=True)

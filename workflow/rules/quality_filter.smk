@@ -126,18 +126,33 @@ rule chromosome_lengths:
         1> {output} 2> {log}
         """
 
-rule join_chromosome_lengths:
+rule chromosome_lengths_names:
     input:
-        chrom_names=CHROM_NAMES,  
-        chrom_lengths=expand(INT_REFS_DIR / "{unf_lineage}" / "chromosome_lengths.tsv", unf_lineage=UNF_LINEAGES),
+        chrom_names=CHROM_NAMES_FILE,
+        chrom_lengths=rules.chromosome_lengths.output,        
     output:
-        INT_REFS_DIR / "chromosome_lengths.tsv",
+        INT_REFS_DIR / "{unf_lineage}" / "chromosomes.csv",
     log:
-        LOGS / "references" / "ref_processing" / "join_chromosome_lengths.log",
+        LOGS / "references" / "depth_quality" / "{unf_lineage}_chromosome_lengths_names.log",
+    resources:
+        tmpdir=TEMPDIR,
+    conda:
+        "../envs/agat.yaml"
+    script:
+        "../scripts/chromosome_length_names.py"
+
+
+rule join_chromosomes:
+    input:
+        chroms=expand(INT_REFS_DIR / "{unf_lineage}" / "chromosomes.csv", unf_lineage=UNF_LINEAGES),
+    output:
+        INT_REFS_DIR / "chromosomes.csv",
+    log:
+        LOGS / "references" / "ref_processing" / "join_chromosomes.log",
     conda:
         "../envs/pandas.yaml"
     script:
-        "../scripts/join_chromosome_lengths.py"        
+        "../scripts/join_chromosomes.py"        
 
 # =================================================================================================
 #   Per dataset | Checkpoint to filter out low quality samples
@@ -147,13 +162,13 @@ rule join_chromosome_lengths:
 rule quality_filter:
     input:
         rules.join_mapping_stats.output,
-        rules.join_chromosome_lengths.output,
+        rules.join_chromosomes.output,
     output:
         metadata=DATASET_DIR / "metadata.csv",
         chromosomes=DATASET_DIR / "chromosomes.csv",
     params:
         filter=config["depth_quality"]["flag_quality"]["filter"],
-        metadata=UNFILT_SAMPLE_TABLE
+        metadata=METADATA_UNFILTERED
     log:
         LOGS / "samples" / "depth_quality" / "quality_filter.log",
     resources:

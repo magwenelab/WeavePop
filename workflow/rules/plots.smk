@@ -28,9 +28,9 @@ rule loci:
 
 rule depth_distribution_plots:
     input:
-        INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_distribution.tsv",
-        CHROM_NAMES,
-        metadata=rules.quality_filter.output.metadata,
+        distrib=INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_distribution.tsv",
+        chroms=CHROM_NAMES_FILE,
+        metadata=METADATA_ORIGINAL_FILE,
     output:
         SAMPLES_DIR / "plots" / "{sample}" / "depth_chrom_distribution.png",
         SAMPLES_DIR / "plots" / "{sample}" / "depth_global_distribution.png",
@@ -48,9 +48,8 @@ rule depth_distribution_plots:
 
 rule depth_boxplot:
     input:
-        depth=rules.depth_by_windows.output.windows,
-        chrom_length=rules.quality_filter.output.chromosomes,
-        metadata=rules.quality_filter.output.metadata,
+        unpack(depth_boxplot_input),
+        metadata=METADATA_ORIGINAL_FILE,
     output:
         SAMPLES_DIR / "plots" / "{sample}" / "depth_boxplot.png",
     conda:
@@ -64,8 +63,7 @@ rule depth_by_windows_plots:
     input:
         unpack(depth_by_windows_plots_input),
         loci=rules.loci.output.locitable,
-        chrom_names=rules.quality_filter.output.chromosomes,
-        metadata=rules.quality_filter.output.metadata,
+        metadata=METADATA_ORIGINAL_FILE,
     output:
         SAMPLES_DIR / "plots" / "{sample}" / "depth_by_windows.png",
     conda:
@@ -78,7 +76,7 @@ rule depth_by_windows_plots:
 rule depth_vs_cnvs_plots:
     input:
         unpack(depth_vs_cnvs_plots_input),
-        metadata=rules.quality_filter.output.metadata,
+        metadata=METADATA_ORIGINAL_FILE,
     output:
         SAMPLES_DIR / "plots" / "{sample}" / "depth_vs_cnvs.png",
     conda:
@@ -92,9 +90,8 @@ rule depth_vs_cnvs_plots:
 rule mapq_plots:
     input:
         unpack(mapq_plot_input),
-        chrom_names=rules.quality_filter.output.chromosomes,
         loci=rules.loci.output.locitable,
-        metadata=rules.quality_filter.output.metadata,
+        metadata=METADATA_ORIGINAL_FILE,
     output:
         SAMPLES_DIR / "plots" / "{sample}" / "mapq.png",
     conda:

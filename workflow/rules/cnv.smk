@@ -33,7 +33,6 @@ rule depth_by_windows:
 rule cnv_calling:
     input:
         unpack(cnv_calling_input),
-        chrom_length=rules.quality_filter.output.chromosomes,
     output:
         cnvs=SAMPLES_DIR / "cnv" / "{sample}" / "cnv_calls.tsv",
         chrom_cnvs=SAMPLES_DIR / "cnv" / "{sample}" / "cnv_chromosomes.tsv",

@@ -7,16 +7,16 @@ rule liftoff:
     input:
         unpack(liftoff_input),
     output:
-        ref_gff=INT_SAMPLES_DIR / "annotation"/ "liftoff" / "{sample}" / "ref.gff",
-        gff=INT_SAMPLES_DIR / "annotation"/ "liftoff" / "{sample}" / "lifted.gff",
-        polished=INT_SAMPLES_DIR / "annotation"/ "liftoff" / "{sample}" / "lifted.gff_polished",
-        unmapped=INT_SAMPLES_DIR / "annotation"/ "liftoff" / "{sample}" / "unmapped_features.txt",
-        intermediate=directory(INT_SAMPLES_DIR / "annotation"/ "liftoff" / "{sample}" / "intermediate_liftoff"),
+        ref_gff=INT_SAMPLES_DIR / "annotation"/ "{sample}" / "liftoff" /  "ref.gff",
+        gff=INT_SAMPLES_DIR / "annotation"/ "{sample}" /  "liftoff" / "lifted.gff",
+        polished=INT_SAMPLES_DIR / "annotation"/ "{sample}" / "liftoff"  / "lifted.gff_polished",
+        unmapped=INT_SAMPLES_DIR / "annotation"/ "{sample}" / "liftoff" /  "unmapped_features.txt",
+        intermediate=directory(INT_SAMPLES_DIR / "annotation"/ "{sample}" / "liftoff" /  "intermediate_liftoff"),
         fai=SAMPLES_DIR / "snippy" / "{sample}" / "snps.consensus.fa.fai",
         mmi=SAMPLES_DIR / "snippy" / "{sample}" / "snps.consensus.fa.mmi",
     params:
         extra=config["annotation"]["liftoff"]["extra"],
-        outpath=INT_SAMPLES_DIR / "annotation"/ "liftoff" / "{sample}",
+        outpath=INT_SAMPLES_DIR / "annotation"/ "{sample}" / "liftoff",
     log:
         LOGS / "samples" / "annotation" / "liftoff_{sample}.log",
     threads: config["annotation"]["liftoff"]["threads"]

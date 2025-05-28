@@ -12,8 +12,8 @@ print("Reading files...")
 depth_windows <- read.delim(snakemake@input[[1]], sep= "\t", col.names = c("accession", "start", "end", "depth", "norm_depth", "smooth_depth"), stringsAsFactors = TRUE, na = c("", "N/A"))
 cnv <- read.delim(snakemake@input[[2]], sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
 repeats_table <- read.delim(snakemake@input[[3]], sep= "\t", header = FALSE, col.names = c("accession", "start", "end", "repeat_type"), stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
-loci_table <- read.delim(snakemake@input[[4]], header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
-chrom_names <- read.csv(snakemake@input[[5]], sep = ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
+chrom_names <- read.csv(snakemake@input[[4]], sep= ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
+loci_table <- read.delim(snakemake@input[[5]], header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
 sample <- snakemake@wildcards$sample
 metadata <- read.delim(snakemake@input[[6]], sep = ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
 

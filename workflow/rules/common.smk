@@ -153,22 +153,22 @@ if not config["metadata"]:
     exit(1)
 
 if os.path.isabs(config["metadata"]):
-    SAMPLE_ORIGINAL_FILE = Path(config["metadata"])
-    SAMPLE_ORIGINAL_FILE = os.path.relpath(SAMPLE_ORIGINAL_FILE, Path(os.getcwd()))
+    METADATA_ORIGINAL_FILE = Path(config["metadata"])
+    METADATA_ORIGINAL_FILE = os.path.relpath(METADATA_ORIGINAL_FILE, Path(os.getcwd()))
 else:
-    SAMPLE_ORIGINAL_FILE = Path(os.path.join(config["project_directory"], config["metadata"]))
+    METADATA_ORIGINAL_FILE = Path(os.path.join(config["project_directory"], config["metadata"]))
 
-if os.path.exists(SAMPLE_ORIGINAL_FILE):
-    print(f"Validating metadata file {SAMPLE_ORIGINAL_FILE}...", flush=True)
-    SAMPLE_ORIGINAL = pd.read_csv(SAMPLE_ORIGINAL_FILE, sep=",", header=0)
-    validate(SAMPLE_ORIGINAL, schema="../schemas/metadata.schema.yaml")
-    print(f"    Number of samples in the metadata file: {SAMPLE_ORIGINAL.shape[0]}", flush=True)
-    if SAMPLE_ORIGINAL.shape[0] == 0:
+if os.path.exists(METADATA_ORIGINAL_FILE):
+    print(f"Validating metadata file {METADATA_ORIGINAL_FILE}...", flush=True)
+    METADATA_ORIGINAL = pd.read_csv(METADATA_ORIGINAL_FILE, sep=",", header=0)
+    validate(METADATA_ORIGINAL, schema="../schemas/metadata.schema.yaml")
+    print(f"    Number of samples in the metadata file: {METADATA_ORIGINAL.shape[0]}", flush=True)
+    if METADATA_ORIGINAL.shape[0] == 0:
         print("Metadata file is empty.", flush=True)
         print("Exiting...", flush=True)
         exit(1)
 else:
-    print(f"Metadata file {SAMPLE_ORIGINAL_FILE} not found.", flush=True)
+    print(f"Metadata file {METADATA_ORIGINAL_FILE} not found.", flush=True)
     print("Exiting...", flush=True)
     exit(1)
 
@@ -183,15 +183,15 @@ if config["samples_to_exclude"]:
     if os.path.exists(EXCLUDE_FILE):
         print(f"Excluding samples in the file {EXCLUDE_FILE} from the analysis...", flush=True)
         EXCLUDE_SAMPLES = set(list(pd.read_csv(EXCLUDE_FILE, header=None, names=["sample"])["sample"]))
-        UNFILT_SAMPLE_TABLE = SAMPLE_ORIGINAL[~SAMPLE_ORIGINAL["sample"].isin(EXCLUDE_SAMPLES)]
-        print(f"    Number of samples to analyze: {UNFILT_SAMPLE_TABLE.shape[0]}", flush=True)
+        METADATA_UNFILTERED = METADATA_ORIGINAL[~METADATA_ORIGINAL["sample"].isin(EXCLUDE_SAMPLES)]
+        print(f"    Number of samples to analyze: {METADATA_UNFILTERED.shape[0]}", flush=True)
     else:
         print(f"File {EXCLUDE_FILE} not found.", flush=True)
         print("Exiting...", flush=True)
         exit(1)
 else:
-    UNFILT_SAMPLE_TABLE = SAMPLE_ORIGINAL
-    print(f"    Number of samples to analyze: {UNFILT_SAMPLE_TABLE.shape[0]}", flush=True)
+    METADATA_UNFILTERED = METADATA_ORIGINAL
+    print(f"    Number of samples to analyze: {METADATA_UNFILTERED.shape[0]}", flush=True)
 
 # --Validate chromosome names file--------------------------------------------------------------------
 
@@ -203,28 +203,28 @@ if not config["chromosomes"]:
     exit(1)
 
 if os.path.isabs(config["chromosomes"]):
-    CHROM_NAMES = Path(config["chromosomes"])
-    CHROM_NAMES = os.path.relpath(CHROM_NAMES, Path(os.getcwd()))
+    CHROM_NAMES_FILE = Path(config["chromosomes"])
+    CHROM_NAMES_FILE = os.path.relpath(CHROM_NAMES_FILE, Path(os.getcwd()))
 else:
-    CHROM_NAMES = Path(os.path.join(config["project_directory"], config["chromosomes"]))
+    CHROM_NAMES_FILE = Path(os.path.join(config["project_directory"], config["chromosomes"]))
 
-if os.path.exists(CHROM_NAMES):
-    print(f"Validating chromosome names file {CHROM_NAMES}...", flush=True)
-    CHROM_NAMES_TABLE = pd.read_csv(CHROM_NAMES, header=0, dtype={"chromosome": "string"})
+if os.path.exists(CHROM_NAMES_FILE):
+    print(f"Validating chromosome names file {CHROM_NAMES_FILE}...", flush=True)
+    CHROM_NAMES_TABLE = pd.read_csv(CHROM_NAMES_FILE, header=0, dtype={"chromosome": "string"})
     validate(CHROM_NAMES_TABLE, schema="../schemas/chromosomes.schema.yaml")
 else:
-    print(f"Chromosome names file {CHROM_NAMES} not found.", flush=True)
+    print(f"Chromosome names file {CHROM_NAMES_FILE} not found.", flush=True)
     print("Exiting...", flush=True)
     exit(1)
 
-if all(item in CHROM_NAMES_TABLE["lineage"].unique() for item in UNFILT_SAMPLE_TABLE["lineage"].unique()):
+if all(item in CHROM_NAMES_TABLE["lineage"].unique() for item in METADATA_UNFILTERED["lineage"].unique()):
     print("    All lineages are in the chromosome names file.", flush=True)
 else:
     print("Not all lineages from the metadata table are present in the chromosomes file.", flush=True)
     print("Exiting...", flush=True)
     exit(1)
 
-UNF_LINEAGES = UNFILT_SAMPLE_TABLE["lineage"].unique()
+UNF_LINEAGES = METADATA_UNFILTERED["lineage"].unique()
 
 for lineage in UNF_LINEAGES:
     print(f"Checking the chromosome names of lineage {lineage}...", flush=True)
@@ -283,7 +283,7 @@ if config["plotting"]["activate"]:
         print("The plotting module is activated but the parameter metadata2color is not provided.", flush=True)
         print("Exiting...", flush=True)
         exit(1)
-    elif config["plotting"]["metadata2color"] not in SAMPLE_ORIGINAL.columns:
+    elif config["plotting"]["metadata2color"] not in METADATA_ORIGINAL.columns:
         print(f"Column {config['plotting']['metadata2color']} from the parameter metadata2color is not found in the metadata table.", flush=True)
         print("Exiting...", flush=True)
         exit(1)
@@ -353,24 +353,25 @@ if config["annotate_references"]["activate"]:
 # =================================================================================================
 
 d = {
-    "sample": UNFILT_SAMPLE_TABLE["sample"],
-    "lineage": UNFILT_SAMPLE_TABLE["lineage"],
+    "sample": METADATA_UNFILTERED["sample"],
+    "lineage": METADATA_UNFILTERED["lineage"],
     "refgenome": INT_REFS_DIR
-    / UNFILT_SAMPLE_TABLE["lineage"]
-    / (UNFILT_SAMPLE_TABLE["lineage"] + ".fasta"),
-    "refgff": INT_REFS_DIR / UNFILT_SAMPLE_TABLE["lineage"] 
-    / (UNFILT_SAMPLE_TABLE["lineage"] + "_interg_introns.gff"),
+    / METADATA_UNFILTERED["lineage"]
+    / (METADATA_UNFILTERED["lineage"] + ".fasta"),
+    "refgff": INT_REFS_DIR / METADATA_UNFILTERED["lineage"] 
+    / (METADATA_UNFILTERED["lineage"] + "_interg_introns.gff"),
 }
 
-SAMPLE_REFERENCE = pd.DataFrame(data=d).set_index("sample", drop=False)
+METADATA_TABLE = pd.DataFrame(data=d).set_index("sample", drop=False)
 LINEAGE_REFERENCE = pd.DataFrame(data=d).set_index("lineage", drop=False)
 
 # =================================================================================================
 #   Input functions for rules
 # =================================================================================================
 
+
 def snippy_input(wildcards):
-    s = SAMPLE_REFERENCE.loc[wildcards.unf_sample,]
+    s = METADATA_TABLE.loc[wildcards.unf_sample,]
     return {
         "fq1": FQ_DATA / (s["sample"] + FQ1),
         "fq2": FQ_DATA / (s["sample"] + FQ2),
@@ -379,7 +380,7 @@ def snippy_input(wildcards):
 
 
 def liftoff_input(wildcards):
-    s = SAMPLE_REFERENCE.loc[wildcards.sample,]
+    s = METADATA_TABLE.loc[wildcards.sample,]
     return {
         "target": SAMPLES_DIR / "snippy" / s["sample"] / "snps.consensus.fa",
         "refgff": s["refgff"],
@@ -388,7 +389,7 @@ def liftoff_input(wildcards):
 
 
 def depth_distribution_input(wildcards):
-    s = SAMPLE_REFERENCE.loc[wildcards.unf_sample,]
+    s = METADATA_TABLE.loc[wildcards.unf_sample,]
     return {
         "bam": SAMPLES_DIR / "snippy" / s["sample"] / "snps.bam",
         "bai": SAMPLES_DIR / "snippy" / s["sample"] / "snps.bam.bai",
@@ -396,38 +397,52 @@ def depth_distribution_input(wildcards):
         "bai_good": INT_SAMPLES_DIR / "depth_quality" / s["sample"] / "snps_good.bam.bai",
     }
 
-
+def depth_boxplot_input(wildcards):
+    s = METADATA_TABLE.loc[wildcards.sample,]
+    return {
+        "depth": INT_SAMPLES_DIR / "depth_quality" / s["sample"] / "depth_by_windows.tsv",
+        "chroms": INT_REFS_DIR / s["lineage"] / "chromosomes.csv",
+    }
+    
 def depth_by_windows_plots_input(wildcards):
-    s = SAMPLE_REFERENCE.loc[wildcards.sample,]
+    s = METADATA_TABLE.loc[wildcards.sample,]
     return {
         "depth": INT_SAMPLES_DIR / "depth_quality" / s["sample"] / "depth_by_windows.tsv",
         "cnv": SAMPLES_DIR / "cnv" / s["sample"] / "cnv_calls.tsv",
         "repeats": REFS_DIR / s["lineage"] / (s["lineage"] + "_repeats.bed"),
+        "chroms": INT_REFS_DIR / s["lineage"] / "chromosomes.csv",
     }
 
 def depth_vs_cnvs_plots_input(wildcards):
-    s = SAMPLE_REFERENCE.loc[wildcards.sample,]
+    s = METADATA_TABLE.loc[wildcards.sample,]
     return {
         "cnv": SAMPLES_DIR / "cnv" / s["sample"] / "cnv_chromosomes.tsv",
     }
 
 def mapq_plot_input(wildcards):
-    s = SAMPLE_REFERENCE.loc[wildcards.sample,]
+    s = METADATA_TABLE.loc[wildcards.sample,]
     return {
         "mapq": INT_SAMPLES_DIR / "depth_quality" / s["sample"] / "mapq_by_window.bed",
         "cnv": SAMPLES_DIR / "cnv" / s["sample"] / "cnv_calls.tsv",
         "repeats": REFS_DIR / s["lineage"] / (s["lineage"] + "_repeats.bed"),
+        "chroms": INT_REFS_DIR / s["lineage"] / "chromosomes.csv",
+    }
+    
+def depth_distribution_plot_input(wildcards):
+    s = METADATA_TABLE.loc[wildcards.sample,]
+    return {
+        "distrib": INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_distribution.tsv",
+        "chroms": INT_REFS_DIR / s["lineage"] / "chromosomes.csv",
     }
 
-
 def cnv_calling_input(wildcards):
-    s = SAMPLE_REFERENCE.loc[wildcards.sample,]
+    s = METADATA_TABLE.loc[wildcards.sample,]
     return {
         "depth": INT_SAMPLES_DIR / "depth_quality" / s["sample"] / "depth_by_windows.tsv",
         "repeats": REFS_DIR / s["lineage"] / (s["lineage"] + "_repeats.bed"),
         "annotation" : SAMPLES_DIR / "annotation" / s["sample"] / "annotation.gff.tsv",
+        "chrom_length": INT_REFS_DIR / s["lineage"] / "chromosomes.csv",
     }
-
 
 def intersect_vcfs_input(wildcards):
     sample_wildcards = listing_samples(wildcards)
@@ -461,7 +476,7 @@ LINEAGES = listing_lineages
 #   Final output definition functions
 # =================================================================================================
 
-UNFILT_SAMPLES = list(set(UNFILT_SAMPLE_TABLE["sample"]))
+UNFILT_SAMPLES = list(set(METADATA_UNFILTERED["sample"]))
 
 # --Output per sample previous to sample filtering-------------------------------------------------
 def get_unfiltered_output():
