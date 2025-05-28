@@ -29,12 +29,21 @@ else:
     metadata_filtered = metadata
     chromosomes_filtered = chromosomes
 
+print("Counting surviving samples...")
+n_surviving = metadata_filtered.shape[0]
+print(f"Number of surviving samples: {n_surviving}")
+if n_surviving == 0:
+    print("No samples survived the filtering, exiting.")
+    sys.exit(1)
+
 print("Cleaning column names...")
 metadata_filtered.columns = metadata_filtered.columns.str.lower()
 metadata_filtered.columns = metadata_filtered.columns.str.replace(' ', '_')
+
 print("Adding dataset column...")
-metadata_filtered.loc[:, 'dataset'] = "X"
-    
+metadata_filtered = metadata_filtered.copy()
+metadata_filtered.loc[:,'dataset'] = "X"
+
 print("Saving filtered tables...")
 metadata_filtered.to_csv(output_metadata, index=False)
 chromosomes_filtered.to_csv(output_chromosomes, index=False)
