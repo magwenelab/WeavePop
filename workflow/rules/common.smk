@@ -276,7 +276,7 @@ if config["plotting"]["activate"]:
                 print("Exiting...", flush=True)
                 exit(1)
     else:
-        LOCI_FILE = Path(os.path.join(config["project_directory"], "config/loci_empty.txt"))
+        LOCI_FILE = Path(os.path.join(INT_REFS_DIR, "loci_empty.txt"))
         with open(LOCI_FILE, "w") as f:
             f.write("")
     if not config["plotting"]["metadata2color"]:
@@ -411,6 +411,7 @@ def depth_by_windows_plots_input(wildcards):
         "cnv": SAMPLES_DIR / "cnv" / s["sample"] / "cnv_calls.tsv",
         "repeats": REFS_DIR / s["lineage"] / (s["lineage"] + "_repeats.bed"),
         "chroms": INT_REFS_DIR / s["lineage"] / "chromosomes.csv",
+        "loci": INT_REFS_DIR / s["lineage"] / "loci_to_plot.tsv",
     }
 
 def depth_vs_cnvs_plots_input(wildcards):
@@ -426,6 +427,7 @@ def mapq_plot_input(wildcards):
         "cnv": SAMPLES_DIR / "cnv" / s["sample"] / "cnv_calls.tsv",
         "repeats": REFS_DIR / s["lineage"] / (s["lineage"] + "_repeats.bed"),
         "chroms": INT_REFS_DIR / s["lineage"] / "chromosomes.csv",
+        "loci": INT_REFS_DIR / s["lineage"] / "loci_to_plot.tsv",
     }
     
 def depth_distribution_plot_input(wildcards):

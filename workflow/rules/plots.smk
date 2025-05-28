@@ -5,19 +5,19 @@
 
 rule loci:
     input:
-        refs=expand(REFS_DIR / "{lineage}" / "{lineage}.gff.tsv", lineage=LINEAGES),
+        gff=REFS_DIR / "{lineage}" / "{lineage}.gff.tsv", 
         loci=LOCI_FILE,
     output:
-        locitable=INT_REFS_DIR / "loci_to_plot.tsv",
+        locitable=INT_REFS_DIR / "{lineage}" / "loci_to_plot.tsv",
     log:
-        LOGS / "references" / "plots" / "loci.log",
+        LOGS / "references" / "plots" / "loci_{lineage}.log",
     conda:
         "../envs/samtools.yaml"
     shell:
         "xonsh workflow/scripts/loci.xsh "
-        "-g {input.loci} "
+        "-l {input.loci} "
+        "-g {input.gff} "
         "-o {output} "
-        "{input.refs} "
         "&> {log}"
 
 
@@ -62,7 +62,6 @@ rule depth_boxplot:
 rule depth_by_windows_plots:
     input:
         unpack(depth_by_windows_plots_input),
-        loci=rules.loci.output.locitable,
         metadata=METADATA_ORIGINAL_FILE,
     output:
         SAMPLES_DIR / "plots" / "{sample}" / "depth_by_windows.png",
@@ -90,7 +89,6 @@ rule depth_vs_cnvs_plots:
 rule mapq_plots:
     input:
         unpack(mapq_plot_input),
-        loci=rules.loci.output.locitable,
         metadata=METADATA_ORIGINAL_FILE,
     output:
         SAMPLES_DIR / "plots" / "{sample}" / "mapq.png",
