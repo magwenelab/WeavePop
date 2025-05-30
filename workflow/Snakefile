@@ -5,6 +5,7 @@
 from snakemake.utils import min_version
 import sys
 import os
+import re
 
 min_version("8.2.1")
 
@@ -36,23 +37,27 @@ else:
         LOGS = Path("logs")
 
 # =================================================================================================
-#   Save stdout and stderr to log file
+#   Save stdout and stderr to log file if not runninf in SLURM
 # =================================================================================================
 
-os.makedirs(LOGS, exist_ok=True)
-log_file_path = LOGS / "weavepop.log"
+executor = None
+if "slurm-jobstep" in sys.argv or "remote" in sys.argv:
+    executor = "slurm"
 
-if os.path.exists(log_file_path):
-    base, ext = os.path.splitext(log_file_path)
-    counter = 1
-    new_log_file_path = f"{base}_{counter}{ext}"
-    while os.path.exists(new_log_file_path):
-        counter += 1
+if executor != "slurm":
+    os.makedirs(LOGS, exist_ok=True)
+    log_file_path = LOGS / "weavepop.log"
+    if os.path.exists(log_file_path):
+        base, ext = os.path.splitext(log_file_path)
+        counter = 1
         new_log_file_path = f"{base}_{counter}{ext}"
-    log_file_path = new_log_file_path
+        while os.path.exists(new_log_file_path):
+            counter += 1
+            new_log_file_path = f"{base}_{counter}{ext}"
+        log_file_path = new_log_file_path
 
-sys.stdout = open(log_file_path, "a")
-sys.stderr = sys.stdout
+    sys.stdout = open(log_file_path, "a")
+    sys.stderr = sys.stdout
 
 # =================================================================================================
 #   Define names of directories
