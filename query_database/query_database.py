@@ -148,7 +148,14 @@ def list_chromosomes(db):
         """
     df = con.execute(query).fetchdf()
     result_list = df['chromosome'].tolist()
-    result_list.sort(key=lambda x: (float(x) if x is not None else float('inf')))
+    try:
+        result_list = [int(x) for x in result_list]
+    except (ValueError, TypeError):
+        pass
+    if all(isinstance(x, (int, float)) and not isinstance(x, bool) for x in result_list):
+        result_list.sort()
+    else:
+        result_list.sort(key=str)
     result = tuple(result_list)
     con.close()
     return result
