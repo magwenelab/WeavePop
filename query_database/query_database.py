@@ -184,6 +184,19 @@ def list_cnv_types(db):
     con.close()
     return result
 
+def list_copy_number(db):
+    con = duckdb.connect(database=db, read_only=True)
+    query = f"""
+        SELECT DISTINCT cnv
+        FROM cnv_chroms
+        """
+    df = con.execute(query).fetchdf()
+    result_list = df['cnv'].tolist()
+    result_list.insert(0, None)
+    result = tuple(result_list)
+    con.close()
+    return result
+
 def list_descriptions(db):
     con = duckdb.connect(database=db, read_only=True)
     query = f"""
@@ -487,7 +500,7 @@ def seqrecord_to_text(records):
     output.close()
     return fasta_text
 
-def get_cnv(db, dataset = None, lineage=None, sample=None, strain=None, chromosome=None, cnv=None, repeat_fraction=None, start=None, end =None, min_size=None, max_size=None):
+def get_cnv(db, dataset = None, lineage=None, sample=None, strain=None, chromosome=None, cnv=None, repeat_fraction=None, start=None, end=None, min_size=None, max_size=None):
     if (sample and strain) or (sample and lineage) or (strain and lineage):
         raise ValueError("Only one of Sample IDs, Strains or Lineage should be provided.")
     
@@ -624,5 +637,59 @@ def genes(db, gene_name=None, gene_id=None, chromosome=None, start=None, end=Non
     print(query)
     result = con.execute(query).fetchdf()
 
+    con.close()
+    return result
+
+def get_cnv_chroms(db, dataset = None, lineage=None, sample=None, strain=None, chromosome=None, cnv=None, min_coverage=None, max_coverage=None):
+    if (sample and strain) or (sample and lineage) or (strain and lineage):
+        raise ValueError("Only one of Sample IDs, Strains or Lineage should be provided.")
+    
+    con = duckdb.connect(database=db, read_only=True)
+    con = con.execute(f"SET temp_directory = '{cwd}'")
+
+    if not dataset:
+        query_datset = f"""
+            SELECT DISTINCT dataset
+            FROM metadata
+            """
+        dataset_df = con.execute(query_datset).fetchdf()
+        dataset = dataset_df['dataset'].tolist()
+        dataset = tuple(dataset)
+    else:
+        dataset = tuple(dataset)
+        
+    query = f"""
+        SELECT metadata.strain, metadata.sample, metadata.lineage, 
+            cnv_chroms.chromosome, cnv_chroms.accession, cnv_chroms.length,
+            cnv_chroms.cnv, cnv_chroms.n_regions,
+            cnv_chroms.total_size_regions, cnv_chroms.coverage_percent,
+            cnv_chroms.size_smallest_region, cnv_chroms.size_largest_region,
+            cnv_chroms.norm_depth_mean, cnv_chroms.norm_depth_median,
+            cnv_chroms.smooth_depth_mean, cnv_chroms.smooth_depth_median,
+            cnv_chroms.chrom_median, cnv_chroms.genome_median_depth, 
+            cnv_chroms.norm_chrom_median,
+            metadata.dataset
+        FROM cnv_chroms
+        JOIN metadata ON cnv_chroms.sample = metadata.sample
+        WHERE metadata.dataset IN {dataset}
+        """
+    if lineage:
+        query += f"AND metadata.lineage IN {lineage}"
+    if sample:
+        query += f"AND metadata.sample IN {sample}"
+    if strain:
+        query += f"AND metadata.strain IN {strain}"
+    if chromosome:
+        query += f"AND cnv_chroms.chromosome IN {chromosome} "
+    if cnv:
+        query += f"AND cnv_chroms.cnv IN {cnv} "
+    if min_coverage:
+        query += f"AND cnv_chroms.coverage_percent >= {min_coverage} "
+    if max_coverage:
+        query += f"AND cnv_chroms.coverage_percent <= {max_coverage} "
+    
+    print(query)
+    result = con.execute(query).fetchdf()
+    result = result.drop(columns=['dataset'])
     con.close()
     return result

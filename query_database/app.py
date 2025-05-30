@@ -722,7 +722,132 @@ with ui.navset_pill(id="Database"):
                     with io.BytesIO() as buf:
                         df.to_csv(buf, index=False, sep="\t")
                         yield buf.getvalue()
-                                            
+
+    with ui.nav_panel("Chromosome CNV and Depth"):
+        ui.h1("Chromosome CNV and Depth", style="padding-top: 20px;padding-bottom: 20px;")
+        list_datasets = qdb.list_datasets(db = mydb)
+        if len(list_datasets) > 1:
+            with ui.card():
+                ui.input_checkbox_group(
+                    "dataset_cnv_chroms",
+                    "Dataset",
+                    qdb.list_datasets(db = mydb))
+        with ui.layout_columns(col_widths=(6,6), min_height="300px"):
+            with ui.navset_card_pill(): 
+                with ui.nav_panel("Strains"):
+                    @render.ui
+                    def show_strains_cnv_chroms():
+                        if len(list_datasets) > 1:
+                            mydataset = tuple(input.dataset_cnv_chroms())
+                        else:
+                            mydataset = tuple(list_datasets)
+                        return ui.TagList(
+                            ui.input_selectize(
+                                "strain_cnv_chroms",
+                                "Strains",
+                                choices=qdb.list_strains(db = mydb, dataset=mydataset),
+                                multiple=True,
+                                width="100%"))
+                with ui.nav_panel("Sample IDs"):
+                    @render.ui
+                    def show_samples_cnv_chroms():
+                        if len(list_datasets) > 1:
+                            mydataset = tuple(input.dataset_cnv_chroms())
+                        else:
+                            mydataset = tuple(list_datasets)
+                        return ui.TagList(
+                            ui.input_selectize(
+                                "sample_cnv_chroms",
+                                "Sample IDs",
+                                choices=qdb.list_samples(db = mydb, dataset=mydataset),
+                                multiple=True,
+                                width="100%"))
+                with ui.nav_panel("Lineage"):
+                    @render.ui
+                    def show_lineage_cnv_chroms():
+                        if len(list_datasets) > 1:
+                            mydataset = tuple(input.dataset_cnv_chroms())
+                        else:
+                            mydataset = tuple(list_datasets)
+                        return ui.TagList(
+                            ui.input_selectize(
+                                "lineage_cnv_chroms",
+                                "Lineages",
+                                choices=qdb.list_lineages(db = mydb, dataset=mydataset),
+                                multiple=True,
+                                width="100%"))             
+            with ui.card(): 
+                ui.input_selectize(
+                        "cnv_cnv_chroms",
+                        "Copy number",
+                        choices=qdb.list_copy_number(db = mydb),
+                        multiple=True,
+                        width="100%"
+                    )
+                ui.input_selectize(
+                        "chromosomes_cnv_chroms",
+                        "Chromosome",
+                        choices=qdb.list_chromosomes(db = mydb),
+                        multiple=True,
+                        width="100%"
+                    )
+                ui.input_slider(
+                        "coverage_cnv_chroms",
+                        "Percent of coverage",
+                        min = 0,
+                        max = 100,
+                        step = 5,
+                        value = [0, 100],
+                        width="100%",
+                )  
+        with ui.navset_card_pill(): 
+            with ui.nav_panel("Preview table"):
+                ui.input_action_button("preview_cnv_chroms", "Preview")
+                "For large tables only the first 500 rows will be shown."
+                @render.data_frame
+                @reactive.event(input.preview_cnv_chroms)
+                def show_cnv_chroms():
+                    available_input = input.__dict__.get('_map', {}).keys()
+                    d = input.dataset_cnv_chroms() if 'dataset_cnv_chroms' in available_input else None
+                    s = input.sample_cnv_chroms() if 'sample_cnv_chroms' in available_input else None
+                    st = input.strain_cnv_chroms() if 'strain_cnv_chroms' in available_input else None
+                    l = input.lineage_cnv_chroms() if 'lineage_cnv_chroms' in available_input else None
+                    df = qdb.get_cnv_chroms(db=mydb, dataset= d,
+                                     sample= s, strain= st, lineage= l,
+                                     chromosome=input.chromosomes_cnv_chroms(),
+                                     cnv=input.cnv_cnv_chroms(), 
+                                     min_coverage=input.coverage_cnv_chroms()[0],
+                                     max_coverage=input.coverage_cnv_chroms()[1])
+                    if df.shape[0] > 500:
+                        return df.head(500)
+                    else:
+                        return df
+            with ui.nav_panel("Download table"):
+                @render.download(
+                    label="Download",
+                    filename=lambda: f"cnv_chroms-{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.tsv")
+                def down_cnv_chroms():
+                    try:
+                        available_input = input.__dict__.get('_map', {}).keys()
+                        d = input.dataset_cnv_chroms() if 'dataset_cnv_chroms' in available_input else None
+                        s = input.sample_cnv_chroms() if 'sample_cnv_chroms' in available_input else None
+                        st = input.strain_cnv_chroms() if 'strain_cnv_chroms' in available_input else None
+                        l = input.lineage_cnv_chroms() if 'lineage_cnv_chroms' in available_input else None
+                        df = qdb.get_cnv_chroms(db=mydb,dataset= d,
+                            sample= s, strain= st, lineage= l,
+                            chromosome=input.chromosomes_cnv(),
+                            cnv=input.cnv_cnv_chroms(),
+                            min_coverage=input.coverage_cnv_chroms()[0],
+                            max_coverage=input.coverage_cnv_chroms()[1])
+                    except Exception as e:
+                        with io.BytesIO() as buf:
+                            buf.write(f"Error: {e}".encode())
+                            yield buf.getvalue()
+                        return f"Error: {e}"
+                    with io.BytesIO() as buf:
+                        df.to_csv(buf, index=False, sep="\t")
+                        yield buf.getvalue()
+                                                                   
     with ui.nav_panel("Glossary"):
         ui.h1("Glossary", style="padding-top: 20px;padding-bottom: 20px;")
         ui.h3("Common")
