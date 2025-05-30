@@ -72,7 +72,7 @@ with ui.navset_pill(id="Database"):
                 filters=True,
             )
 
-    with ui.nav_panel(" Reference Annotations"):
+    with ui.nav_panel("Reference Annotations"):
         ui.h1(" Reference Genomes’ Annotations", style="padding-top: 20px;padding-bottom: 20px;")
         with ui.layout_columns(col_widths=(6,3,3), min_height="200px"):
             with ui.navset_card_pill():
@@ -575,8 +575,7 @@ with ui.navset_pill(id="Database"):
                     with io.BytesIO() as buf:
                         df.to_csv(buf, index=False, sep="\t")
                         yield buf.getvalue()
-                    
-                
+                                 
     with ui.nav_panel("Copy Number Variants"):
         ui.h1("Copy Number Variants", style="padding-top: 20px;padding-bottom: 20px;")
         list_datasets = qdb.list_datasets(db = mydb)
@@ -723,8 +722,7 @@ with ui.navset_pill(id="Database"):
                     with io.BytesIO() as buf:
                         df.to_csv(buf, index=False, sep="\t")
                         yield buf.getvalue()
-                        
-                        
+                                            
     with ui.nav_panel("Glossary"):
         ui.h1("Glossary", style="padding-top: 20px;padding-bottom: 20px;")
         ui.h3("Common")
@@ -737,6 +735,7 @@ with ui.navset_pill(id="Database"):
             **Gene ID / gene_id**: The unique identifier of the gene.  
             **Location**: Coordinates of a feature (gene features, variants or copy-number variants) in a chromosome.  
             **Chromosome / chromosome**: The chromosome where the feature is located.    
+            **Accession / accession**: The original accession number of the chromosome in the corresponding reference genome.   
             **Start position / start**: The start position of the feature in the chromosome (first position in each chromosome is 1).    
             **End position / end**: The end position of the feature in the chromosome.    
             """

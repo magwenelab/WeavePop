@@ -246,7 +246,7 @@ def effects(db, dataset = None, sample=None, strain=None, gene_name=None, gene_i
     
     query = f"""
         SELECT metadata.dataset, metadata.strain, presence.sample, metadata.lineage,
-            variants.var_id, chromosomes.chromosome,
+            variants.var_id, chromosomes.chromosome, chromosomes.accession,
             variants.pos AS position, variants.ref AS reference, variants.alt AS alternative,
             effects.gene_name, effects.gene_id, effects.transcript_id,
             effects.impact, effects.effect_type, effects.effect,
@@ -499,7 +499,9 @@ def get_cnv(db, dataset = None, lineage=None, sample=None, strain=None, chromoso
         dataset = tuple(dataset)
         
     query = f"""
-        SELECT metadata.strain, metadata.sample, metadata.lineage, chromosomes.chromosome, cnvs.start, cnvs."end",
+        SELECT metadata.strain, metadata.sample, metadata.lineage, 
+            chromosomes.chromosome, chromosomes.accession,
+            cnvs.start, cnvs."end",
             cnvs.region_size, cnvs.cnv, cnvs.depth, cnvs.norm_depth, cnvs.smooth_depth, cnvs.repeat_fraction, cnvs.overlap_bp, cnvs.feature_id,
             metadata.dataset
         FROM cnvs
@@ -574,6 +576,7 @@ def genes(db, gene_name=None, gene_id=None, chromosome=None, start=None, end=Non
     if 'identical_to_main_ref' and 'start_stop_mutations' in columns:
         query = f"""
             SELECT gff.lineage, chromosomes.chromosome,
+                chromosomes.accession,
                 gff.start, gff."end", gff.strand, gff.primary_tag,
                 gff.gene_name, gff.gene_id,
                 gff.feature_id, gff.parent,
@@ -586,6 +589,7 @@ def genes(db, gene_name=None, gene_id=None, chromosome=None, start=None, end=Non
     else:
         query = f"""
             SELECT gff.lineage, chromosomes.chromosome,
+                chromosomes.accession,
                 gff.start, gff."end", gff.strand, gff.primary_tag,
                 gff.gene_name, gff.gene_id,
                 gff.feature_id, gff.parent,
