@@ -63,6 +63,7 @@ annotation:
   liftoff:
     threads: 12
     extra: ""
+    
 # ------------------Depth and quality of genetic features----------------------
 
 depth_quality_features:
