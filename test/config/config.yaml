@@ -38,7 +38,7 @@ annotate_references:
   gff: "VNI.gff" # Filename of the main reference genome GFF file in references_directory.
   liftoff:
     threads: 12 # Number of threads for Liftoff.
-    extra: "-infer_genes" # Extra parameters for Liftoff.
+    extra: "" # Extra parameters for Liftoff.
 
 # ------------------Depth and quality analyses and filter----------------------
 depth_quality: 
