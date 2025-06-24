@@ -169,34 +169,31 @@ elif config["workflow"] == "join_datasets":
 onsuccess:
     print(
         r"""
-                __        __                   ____
-                \ \      / /__  __ ___   _____|  _ \ ___  _ __
-                 \ \ /\ / / _ \/ _` \ \ / / _ \ |_) / _ \| '_ \
-                  \ V  V /  __/ (_| |\ V /  __/  __/ (_) | |_) |
-                   \_/\_/ \___|\__,_| \_/ \___|_|   \___/| .__/
-                                                         |_|
-                """,
-    flush=True,
-)
+                        __        __                   ____
+                        \ \      / /__  __ ___   _____|  _ \ ___  _ __
+                         \ \ /\ / / _ \/ _` \ \ / / _ \ |_) / _ \| '_ \
+                          \ V  V /  __/ (_| |\ V /  __/  __/ (_) | |_) |
+                           \_/\_/ \___|\__,_| \_/ \___|_|   \___/| .__/
+                                                                 |_|
+                        """,
+        flush=True,
+    )
 
 
 if config["workflow"] == "analysis":
     print("The analysis workflow finished successfully!", flush=True)
     original_metadata = METADATA_UNFILTERED
     filtered_metadata = pd.read_csv(rules.quality_filter.output.metadata, header=0)
-    if (
-        original_metadata["sample"].nunique()
-        == filtered_metadata["sample"].nunique()
-    ):
+    if original_metadata["sample"].nunique() == filtered_metadata["sample"].nunique():
         print("No samples were removed.", flush=True)
     else:
         print(
             f"The quality filter removed "
-                f"{original_metadata['sample'].nunique()- filtered_metadata['sample'].nunique()} "
-                f"samples. See 02.Dataset/depth_quality/"
-                f"mapping_stats.tsv to check the quality warning of the removed samples.",
-                flush=True,
-            )
+            f"{original_metadata['sample'].nunique()- filtered_metadata['sample'].nunique()} "
+            f"samples. See 02.Dataset/depth_quality/"
+            f"mapping_stats.tsv to check the quality warning of the removed samples.",
+            flush=True,
+        )
 
     if config["workflow"] == "join_datasets":
         print("The join datasets workflow finished successfully!", flush=True)
@@ -212,13 +209,13 @@ if config["workflow"] == "analysis":
 onerror:
     print(
         r"""
-                __        __                   ____
-                \ \      / /__  __ ___   _____|  _ \ ___  _ __
-                 \ \ /\ / / _ \/ _` \ \ / / _ \ |_) / _ \| '_ \
-                  \ V  V /  __/ (_| |\ V /  __/  __/ (_) | |_) |
-                   \_/\_/ \___|\__,_| \_/ \___|_|   \___/| .__/
-                                                         |_|
-                """,
+                        __        __                   ____
+                        \ \      / /__  __ ___   _____|  _ \ ___  _ __
+                         \ \ /\ / / _ \/ _` \ \ / / _ \ |_) / _ \| '_ \
+                          \ V  V /  __/ (_| |\ V /  __/  __/ (_) | |_) |
+                           \_/\_/ \___|\__,_| \_/ \___|_|   \___/| .__/
+                                                                 |_|
+                        """,
         flush=True,
     )
     print("An error occurred during the workflow execution.", flush=True)
