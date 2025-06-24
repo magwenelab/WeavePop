@@ -2,14 +2,14 @@
 #   Choose which workflow to run
 # =============================================================================
 
-workflow: "join_datasets" # Options: "analysis", "join_datasets"
+workflow: "analysis" # Options: "analysis", "join_datasets"
 
 # =============================================================================
 #   Output (for either workflow)
 # =============================================================================
 
 project_directory: "test" # Optional: Path of the project directory, relative to WeavePop/. If empty, the working directory is used.
-run_id: "joined" # Optional: Suffix to append to the 'results/' and 'logs/' directories. 
+run_id: "" # Optional: Suffix to append to the 'results/' and 'logs/' directories. 
 
 # =============================================================================
 #   Parameters for the analysis workflow
