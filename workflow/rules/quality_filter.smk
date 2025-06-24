@@ -8,7 +8,10 @@ rule bam_good:
         bam=rules.snippy.output.bam,
     output:
         bam_good=INT_SAMPLES_DIR / "depth_quality" / "{unf_sample}" / "snps_good.bam",
-        bai_good=INT_SAMPLES_DIR / "depth_quality" / "{unf_sample}" / "snps_good.bam.bai",
+        bai_good=INT_SAMPLES_DIR
+        / "depth_quality"
+        / "{unf_sample}"
+        / "snps_good.bam.bai",
     params:
         min_mapq=config["depth_quality"]["flag_quality"]["min_mapq"],
     log:
@@ -26,7 +29,10 @@ rule depth_distribution:
     input:
         unpack(depth_distribution_input),
     output:
-        distrib=INT_SAMPLES_DIR / "depth_quality" / "{unf_sample}" / "depth_distribution.tsv",
+        distrib=INT_SAMPLES_DIR
+        / "depth_quality"
+        / "{unf_sample}"
+        / "depth_distribution.tsv",
         summary=INT_SAMPLES_DIR / "depth_quality" / "{unf_sample}" / "depth_summary.tsv",
     log:
         LOGS / "samples" / "depth_quality" / "depth_distribution_{unf_sample}.log",
@@ -90,7 +96,9 @@ rule join_mapping_stats:
     output:
         DATASET_DIR / "depth_quality" / "mapping_stats.tsv",
     params:
-        min_depth=config["depth_quality"]["flag_quality"]["min_percent_genome-wide_depth"],
+        min_depth=config["depth_quality"]["flag_quality"][
+            "min_percent_genome-wide_depth"
+        ],
         min_high_mapq=config["depth_quality"]["flag_quality"]["min_percent_MAPQ"],
         min_pm=config["depth_quality"]["flag_quality"]["min_percent_mapped_reads"],
         min_coverage=config["depth_quality"]["flag_quality"]["min_percent_coverage"],
@@ -103,6 +111,7 @@ rule join_mapping_stats:
     script:
         "../scripts/join_mapping_stats.py"
 
+
 # =================================================================================================
 #   All refernces | Obtain chromosome lengths
 # =================================================================================================
@@ -110,7 +119,7 @@ rule join_mapping_stats:
 
 rule chromosome_lengths:
     input:
-        INT_REFS_DIR / "{unf_lineage}" / "{unf_lineage}.fasta",         
+        INT_REFS_DIR / "{unf_lineage}" / "{unf_lineage}.fasta",
     output:
         INT_REFS_DIR / "{unf_lineage}" / "chromosome_lengths.tsv",
     log:
@@ -126,14 +135,18 @@ rule chromosome_lengths:
         1> {output} 2> {log}
         """
 
+
 rule chromosome_lengths_names:
     input:
         chrom_names=CHROM_NAMES_FILE,
-        chrom_lengths=rules.chromosome_lengths.output,        
+        chrom_lengths=rules.chromosome_lengths.output,
     output:
         INT_REFS_DIR / "{unf_lineage}" / "chromosomes.csv",
     log:
-        LOGS / "references" / "depth_quality" / "{unf_lineage}_chromosome_lengths_names.log",
+        LOGS
+        / "references"
+        / "depth_quality"
+        / "{unf_lineage}_chromosome_lengths_names.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -144,7 +157,10 @@ rule chromosome_lengths_names:
 
 rule join_chromosomes:
     input:
-        chroms=expand(INT_REFS_DIR / "{unf_lineage}" / "chromosomes.csv", unf_lineage=UNF_LINEAGES),
+        chroms=expand(
+            INT_REFS_DIR / "{unf_lineage}" / "chromosomes.csv",
+            unf_lineage=UNF_LINEAGES,
+        ),
     output:
         INT_REFS_DIR / "chromosomes.csv",
     log:
@@ -152,7 +168,8 @@ rule join_chromosomes:
     conda:
         "../envs/pandas.yaml"
     script:
-        "../scripts/join_chromosomes.py"        
+        "../scripts/join_chromosomes.py"
+
 
 # =================================================================================================
 #   Per dataset | Checkpoint to filter out low quality samples
@@ -168,7 +185,7 @@ rule quality_filter:
         chromosomes=DATASET_DIR / "chromosomes.csv",
     params:
         filter=config["depth_quality"]["flag_quality"]["filter"],
-        metadata=METADATA_UNFILTERED
+        metadata=METADATA_UNFILTERED,
     log:
         LOGS / "samples" / "depth_quality" / "quality_filter.log",
     resources:
