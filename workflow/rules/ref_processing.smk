@@ -20,6 +20,7 @@ rule ref_add_intergenic:
         "-c {input.config} "
         "&> {log}"
 
+
 rule ref_add_introns:
     input:
         gff=rules.ref_add_intergenic.output,
@@ -58,6 +59,7 @@ rule ref_gff2tsv:
         "-c {input.config} "
         "-o {output.tsv} "
         "&> {log}"
+
 
 rule ref_add_repeats:
     input:
@@ -115,6 +117,7 @@ rule ref_reformat_annotation:
     script:
         "../scripts/reformat_annotation.py"
 
+
 # =================================================================================================
 #   Per lineage | Extract CDS and protein sequences from reference genomes and convert to CSV
 # =================================================================================================
@@ -141,6 +144,7 @@ rule extract_cds_seqs:
         "-c {input.config} "
         "&> {log}"
 
+
 rule extract_protein_seqs:
     input:
         gff=INT_REFS_DIR / "{lineage}" / "{lineage}_interg_introns.gff",
@@ -164,6 +168,7 @@ rule extract_protein_seqs:
         "-c {input.config} "
         "&> {log}"
 
+
 rule ref_cds2csv:
     input:
         fa=INT_REFS_DIR / "{lineage}" / "{lineage}.cds.fa",
@@ -182,6 +187,7 @@ rule ref_cds2csv:
         "-t DNA "
         "-o {output.csv} "
         "&> {log}"
+
 
 rule ref_prots2csv:
     input:

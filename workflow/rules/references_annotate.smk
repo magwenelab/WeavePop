@@ -159,6 +159,7 @@ rule ref2ref_liftoff:
         "{input.target_refs} {input.fasta} "
         "&> {log}"
 
+
 rule rename_polished:
     input:
         gff=rules.ref2ref_liftoff.output.target_gff,
@@ -171,6 +172,7 @@ rule rename_polished:
     shell:
         "mv {input.gff} {output.gff} "
         "&> {log}"
+
 
 rule refs_unmapped_features:
     input:
@@ -187,6 +189,3 @@ rule refs_unmapped_features:
         LOGS / "references" / "annotation" / "refs_unmapped_features.log",
     script:
         "../scripts/refs_unmapped_features.py"
-
-
-

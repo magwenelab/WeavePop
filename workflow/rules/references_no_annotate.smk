@@ -103,7 +103,3 @@ rule ref_recreate_ids:
         "-og {output.gff} "
         "-ot {output.tsv} "
         "&> {log}"
-
-
-
-

@@ -17,10 +17,13 @@ rule join_ref_annotations:
     script:
         "../scripts/join_ref_annotations.py"
 
+
 rule join_ref_sequences:
     input:
         cds=expand(INT_REFS_DIR / "{lineage}" / "{lineage}.cds.csv", lineage=LINEAGES),
-        prots=expand(INT_REFS_DIR / "{lineage}" / "{lineage}.prots.csv", lineage=LINEAGES),
+        prots=expand(
+            INT_REFS_DIR / "{lineage}" / "{lineage}.prots.csv", lineage=LINEAGES
+        ),
     output:
         sequences=INT_REFS_DIR / "all_refs_sequences.csv",
     log:
@@ -40,8 +43,13 @@ rule join_ref_sequences:
 
 rule join_sequences:
     input:
-        cds=expand(INT_SAMPLES_DIR / "annotation" / "{sample}" / "cds.csv", sample=SAMPLES),
-        prots=expand(INT_SAMPLES_DIR / "annotation" / "{sample}" / "proteins.csv", sample=SAMPLES),
+        cds=expand(
+            INT_SAMPLES_DIR / "annotation" / "{sample}" / "cds.csv", sample=SAMPLES
+        ),
+        prots=expand(
+            INT_SAMPLES_DIR / "annotation" / "{sample}" / "proteins.csv",
+            sample=SAMPLES,
+        ),
     output:
         sequences=INT_DATASET_DIR / "sequences.csv",
     log:
@@ -57,7 +65,8 @@ rule join_sequences:
 rule join_mapq_depth:
     input:
         expand(
-            SAMPLES_DIR / "depth_quality" / "{sample}" / "mapq_depth_by_feature.tsv", sample=SAMPLES
+            SAMPLES_DIR / "depth_quality" / "{sample}" / "mapq_depth_by_feature.tsv",
+            sample=SAMPLES,
         ),
     output:
         DATASET_DIR / "depth_quality" / "mapq_depth_by_feature.tsv",
@@ -97,11 +106,17 @@ rule join_cnv_chromosomes:
 
 rule join_variant_annotation:
     input:
-        effects=expand(INT_DATASET_DIR / "snpeff" / "{lineage}_effects.tsv", lineage=LINEAGES),
-        variants=expand(INT_DATASET_DIR / "snpeff" / "{lineage}_variants.tsv", lineage=LINEAGES),
+        effects=expand(
+            INT_DATASET_DIR / "snpeff" / "{lineage}_effects.tsv", lineage=LINEAGES
+        ),
+        variants=expand(
+            INT_DATASET_DIR / "snpeff" / "{lineage}_variants.tsv", lineage=LINEAGES
+        ),
         lofs=expand(INT_DATASET_DIR / "snpeff" / "{lineage}_lofs.tsv", lineage=LINEAGES),
         nmds=expand(INT_DATASET_DIR / "snpeff" / "{lineage}_nmds.tsv", lineage=LINEAGES),
-        presence=expand(INT_DATASET_DIR / "snpeff" / "{lineage}_presence.tsv", lineage=LINEAGES),
+        presence=expand(
+            INT_DATASET_DIR / "snpeff" / "{lineage}_presence.tsv", lineage=LINEAGES
+        ),
     output:
         effects=DATASET_DIR / "snpeff" / "effects.tsv",
         variants=DATASET_DIR / "snpeff" / "variants.tsv",
@@ -114,6 +129,7 @@ rule join_variant_annotation:
         "../envs/pandas.yaml"
     script:
         "../scripts/join_variant_annotation.py"
+
 
 # =================================================================================================
 #   Dataset | Create final database

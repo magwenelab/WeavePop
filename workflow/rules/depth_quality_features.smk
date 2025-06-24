@@ -31,7 +31,10 @@ rule mapq_depth:
         depthbed=rules.mosdepth.output.bed,
         gff=rules.reformat_annotation.output.gff,
     output:
-        depthmapq=INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "mapq_depth_by_window.bed",
+        depthmapq=INT_SAMPLES_DIR
+        / "depth_quality"
+        / "{sample}"
+        / "mapq_depth_by_window.bed",
         tsv=SAMPLES_DIR / "depth_quality" / "{sample}" / "mapq_depth_by_feature.tsv",
     log:
         LOGS / "samples" / "depth_quality" / "mapq_depth_{sample}.log",

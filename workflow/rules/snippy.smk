@@ -16,7 +16,7 @@ rule ref_fasta_symlinks:
         "../envs/shell.yaml"
     shell:
         "ln -s -r {input} {output} 2> {log}"
-        
+
 
 # Edit the agat config file to avoid creating log files
 rule agat_config:

@@ -13,21 +13,30 @@ import subprocess
 #   Print welcome message
 # =================================================================================================
 
-print(r"""
+print(
+    r"""
     __        __                   ____             
     \ \      / /__  __ ___   _____|  _ \ ___  _ __  
      \ \ /\ / / _ \/ _` \ \ / / _ \ |_) / _ \| '_ \ 
       \ V  V /  __/ (_| |\ V /  __/  __/ (_) | |_) |
        \_/\_/ \___|\__,_| \_/ \___|_|   \___/| .__/ 
                                              |_|    
-    """, flush=True)
+    """,
+    flush=True,
+)
 
 # =================================================================================================
 #   Print commit hash of current version
 # =================================================================================================
 
 try:
-    result = subprocess.run(['sh', '-c', "cat workflow/.head_hash"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
+    result = subprocess.run(
+        ["sh", "-c", "cat workflow/.head_hash"],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+        check=True,
+    )
     head_hash = result.stdout.strip()
     print("Commmit hash of current version:")
     print(f"{head_hash}")
@@ -61,10 +70,15 @@ if "--profile" in sys.argv:
     profile_dir = sys.argv[sys.argv.index("--profile") + 1]
     profile_path = os.path.join(profile_dir, "config.yaml")
     print("", flush=True)
-    print(".........................Execution Profile File:", profile_path, ".........................", flush=True)
+    print(
+        ".........................Execution Profile File:",
+        profile_path,
+        ".........................",
+        flush=True,
+    )
     print("", flush=True)
     if profile_path and os.path.exists(profile_path):
-        with open(profile_path, 'r') as file:
+        with open(profile_path, "r") as file:
             print(file.read(), flush=True)
 
 config_path = None
@@ -73,35 +87,49 @@ if "--configfile" in sys.argv:
 elif "--profile" in sys.argv:
     profile_dir = sys.argv[sys.argv.index("--profile") + 1]
     profile_path = os.path.join(profile_dir, "config.yaml")
-    with open(profile_path, 'r') as file:
+    with open(profile_path, "r") as file:
         for line in file:
             if line.startswith("configfile"):
                 config_path = line.split(":")[1].strip()
                 break
             else:
-                config_path = "config/config.yaml"            
+                config_path = "config/config.yaml"
 else:
     config_path = "config/config.yaml"
 
 print("", flush=True)
-print("............................Configuration File:", config_path, "............................", flush=True)
+print(
+    "............................Configuration File:",
+    config_path,
+    "............................",
+    flush=True,
+)
 print("", flush=True)
 if config_path and os.path.exists(config_path):
-    with open(config_path, 'r') as file:
+    with open(config_path, "r") as file:
         print(file.read(), flush=True)
 
 print("", flush=True)
-print(".......................................Working directory.........................................", flush=True)
+print(
+    ".......................................Working directory.........................................",
+    flush=True,
+)
 print("", flush=True)
 print(os.getcwd(), flush=True)
 print("", flush=True)
-print("........................................Output directory.........................................", flush=True) 
+print(
+    "........................................Output directory.........................................",
+    flush=True,
+)
 print("", flush=True)
-print(os.path.join(os.getcwd(), OUTPUT ), flush=True)
+print(os.path.join(os.getcwd(), OUTPUT), flush=True)
 print("", flush=True)
-print(".........................................Logs directory..........................................", flush=True) 
+print(
+    ".........................................Logs directory..........................................",
+    flush=True,
+)
 print("", flush=True)
-print(os.path.join(os.getcwd(), LOGS ), flush=True)
+print(os.path.join(os.getcwd(), LOGS), flush=True)
 print("", flush=True)
 
 # =================================================================================================
@@ -109,7 +137,10 @@ print("", flush=True)
 # =================================================================================================
 
 # --Validate input paths---------------------------------------------------------------------------
-print("..............................................Input..............................................", flush=True)
+print(
+    "..............................................Input..............................................",
+    flush=True,
+)
 print("", flush=True)
 if not config["references_directory"]:
     print("Directory with reference genomes not provided.", flush=True)
@@ -119,7 +150,9 @@ else:
     if os.path.isabs(config["references_directory"]):
         REF_DATA = Path(config["references_directory"])
     else:
-        REF_DATA = Path(os.path.join(config["project_directory"], config["references_directory"]))
+        REF_DATA = Path(
+            os.path.join(config["project_directory"], config["references_directory"])
+        )
 
 if not config["fastqs_directory"]:
     print("Directory with FASTQ files not provided.", flush=True)
@@ -129,7 +162,9 @@ else:
     if os.path.isabs(config["fastqs_directory"]):
         FQ_DATA = Path(config["fastqs_directory"])
     else:
-        FQ_DATA = Path(os.path.join(config["project_directory"], config["fastqs_directory"]))
+        FQ_DATA = Path(
+            os.path.join(config["project_directory"], config["fastqs_directory"])
+        )
 
 if not config["fastq_suffix1"]:
     print("Suffix for forward reads not provided.", flush=True)
@@ -156,13 +191,18 @@ if os.path.isabs(config["metadata"]):
     METADATA_ORIGINAL_FILE = Path(config["metadata"])
     METADATA_ORIGINAL_FILE = os.path.relpath(METADATA_ORIGINAL_FILE, Path(os.getcwd()))
 else:
-    METADATA_ORIGINAL_FILE = Path(os.path.join(config["project_directory"], config["metadata"]))
+    METADATA_ORIGINAL_FILE = Path(
+        os.path.join(config["project_directory"], config["metadata"])
+    )
 
 if os.path.exists(METADATA_ORIGINAL_FILE):
     print(f"Validating metadata file {METADATA_ORIGINAL_FILE}...", flush=True)
     METADATA_ORIGINAL = pd.read_csv(METADATA_ORIGINAL_FILE, sep=",", header=0)
     validate(METADATA_ORIGINAL, schema="../schemas/metadata.schema.yaml")
-    print(f"    Number of samples in the metadata file: {METADATA_ORIGINAL.shape[0]}", flush=True)
+    print(
+        f"    Number of samples in the metadata file: {METADATA_ORIGINAL.shape[0]}",
+        flush=True,
+    )
     if METADATA_ORIGINAL.shape[0] == 0:
         print("Metadata file is empty.", flush=True)
         print("Exiting...", flush=True)
@@ -179,19 +219,33 @@ if config["samples_to_exclude"]:
         EXCLUDE_FILE = Path(config["samples_to_exclude"])
         EXCLUDE_FILE = os.path.relpath(EXCLUDE_FILE, Path(os.getcwd()))
     else:
-        EXCLUDE_FILE = Path(os.path.join(config["project_directory"], config["samples_to_exclude"]))    
+        EXCLUDE_FILE = Path(
+            os.path.join(config["project_directory"], config["samples_to_exclude"])
+        )
     if os.path.exists(EXCLUDE_FILE):
-        print(f"Excluding samples in the file {EXCLUDE_FILE} from the analysis...", flush=True)
-        EXCLUDE_SAMPLES = set(list(pd.read_csv(EXCLUDE_FILE, header=None, names=["sample"])["sample"]))
-        METADATA_UNFILTERED = METADATA_ORIGINAL[~METADATA_ORIGINAL["sample"].isin(EXCLUDE_SAMPLES)]
-        print(f"    Number of samples to analyze: {METADATA_UNFILTERED.shape[0]}", flush=True)
+        print(
+            f"Excluding samples in the file {EXCLUDE_FILE} from the analysis...",
+            flush=True,
+        )
+        EXCLUDE_SAMPLES = set(
+            list(pd.read_csv(EXCLUDE_FILE, header=None, names=["sample"])["sample"])
+        )
+        METADATA_UNFILTERED = METADATA_ORIGINAL[
+            ~METADATA_ORIGINAL["sample"].isin(EXCLUDE_SAMPLES)
+        ]
+        print(
+            f"    Number of samples to analyze: {METADATA_UNFILTERED.shape[0]}",
+            flush=True,
+        )
     else:
         print(f"File {EXCLUDE_FILE} not found.", flush=True)
         print("Exiting...", flush=True)
         exit(1)
 else:
     METADATA_UNFILTERED = METADATA_ORIGINAL
-    print(f"    Number of samples to analyze: {METADATA_UNFILTERED.shape[0]}", flush=True)
+    print(
+        f"    Number of samples to analyze: {METADATA_UNFILTERED.shape[0]}", flush=True
+    )
 
 # --Validate chromosome names file--------------------------------------------------------------------
 
@@ -206,21 +260,31 @@ if os.path.isabs(config["chromosomes"]):
     CHROM_NAMES_FILE = Path(config["chromosomes"])
     CHROM_NAMES_FILE = os.path.relpath(CHROM_NAMES_FILE, Path(os.getcwd()))
 else:
-    CHROM_NAMES_FILE = Path(os.path.join(config["project_directory"], config["chromosomes"]))
+    CHROM_NAMES_FILE = Path(
+        os.path.join(config["project_directory"], config["chromosomes"])
+    )
 
 if os.path.exists(CHROM_NAMES_FILE):
     print(f"Validating chromosome names file {CHROM_NAMES_FILE}...", flush=True)
-    CHROM_NAMES_TABLE = pd.read_csv(CHROM_NAMES_FILE, header=0, dtype={"chromosome": "string"})
+    CHROM_NAMES_TABLE = pd.read_csv(
+        CHROM_NAMES_FILE, header=0, dtype={"chromosome": "string"}
+    )
     validate(CHROM_NAMES_TABLE, schema="../schemas/chromosomes.schema.yaml")
 else:
     print(f"Chromosome names file {CHROM_NAMES_FILE} not found.", flush=True)
     print("Exiting...", flush=True)
     exit(1)
 
-if all(item in CHROM_NAMES_TABLE["lineage"].unique() for item in METADATA_UNFILTERED["lineage"].unique()):
+if all(
+    item in CHROM_NAMES_TABLE["lineage"].unique()
+    for item in METADATA_UNFILTERED["lineage"].unique()
+):
     print("    All lineages are in the chromosome names file.", flush=True)
 else:
-    print("Not all lineages from the metadata table are present in the chromosomes file.", flush=True)
+    print(
+        "Not all lineages from the metadata table are present in the chromosomes file.",
+        flush=True,
+    )
     print("Exiting...", flush=True)
     exit(1)
 
@@ -228,7 +292,9 @@ UNF_LINEAGES = METADATA_UNFILTERED["lineage"].unique()
 
 for lineage in UNF_LINEAGES:
     print(f"Checking the chromosome names of lineage {lineage}...", flush=True)
-    accessions = CHROM_NAMES_TABLE[CHROM_NAMES_TABLE["lineage"] == lineage]["accession"].tolist()
+    accessions = CHROM_NAMES_TABLE[CHROM_NAMES_TABLE["lineage"] == lineage][
+        "accession"
+    ].tolist()
     ref_file = REF_DATA / f"{lineage}.fasta"
     if ref_file.exists():
         with open(ref_file) as f:
@@ -237,18 +303,30 @@ for lineage in UNF_LINEAGES:
             ]
 
             if not all([acc in seq_ids for acc in accessions]):
-                print(f"Not all chromosomes in provided file are present in {ref_file}.", flush=True)
+                print(
+                    f"Not all chromosomes in provided file are present in {ref_file}.",
+                    flush=True,
+                )
                 print("Exiting...", flush=True)
                 exit(1)
             else:
-                print(f"    All chromosomes in provided file are present in {ref_file}.", flush=True)
-                                
+                print(
+                    f"    All chromosomes in provided file are present in {ref_file}.",
+                    flush=True,
+                )
+
             if not all([seq_id in accessions for seq_id in seq_ids]):
-                print(f"Not all chromosomes in {ref_file} are present in the provided file.", flush=True)
+                print(
+                    f"Not all chromosomes in {ref_file} are present in the provided file.",
+                    flush=True,
+                )
                 print("Exiting...", flush=True)
                 exit(1)
             else:
-                print(f"    All chromosomes in {ref_file} are present in the provided file.", flush=True)
+                print(
+                    f"    All chromosomes in {ref_file} are present in the provided file.",
+                    flush=True,
+                )
 
     else:
         print(f"Reference {ref_file} not found.", flush=True)
@@ -264,7 +342,9 @@ if config["plotting"]["activate"]:
             LOCI_FILE = Path(config["plotting"]["loci"])
             LOCI_FILE = os.path.relpath(LOCI_FILE, Path(os.getcwd()))
         else:
-            LOCI_FILE = Path(os.path.join(config["project_directory"], config["plotting"]["loci"]))
+            LOCI_FILE = Path(
+                os.path.join(config["project_directory"], config["plotting"]["loci"])
+            )
             if os.path.exists(LOCI_FILE):
                 print("", flush=True)
                 print("Validating provided file of loci to plot...", flush=True)
@@ -280,35 +360,53 @@ if config["plotting"]["activate"]:
         with open(LOCI_FILE, "w") as f:
             f.write("")
     if not config["plotting"]["metadata2color"]:
-        print("The plotting module is activated but the parameter metadata2color is not provided.", flush=True)
+        print(
+            "The plotting module is activated but the parameter metadata2color is not provided.",
+            flush=True,
+        )
         print("Exiting...", flush=True)
         exit(1)
     elif config["plotting"]["metadata2color"] not in METADATA_ORIGINAL.columns:
-        print(f"Column {config['plotting']['metadata2color']} from the parameter metadata2color is not found in the metadata table.", flush=True)
+        print(
+            f"Column {config['plotting']['metadata2color']} from the parameter metadata2color is not found in the metadata table.",
+            flush=True,
+        )
         print("Exiting...", flush=True)
         exit(1)
 
 # --Validate repeats file--------------------------------------------------------------------------
 
-if config["cnv"]["activate"] or config["plotting"]["activate"] or config["database"]["activate"]:
+if (
+    config["cnv"]["activate"]
+    or config["plotting"]["activate"]
+    or config["database"]["activate"]
+):
     if config["repeats_database"]:
         if os.path.isabs(config["repeats_database"]):
             REPEATS_FILE = Path(config["repeats_database"])
             REPEATS_FILE = os.path.relpath(REPEATS_FILE, Path(os.getcwd()))
         else:
-            REPEATS_FILE = Path(os.path.join(config["project_directory"], config["repeats_database"]))
+            REPEATS_FILE = Path(
+                os.path.join(config["project_directory"], config["repeats_database"])
+            )
         if not os.path.exists(REPEATS_FILE):
-            print(f"Database of repetitive sequences file {REPEATS_FILE} not found.", flush=True)
+            print(
+                f"Database of repetitive sequences file {REPEATS_FILE} not found.",
+                flush=True,
+            )
             print("Exiting...", flush=True)
             exit(1)
         else:
             print("", flush=True)
-            print(f"Database of repetitive sequences file {REPEATS_FILE} found.", flush=True)
+            print(
+                f"Database of repetitive sequences file {REPEATS_FILE} found.",
+                flush=True,
+            )
     else:
         print("", flush=True)
         print("Database of repetitive sequences not provided.", flush=True)
         if config["use_fake_database"]:
-            REPEATS_FILE = Path(os.path.join(INT_REFS_DIR , "fake_repeats.fasta"))
+            REPEATS_FILE = Path(os.path.join(INT_REFS_DIR, "fake_repeats.fasta"))
             REPEATS_FILE.parent.mkdir(parents=True, exist_ok=True)
             with open(REPEATS_FILE, "w") as f:
                 f.write(">fake\naaaaaaaaaaaaaa\n")
@@ -319,7 +417,10 @@ if config["cnv"]["activate"] or config["plotting"]["activate"] or config["databa
             exit(1)
 
 print("", flush=True)
-print(".........................................Starting Workflow.........................................", flush=True)
+print(
+    ".........................................Starting Workflow.........................................",
+    flush=True,
+)
 print("", flush=True)
 
 # =================================================================================================
@@ -332,11 +433,11 @@ if config["annotate_references"]["activate"]:
         print("Exiting...", flush=True)
         exit(1)
     else:
-       MAIN_FASTA = REF_DATA / config["annotate_references"]["fasta"]
-       if not MAIN_FASTA.exists():
-           print(f"Genome file of main reference {MAIN_FASTA} not found.", flush=True)
-           print("Exiting...", flush=True)
-           exit(1)
+        MAIN_FASTA = REF_DATA / config["annotate_references"]["fasta"]
+        if not MAIN_FASTA.exists():
+            print(f"Genome file of main reference {MAIN_FASTA} not found.", flush=True)
+            print("Exiting...", flush=True)
+            exit(1)
     if not config["annotate_references"]["gff"]:
         print("GFF file of main reference not provided.", flush=True)
         print("Exiting...", flush=True)
@@ -358,7 +459,8 @@ d = {
     "refgenome": INT_REFS_DIR
     / METADATA_UNFILTERED["lineage"]
     / (METADATA_UNFILTERED["lineage"] + ".fasta"),
-    "refgff": INT_REFS_DIR / METADATA_UNFILTERED["lineage"] 
+    "refgff": INT_REFS_DIR
+    / METADATA_UNFILTERED["lineage"]
     / (METADATA_UNFILTERED["lineage"] + "_interg_introns.gff"),
 }
 
@@ -394,31 +496,44 @@ def depth_distribution_input(wildcards):
         "bam": SAMPLES_DIR / "snippy" / s["sample"] / "snps.bam",
         "bai": SAMPLES_DIR / "snippy" / s["sample"] / "snps.bam.bai",
         "bam_good": INT_SAMPLES_DIR / "depth_quality" / s["sample"] / "snps_good.bam",
-        "bai_good": INT_SAMPLES_DIR / "depth_quality" / s["sample"] / "snps_good.bam.bai",
+        "bai_good": INT_SAMPLES_DIR
+        / "depth_quality"
+        / s["sample"]
+        / "snps_good.bam.bai",
     }
+
 
 def depth_boxplot_input(wildcards):
     s = METADATA_TABLE.loc[wildcards.sample,]
     return {
-        "depth": INT_SAMPLES_DIR / "depth_quality" / s["sample"] / "depth_by_windows.tsv",
+        "depth": INT_SAMPLES_DIR
+        / "depth_quality"
+        / s["sample"]
+        / "depth_by_windows.tsv",
         "chroms": INT_REFS_DIR / s["lineage"] / "chromosomes.csv",
     }
-    
+
+
 def depth_by_windows_plots_input(wildcards):
     s = METADATA_TABLE.loc[wildcards.sample,]
     return {
-        "depth": INT_SAMPLES_DIR / "depth_quality" / s["sample"] / "depth_by_windows.tsv",
+        "depth": INT_SAMPLES_DIR
+        / "depth_quality"
+        / s["sample"]
+        / "depth_by_windows.tsv",
         "cnv": SAMPLES_DIR / "cnv" / s["sample"] / "cnv_calls.tsv",
         "repeats": REFS_DIR / s["lineage"] / (s["lineage"] + "_repeats.bed"),
         "chroms": INT_REFS_DIR / s["lineage"] / "chromosomes.csv",
         "loci": INT_REFS_DIR / s["lineage"] / "loci_to_plot.tsv",
     }
 
+
 def depth_vs_cnvs_plots_input(wildcards):
     s = METADATA_TABLE.loc[wildcards.sample,]
     return {
         "cnv": SAMPLES_DIR / "cnv" / s["sample"] / "cnv_chromosomes.tsv",
     }
+
 
 def mapq_plot_input(wildcards):
     s = METADATA_TABLE.loc[wildcards.sample,]
@@ -429,48 +544,68 @@ def mapq_plot_input(wildcards):
         "chroms": INT_REFS_DIR / s["lineage"] / "chromosomes.csv",
         "loci": INT_REFS_DIR / s["lineage"] / "loci_to_plot.tsv",
     }
-    
+
+
 def depth_distribution_plot_input(wildcards):
     s = METADATA_TABLE.loc[wildcards.sample,]
     return {
-        "distrib": INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_distribution.tsv",
+        "distrib": INT_SAMPLES_DIR
+        / "depth_quality"
+        / "{sample}"
+        / "depth_distribution.tsv",
         "chroms": INT_REFS_DIR / s["lineage"] / "chromosomes.csv",
     }
+
 
 def cnv_calling_input(wildcards):
     s = METADATA_TABLE.loc[wildcards.sample,]
     return {
-        "depth": INT_SAMPLES_DIR / "depth_quality" / s["sample"] / "depth_by_windows.tsv",
+        "depth": INT_SAMPLES_DIR
+        / "depth_quality"
+        / s["sample"]
+        / "depth_by_windows.tsv",
         "repeats": REFS_DIR / s["lineage"] / (s["lineage"] + "_repeats.bed"),
-        "annotation" : SAMPLES_DIR / "annotation" / s["sample"] / "annotation.gff.tsv",
+        "annotation": SAMPLES_DIR / "annotation" / s["sample"] / "annotation.gff.tsv",
         "chrom_length": INT_REFS_DIR / s["lineage"] / "chromosomes.csv",
     }
+
 
 def intersect_vcfs_input(wildcards):
     sample_wildcards = listing_samples(wildcards)
     l = LINEAGE_REFERENCE[LINEAGE_REFERENCE["sample"].isin(sample_wildcards)]
     l = l.loc[wildcards.lineage,]
-    return {"vcfs": expand(SAMPLES_DIR / "snippy" / "{sample}" / "snps.vcf.gz", sample=l["sample"])}
+    return {
+        "vcfs": expand(
+            SAMPLES_DIR / "snippy" / "{sample}" / "snps.vcf.gz", sample=l["sample"]
+        )
+    }
 
 
 # =================================================================================================
 #   Checkpoint functions
 # =================================================================================================
 
+
 def listing_samples(wildcards):
     checkpoint_output = checkpoints.filter_wildcards.get(**wildcards).output[0]
     return expand(
-        "{sample}", sample=glob_wildcards(os.path.join(checkpoint_output, "{sample}.txt")).sample
+        "{sample}",
+        sample=glob_wildcards(os.path.join(checkpoint_output, "{sample}.txt")).sample,
     )
 
+
 SAMPLES = listing_samples
+
 
 def listing_lineages(wildcards):
     checkpoint_output = checkpoints.filter_wildcards.get(**wildcards).output[1]
     return expand(
         "{lineage}",
-        lineage=glob_wildcards(os.path.join(checkpoint_output, "{lineage}.txt")).lineage,
+        lineage=glob_wildcards(
+            os.path.join(checkpoint_output, "{lineage}.txt")
+        ).lineage,
     )
+
 
 LINEAGES = listing_lineages
 
@@ -480,23 +615,40 @@ LINEAGES = listing_lineages
 
 UNFILT_SAMPLES = list(set(METADATA_UNFILTERED["sample"]))
 
+
 # --Output per sample previous to sample filtering-------------------------------------------------
 def get_unfiltered_output():
     final_output = expand(
-        SAMPLES_DIR / "snippy" / "{unf_sample}" / "snps.consensus.fa", unf_sample=UNFILT_SAMPLES
+        SAMPLES_DIR / "snippy" / "{unf_sample}" / "snps.consensus.fa",
+        unf_sample=UNFILT_SAMPLES,
     )
     final_output.extend(
-        expand(SAMPLES_DIR / "snippy" / "{unf_sample}" / "snps.bam", unf_sample=UNFILT_SAMPLES)
+        expand(
+            SAMPLES_DIR / "snippy" / "{unf_sample}" / "snps.bam",
+            unf_sample=UNFILT_SAMPLES,
+        )
     )
     final_output.extend(
-        expand(SAMPLES_DIR / "snippy" / "{unf_sample}" / "snps.vcf.gz", unf_sample=UNFILT_SAMPLES)
+        expand(
+            SAMPLES_DIR / "snippy" / "{unf_sample}" / "snps.vcf.gz",
+            unf_sample=UNFILT_SAMPLES,
+        )
     )
     if config["plotting"]["activate"]:
         final_output.extend(
-            expand(SAMPLES_DIR / "plots" / "{unf_sample}" / "depth_chrom_distribution.png", unf_sample=UNFILT_SAMPLES)
+            expand(
+                SAMPLES_DIR / "plots" / "{unf_sample}" / "depth_chrom_distribution.png",
+                unf_sample=UNFILT_SAMPLES,
+            )
         )
         final_output.extend(
-            expand(SAMPLES_DIR / "plots" / "{unf_sample}" / "depth_global_distribution.png", unf_sample=UNFILT_SAMPLES)
+            expand(
+                SAMPLES_DIR
+                / "plots"
+                / "{unf_sample}"
+                / "depth_global_distribution.png",
+                unf_sample=UNFILT_SAMPLES,
+            )
         )
 
     return final_output
@@ -524,7 +676,8 @@ def get_filtered_output():
     if config["plotting"]["activate"]:
         if config["cnv"]["activate"] or config["database"]["activate"]:
             final_output = final_output, expand(
-                SAMPLES_DIR / "plots" / "{sample}" / "depth_by_windows.png", sample=SAMPLES
+                SAMPLES_DIR / "plots" / "{sample}" / "depth_by_windows.png",
+                sample=SAMPLES,
             )
             final_output = final_output, expand(
                 SAMPLES_DIR / "plots" / "{sample}" / "depth_boxplot.png", sample=SAMPLES
@@ -547,7 +700,7 @@ def get_dataset_output():
     if config["annotate_references"]["activate"]:
         final_output.append(REFS_DIR / "refs_unmapped_features.tsv")
     if config["depth_quality_features"]["activate"]:
-        final_output.append(DATASET_DIR / "depth_quality" / "mapq_depth_by_feature.tsv")        
+        final_output.append(DATASET_DIR / "depth_quality" / "mapq_depth_by_feature.tsv")
     if config["snpeff"]["activate"]:
         final_output.append(DATASET_DIR / "snpeff" / "effects.tsv")
     if config["cnv"]["activate"]:
