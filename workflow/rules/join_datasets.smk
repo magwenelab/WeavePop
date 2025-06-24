@@ -22,7 +22,9 @@ rule join_metadata:
 
 rule join_chromosomes:
     input:
-        expand(os.path.join("{dir}", DATASET_DIR_NAME, "chromosomes.csv"), dir=LIST_PATHS),
+        expand(
+            os.path.join("{dir}", DATASET_DIR_NAME, "chromosomes.csv"), dir=LIST_PATHS
+        ),
     output:
         DATASET_DIR / "chromosomes.csv",
     log:
@@ -38,6 +40,7 @@ rule join_chromosomes:
 # =================================================================================================
 #   Get names of lineages in combined datasets
 # =================================================================================================
+
 
 checkpoint get_lineages:
     input:
@@ -86,7 +89,8 @@ rule join_cnv:
         "../envs/pandas.yaml"
     script:
         "../scripts/join_tables.py"
-    
+
+
 rule join_cnv_chromosomes:
     input:
         input_join_cnv_chrom,
@@ -147,6 +151,7 @@ rule join_ref_sequences:
     script:
         "../scripts/join_ref_sequences.py"
 
+
 # =================================================================================================
 #   Redo intersection of VCFs and variant annotation
 # =================================================================================================
@@ -176,7 +181,9 @@ rule copy_snpeff_config:
     input:
         data=rules.copy_snpeff_data.output,
         config=expand(
-            os.path.join("{dir}", INTDIR_NAME, REFS_DIR_NAME, "snpeff_data", "snpEff.config"),
+            os.path.join(
+                "{dir}", INTDIR_NAME, REFS_DIR_NAME, "snpeff_data", "snpEff.config"
+            ),
             dir=LIST_PATHS,
         ),
     output:
@@ -286,11 +293,17 @@ rule extract_vcf_annotation:
 
 rule join_variant_annotation:
     input:
-        effects=expand(INT_DATASET_DIR / "snpeff" / "{lineage}_effects.tsv", lineage=LINEAGES),
-        variants=expand(INT_DATASET_DIR / "snpeff" / "{lineage}_variants.tsv", lineage=LINEAGES),
+        effects=expand(
+            INT_DATASET_DIR / "snpeff" / "{lineage}_effects.tsv", lineage=LINEAGES
+        ),
+        variants=expand(
+            INT_DATASET_DIR / "snpeff" / "{lineage}_variants.tsv", lineage=LINEAGES
+        ),
         lofs=expand(INT_DATASET_DIR / "snpeff" / "{lineage}_lofs.tsv", lineage=LINEAGES),
         nmds=expand(INT_DATASET_DIR / "snpeff" / "{lineage}_nmds.tsv", lineage=LINEAGES),
-        presence=expand(INT_DATASET_DIR / "snpeff" / "{lineage}_presence.tsv", lineage=LINEAGES),
+        presence=expand(
+            INT_DATASET_DIR / "snpeff" / "{lineage}_presence.tsv", lineage=LINEAGES
+        ),
     output:
         effects=DATASET_DIR / "snpeff" / "effects.tsv",
         variants=DATASET_DIR / "snpeff" / "variants.tsv",
@@ -306,7 +319,7 @@ rule join_variant_annotation:
     script:
         "../scripts/join_variant_annotation.py"
 
-        
+
 # =================================================================================================
 #   Create final database
 # =================================================================================================

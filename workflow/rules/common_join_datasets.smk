@@ -12,21 +12,30 @@ import subprocess
 #   Print welcome message
 # =================================================================================================
 
-print(r"""
+print(
+    r"""
     __        __                   ____             
     \ \      / /__  __ ___   _____|  _ \ ___  _ __  
      \ \ /\ / / _ \/ _` \ \ / / _ \ |_) / _ \| '_ \ 
       \ V  V /  __/ (_| |\ V /  __/  __/ (_) | |_) |
        \_/\_/ \___|\__,_| \_/ \___|_|   \___/| .__/ 
                                              |_|    
-    """, flush=True)
+    """,
+    flush=True,
+)
 
 # =================================================================================================
 #   Print commit hash of current version
 # =================================================================================================
 
 try:
-    result = subprocess.run(['sh', '-c', "cat workflow/.head_hash"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=True)
+    result = subprocess.run(
+        ["sh", "-c", "cat workflow/.head_hash"],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+        check=True,
+    )
     head_hash = result.stdout.strip()
     print("Commmit hash of current version:")
     print(f"{head_hash}")
@@ -47,10 +56,15 @@ if "--profile" in sys.argv:
     profile_dir = sys.argv[sys.argv.index("--profile") + 1]
     profile_path = os.path.join(profile_dir, "config.yaml")
     print("", flush=True)
-    print(".........................Execution Profile File:", profile_path, ".........................", flush=True)
+    print(
+        ".........................Execution Profile File:",
+        profile_path,
+        ".........................",
+        flush=True,
+    )
     print("", flush=True)
     if profile_path and os.path.exists(profile_path):
-        with open(profile_path, 'r') as file:
+        with open(profile_path, "r") as file:
             print(file.read(), flush=True)
 
 config_path = None
@@ -59,33 +73,47 @@ if "--configfile" in sys.argv:
 elif "--profile" in sys.argv:
     profile_dir = sys.argv[sys.argv.index("--profile") + 1]
     profile_path = os.path.join(profile_dir, "config.yaml")
-    with open(profile_path, 'r') as file:
+    with open(profile_path, "r") as file:
         for line in file:
             if line.startswith("configfile"):
                 config_path = line.split(":")[1].strip()
                 break
             else:
-                config_path = "config/config.yaml"            
+                config_path = "config/config.yaml"
 else:
     config_path = "config/config.yaml"
 
 print("", flush=True)
-print("............................Configuration File:", config_path, "............................", flush=True)
+print(
+    "............................Configuration File:",
+    config_path,
+    "............................",
+    flush=True,
+)
 print("", flush=True)
 if config_path and os.path.exists(config_path):
-    with open(config_path, 'r') as file:
+    with open(config_path, "r") as file:
         print(file.read(), flush=True)
 
 print("", flush=True)
-print(".......................................Working directory.........................................", flush=True)
+print(
+    ".......................................Working directory.........................................",
+    flush=True,
+)
 print("", flush=True)
 print(os.getcwd(), flush=True)
 print("", flush=True)
-print("........................................Output directory.........................................", flush=True) 
+print(
+    "........................................Output directory.........................................",
+    flush=True,
+)
 print("", flush=True)
 print(os.path.join(os.getcwd(), OUTPUT), flush=True)
 print("", flush=True)
-print(".........................................Logs directory..........................................", flush=True) 
+print(
+    ".........................................Logs directory..........................................",
+    flush=True,
+)
 print("", flush=True)
 print(os.path.join(os.getcwd(), LOGS), flush=True)
 print("", flush=True)
@@ -109,12 +137,18 @@ LIST_PATHS = [Path(dir) for dir in INPUT_PATHS]
 #   Validate input files
 # =================================================================================================
 
-print("..............................................Input..............................................", flush=True)
+print(
+    "..............................................Input..............................................",
+    flush=True,
+)
 print("                                   ", flush=True)
 
 if OUTPUT in LIST_PATHS:
     print("", flush=True)
-    print("Output directory is the same as an input directory. Try adding a run_id.", flush=True)
+    print(
+        "Output directory is the same as an input directory. Try adding a run_id.",
+        flush=True,
+    )
     print("Exiting...", flush=True)
     exit(1)
 
@@ -130,23 +164,35 @@ for dir in LIST_PATHS:
         print(f"Metadata file: {os.path.join(dir, DATASET_DIR_NAME, 'metadata.csv')}")
     else:
         print("", flush=True)
-        print(f"File {os.path.join(dir, DATASET_DIR_NAME, 'metadata.csv')} not found", flush=True)
+        print(
+            f"File {os.path.join(dir, DATASET_DIR_NAME, 'metadata.csv')} not found",
+            flush=True,
+        )
         print("Exiting...", flush=True)
         exit(1)
     if os.path.exists(os.path.join(dir, DATASET_DIR_NAME, "chromosomes.csv")):
-        print(f"Chromosomes file: {os.path.join(dir, DATASET_DIR_NAME, 'chromosomes.csv')}")
+        print(
+            f"Chromosomes file: {os.path.join(dir, DATASET_DIR_NAME, 'chromosomes.csv')}"
+        )
     else:
         print("", flush=True)
-        print(f"File {os.path.join(dir, DATASET_DIR_NAME, 'chromosomes.csv')} not found", flush=True)
+        print(
+            f"File {os.path.join(dir, DATASET_DIR_NAME, 'chromosomes.csv')} not found",
+            flush=True,
+        )
         print("Exiting...", flush=True)
         exit(1)
 print("", flush=True)
-print(".........................................Starting Workflow.........................................", flush=True)
+print(
+    ".........................................Starting Workflow.........................................",
+    flush=True,
+)
 print("", flush=True)
 
 # =================================================================================================
 #   Input functions for rules
 # =================================================================================================
+
 
 def input_joining(wildcards):
     paths_cnv = []
@@ -160,11 +206,19 @@ def input_joining(wildcards):
         samps = samps_dir_df["sample"]
         for samp in samps:
             cnv = os.path.join(dir, SAMPLES_DIR_NAME, "cnv", samp, "cnv_calls.tsv")
-            cnv_chrom = os.path.join(dir, SAMPLES_DIR_NAME, "cnv", samp, "cnv_chromosomes.tsv")
-            mapq_depth = os.path.join(
-                dir, SAMPLES_DIR_NAME, "depth_quality", samp, "mapq_depth_by_feature.tsv"
+            cnv_chrom = os.path.join(
+                dir, SAMPLES_DIR_NAME, "cnv", samp, "cnv_chromosomes.tsv"
             )
-            cds = os.path.join(dir, INTDIR_NAME, SAMPLES_DIR_NAME, "annotation", samp, "cds.csv")
+            mapq_depth = os.path.join(
+                dir,
+                SAMPLES_DIR_NAME,
+                "depth_quality",
+                samp,
+                "mapq_depth_by_feature.tsv",
+            )
+            cds = os.path.join(
+                dir, INTDIR_NAME, SAMPLES_DIR_NAME, "annotation", samp, "cds.csv"
+            )
             prots = os.path.join(
                 dir, INTDIR_NAME, SAMPLES_DIR_NAME, "annotation", samp, "proteins.csv"
             )
@@ -184,6 +238,7 @@ def input_joining(wildcards):
 
 def input_join_cnv(wildcards):
     return input_joining(wildcards)["cnv"]
+
 
 def input_join_cnv_chrom(wildcards):
     return input_joining(wildcards)["cnv_chrom"]
@@ -212,6 +267,7 @@ def input_join_ref_annotations(wildcards):
             paths.append(gff)
     return paths
 
+
 def input_join_ref_sequences(wildcards):
     paths_cds = []
     paths_prots = []
@@ -220,8 +276,12 @@ def input_join_ref_sequences(wildcards):
         lineages_dir_df = pd.read_csv(metadata, header=0)
         lineages = set(lineages_dir_df["lineage"])
         for lineage in lineages:
-            cds = os.path.join(dir, INTDIR_NAME, REFS_DIR_NAME, lineage, f"{lineage}.cds.csv")
-            prots = os.path.join(dir, INTDIR_NAME, REFS_DIR_NAME, lineage, f"{lineage}.prots.csv")
+            cds = os.path.join(
+                dir, INTDIR_NAME, REFS_DIR_NAME, lineage, f"{lineage}.cds.csv"
+            )
+            prots = os.path.join(
+                dir, INTDIR_NAME, REFS_DIR_NAME, lineage, f"{lineage}.prots.csv"
+            )
             paths_cds.append(cds)
             paths_prots.append(prots)
     return {
@@ -229,11 +289,14 @@ def input_join_ref_sequences(wildcards):
         "prots": paths_prots,
     }
 
+
 def input_join_ref_cds(wildcards):
     return input_join_ref_sequences(wildcards)["cds"]
-    
+
+
 def input_join_ref_prots(wildcards):
     return input_join_ref_sequences(wildcards)["prots"]
+
 
 def input_copy_speff_data(wildcards):
     paths_snpeff_Data = {}
@@ -276,18 +339,28 @@ def input_symlink_ref_gff(wildcards):
         lineages_dir_df = pd.read_csv(metadata, header=0)
         lineages = set(lineages_dir_df["lineage"])
         for lineage in lineages:
-            gff = os.path.join(dir, INTDIR_NAME, REFS_DIR_NAME, lineage, f"{lineage}_interg_introns.gff.tsv")
+            gff = os.path.join(
+                dir,
+                INTDIR_NAME,
+                REFS_DIR_NAME,
+                lineage,
+                f"{lineage}_interg_introns.gff.tsv",
+            )
             paths[lineage] = gff
     lineage_path = paths[wildcards.lineage]
     return lineage_path
+
 
 # =================================================================================================
 #   Checkpoint functions
 # =================================================================================================
 
+
 def listing_lineages(wildcards):
     checkpoint_output = checkpoints.get_lineages.get(**wildcards).output[0]
-    return expand("{i}", i=glob_wildcards(os.path.join(checkpoint_output, "{i}.lineage")).i)
+    return expand(
+        "{i}", i=glob_wildcards(os.path.join(checkpoint_output, "{i}.lineage")).i
+    )
 
 
 LINEAGES = listing_lineages
@@ -295,6 +368,7 @@ LINEAGES = listing_lineages
 # =================================================================================================
 #   Final output definition functions
 # =================================================================================================
+
 
 def get_final_output():
     final_output = DATASET_DIR / "database.db"

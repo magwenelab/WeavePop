@@ -113,7 +113,10 @@ rule repeat_masker_2:
     output:
         INT_REFS_DIR / "{lineage}" / "repeats" / "02_complex" / "{lineage}.fasta.out",
     params:
-        dir=lambda wildcards: INT_REFS_DIR / wildcards.lineage / "repeats" / "02_complex",
+        dir=lambda wildcards: INT_REFS_DIR
+        / wildcards.lineage
+        / "repeats"
+        / "02_complex",
         tmp=lambda wildcards: INT_REFS_DIR / wildcards.lineage / "repeats",
     log:
         LOGS / "references" / "repeats" / "repeatmasker2_{lineage}.log",
@@ -183,7 +186,10 @@ rule repeat_masker_4:
     output:
         INT_REFS_DIR / "{lineage}" / "repeats" / "04_unknown" / "{lineage}.fasta.out",
     params:
-        dir=lambda wildcards: INT_REFS_DIR / wildcards.lineage / "repeats" / "04_unknown",
+        dir=lambda wildcards: INT_REFS_DIR
+        / wildcards.lineage
+        / "repeats"
+        / "04_unknown",
         tmp=lambda wildcards: INT_REFS_DIR / wildcards.lineage / "repeats",
     log:
         LOGS / "references" / "repeats" / "repeatmasker4_{lineage}.log",

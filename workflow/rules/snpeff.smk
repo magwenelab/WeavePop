@@ -2,6 +2,7 @@
 #   Per lineage | Create snpeff database
 # =================================================================================================
 
+
 # Make symbolic links in the snpeff_data directory and create config file
 rule prepare_refs_db:
     input:
@@ -11,15 +12,9 @@ rule prepare_refs_db:
         prots=rules.extract_protein_seqs.output.prots,
     output:
         gff=INT_REFS_DIR / "snpeff_data" / "Species_name_{lineage}" / "genes.gff",
-        fasta=INT_REFS_DIR
-        / "snpeff_data"
-        / "Species_name_{lineage}"
-        / "sequences.fa",
+        fasta=INT_REFS_DIR / "snpeff_data" / "Species_name_{lineage}" / "sequences.fa",
         cds=INT_REFS_DIR / "snpeff_data" / "Species_name_{lineage}" / "cds.fa",
-        prots=INT_REFS_DIR
-        / "snpeff_data"
-        / "Species_name_{lineage}"
-        / "protein.fa",
+        prots=INT_REFS_DIR / "snpeff_data" / "Species_name_{lineage}" / "protein.fa",
     conda:
         "../envs/variants.yaml"
     params:

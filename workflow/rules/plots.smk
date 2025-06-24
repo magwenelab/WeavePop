@@ -5,7 +5,7 @@
 
 rule loci:
     input:
-        gff=REFS_DIR / "{lineage}" / "{lineage}.gff.tsv", 
+        gff=REFS_DIR / "{lineage}" / "{lineage}.gff.tsv",
         loci=LOCI_FILE,
     output:
         locitable=INT_REFS_DIR / "{lineage}" / "loci_to_plot.tsv",
@@ -28,7 +28,10 @@ rule loci:
 
 rule depth_distribution_plots:
     input:
-        distrib=INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_distribution.tsv",
+        distrib=INT_SAMPLES_DIR
+        / "depth_quality"
+        / "{sample}"
+        / "depth_distribution.tsv",
         chroms=CHROM_NAMES_FILE,
         metadata=METADATA_ORIGINAL_FILE,
     output:
@@ -46,6 +49,7 @@ rule depth_distribution_plots:
 #   Per sample | Plot depth and mapq by windows
 # =================================================================================================
 
+
 rule depth_boxplot:
     input:
         unpack(depth_boxplot_input),
@@ -59,6 +63,7 @@ rule depth_boxplot:
     script:
         "../scripts/depth_boxplots.R"
 
+
 rule depth_by_windows_plots:
     input:
         unpack(depth_by_windows_plots_input),
@@ -71,6 +76,7 @@ rule depth_by_windows_plots:
         LOGS / "samples" / "plots" / "depth_by_windows_{sample}.log",
     script:
         "../scripts/depth_by_windows_plots.R"
+
 
 rule depth_vs_cnvs_plots:
     input:
