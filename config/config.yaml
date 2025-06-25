@@ -17,15 +17,15 @@ run_id: "" # Optional: Suffix to append to the 'results/' and 'logs/' directorie
 
 # ------------------Input------------------------------------------------------
 
-metadata: "config/metadata.csv" # Path of metadata CSV table. Relative to project_directory or absolute.
-chromosomes: "config/chromosomes.csv" # Path of chromosomes CSV table. Relative to project_directory or absolute.
-samples_to_exclude: # Optional: Path of a list of samples to exclude from analyses. Relative to project_directory or absolute.
-
 fastqs_directory: "data/samples" # Path of directory with all FASTQ files. Relative to project_directory or absolute.
 fastq_suffix1: "_R1.fastq.gz" # Suffix after the sample id of the forward reads file.
 fastq_suffix2: "_R2.fastq.gz" # Suffix after the sample id of the reverse reads file.
 
 references_directory: "data/references" # Path of directory with reference genomes. Relative to project_directory or absolute.
+
+metadata: "config/metadata.csv" # Path of metadata CSV table. Relative to project_directory or absolute.
+chromosomes: "config/chromosomes.csv" # Path of chromosomes CSV table. Relative to project_directory or absolute.
+samples_to_exclude: # Optional: Path of a list of samples to exclude from analyses. Relative to project_directory or absolute.
 
 repeats_database: "" # Path to the RepBase FASTA file. Relative to project_directory or absolute. 
 use_fake_database: False # True to use a fake database in the absence of a real one.
