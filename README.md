@@ -1,7 +1,7 @@
 
-# WeavePop: Workflow to Explore and Analyze genomic Variants of Eukaryotic Populations
+# WeavePop: Workflow to Explore and Analyze Variants of Eukaryotic Populations
 
-[![Snakemake](https://img.shields.io/badge/snakemake-≥8.2.1-brightgreen.svg?style=flat)](https://snakemake.readthedocs.io)
+[![Snakemake](https://img.shields.io/badge/snakemake-≥8.2.1-brightgreen.svg?style=flat)](https://snakemake.readthedocs.io)  
 
 WeavePop is a [Snakemake](https://snakemake.github.io/) workflow that maps short sequencing reads of multiple haploid eukaryotic genomes to selected reference genomes and analyzes the genomic variants between them.
 The core analysis is done by [Snippy](https://github.com/tseemann/snippy) to obtain alignment files (BAM), variant calling files (VCFs), and reference-based assemblies. 
@@ -133,7 +133,7 @@ Learn more about the execution options in the Wiki pages [Basic usage](https://g
 
 ## Output
 
-The output will be generated in the `results/` directory by default. Check the Wiki [Working with multiple projects and runs](https://github.com/magwenelab/WeavePop/wiki/Working-with-multiple-projects-and-runs). for more information.  
+The output will be generated in the `results/` directory by default. Check the Wiki [Working with multiple projects and runs](https://github.com/magwenelab/WeavePop/wiki/Working-with-multiple-projects-and-runs) for more information.  
 
 Here is a list of the most relevant output, to see the full list and know which module produces each file go to the [Output Wiki](https://github.com/magwenelab/WeavePop/wiki/Output).  
 
@@ -154,8 +154,6 @@ Here is a list of the most relevant output, to see the full list and know which 
 | `02.Dataset/depth_quality/mapq_depth_by_feature.tsv` | MAPQ and mean depth of each feature in all the samples. |
 | `02.Dataset/cnv/cnv_calls.tsv` | Table of deleted and duplicated regions in all samples and their overlap with repetitive sequences. Positions are 1-Based.|
 | `02.Dataset/snpeff/effects.tsv`|Table with the effects of the possible variants in all lineages.|
-| `02.Dataset/snpeff/lofs.tsv`|Loss of function output table of SnpEff for all lineages.|
-| `02.Dataset/snpeff/nmds.tsv`|Nonsense-mediated decay output table of SnpEff for all lineages|
 | `02.Dataset/snpeff/presence.tsv`|Table with the variant IDs of all lineages and the samples they are present in.|
 | `02.Dataset/snpeff/variants.tsv`|Table withe the description of all variants of all lineages. Positions are 1-Based.|
 | `02.Dataset/database.db` |  SQL database with the main results. |
