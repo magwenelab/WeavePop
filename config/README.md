@@ -1,8 +1,8 @@
 ## Configuration of the analysis workflow of WeavePop
 
-To configure the workflow you need to provide input files, edit the configuration file `config/config.yaml` and the execution profile `config/default/config.yaml` (for local execution) or `config/slurm/config.yaml` (for SLURM execution).
+To configure the workflow, you need to provide input files, edit the configuration file `config/config.yaml` and the execution profile `config/default/config.yaml` (for local execution) or `config/slurm/config.yaml` (for SLURM execution).
 
-In the descriptions below when it mentions "specified in `field:`" it means a field in the `config/config.yaml`. When it is written as `field1: field2:` the second one is nested.
+In the descriptions below, when it mentions "specified in `field:`" it means a field in the `config/config.yaml`. When it is written as `field1: field2:`, the second one is nested.
 
 ### Input files and their configuration
 
@@ -12,11 +12,11 @@ Paired-end short-read FASTQ files, one forward and one reverse file for each sam
 
 #### Reference genomes:
 
-The names of the files must be the ones in the `lineage` column of the metadata (e.g. `VNI.fasta` and `VNI.gff`). They should be in one directory specified in `references_directory:`.
+The names of the files must be the ones in the `lineage` column of the metadata (e.g., `VNI.fasta` and `VNI.gff`). They should be in one directory specified in `references_directory:`.
 
 -   Providing annotations: Specify it with `annotate_references: activate: False`. Provide the FASTA and GFF files for each reference genome.
 
--   Annotating with main reference: Specify it with `annotate_references: activate: True`. If you want to have a common naming scheme for the genes or don't have an annotation (GFF file) of all your reference genomes you can provide one annotated main reference to annotate the rest using Liftoff. For this, provide the FASTA and GFF files for the main reference and specify the file names in `annotate_references: fasta:` and `annotate_references: gff:`. And provide only the FASTA file for each of the other reference genomes. If you activate the annotation of the reference genomes, all of them will be annotated.
+-   Annotating with main reference: Specify it with `annotate_references: activate: True`. If you want to have a common naming scheme for the genes or don't have an annotation (GFF file) of all your reference genomes, you can provide one annotated main reference to annotate the rest using Liftoff. For this, provide the FASTA and GFF files for the main reference and specify the file names in `annotate_references: fasta:` and `annotate_references: gff:`. And provide only the FASTA file for each of the other reference genomes. If you activate the annotation of the reference genomes, all of them will be annotated.
 
 #### Metadata:
 
@@ -35,15 +35,15 @@ Mandatory columns with these exact names:
 
 -   `lineage`: Lineage name (the same as in the metadata table and the names of the reference files).
 -   `accession`: Sequence ID of the chromosomes in the FASTA and GFF of the reference of each lineage. Make sure each chromosome ID is not repeated in this file.
--   `chromosome`: Common name of the chromosome, e.g. chr01, 1, VNI_chr01.
+-   `chromosome`: Common name of the chromosome, e.g., chr01, 1, VNI_chr01.
 
 #### Exclude samples (optional):
 
-If you want to exclude some of the samples in your metadata file from all analyses, you can provide a file with a list of sample names to exclude. Without a column name. Specify its path in `samples_to_exclude:`.
+If you want to exclude some of the samples in your metadata file from all analyses, you can provide a file with a list of sample names to exclude, without a column name. Specify its path in `samples_to_exclude:`.
 
 #### Repeats database (optional):
 
-Database of repetitive sequences in FASTA format to use for RepeatMasker. Needed for the CNV, plotting, and database modules. If you don't need a good identification of repeats specify it with `use_fake_database: True` and don't provide this file. We recommend the [RepBase database](https://www.girinst.org/server/RepBase/). You need to download it, extract the files, and concatenate them all in one FASTA file `config/RepBase_<version>.fasta`. Specify its path in `repeats_database:`.
+Database of repetitive sequences in FASTA format to use for RepeatMasker. Needed for the CNV, plotting, and database modules. If you don't need a good identification of repeats, specify it with `use_fake_database: True` and don't provide this file. We recommend the [RepBase database](https://www.girinst.org/server/RepBase/). You need to download it, extract the files, and concatenate them all in one FASTA file `config/RepBase_<version>.fasta`. Specify its path in `repeats_database:`.
 
 #### Genetic features for plots (optional):
 
@@ -56,22 +56,18 @@ Mandatory columns with these exact names:
 
 ### Output
 
-A project directory relative to `WeavePop/` can be specified in `project_directory:`. Otherwise the output will be in `WeavePop/results/`.  
+A project directory relative to `WeavePop/` can be specified in `project_directory:`. Otherwise, the output will be in `WeavePop/results/`.  
 A run ID can be specified in `run_id:` to append it as a suffix to the results and logs directories.  
 
 ### Module activation and parameters
 
-By default only the required modules are run.  
+By default, only the required modules are run.  
 You can activate the optional modules by setting `module-name: activate: True` in the corresponding section of the configuration file. Activating the database and plotting modules is enough to run everything.  
 Some of the modules also have additional parameters to configure. The instructions are in the configuration file itself.  
 
 <u>Using a container for RepeatMasker and RepeatModeler</u>: If this programs don't work properly in the
-Conda environment (which is likely to happen when running in SLURM), they can be run in an Apptainer container. For this you need to set `cnv: repeats: use_container: True` in `config/config.yaml` and in the execution profile (`config/default/config.yaml` or `config/slurm/config.yaml`) set `use-apptainer: True` and `apptainer-args: "--bind $(pwd):$(pwd)"`.
+Conda environment (which is likely to happen when running in SLURM), they can be run in an Apptainer container. For this, you need to set `cnv: repeats: use_container: True` in `config/config.yaml` and in the execution profile (`config/default/config.yaml` or `config/slurm/config.yaml`) set `use-apptainer: True` and `apptainer-args: "--bind $(pwd):$(pwd)"`.
 
 ## Configuration of the join datasets workflow
 
-By default the analysis workflow is activated (`workflow: "analysis"`). If you already used it for more than one dataset and want to combine the results, you can use the join datasets workflow (`workflow: "join_datasets"`). For this you need to provide the paths to the results directories of the datasets you want to join in `dataset_paths:` and names for them in `dataset_names:`. By default the output will be in `WeavePop/results/`, if you are using the same project directory as in the analysis workflow, you should specify a different `run_id:`.
-
-## Execution profiles
-
-The execution profiles are YAML files with the command-line options for the execution of the workflow. They are located in `config/default/config.yaml` for local execution and `config/slurm/config.yaml` for SLURM execution. You can edit them and run the workflow with `snakemake --profile config/default` or put the options in the command line.
+By default, the analysis workflow is activated (`workflow: "analysis"`). If you have already used it for more than one dataset and want to combine the results, you can use the join datasets workflow (`workflow: "join_datasets"`). For this, you need to provide the paths to the results directories of the datasets you want to join in `dataset_paths:` and names for them in `dataset_names:`. By default, the output will be in `WeavePop/results/`. If you are using the same project directory as in the analysis workflow, you should specify a different `run_id:`.
