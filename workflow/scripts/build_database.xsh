@@ -49,7 +49,7 @@ def build_db(metadata, chromosomes, cnvs, cnv_chroms, mapq_depth, gff_tsv, effec
     print("Copy-number variants table done!")
 
     print("Reading Copy-number variants per chromosome table...")
-    df_cnv_chroms = pd.read_csv(cnv_chroms, sep='\t')
+    df_cnv_chroms = pd.read_csv(cnv_chroms, sep='\t', dtype={'chromosome': str})
     print("Copy-number variants per chromosome table done!")
 
     print("Reading MAPQ-depth table...")
@@ -57,7 +57,7 @@ def build_db(metadata, chromosomes, cnvs, cnv_chroms, mapq_depth, gff_tsv, effec
     print("MAPQ Depth table done!")
 
     print("Reading chromosome table...")
-    df_chroms = pd.read_csv(chromosomes, header = 0, dtype = str)
+    df_chroms = pd.read_csv(chromosomes, header = 0, dtype={'chromosome': str, 'lenght': int})
     print("Chromosome names table done!")
 
     print("Reading GFF table...")
@@ -94,38 +94,97 @@ def build_db(metadata, chromosomes, cnvs, cnv_chroms, mapq_depth, gff_tsv, effec
 
     print("Formatting dataframes done!")
 
+    print("Create function to add table to db")
+    def create_table_with_constraints(con, df, table_name, constraints):
+        """
+        Create a DuckDB table from a DataFrame with specified constraints.
+
+        Args:
+            con: duckdb.DuckDBPyConnection object
+            df: pandas.DataFrame to insert
+            table_name: str, name of the final table
+            constraints: list of str, each a constraint (e.g. "PRIMARY KEY (id)", "FOREIGN KEY (user_id) REFERENCES users(user_id)")
+        """
+        # Register DataFrame as a DuckDB view
+        view_name = f"df_{table_name}"
+        con.register(view_name, df)
+
+        # Get column definitions from DataFrame dtypes
+        dtype_map = {
+            'int64': 'BIGINT',
+            'float64': 'DOUBLE',
+            'object': 'VARCHAR',
+            'bool': 'BOOLEAN'
+        }
+        columns = []
+        for col, dtype in df.dtypes.items():
+            duck_type = dtype_map.get(str(dtype), 'VARCHAR')
+            columns.append(f'"{col}" {duck_type}')
+        # Add constraints
+        columns += constraints
+        create_stmt = f"CREATE TABLE {table_name} ({', '.join(columns)})"
+        con.execute(create_stmt)
+        # Insert data
+        con.execute(f"INSERT INTO {table_name} SELECT * FROM {view_name}")
+
     print("Connecting to database")
     con = duckdb.connect(database=output)
-
-    print("Registering dataframes")
-    con.register('df_metadata', df_metadata)
-    con.register('df_cnv', df_cnv)
-    con.register('df_cnv_chroms', df_cnv_chroms)
-    con.register('df_mapq_depth', df_mapq_depth)
-    con.register('df_chroms', df_chroms)
-    con.register('df_gff', df_gff)
-    con.register('df_effects', df_effects)
-    con.register('df_variants', df_variants)
-    con.register('df_lofs', df_lofs)
-    con.register('df_nmds', df_nmds)
-    con.register('df_sequences', df_sequences)
-    con.register('df_ref_sequences', df_ref_sequences)
     
     print("Adding dataframes to database")
-    con.execute("CREATE TABLE IF NOT EXISTS metadata AS SELECT * FROM df_metadata")   
-    con.execute("CREATE TABLE IF NOT EXISTS cnvs AS SELECT * FROM df_cnv")
-    con.execute("CREATE TABLE IF NOT EXISTS cnv_chroms AS SELECT * FROM df_cnv_chroms")
-    con.execute("CREATE TABLE IF NOT EXISTS mapq_depth AS SELECT * FROM df_mapq_depth")
-    con.execute("CREATE TABLE IF NOT EXISTS chromosomes AS SELECT * FROM df_chroms")
-    con.execute("CREATE TABLE IF NOT EXISTS gff AS SELECT * FROM df_gff")
-    con.execute("CREATE TABLE IF NOT EXISTS presence AS SELECT * FROM df_presence")
-    con.execute("CREATE TABLE IF NOT EXISTS variants AS SELECT * FROM df_variants")
-    con.execute("CREATE TABLE IF NOT EXISTS effects AS SELECT * FROM df_effects")
-    con.execute("CREATE TABLE IF NOT EXISTS lofs AS SELECT * FROM df_lofs")
-    con.execute("CREATE TABLE IF NOT EXISTS nmds AS SELECT * FROM df_nmds")
-    con.execute("CREATE TABLE IF NOT EXISTS sequences AS SELECT * FROM df_sequences")
-    con.execute("CREATE TABLE IF NOT EXISTS ref_sequences AS SELECT * FROM df_ref_sequences")
 
+    create_table_with_constraints(con, df_chroms, 'chromosomes',[
+        "PRIMARY KEY (accession)",
+    ])
+
+    create_table_with_constraints(con, df_metadata, 'metadata', [
+        "PRIMARY KEY (sample)"
+    ])
+    create_table_with_constraints(con, df_cnv, 'cnvs',[
+        'PRIMARY KEY (accession,start,"end",sample)',
+        "FOREIGN KEY (accession) REFERENCES chromosomes(accession)",
+        "FOREIGN KEY (sample) REFERENCES metadata(sample)"
+    ])
+    create_table_with_constraints(con, df_cnv_chroms, 'cnv_chroms',[
+        "PRIMARY KEY (sample,accession,cnv)",
+        "FOREIGN KEY (accession) REFERENCES chromosomes(accession)",
+        "FOREIGN KEY (sample) REFERENCES metadata(sample)"
+    ])
+    create_table_with_constraints(con, df_gff, 'gff', [
+        "PRIMARY KEY (feature_id,lineage)",
+        "FOREIGN KEY (accession) REFERENCES chromosomes(accession)",
+    ])
+    create_table_with_constraints(con, df_mapq_depth, 'mapq_depth',[
+        "PRIMARY KEY (sample,feature_id)",
+        "FOREIGN KEY (sample) REFERENCES metadata(sample)",
+    ])
+    create_table_with_constraints(con, df_sequences, 'sequences', [
+        "PRIMARY KEY (sample,transcript_id,seq_type)",
+        "FOREIGN KEY (sample) REFERENCES metadata(sample)"
+    ])
+    create_table_with_constraints(con, df_ref_sequences, 'ref_sequences', [
+        "PRIMARY KEY (lineage,transcript_id,seq_type)",
+    ])
+    create_table_with_constraints(con, df_variants, 'variants', [
+        "PRIMARY KEY (var_id)",
+        "FOREIGN KEY (accession) REFERENCES chromosomes(accession)"
+    ])
+    create_table_with_constraints(con, df_presence, 'presence',[
+        "PRIMARY KEY (var_id,sample)",
+        "FOREIGN KEY (var_id) REFERENCES variants(var_id)",
+        "FOREIGN KEY (sample) REFERENCES metadata(sample)"
+    ])
+    create_table_with_constraints(con, df_lofs, 'lofs',[
+        "PRIMARY KEY (var_id,gene_name)",
+        "FOREIGN KEY (var_id) REFERENCES variants(var_id)"
+    ])
+    create_table_with_constraints(con, df_nmds, 'nmds',[
+        "PRIMARY KEY (var_id,gene_name)",
+        "FOREIGN KEY (var_id) REFERENCES variants(var_id)"
+    ])
+    create_table_with_constraints(con, df_effects, 'effects',[
+        "FOREIGN KEY (var_id) REFERENCES variants(var_id)"
+    ])
+    
     print("Closing connection to database")
     con.close()
     print("Done!")
