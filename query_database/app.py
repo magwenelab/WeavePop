@@ -6,7 +6,7 @@ import datetime
 from Bio import SeqIO
 import pandas as pd
 
-mydb='../database.db'
+mydb='/FastData/czirion/WeavePop/test/results/02.Dataset/database.db'
 with ui.navset_pill(id="Database"):
     with ui.nav_panel("Home"):
         ui.h1(ui.markdown("WeavePop Database"), style="padding-top: 20px;padding-bottom: 20px;")
@@ -30,7 +30,7 @@ with ui.navset_pill(id="Database"):
         "Metadata of the samples, including the strain, sample ID, lineage, etc."
         ui.h4(" Reference Genomes’ Annotations",style="padding-top: 10px;padding-bottom: 10px;")
         "Table with the description of the genes in the reference genome of each lineage. Including the nested features of the genes."
-        ui.h4("Sequences",style="padding-top: 10px;padding-bottom: 10px;")
+        ui.h4("Coding Sequences",style="padding-top: 10px;padding-bottom: 10px;")
         "DNA and protein sequences of each isoform of each gene in all samples."
         ui.h4("Variants",style="padding-top: 10px;padding-bottom: 10px;")
         ui.markdown("""
@@ -173,8 +173,8 @@ with ui.navset_pill(id="Database"):
                         df.to_csv(buf, index=False, sep="\t")
                         yield buf.getvalue()
                             
-    with ui.nav_panel("Reference Sequences"):
-        ui.h1("Reference Sequences", style="padding-top: 20px;padding-bottom: 20px;")
+    with ui.nav_panel("Reference Coding Sequences"):
+        ui.h1("Reference Coding Sequences", style="padding-top: 20px;padding-bottom: 20px;")
         with ui.layout_columns(col_widths=(6,6), min_height="200px"):
             with ui.navset_card_pill(): 
                 with ui.nav_panel("Lineage"):
@@ -269,8 +269,8 @@ with ui.navset_pill(id="Database"):
                             buf.write(seqs_text.encode())
                             yield buf.getvalue() 
                                                   
-    with ui.nav_panel("Sequences"):
-        ui.h1("Sequences", style="padding-top: 20px;padding-bottom: 20px;")
+    with ui.nav_panel("Coding Sequences"):
+        ui.h1("Coding Sequences", style="padding-top: 20px;padding-bottom: 20px;")
         list_datasets = qdb.list_datasets(db = mydb)
         if len(list_datasets) > 1:
             with ui.card():

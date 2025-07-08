@@ -19,11 +19,11 @@ import sqlite3
 @click.option('--presence', '-p', type=click.Path(), help='Path to the presence file of all lineages.')
 @click.option('--lofs', '-l', type=click.Path(), help='Path to the lofs file of all lineages.')
 @click.option('--nmds', '-n', type=click.Path(), help='Path to the nmds file of all lineages.')
-@click.option('--sequences', '-s', type=click.Path(), help='Path to the sequences table.')
-@click.option('--ref_sequences', '-r', type=click.Path(), help='Path to the reference sequences table.')
+@click.option('--coding_sequences', '-s', type=click.Path(), help='Path to the coding sequences table.')
+@click.option('--ref_coding_sequences', '-r', type=click.Path(), help='Path to the reference coding sequences table.')
 @click.option('--output', '-o', type=click.Path(), help='Output database file.')
 
-def build_db(metadata, chromosomes, cnvs, cnv_chroms, mapq_depth, gff_tsv, effects, variants, presence, lofs, nmds, sequences, ref_sequences, output):
+def build_db(metadata, chromosomes, cnvs, cnv_chroms, mapq_depth, gff_tsv, effects, variants, presence, lofs, nmds, coding_sequences, ref_coding_sequences, output):
     print("Using the following arguments:")
     print(f"1. metadata: {metadata}")
     print(f"2. chromosomes: {chromosomes}")
@@ -36,8 +36,8 @@ def build_db(metadata, chromosomes, cnvs, cnv_chroms, mapq_depth, gff_tsv, effec
     print(f"9. presence: {presence}")
     print(f"10. lofs: {lofs}")
     print(f"11. nmds: {nmds}")
-    print(f"12. sequences: {sequences}")
-    print(f"13. ref_sequences: {ref_sequences}")
+    print(f"12. coding_sequences: {coding_sequences}")
+    print(f"13. ref_coding_sequences: {ref_coding_sequences}")
     print(f"14. output: {output}")
     
     print("Reading metadata table...")
@@ -84,13 +84,13 @@ def build_db(metadata, chromosomes, cnvs, cnv_chroms, mapq_depth, gff_tsv, effec
     df_nmds = pd.read_csv(nmds, header = 0, sep='\t')
     print("Nonsense-mediated decay table done!")
 
-    print("Reading sequences table...")
-    df_sequences = pd.read_csv(sequences, header = 0, sep=',')
-    print("Sequences table done!")
+    print("Reading coding_sequences table...")
+    df_coding_sequences = pd.read_csv(coding_sequences, header = 0, sep=',')
+    print("Coding sequences table done!")
 
-    print("Reading reference sequences table...")
-    df_ref_sequences = pd.read_csv(ref_sequences, header = 0, sep=',')
-    print("Reference sequences table done!")
+    print("Reading reference coding coding_sequences table...")
+    df_ref_coding_sequences = pd.read_csv(ref_coding_sequences, header = 0, sep=',')
+    print("Reference coding_sequences table done!")
 
     print("Formatting dataframes done!")
 
@@ -150,19 +150,19 @@ def build_db(metadata, chromosomes, cnvs, cnv_chroms, mapq_depth, gff_tsv, effec
         "FOREIGN KEY (sample) REFERENCES metadata(sample)"
     ])
     create_table_with_constraints(con, df_gff, 'gff', [
-        "PRIMARY KEY (feature_id,lineage)",
+        "PRIMARY KEY (feature_id,accession)",
         "FOREIGN KEY (accession) REFERENCES chromosomes(accession)",
     ])
     create_table_with_constraints(con, df_mapq_depth, 'mapq_depth',[
         "PRIMARY KEY (sample,feature_id)",
         "FOREIGN KEY (sample) REFERENCES metadata(sample)",
     ])
-    create_table_with_constraints(con, df_sequences, 'sequences', [
+    create_table_with_constraints(con, df_coding_sequences, 'coding_sequences', [
         "PRIMARY KEY (sample,feature_id,seq_type)",
         "FOREIGN KEY (sample) REFERENCES metadata(sample)"
     ])
-    create_table_with_constraints(con, df_ref_sequences, 'ref_sequences', [
-        "PRIMARY KEY (lineage,feature_id,seq_type)",
+    create_table_with_constraints(con, df_ref_coding_sequences, 'ref_coding_sequences', [
+        "PRIMARY KEY (lineage,feature_id,seq_type)"
     ])
     create_table_with_constraints(con, df_variants, 'variants', [
         "PRIMARY KEY (var_id)",

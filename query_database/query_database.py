@@ -384,17 +384,17 @@ def sequences(db, dataset=None, seq_type='DNA', sample=None, strain=None, lineag
 
     query = f"""
             SELECT metadata.dataset, metadata.strain, metadata.lineage, 
-                sequences.sample, sequences.feature_id, sequences.seq, 
+                coding_sequences.sample, coding_sequences.feature_id, coding_sequences.seq, 
                 chromosomes.chromosome, chromosomes.accession,
                 gff.gene_name, gff.gene_id
-            FROM sequences
-            JOIN metadata ON sequences.sample = metadata.sample
-            JOIN gff ON sequences.feature_id = gff.feature_id AND metadata.lineage = gff.lineage
+            FROM coding_sequences
+            JOIN metadata ON coding_sequences.sample = metadata.sample
+            JOIN gff ON coding_sequences.feature_id = gff.feature_id AND metadata.lineage = gff.lineage
             JOIN chromosomes ON gff.accession = chromosomes.accession
             WHERE metadata.dataset IN {dataset}"""
     if gene_id and not sample:
         query += f"""
-            AND sequences.feature_id IN (
+            AND coding_sequences.feature_id IN (
                 SELECT DISTINCT feature_id
                 FROM gff
                 WHERE gene_id IN {gene_id}
@@ -402,16 +402,16 @@ def sequences(db, dataset=None, seq_type='DNA', sample=None, strain=None, lineag
             AND seq_type = '{seq_type}'"""
     elif gene_id and sample:
         query += f"""
-            AND sequences.feature_id IN (
+            AND coding_sequences.feature_id IN (
                 SELECT DISTINCT feature_id
                 FROM gff
                 WHERE gene_id IN {gene_id}
             )
-            AND sequences.sample IN {sample}
+            AND coding_sequences.sample IN {sample}
             AND seq_type = '{seq_type}'"""
     elif sample:
         query += f"""
-            AND sequences.sample IN {sample}
+            AND coding_sequences.sample IN {sample}
             AND seq_type = '{seq_type}'"""
     print(query)
     result = con.execute(query).fetchdf()
@@ -449,33 +449,33 @@ def ref_sequences(db, seq_type='DNA', lineage=None, gene_id=None, gene_name=None
         lineage = tuple(lineage)
 
     query = f"""
-        SELECT ref_sequences.lineage, ref_sequences.feature_id, ref_sequences.seq,
+        SELECT ref_coding_sequences.lineage, ref_coding_sequences.feature_id, ref_coding_sequences.seq,
                 gff.gene_id, gff.gene_name,
                 chromosomes.chromosome, chromosomes.accession,
-        FROM ref_sequences
-        JOIN gff ON ref_sequences.feature_id = gff.feature_id AND gff.lineage = ref_sequences.lineage
+        FROM ref_coding_sequences
+        JOIN gff ON ref_coding_sequences.feature_id = gff.feature_id AND gff.lineage = ref_coding_sequences.lineage
         JOIN chromosomes ON gff.accession = chromosomes.accession
         WHERE seq_type = '{seq_type}'
             """
     if gene_id and not lineage:
         query += f"""
-            AND ref_sequences.feature_id IN (
+            AND ref_coding_sequences.feature_id IN (
                 SELECT DISTINCT feature_id
                 FROM gff
                 WHERE gene_id IN {gene_id}
             )"""
     elif gene_id and lineage:
         query += f"""
-            AND ref_sequences.feature_id IN (
+            AND ref_coding_sequences.feature_id IN (
                 SELECT DISTINCT feature_id
                 FROM gff
                 WHERE gene_id IN {gene_id}
             )
-            AND ref_sequences.lineage IN {lineage}
+            AND ref_coding_sequences.lineage IN {lineage}
             """
     elif lineage:
         query += f"""
-            AND ref_sequences.lineage IN {lineage}
+            AND ref_coding_sequences.lineage IN {lineage}
             """
     print(query)
     result = con.execute(query).fetchdf()
