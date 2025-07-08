@@ -97,7 +97,7 @@ def cnv_calling(depth_input, repeats_input, annotation_input, chromosome_input, 
     annot_header = ['accession', 'start', 'end', 'depth', 'norm_depth', 'smooth_depth', 'cnv', 'overlap_bp', 'region_size', 'repeat_fraction', 'sample', 'feature_id']
     annot_intersection.columns = annot_header
     annot_intersection['feature_id'] = annot_intersection['feature_id'].replace('.', np.nan)
-    col_order = ['accession', 'start', 'end', 'cnv','region_size', 'depth', 'norm_depth', 'smooth_depth', 'repeat_fraction', 'overlap_bp', 'feature_id', 'sample']
+    col_order = ['sample', 'accession', 'start', 'end', 'cnv','region_size', 'depth', 'norm_depth', 'smooth_depth', 'repeat_fraction', 'overlap_bp', 'feature_id']
     annot_intersection = annot_intersection[col_order]
 
     print("Saving CNV regions to file...")

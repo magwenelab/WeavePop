@@ -80,7 +80,7 @@ def extract_annotation(vcf_path, gff_tsv, effects_out, variants_out, lofs_out, n
     df_variants['alt'] = df_variants['alt'].astype(str)
     df_variants['alt'] = df_variants['alt'].str.replace('[', '').str.replace(']', '')
     df_variants['lineage'] = lineage
-    df_variants = df_variants[['var_id', 'lineage', 'accession', 'pos', 'ref', 'alt']]
+    df_variants = df_variants[['var_id', 'accession', 'pos', 'ref', 'alt', 'lineage']]
 
     print("LOFs dataframe")
     df_lofs = pd.DataFrame(data_lofs, columns=['var_id', 'gene_name', 'num_transcripts', 'percent_affected'])

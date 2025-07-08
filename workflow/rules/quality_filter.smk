@@ -131,7 +131,7 @@ rule chromosome_lengths:
     shell:
         """
         seqkit fx2tab -l -i -n {input} |\
-        awk -v lin={wildcards.unf_lineage} '{{print lin, $0}}' OFS='\t' \
+        awk -v lin={wildcards.unf_lineage} '{{print $0, lin}}' OFS='\t' \
         1> {output} 2> {log}
         """
 

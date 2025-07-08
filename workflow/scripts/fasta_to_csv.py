@@ -22,10 +22,10 @@ def fasta_to_csv(fasta, sample,lineage, seq_type, output):
         print("Joining information into a dataframe...")
         if sample is not None:
             new_description = sample + "|" + transcript_id + " " + gene_id + " " + accession
-            df = pd.DataFrame({"sample":sample, "transcript_id":transcript_id, "seq":seq, "seq_type":seq_type,  "seq_description":new_description}, index=[0])
+            df = pd.DataFrame({"sample":sample, "transcript_id":transcript_id, "seq_type":seq_type, "seq":seq, "seq_description":new_description}, index=[0])
         elif lineage is not None:
             new_description = lineage + "|" + transcript_id + " " + gene_id + " " + accession
-            df = pd.DataFrame({"lineage":lineage, "transcript_id":transcript_id, "seq":seq, "seq_type":seq_type,  "seq_description":new_description}, index=[0])
+            df = pd.DataFrame({"lineage":lineage, "transcript_id":transcript_id, "seq_type":seq_type, "seq":seq, "seq_description":new_description}, index=[0])
         if df.isnull().values.any() or (df == '').any().any():
             raise ValueError("Empty or NaN value found in data for sample " + sample + " and transcript " + transcript_id + ". Check fasta file.")
         print("Adding record to the dataframe with all records...")
