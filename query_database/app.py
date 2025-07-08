@@ -6,7 +6,7 @@ import datetime
 from Bio import SeqIO
 import pandas as pd
 
-mydb='..database.db'
+mydb='../database.db'
 with ui.navset_pill(id="Database"):
     with ui.nav_panel("Home"):
         ui.h1(ui.markdown("WeavePop Database"), style="padding-top: 20px;padding-bottom: 20px;")
@@ -885,7 +885,7 @@ with ui.navset_pill(id="Database"):
             **position**: The position of the variant in the chromosome.  
             **reference**: The allele in the reference genome.   
             **alternative**: The alternative allele.  
-            **transcript_id**: The unique identifier of the transcript. It is the same as the feature_id of mRNA features in the Genes table.   
+            **feature_id**: The unique identifier of the transcript.  
             **effect**: The functional class of the effect type, one of SILENT, MISSENSE, NONSENSE or none. Check [SnpEff](https://pcingola.github.io/SnpEff/snpeff/inputoutput/).  
             **codon_change**: Old/new codon sequences or distance to transcript. Check [SnpEff](https://pcingola.github.io/SnpEff/snpeff/inputoutput/).  
             **amino_acid_change**: Old amino acid, position, and new amino acid. Check [SnpEff](https://pcingola.github.io/SnpEff/snpeff/inputoutput/).  

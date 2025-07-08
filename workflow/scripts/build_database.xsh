@@ -158,11 +158,11 @@ def build_db(metadata, chromosomes, cnvs, cnv_chroms, mapq_depth, gff_tsv, effec
         "FOREIGN KEY (sample) REFERENCES metadata(sample)",
     ])
     create_table_with_constraints(con, df_sequences, 'sequences', [
-        "PRIMARY KEY (sample,transcript_id,seq_type)",
+        "PRIMARY KEY (sample,feature_id,seq_type)",
         "FOREIGN KEY (sample) REFERENCES metadata(sample)"
     ])
     create_table_with_constraints(con, df_ref_sequences, 'ref_sequences', [
-        "PRIMARY KEY (lineage,transcript_id,seq_type)",
+        "PRIMARY KEY (lineage,feature_id,seq_type)",
     ])
     create_table_with_constraints(con, df_variants, 'variants', [
         "PRIMARY KEY (var_id)",

@@ -52,9 +52,9 @@ def extract_annotation(vcf_path, gff_tsv, effects_out, variants_out, lofs_out, n
                 gene_name = effect_info_parts[5]
                 biotype = effect_info_parts[6]
                 coding = effect_info_parts[7]
-                transcript_id = effect_info_parts[8]
+                feature_id = effect_info_parts[8]
                 exon_rank = effect_info_parts[9]
-                data_effects.append([var_id,  effect_type, impact, effect, codon_change, aa_change, aa_length, gene_name, biotype, coding, transcript_id, exon_rank])
+                data_effects.append([var_id,  effect_type, impact, effect, codon_change, aa_change, aa_length, gene_name, biotype, coding, feature_id, exon_rank])
             # Iterate over all lofs
             for lof in lofs:
                 lof_parts = lof.split('|')
@@ -88,7 +88,7 @@ def extract_annotation(vcf_path, gff_tsv, effects_out, variants_out, lofs_out, n
     df_nmds = pd.DataFrame(data_nmds, columns=['var_id', 'gene_name', 'num_transcripts', 'percent_affected'])
 
     print("Effects dataframe")
-    effects_pre = pd.DataFrame(data_effects, columns=['var_id', 'effect_type', 'impact','effect', 'codon_change', 'amino_acid_change', 'amino_acid_length', 'gene_name', 'transcript_biotype', 'gene_coding', 'transcript_id', 'exon_rank'])
+    effects_pre = pd.DataFrame(data_effects, columns=['var_id', 'effect_type', 'impact','effect', 'codon_change', 'amino_acid_change', 'amino_acid_length', 'gene_name', 'transcript_biotype', 'gene_coding', 'feature_id', 'exon_rank'])
 
     print("Formating effects dataframe and adding gene IDs from reference GFF...")
     print("Reading GFF file...")
@@ -107,9 +107,9 @@ def extract_annotation(vcf_path, gff_tsv, effects_out, variants_out, lofs_out, n
     print("Subsetting effects table...")
 
     effects_pre.replace('', pd.NA, inplace=True)
-    df_gene_transcript = effects_pre[(effects_pre['gene_name'].notnull()) & (effects_pre['transcript_id'].notnull())].copy()
-    df_gene_no_transcript = effects_pre[(effects_pre['gene_name'].notnull()) & (effects_pre['transcript_id'].isnull())].copy()
-    df_no_gene_no_transcript = effects_pre[(effects_pre['gene_name'].isnull()) & (effects_pre['transcript_id'].isnull())].copy()
+    df_gene_transcript = effects_pre[(effects_pre['gene_name'].notnull()) & (effects_pre['feature_id'].notnull())].copy()
+    df_gene_no_transcript = effects_pre[(effects_pre['gene_name'].notnull()) & (effects_pre['feature_id'].isnull())].copy()
+    df_no_gene_no_transcript = effects_pre[(effects_pre['gene_name'].isnull()) & (effects_pre['feature_id'].isnull())].copy()
 
     print("Defining function to replace gene names with gene IDs...")
     def replace_with_gene_id(part):
@@ -144,7 +144,7 @@ def extract_annotation(vcf_path, gff_tsv, effects_out, variants_out, lofs_out, n
     print("Creating dictionary to map feature IDs to gene IDs...")
     feature_to_gene = gff_ids_unique.set_index('feature_id')['gene_id']
     print("Mapping transcript IDs to gene IDs...")
-    df_gene_transcript['gene_id'] = df_gene_transcript['transcript_id'].map(feature_to_gene)
+    df_gene_transcript['gene_id'] = df_gene_transcript['feature_id'].map(feature_to_gene)
     print("Concatenating dataframes...")
     df_effects = pd.concat([df_gene_transcript, df_gene_no_transcript_fixed, df_no_gene_no_transcript])
     print("Finished formatting effects dataframe!")

@@ -268,7 +268,7 @@ def effects(db, dataset = None, sample=None, strain=None, gene_name=None, gene_i
         SELECT metadata.dataset, metadata.strain, presence.sample, metadata.lineage,
             variants.var_id, chromosomes.chromosome, chromosomes.accession,
             variants.pos AS position, variants.ref AS reference, variants.alt AS alternative,
-            effects.gene_name, effects.gene_id, effects.transcript_id,
+            effects.gene_name, effects.gene_id, effects.feature_id,
             effects.impact, effects.effect_type, effects.effect,
             effects.codon_change, effects.amino_acid_change, effects.amino_acid_length,
             effects.transcript_biotype, effects.gene_coding, effects.exon_rank,
@@ -278,7 +278,7 @@ def effects(db, dataset = None, sample=None, strain=None, gene_name=None, gene_i
         JOIN presence ON variants.var_id = presence.var_id
         JOIN effects ON variants.var_id = effects.var_id
         JOIN metadata ON presence.sample = metadata.sample
-        LEFT JOIN mapq_depth ON mapq_depth.feature_id = effects.transcript_id AND mapq_depth.sample = presence.sample
+        LEFT JOIN mapq_depth ON mapq_depth.feature_id = effects.feature_id AND mapq_depth.sample = presence.sample
         WHERE metadata.dataset IN {dataset}
         """
     
@@ -384,17 +384,17 @@ def sequences(db, dataset=None, seq_type='DNA', sample=None, strain=None, lineag
 
     query = f"""
             SELECT metadata.dataset, metadata.strain, metadata.lineage, 
-                sequences.sample, sequences.transcript_id, sequences.seq, 
+                sequences.sample, sequences.feature_id, sequences.seq, 
                 chromosomes.chromosome, chromosomes.accession,
                 gff.gene_name, gff.gene_id
             FROM sequences
             JOIN metadata ON sequences.sample = metadata.sample
-            JOIN gff ON sequences.transcript_id = gff.feature_id AND metadata.lineage = gff.lineage
+            JOIN gff ON sequences.feature_id = gff.feature_id AND metadata.lineage = gff.lineage
             JOIN chromosomes ON gff.accession = chromosomes.accession
             WHERE metadata.dataset IN {dataset}"""
     if gene_id and not sample:
         query += f"""
-            AND transcript_id IN (
+            AND sequences.feature_id IN (
                 SELECT DISTINCT feature_id
                 FROM gff
                 WHERE gene_id IN {gene_id}
@@ -402,7 +402,7 @@ def sequences(db, dataset=None, seq_type='DNA', sample=None, strain=None, lineag
             AND seq_type = '{seq_type}'"""
     elif gene_id and sample:
         query += f"""
-            AND transcript_id IN (
+            AND sequences.feature_id IN (
                 SELECT DISTINCT feature_id
                 FROM gff
                 WHERE gene_id IN {gene_id}
@@ -449,24 +449,24 @@ def ref_sequences(db, seq_type='DNA', lineage=None, gene_id=None, gene_name=None
         lineage = tuple(lineage)
 
     query = f"""
-        SELECT ref_sequences.lineage, ref_sequences.transcript_id, ref_sequences.seq,
+        SELECT ref_sequences.lineage, ref_sequences.feature_id, ref_sequences.seq,
                 gff.gene_id, gff.gene_name,
                 chromosomes.chromosome, chromosomes.accession,
         FROM ref_sequences
-        JOIN gff ON ref_sequences.transcript_id = gff.feature_id AND gff.lineage = ref_sequences.lineage
+        JOIN gff ON ref_sequences.feature_id = gff.feature_id AND gff.lineage = ref_sequences.lineage
         JOIN chromosomes ON gff.accession = chromosomes.accession
         WHERE seq_type = '{seq_type}'
             """
     if gene_id and not lineage:
         query += f"""
-            AND transcript_id IN (
+            AND ref_sequences.feature_id IN (
                 SELECT DISTINCT feature_id
                 FROM gff
                 WHERE gene_id IN {gene_id}
             )"""
     elif gene_id and lineage:
         query += f"""
-            AND transcript_id IN (
+            AND ref_sequences.feature_id IN (
                 SELECT DISTINCT feature_id
                 FROM gff
                 WHERE gene_id IN {gene_id}
@@ -487,9 +487,9 @@ def df_to_seqrecord(df):
     for index, row in df.iterrows():
         seq = Seq(row['seq'])
         if 'sample' in df.columns:
-            record = SeqRecord(seq, id=f"{row['strain']}|{row['transcript_id']}", description=f"sample={row['sample']} gene_id={row['gene_id']} gene_name={row['gene_name']} chromosome={row['chromosome']} accession={row['accession']}")
+            record = SeqRecord(seq, id=f"{row['strain']}|{row['feature_id']}", description=f"sample={row['sample']} gene_id={row['gene_id']} gene_name={row['gene_name']} chromosome={row['chromosome']} accession={row['accession']}")
         elif 'lineage' in df.columns:
-            record = SeqRecord(seq, id=f"{row['lineage']}|{row['transcript_id']}", description=f"lineage={row['lineage']} gene_id={row['gene_id']} gene_name={row['gene_name']} chromosome={row['chromosome']} accession={row['accession']}")
+            record = SeqRecord(seq, id=f"{row['lineage']}|{row['feature_id']}", description=f"lineage={row['lineage']} gene_id={row['gene_id']} gene_name={row['gene_name']} chromosome={row['chromosome']} accession={row['accession']}")
         records.append(record)
     return records
 
