@@ -532,6 +532,7 @@ def depth_vs_cnvs_plots_input(wildcards):
     s = METADATA_TABLE.loc[wildcards.sample,]
     return {
         "cnv": SAMPLES_DIR / "cnv" / s["sample"] / "cnv_chromosomes.tsv",
+        "chroms": INT_REFS_DIR / s["lineage"] / "chromosomes.csv",
     }
 
 

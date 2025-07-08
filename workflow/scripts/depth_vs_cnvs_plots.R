@@ -8,7 +8,8 @@ suppressPackageStartupMessages(library(ggrepel))
 
 print("Reading files...")
 cnv_chromosomes <- read.delim(snakemake@input[[1]], sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
-metadata <- read.delim(snakemake@input[[2]], sep = ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
+chrom_names <- read.csv(snakemake@input[[2]],sep= ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
+metadata <- read.delim(snakemake@input[[3]], sep = ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
 sample <- snakemake@wildcards$sample
 
 print("Obtaining lineage of sample...")
@@ -18,6 +19,9 @@ strain_name <- as.character(metadata$strain[metadata$sample == sample])
 
 chrom_metrics <- cnv_chromosomes %>%
     filter(cnv != "single_copy")
+
+chrom_metrics <- chrom_metrics %>%
+    left_join(chrom_names, by = "accession")
 
 chrom_metrics$chromosome <- factor(chrom_metrics$chromosome)
 

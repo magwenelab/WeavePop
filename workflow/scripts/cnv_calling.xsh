@@ -179,7 +179,7 @@ def cnv_calling(depth_input, repeats_input, annotation_input, chromosome_input, 
     regions_per_chromosome = round(regions_per_chromosome, 2)
 
     print("Reorganizing columns...")
-    regions_per_chromosome = regions_per_chromosome[['sample', 'lineage', 'accession', 'chromosome', 'length', 'cnv', 'n_regions', 'total_size_regions', 'coverage_percent', 'span_percent', 'size_smallest_region', 'size_largest_region', 'std_regions_size', 'norm_depth_mean', 'norm_depth_median', 'smooth_depth_mean', 'smooth_depth_median']]
+    regions_per_chromosome = regions_per_chromosome[['sample', 'cnv', 'accession', 'n_regions', 'total_size_regions', 'coverage_percent', 'span_percent', 'size_smallest_region', 'size_largest_region', 'std_regions_size', 'norm_depth_mean', 'norm_depth_median', 'smooth_depth_mean', 'smooth_depth_median']]
 
     print("Adding chromosome depth to summary...")
     regions_per_chromosome = pd.merge(regions_per_chromosome, chromosome_depth, how='left', left_on='accession', right_on='accession')
