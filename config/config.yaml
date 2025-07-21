@@ -49,7 +49,7 @@ depth_quality:
     filter: False # True to exclude samples flagged by the thresholds below.
     min_percent_coverage: 90 # If the percent of genome covered by good quality read alignments is below this value, the sample is flagged.
     min_percent_MAPQ: 90 # If the percent of high-quality reads is below this value, the sample is flagged.
-    min_percent_genome-wide_depth: 10 # If genome-wide depth is below this value, the sample is flagged.
+    min_genome-wide_depth: 10 # If genome-wide depth is below this value, the sample is flagged.
     min_percent_mapped_reads: 75 # If the percent of mapped reads is below this value, the sample is flagged.
   mosdepth: 
     threads: 12  # Number of threads for mosdepth.

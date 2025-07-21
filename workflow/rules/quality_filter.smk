@@ -97,7 +97,7 @@ rule join_mapping_stats:
         DATASET_DIR / "depth_quality" / "mapping_stats.tsv",
     params:
         min_depth=config["depth_quality"]["flag_quality"][
-            "min_percent_genome-wide_depth"
+            "min_genome-wide_depth"
         ],
         min_high_mapq=config["depth_quality"]["flag_quality"]["min_percent_MAPQ"],
         min_pm=config["depth_quality"]["flag_quality"]["min_percent_mapped_reads"],

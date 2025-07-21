@@ -106,7 +106,7 @@ if config["workflow"] == "analysis":
         include: "rules/annotation.smk"
         include: "rules/cnv.smk"
         include: "rules/snpeff.smk"
-        include: "rules/depth_quality_features.smk"
+        include: "rules/mapq_depth.smk"
 
         if config["cnv"]["repeats"]["use_container"]:
 
@@ -130,7 +130,7 @@ if config["workflow"] == "analysis":
             or config["cnv"]["activate"]
         ):
 
-            include: "rules/depth_quality_features.smk"
+            include: "rules/mapq_depth.smk"
 
         if config["snpeff"]["activate"]:
 
