@@ -16,7 +16,7 @@ min_coverage=snakemake.params.min_coverage
 print("Reading and concatenating files...")
 stats = pd.concat([pd.read_csv(f, sep="\t") for f in input])
 
-print(f"Minimum depth percentage: {min_depth}")
+print(f"Minimum genome-wide depth : {min_depth}")
 print(f"Minimum high MAPQ percentage: {min_high_mapq}")
 print(f"Minimum mapped percentage: {min_pm}")
 print(f"Minimum coverage percentage: {min_coverage}")
