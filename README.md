@@ -45,9 +45,9 @@ Install Mamba or Miniconda following the instructions on their webpage:
 
 After successfully installing conda, add the necessary channels and set strict channel priority by running:  
 ```
-conda config --add defaults
-conda config --add conda-forge
-conda config --add bioconda
+conda config --add channels defaults
+conda config --add channels conda-forge
+conda config --add channels bioconda
 conda config --set channel_priority strict
 ```
 
