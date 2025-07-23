@@ -4,6 +4,6 @@ channels:
   - bioconda
   - defaults
 dependencies:
-  - snakemake-minimal=8.18.2
-  - snakemake-executor-plugin-slurm=0.15.0
-  - pandas=2.2.2
+  - snakemake-minimal=9.8.1
+  - snakemake-executor-plugin-slurm=1.6.0
+  - pandas=2.3.1
