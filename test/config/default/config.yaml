@@ -9,7 +9,6 @@ keep-going: False
 rerun-incomplete: True
 printshellcmds: True
 dry-run: False
-conda-frontend: mamba
 
 # Config you should not change unless you know what you are doing
 use-conda: True
