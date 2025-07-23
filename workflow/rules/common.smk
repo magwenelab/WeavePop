@@ -207,6 +207,10 @@ if os.path.exists(METADATA_ORIGINAL_FILE):
         print("Metadata file is empty.", flush=True)
         print("Exiting...", flush=True)
         exit(1)
+    if METADATA_ORIGINAL['sample'].duplicated().any():
+        print("Metadata file contains duplicated sample names.", flush=True)
+        print("Exiting...", flush=True)
+        exit(1)
 else:
     print(f"Metadata file {METADATA_ORIGINAL_FILE} not found.", flush=True)
     print("Exiting...", flush=True)
