@@ -125,7 +125,7 @@ rule join_ref_annotations:
     input:
         input_join_ref_annotations,
     output:
-        INT_REFS_DIR / "all_lineages.gff.tsv",
+        INT_REFS_DIR / "all_lineages_gff.tsv",
     log:
         LOGS / "join_datasets" / "join_ref_annotations.log",
     resources:
