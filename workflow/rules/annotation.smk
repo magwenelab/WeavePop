@@ -20,15 +20,15 @@ rule liftoff:
         / "{sample}"
         / "liftoff"
         / "unmapped_features.txt",
-        intermediate=directory(
+        intermediate=temp(directory(
             INT_SAMPLES_DIR
             / "annotation"
             / "{sample}"
             / "liftoff"
             / "intermediate_liftoff"
-        ),
-        fai=SAMPLES_DIR / "snippy" / "{sample}" / "snps.consensus.fa.fai",
-        mmi=SAMPLES_DIR / "snippy" / "{sample}" / "snps.consensus.fa.mmi",
+        )),
+        fai=temp(SAMPLES_DIR / "snippy" / "{sample}" / "snps.consensus.fa.fai"),
+        mmi=temp(SAMPLES_DIR / "snippy" / "{sample}" / "snps.consensus.fa.mmi"),
     params:
         extra=config["annotation"]["liftoff"]["extra"],
         outpath=INT_SAMPLES_DIR / "annotation" / "{sample}" / "liftoff",
