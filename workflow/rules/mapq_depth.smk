@@ -8,7 +8,7 @@ rule mapq:
         INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "snps_good.bam",
         rules.mosdepth.output.bed,
     output:
-        bed=INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "mapq.bed",
+        bed=temp(INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "mapq.bed"),
         window_bed=INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "mapq_by_window.bed",
     log:
         LOGS / "samples" / "depth_quality" / "mapq_{sample}.log",

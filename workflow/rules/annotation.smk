@@ -8,6 +8,7 @@ rule liftoff:
         unpack(liftoff_input),
     output:
         ref_gff=INT_SAMPLES_DIR / "annotation" / "{sample}" / "liftoff" / "ref.gff",
+        ref_gff_db=temp(INT_SAMPLES_DIR / "annotation" / "{sample}" / "liftoff" / "ref.gff_db"),
         gff=INT_SAMPLES_DIR / "annotation" / "{sample}" / "liftoff" / "lifted.gff",
         polished=INT_SAMPLES_DIR
         / "annotation"
@@ -63,7 +64,7 @@ rule add_intergenic:
         gff=rules.liftoff.output.polished,
         config=rules.agat_config.output,
     output:
-        gff=INT_SAMPLES_DIR / "annotation" / "{sample}" / "intergenic.gff",
+        gff=temp(INT_SAMPLES_DIR / "annotation" / "{sample}" / "intergenic.gff"),
     log:
         LOGS / "samples" / "annotation" / "add_intergenic_{sample}.log",
     resources:
@@ -83,7 +84,7 @@ rule add_introns:
         gff=rules.add_intergenic.output.gff,
         config=rules.agat_config.output,
     output:
-        gff=INT_SAMPLES_DIR / "annotation" / "{sample}" / "interg_introns.gff",
+        gff=temp(INT_SAMPLES_DIR / "annotation" / "{sample}" / "interg_introns.gff"),
     log:
         LOGS / "samples" / "annotation" / "add_introns_{sample}.log",
     resources:
@@ -103,7 +104,7 @@ rule annotation_gff2tsv:
         gff=rules.add_introns.output.gff,
         config=rules.agat_config.output,
     output:
-        tsv=INT_SAMPLES_DIR / "annotation" / "{sample}" / "annotation.gff.tsv",
+        tsv=temp(INT_SAMPLES_DIR / "annotation" / "{sample}" / "annotation.gff.tsv"),
     log:
         LOGS / "samples" / "annotation" / "annotation_gff2tsv_{sample}.log",
     resources:
