@@ -13,12 +13,8 @@ rule loci:
         LOGS / "references" / "plots" / "loci_{lineage}.log",
     conda:
         "../envs/samtools.yaml"
-    shell:
-        "xonsh workflow/scripts/loci.xsh "
-        "-l {input.loci} "
-        "-g {input.gff} "
-        "-o {output} "
-        "&> {log}"
+    script:
+        "../scripts/loci.py"
 
 
 # =================================================================================================

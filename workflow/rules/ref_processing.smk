@@ -73,12 +73,9 @@ rule ref_add_repeats:
         tmpdir=TEMPDIR,
     conda:
         "../envs/samtools.yaml"
-    shell:
-        "xonsh workflow/scripts/ref_add_repeats.xsh "
-        "-g {input.gff} "
-        "-r {input.repeats} "
-        "-o {output} "
-        "&> {log}"
+    script:
+        "../scripts/ref_add_repeats.xsh"
+
 
 
 rule ref_gff2tsv_2:
@@ -176,17 +173,14 @@ rule ref_cds2csv:
         csv=INT_REFS_DIR / "{lineage}" / "{lineage}.cds.csv",
     log:
         LOGS / "references" / "annotation" / "ref_cds2csv_{lineage}.log",
+    params:
+        seq_type="DNA",
     resources:
         tmpdir=TEMPDIR,
     conda:
         "../envs/variants.yaml"
-    shell:
-        "python workflow/scripts/fasta_to_csv.py "
-        "-f {input.fa} "
-        "-l {wildcards.lineage} "
-        "-t DNA "
-        "-o {output.csv} "
-        "&> {log}"
+    script:
+        "../scripts/fasta_to_csv.py"
 
 
 rule ref_prots2csv:
@@ -196,14 +190,11 @@ rule ref_prots2csv:
         csv=INT_REFS_DIR / "{lineage}" / "{lineage}.prots.csv",
     log:
         LOGS / "references" / "annotation" / "ref_prots2csv_{lineage}.log",
+    params:
+        seq_type="PROTEIN",
     resources:
         tmpdir=TEMPDIR,
     conda:
         "../envs/variants.yaml"
-    shell:
-        "python workflow/scripts/fasta_to_csv.py "
-        "-f {input.fa} "
-        "-l {wildcards.lineage} "
-        "-t PROTEIN "
-        "-o {output.csv} "
-        "&> {log}"
+    script:
+        "../scripts/fasta_to_csv.py"

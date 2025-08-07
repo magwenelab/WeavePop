@@ -42,11 +42,5 @@ rule mapq_depth:
         tmpdir=TEMPDIR,
     conda:
         "../envs/samtools.yaml"
-    shell:
-        "xonsh workflow/scripts/mapq_depth.xsh "
-        "-mi {input.mapqbed} "
-        "-di {input.depthbed} "
-        "-gi {input.gff} "
-        "-sp {wildcards.sample} "
-        "-dmo {output.depthmapq} "
-        "-o {output.tsv} &> {log}"
+    script:
+        "../scripts/mapq_depth.xsh"

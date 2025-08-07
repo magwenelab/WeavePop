@@ -199,17 +199,14 @@ rule cds2csv:
         csv=INT_SAMPLES_DIR / "annotation" / "{sample}" / "cds.csv",
     log:
         LOGS / "samples" / "annotation" / "cds2csv_{sample}.log",
+    params:
+        seq_type="DNA",
     resources:
         tmpdir=TEMPDIR,
     conda:
         "../envs/variants.yaml"
-    shell:
-        "python workflow/scripts/fasta_to_csv.py "
-        "-f {input.fa} "
-        "-s {wildcards.sample} "
-        "-t DNA "
-        "-o {output.csv} "
-        "&> {log}"
+    script:
+        "../scripts/fasta_to_csv.py"
 
 
 rule prots2csv:
@@ -219,14 +216,11 @@ rule prots2csv:
         csv=INT_SAMPLES_DIR / "annotation" / "{sample}" / "proteins.csv",
     log:
         LOGS / "samples" / "annotation" / "prots2csv_{sample}.log",
+    params:
+        seq_type="PROTEIN",
     resources:
         tmpdir=TEMPDIR,
     conda:
         "../envs/variants.yaml"
-    shell:
-        "python workflow/scripts/fasta_to_csv.py "
-        "-f {input.fa} "
-        "-s {wildcards.sample} "
-        "-t PROTEIN "
-        "-o {output.csv} "
-        "&> {log}"
+    script:
+        "../scripts/fasta_to_csv.py"

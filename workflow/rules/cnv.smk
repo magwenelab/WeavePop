@@ -16,13 +16,8 @@ rule depth_by_windows:
         tmpdir=TEMPDIR,
     conda:
         "../envs/samtools.yaml"
-    shell:
-        "xonsh workflow/scripts/depth_by_windows.xsh "
-        "-di {input.depth} "
-        "-do {output.windows} "
-        "-ss {params.smoothing_size} "
-        "-sm {wildcards.sample} "
-        "&> {log}"
+    script:
+        "../scripts/depth_by_windows.py"
 
 
 # =================================================================================================
@@ -45,15 +40,5 @@ rule cnv_calling:
         tmpdir=TEMPDIR,
     conda:
         "../envs/samtools.yaml"
-    shell:
-        "xonsh workflow/scripts/cnv_calling.xsh "
-        "-di {input.depth} "
-        "-ri {input.repeats} "
-        "-ai {input.annotation} "
-        "-ci {input.chrom_length} "
-        "-co {output.cnvs} "
-        "-mo {output.chrom_cnvs} "
-        "-sp {wildcards.sample} "
-        "-wp {params.window_size} "
-        "-dp {params.depth_threshold} "
-        "-t {resources.tmpdir} &> {log}"
+    script:
+        "../scripts/cnv_calling.xsh"
