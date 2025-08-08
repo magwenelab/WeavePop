@@ -4,8 +4,8 @@ log_file = snakemake.log[0]
 sys.stdout = open(log_file, 'a')
 sys.stderr = sys.stdout
 
-import pandas as pd
 import io
+import pandas as pd
 import numpy as np
 from pathlib import Path
 from itertools import product

@@ -1,12 +1,10 @@
-
 import sys
-import pandas as pd
-from pathlib import Path
 
 log_file=snakemake.log[0]
 sys.stdout = open(log_file, 'a')
 sys.stderr = sys.stdout
 
+import pandas as pd
 
 lin_gff=snakemake.input[0]
 locifile=snakemake.input[1]

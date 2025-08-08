@@ -4,9 +4,9 @@ log_file = snakemake.log[0]
 sys.stdout = open(log_file, 'a')
 sys.stderr = sys.stdout
 
-import pandas as pd
 import io
 from pathlib import Path
+import pandas as pd
 
 gff_input=snakemake.input.gff
 repeats_input=snakemake.input.repeats

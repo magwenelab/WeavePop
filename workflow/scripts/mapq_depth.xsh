@@ -4,8 +4,8 @@ log_file = snakemake.log[0]
 sys.stdout = open(log_file, 'a')
 sys.stderr = sys.stdout
 
-import pandas as pd
 from pathlib import Path  
+import pandas as pd
 
 mapqbed=snakemake.input.mapqbed
 depthbed=snakemake.input.depthbed

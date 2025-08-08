@@ -4,11 +4,10 @@ log_file=snakemake.log[0]
 sys.stdout = open(log_file, 'a')
 sys.stderr = sys.stdout
 
-import pandas as pd
-import click
 import io
 import os
 import re
+import pandas as pd
 
 vcf_files=snakemake.input.vcfs
 

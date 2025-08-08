@@ -5,9 +5,8 @@ sys.stdout = open(log_file, 'a')
 sys.stderr = sys.stdout
 
 import pandas as pd
-import io
-from scipy import ndimage
 import numpy as np
+from scipy import ndimage
 
 depth_input=snakemake.input.depth
 depth_output=snakemake.output.windows
