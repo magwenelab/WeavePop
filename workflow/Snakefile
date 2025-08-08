@@ -63,7 +63,7 @@ if executor != "slurm":
     sys.stderr = sys.stdout
 
 # =================================================================================================
-#   Define names of directories
+#   Define names of directories and workflow logo
 # =================================================================================================
 
 SAMPLES_DIR_NAME = "01.Samples"
@@ -71,6 +71,15 @@ DATASET_DIR_NAME = "02.Dataset"
 REFS_DIR_NAME = "03.References"
 INTDIR_NAME = "04.Intermediate_files"
 TEMPDIR_NAME = "04.Temporary_files"
+
+weavepop_logo = r"""
+    __        __                   ____             
+    \ \      / /__  __ ___   _____|  _ \ ___  _ __  
+     \ \ /\ / / _ \/ _` \ \ / / _ \ |_) / _ \| '_ \ 
+      \ V  V /  __/ (_| |\ V /  __/  __/ (_) | |_) |
+       \_/\_/ \___|\__,_| \_/ \___|_|   \___/| .__/ 
+                                             |_|    
+    """
 
 # =================================================================================================
 #   Load rules
@@ -167,24 +176,15 @@ elif config["workflow"] == "join_datasets":
 
 
 onsuccess:
-    print(
-        r"""
-                            __        __                   ____
-                            \ \      / /__  __ ___   _____|  _ \ ___  _ __
-                             \ \ /\ / / _ \/ _` \ \ / / _ \ |_) / _ \| '_ \
-                              \ V  V /  __/ (_| |\ V /  __/  __/ (_) | |_) |
-                               \_/\_/ \___|\__,_| \_/ \___|_|   \___/| .__/
-                                                                     |_|
-                            """,
-        flush=True,
-    )
-
-
+    print(weavepop_logo, flush=True)
     if config["workflow"] == "analysis":
         print("The analysis workflow finished successfully!", flush=True)
         original_metadata = METADATA_UNFILTERED
         filtered_metadata = pd.read_csv(rules.quality_filter.output.metadata, header=0)
-        if original_metadata["sample"].nunique() == filtered_metadata["sample"].nunique():
+        if (
+            original_metadata["sample"].nunique()
+            == filtered_metadata["sample"].nunique()
+        ):
             print("No samples were removed.", flush=True)
         else:
             print(
@@ -207,17 +207,7 @@ onsuccess:
 
 
 onerror:
-    print(
-        r"""
-                            __        __                   ____
-                            \ \      / /__  __ ___   _____|  _ \ ___  _ __
-                             \ \ /\ / / _ \/ _` \ \ / / _ \ |_) / _ \| '_ \
-                              \ V  V /  __/ (_| |\ V /  __/  __/ (_) | |_) |
-                               \_/\_/ \___|\__,_| \_/ \___|_|   \___/| .__/
-                                                                     |_|
-                            """,
-        flush=True,
-    )
+    print(weavepop_logo, flush=True)
     print("An error occurred during the workflow execution.", flush=True)
     print(
         "Above, find the rule that failed and check its log file for error details.",
