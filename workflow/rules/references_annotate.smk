@@ -95,12 +95,8 @@ rule main_ref_recreate_ids:
         LOGS / "references" / "annotation" / "main_ref_recreate_ids.log",
     conda:
         "../envs/samtools.yaml"
-    shell:
-        "python workflow/scripts/recreate_ids.py "
-        "-i {input.tsv} "
-        "-og {output.gff} "
-        "-ot {output.tsv} "
-        "&> {log}"
+    script:
+        "../scripts/recreate_ids.py"
 
 
 rule main_ref_symlinks:

@@ -660,7 +660,7 @@ def get_cnv_chroms(db, dataset = None, lineage=None, sample=None, strain=None, c
         
     query = f"""
         SELECT metadata.strain, metadata.sample, metadata.lineage, 
-            cnv_chroms.chromosome, cnv_chroms.accession, cnv_chroms.length,
+            chromosomes.chromosome, chromosomes.accession, chromosomes.length,
             cnv_chroms.cnv, cnv_chroms.n_regions,
             cnv_chroms.total_size_regions, cnv_chroms.coverage_percent,
             cnv_chroms.size_smallest_region, cnv_chroms.size_largest_region,
@@ -670,6 +670,7 @@ def get_cnv_chroms(db, dataset = None, lineage=None, sample=None, strain=None, c
             cnv_chroms.norm_chrom_median,
             metadata.dataset
         FROM cnv_chroms
+        JOIN chromosomes ON cnv_chroms.accession = chromosomes.accession
         JOIN metadata ON cnv_chroms.sample = metadata.sample
         WHERE metadata.dataset IN {dataset}
         """
@@ -680,7 +681,7 @@ def get_cnv_chroms(db, dataset = None, lineage=None, sample=None, strain=None, c
     if strain:
         query += f"AND metadata.strain IN {strain}"
     if chromosome:
-        query += f"AND cnv_chroms.chromosome IN {chromosome} "
+        query += f"AND chromosomes.chromosome IN {chromosome} "
     if cnv:
         query += f"AND cnv_chroms.cnv IN {cnv} "
     if min_coverage:

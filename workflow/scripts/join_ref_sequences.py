@@ -4,8 +4,8 @@ log_file=snakemake.log[0]
 sys.stdout = open(log_file, "a")
 sys.stderr = sys.stdout
 
-from pathlib import Path
 import pandas as pd
+from pathlib import Path
 
 input_cds = snakemake.input.cds
 input_prots = snakemake.input.prots

@@ -6,7 +6,6 @@ sys.stderr = sys.stdout
 
 from pathlib import Path
 import pandas as pd
-import logging
 
 input=snakemake.input
 output=snakemake.output[0]

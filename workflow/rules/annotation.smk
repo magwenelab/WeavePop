@@ -8,6 +8,7 @@ rule liftoff:
         unpack(liftoff_input),
     output:
         ref_gff=INT_SAMPLES_DIR / "annotation" / "{sample}" / "liftoff" / "ref.gff",
+        ref_gff_db=temp(INT_SAMPLES_DIR / "annotation" / "{sample}" / "liftoff" / "ref.gff_db"),
         gff=INT_SAMPLES_DIR / "annotation" / "{sample}" / "liftoff" / "lifted.gff",
         polished=INT_SAMPLES_DIR
         / "annotation"
@@ -19,15 +20,15 @@ rule liftoff:
         / "{sample}"
         / "liftoff"
         / "unmapped_features.txt",
-        intermediate=directory(
+        intermediate=temp(directory(
             INT_SAMPLES_DIR
             / "annotation"
             / "{sample}"
             / "liftoff"
             / "intermediate_liftoff"
-        ),
-        fai=SAMPLES_DIR / "snippy" / "{sample}" / "snps.consensus.fa.fai",
-        mmi=SAMPLES_DIR / "snippy" / "{sample}" / "snps.consensus.fa.mmi",
+        )),
+        fai=temp(SAMPLES_DIR / "snippy" / "{sample}" / "snps.consensus.fa.fai"),
+        mmi=temp(SAMPLES_DIR / "snippy" / "{sample}" / "snps.consensus.fa.mmi"),
     params:
         extra=config["annotation"]["liftoff"]["extra"],
         outpath=INT_SAMPLES_DIR / "annotation" / "{sample}" / "liftoff",
@@ -63,7 +64,7 @@ rule add_intergenic:
         gff=rules.liftoff.output.polished,
         config=rules.agat_config.output,
     output:
-        gff=INT_SAMPLES_DIR / "annotation" / "{sample}" / "intergenic.gff",
+        gff=temp(INT_SAMPLES_DIR / "annotation" / "{sample}" / "intergenic.gff"),
     log:
         LOGS / "samples" / "annotation" / "add_intergenic_{sample}.log",
     resources:
@@ -83,7 +84,7 @@ rule add_introns:
         gff=rules.add_intergenic.output.gff,
         config=rules.agat_config.output,
     output:
-        gff=INT_SAMPLES_DIR / "annotation" / "{sample}" / "interg_introns.gff",
+        gff=temp(INT_SAMPLES_DIR / "annotation" / "{sample}" / "interg_introns.gff"),
     log:
         LOGS / "samples" / "annotation" / "add_introns_{sample}.log",
     resources:
@@ -103,7 +104,7 @@ rule annotation_gff2tsv:
         gff=rules.add_introns.output.gff,
         config=rules.agat_config.output,
     output:
-        tsv=INT_SAMPLES_DIR / "annotation" / "{sample}" / "annotation.gff.tsv",
+        tsv=temp(INT_SAMPLES_DIR / "annotation" / "{sample}" / "annotation.gff.tsv"),
     log:
         LOGS / "samples" / "annotation" / "annotation_gff2tsv_{sample}.log",
     resources:
@@ -198,17 +199,14 @@ rule cds2csv:
         csv=INT_SAMPLES_DIR / "annotation" / "{sample}" / "cds.csv",
     log:
         LOGS / "samples" / "annotation" / "cds2csv_{sample}.log",
+    params:
+        seq_type="DNA",
     resources:
         tmpdir=TEMPDIR,
     conda:
         "../envs/variants.yaml"
-    shell:
-        "python workflow/scripts/fasta_to_csv.py "
-        "-f {input.fa} "
-        "-s {wildcards.sample} "
-        "-t DNA "
-        "-o {output.csv} "
-        "&> {log}"
+    script:
+        "../scripts/fasta_to_csv.py"
 
 
 rule prots2csv:
@@ -218,14 +216,11 @@ rule prots2csv:
         csv=INT_SAMPLES_DIR / "annotation" / "{sample}" / "proteins.csv",
     log:
         LOGS / "samples" / "annotation" / "prots2csv_{sample}.log",
+    params:
+        seq_type="PROTEIN",
     resources:
         tmpdir=TEMPDIR,
     conda:
         "../envs/variants.yaml"
-    shell:
-        "python workflow/scripts/fasta_to_csv.py "
-        "-f {input.fa} "
-        "-s {wildcards.sample} "
-        "-t PROTEIN "
-        "-o {output.csv} "
-        "&> {log}"
+    script:
+        "../scripts/fasta_to_csv.py"

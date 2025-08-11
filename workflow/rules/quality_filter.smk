@@ -7,11 +7,11 @@ rule bam_good:
     input:
         bam=rules.snippy.output.bam,
     output:
-        bam_good=INT_SAMPLES_DIR / "depth_quality" / "{unf_sample}" / "snps_good.bam",
-        bai_good=INT_SAMPLES_DIR
+        bam_good=temp(INT_SAMPLES_DIR / "depth_quality" / "{unf_sample}" / "snps_good.bam"),
+        bai_good=temp(INT_SAMPLES_DIR
         / "depth_quality"
         / "{unf_sample}"
-        / "snps_good.bam.bai",
+        / "snps_good.bam.bai"),
     params:
         min_mapq=config["depth_quality"]["flag_quality"]["min_mapq"],
     log:
@@ -40,13 +40,8 @@ rule depth_distribution:
         tmpdir=TEMPDIR,
     conda:
         "../envs/samtools.yaml"
-    shell:
-        "xonsh workflow/scripts/depth_distribution.xsh "
-        "-s {wildcards.unf_sample} "
-        "-b {input.bam} "
-        "-g {input.bam_good} "
-        "-do {output.distrib} "
-        "-so {output.summary} &> {log} "
+    script:
+        "../scripts/depth_distribution.xsh"
 
 
 # =================================================================================================
@@ -71,15 +66,9 @@ rule mapping_stats:
         tmpdir=TEMPDIR,
     conda:
         "../envs/samtools.yaml"
-    shell:
-        "xonsh workflow/scripts/mapping_stats.xsh "
-        "-s {wildcards.unf_sample} "
-        "-b {input.bam} "
-        "-d {input.depth} "
-        "-l {params.low_mapq} "
-        "-h {params.high_mapq} "
-        "-mq {params.min_mapq} "
-        "-o {output} &> {log}"
+    script:
+        "../scripts/mapping_stats.xsh"
+
 
 
 # =================================================================================================

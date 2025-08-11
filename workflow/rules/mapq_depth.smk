@@ -8,7 +8,7 @@ rule mapq:
         INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "snps_good.bam",
         rules.mosdepth.output.bed,
     output:
-        bed=INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "mapq.bed",
+        bed=temp(INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "mapq.bed"),
         window_bed=INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "mapq_by_window.bed",
     log:
         LOGS / "samples" / "depth_quality" / "mapq_{sample}.log",
@@ -42,11 +42,5 @@ rule mapq_depth:
         tmpdir=TEMPDIR,
     conda:
         "../envs/samtools.yaml"
-    shell:
-        "xonsh workflow/scripts/mapq_depth.xsh "
-        "-mi {input.mapqbed} "
-        "-di {input.depthbed} "
-        "-gi {input.gff} "
-        "-sp {wildcards.sample} "
-        "-dmo {output.depthmapq} "
-        "-o {output.tsv} &> {log}"
+    script:
+        "../scripts/mapq_depth.xsh"

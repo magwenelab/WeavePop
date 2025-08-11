@@ -125,7 +125,7 @@ rule join_ref_annotations:
     input:
         input_join_ref_annotations,
     output:
-        INT_REFS_DIR / "all_lineages.gff.tsv",
+        INT_REFS_DIR / "all_lineages_gff.tsv",
     log:
         LOGS / "join_datasets" / "join_ref_annotations.log",
     resources:
@@ -212,14 +212,8 @@ rule intersect_vcfs:
         tmpdir=TEMPDIR,
     conda:
         "../envs/variants.yaml"
-    shell:
-        "xonsh workflow/scripts/intersect_vcfs.xsh "
-        "-v {output.vcf} "
-        "-p {output.tsv} "
-        "-l {wildcards.lineage} "
-        "-t {params.tmp_dir} "
-        "{input.vcfs} "
-        "&> {log}"
+    script:
+        "../scripts/intersect_vcfs.xsh"
 
 
 rule snpeff:
@@ -279,16 +273,8 @@ rule extract_vcf_annotation:
         tmpdir=TEMPDIR,
     conda:
         "../envs/variants.yaml"
-    shell:
-        "xonsh workflow/scripts/extract_vcf_annotation.xsh "
-        "-i {input.vcf} "
-        "-g {input.tsv} "
-        "-e {output.effects} "
-        "-v {output.variants} "
-        "-f {output.lofs} "
-        "-n {output.nmds} "
-        "-l {wildcards.lineage} "
-        "&> {log}"
+    script:
+        "../scripts/extract_vcf_annotation.py"
 
 
 rule join_variant_annotation:
@@ -325,7 +311,7 @@ rule join_variant_annotation:
 # =================================================================================================
 
 
-rule complete_db:
+rule database:
     input:
         metadata=DATASET_DIR / "metadata.csv",
         chrom_names=DATASET_DIR / "chromosomes.csv",
@@ -341,27 +327,12 @@ rule complete_db:
         seqs=rules.join_sequences.output.sequences,
         ref_seqs=rules.join_ref_sequences.output.sequences,
     output:
-        DATASET_DIR / "database.db",
+        db=DATASET_DIR / "database.db",
     log:
         LOGS / "join_datasets" / "complete_db.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
         "../envs/variants.yaml"
-    shell:
-        "xonsh workflow/scripts/build_database.xsh "
-        "-m {input.metadata} "
-        "-ch {input.chrom_names} "
-        "-cnv {input.cnv} "
-        "-cnch {input.cnv_chromosomes} "
-        "-md {input.md} "
-        "-g {input.gffs} "
-        "-e {input.effects} "
-        "-v {input.variants} "
-        "-p {input.presence} "
-        "-l {input.lofs} "
-        "-n {input.nmds} "
-        "-s {input.seqs} "
-        "-r {input.ref_seqs} "
-        "-o {output} "
-        "&> {log}"
+    script:
+        "../scripts/database.py"

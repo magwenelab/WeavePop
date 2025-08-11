@@ -80,14 +80,8 @@ rule intersect_vcfs:
         tmpdir=TEMPDIR,
     conda:
         "../envs/variants.yaml"
-    shell:
-        "xonsh workflow/scripts/intersect_vcfs.xsh "
-        "-v {output.vcf} "
-        "-p {output.tsv} "
-        "-l {wildcards.lineage} "
-        "-t {params.tmp_dir} "
-        "{input.vcfs} "
-        "&> {log}"
+    script:
+        "../scripts/intersect_vcfs.xsh"
 
 
 rule snpeff:
@@ -134,13 +128,6 @@ rule extract_vcf_annotation:
         tmpdir=TEMPDIR,
     conda:
         "../envs/variants.yaml"
-    shell:
-        "xonsh workflow/scripts/extract_vcf_annotation.xsh "
-        "-i {input.vcf} "
-        "-g {input.tsv} "
-        "-e {output.effects} "
-        "-v {output.variants} "
-        "-f {output.lofs} "
-        "-n {output.nmds} "
-        "-l {wildcards.lineage} "
-        "&> {log}"
+    script:
+        "../scripts/extract_vcf_annotation.py"
+

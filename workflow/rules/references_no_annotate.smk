@@ -97,9 +97,5 @@ rule ref_recreate_ids:
         tmpdir=TEMPDIR,
     conda:
         "../envs/samtools.yaml"
-    shell:
-        "python workflow/scripts/recreate_ids.py "
-        "-i {input.tsv} "
-        "-og {output.gff} "
-        "-ot {output.tsv} "
-        "&> {log}"
+    script:
+        "../scripts/recreate_ids.py"

@@ -4,8 +4,8 @@ log_file=snakemake.log[0]
 sys.stdout = open(log_file, "a")
 sys.stderr = sys.stdout
 
-import pandas as pd
 import os
+import pandas as pd
 
 metadata_path=snakemake.input[0]
 lineages_path=snakemake.params[0]

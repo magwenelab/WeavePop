@@ -136,7 +136,7 @@ rule join_variant_annotation:
 # =================================================================================================
 
 
-rule complete_db:
+rule database:
     input:
         metadata=rules.quality_filter.output.metadata,
         chrom_names=rules.quality_filter.output.chromosomes,
@@ -152,26 +152,12 @@ rule complete_db:
         seqs=rules.join_sequences.output,
         ref_seqs=rules.join_ref_sequences.output.sequences,
     output:
-        DATASET_DIR / "database.db",
+        db=DATASET_DIR / "database.db",
     log:
-        LOGS / "dataset" / "complete_db.log",
+        LOGS / "dataset" / "database.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
         "../envs/variants.yaml"
-    shell:
-        "xonsh workflow/scripts/build_database.xsh "
-        "-m {input.metadata} "
-        "-ch {input.chrom_names} "
-        "-cnv {input.cnv} "
-        "-cnch {input.cnv_chromosomes} "
-        "-md {input.md} "
-        "-g {input.gffs} "
-        "-e {input.effects} "
-        "-v {input.variants} "
-        "-p {input.presence} "
-        "-l {input.lofs} "
-        "-n {input.nmds} "
-        "-s {input.seqs} "
-        "-r {input.ref_seqs} "
-        "-o {output} &> {log}"
+    script:
+        "../scripts/database.py"
