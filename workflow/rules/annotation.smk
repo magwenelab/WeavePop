@@ -8,7 +8,9 @@ rule liftoff:
         unpack(liftoff_input),
     output:
         ref_gff=INT_SAMPLES_DIR / "annotation" / "{sample}" / "liftoff" / "ref.gff",
-        ref_gff_db=temp(INT_SAMPLES_DIR / "annotation" / "{sample}" / "liftoff" / "ref.gff_db"),
+        ref_gff_db=temp(
+            INT_SAMPLES_DIR / "annotation" / "{sample}" / "liftoff" / "ref.gff_db"
+        ),
         gff=INT_SAMPLES_DIR / "annotation" / "{sample}" / "liftoff" / "lifted.gff",
         polished=INT_SAMPLES_DIR
         / "annotation"
@@ -20,13 +22,15 @@ rule liftoff:
         / "{sample}"
         / "liftoff"
         / "unmapped_features.txt",
-        intermediate=temp(directory(
-            INT_SAMPLES_DIR
-            / "annotation"
-            / "{sample}"
-            / "liftoff"
-            / "intermediate_liftoff"
-        )),
+        intermediate=temp(
+            directory(
+                INT_SAMPLES_DIR
+                / "annotation"
+                / "{sample}"
+                / "liftoff"
+                / "intermediate_liftoff"
+            )
+        ),
         fai=temp(SAMPLES_DIR / "snippy" / "{sample}" / "snps.consensus.fa.fai"),
         mmi=temp(SAMPLES_DIR / "snippy" / "{sample}" / "snps.consensus.fa.mmi"),
     params:

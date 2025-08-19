@@ -130,4 +130,3 @@ rule extract_vcf_annotation:
         "../envs/variants.yaml"
     script:
         "../scripts/extract_vcf_annotation.py"
-

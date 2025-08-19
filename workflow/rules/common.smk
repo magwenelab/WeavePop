@@ -12,7 +12,7 @@ import subprocess
 # =================================================================================================
 #   Print welcome message
 # =================================================================================================
-    
+
 print(weavepop_logo, flush=True)
 
 # =================================================================================================
@@ -197,7 +197,7 @@ if os.path.exists(METADATA_ORIGINAL_FILE):
         print("Metadata file is empty.", flush=True)
         print("Exiting...", flush=True)
         exit(1)
-    if METADATA_ORIGINAL['sample'].duplicated().any():
+    if METADATA_ORIGINAL["sample"].duplicated().any():
         print("Metadata file contains duplicated sample names.", flush=True)
         print("Exiting...", flush=True)
         exit(1)

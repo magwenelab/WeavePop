@@ -7,11 +7,12 @@ rule bam_good:
     input:
         bam=rules.snippy.output.bam,
     output:
-        bam_good=temp(INT_SAMPLES_DIR / "depth_quality" / "{unf_sample}" / "snps_good.bam"),
-        bai_good=temp(INT_SAMPLES_DIR
-        / "depth_quality"
-        / "{unf_sample}"
-        / "snps_good.bam.bai"),
+        bam_good=temp(
+            INT_SAMPLES_DIR / "depth_quality" / "{unf_sample}" / "snps_good.bam"
+        ),
+        bai_good=temp(
+            INT_SAMPLES_DIR / "depth_quality" / "{unf_sample}" / "snps_good.bam.bai"
+        ),
     params:
         min_mapq=config["depth_quality"]["flag_quality"]["min_mapq"],
     log:
@@ -70,7 +71,6 @@ rule mapping_stats:
         "../scripts/mapping_stats.xsh"
 
 
-
 # =================================================================================================
 #   Per dataset | Join mapping stats
 # =================================================================================================
@@ -85,9 +85,7 @@ rule join_mapping_stats:
     output:
         DATASET_DIR / "depth_quality" / "mapping_stats.tsv",
     params:
-        min_depth=config["depth_quality"]["flag_quality"][
-            "min_genome-wide_depth"
-        ],
+        min_depth=config["depth_quality"]["flag_quality"]["min_genome-wide_depth"],
         min_high_mapq=config["depth_quality"]["flag_quality"]["min_percent_MAPQ"],
         min_pm=config["depth_quality"]["flag_quality"]["min_percent_mapped_reads"],
         min_coverage=config["depth_quality"]["flag_quality"]["min_percent_coverage"],
