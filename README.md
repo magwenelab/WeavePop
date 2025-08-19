@@ -1,7 +1,7 @@
 
 # WeavePop: Workflow to Explore and Analyze Variants of Eukaryotic Populations
 
-[![Snakemake](https://img.shields.io/badge/snakemake-≥8.2.1-brightgreen.svg?style=flat)](https://snakemake.readthedocs.io)  
+[![Snakemake](https://img.shields.io/badge/snakemake-≥8.30.0-brightgreen.svg?style=flat)](https://snakemake.readthedocs.io)  
 
 WeavePop is a [Snakemake](https://snakemake.github.io/) workflow that maps short sequencing reads of multiple haploid eukaryotic genomes to selected reference genomes and analyzes the genomic variants between them.
 The core analysis is done by [Snippy](https://github.com/tseemann/snippy) to obtain alignment files (BAM), variant calling files (VCFs), and reference-based assemblies. 
