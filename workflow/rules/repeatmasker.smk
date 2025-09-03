@@ -264,6 +264,6 @@ rule repeat_masker_combine:
         """
         cat {input.simple} {input.complx} {input.known} {input.unknown} \
         | bedtools sort \
-        | bedtools merge -c 4 -o collapse \
+        | bedtools merge -c 4 -o distinct \
         | awk '{{print $1"\t"$2"\t"$3"\t"$4}}' > {output} 2> {log}
         """

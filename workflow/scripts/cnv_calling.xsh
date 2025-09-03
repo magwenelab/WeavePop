@@ -9,16 +9,19 @@ import pandas as pd
 import numpy as np
 from pathlib import Path
 from itertools import product
+from scipy import ndimage
 
 depth_input=snakemake.input.depth
 repeats_input=snakemake.input.repeats
 annotation_input=snakemake.input.annotation
 chromosome_input=snakemake.input.chrom_length
 
+depth_output=snakemake.output.windows
 cnv_output=snakemake.output.cnvs
 chromosome_metrics_output=snakemake.output.chrom_cnvs
 
 sample_name=snakemake.wildcards.sample
+smoothing_size=snakemake.params.smoothing_size
 window_size=snakemake.params.window_size
 depth_threshold=snakemake.params.depth_threshold
 
@@ -30,20 +33,35 @@ intersect = $(bedtools intersect -a @(depth_input) -b @(repeats_input) -wao 2>> 
 
 print("Reorganize intersection...")
 df = pd.read_csv(io.StringIO(intersect), sep='\t', header=None)
-header = ['bed_accession', 'bed_start', 'bed_end','bed_depth', 'bed_norm_depth', 'bed_smooth_depth', 'r_accession', 'r_start', 'r_end', 'r_type', 'overlap_bp'] 
+header = ['bed_accession', 'bed_start', 'bed_end','bed_depth', 'r_accession', 'r_start', 'r_end', 'repeat_types', 'repeat_overlap_bp'] 
 df.columns = header
 
 print("Calculate overlap in base pairs...")
 df = df.drop(['r_accession', 'r_start', 'r_end'], axis=1)
-df['r_type_mix'] = df.groupby(['bed_accession', 'bed_start', 'bed_end', 'bed_depth', 'bed_norm_depth', 'bed_smooth_depth'])['r_type'].transform(lambda x: ','.join(x))
-df['overlap_bp_sum'] = df.groupby(['bed_accession', 'bed_start', 'bed_end', 'bed_depth', 'bed_norm_depth', 'bed_smooth_depth'])['overlap_bp'].transform('sum')
-df = df.drop(['r_type', 'overlap_bp'], axis=1)
+df['repeat_types_mix'] = df.groupby(['bed_accession', 'bed_start', 'bed_end', 'bed_depth'])['repeat_types'].transform(lambda x: ','.join(x.str.split(',').explode().unique()))
+df['repeat_overlap_bp_sum'] = df.groupby(['bed_accession', 'bed_start', 'bed_end', 'bed_depth'])['repeat_overlap_bp'].transform('sum')
+df = df.drop(['repeat_types', 'repeat_overlap_bp'], axis=1)
 df = df.drop_duplicates()
-df.rename(columns={'r_type_mix': 'r_type', 'overlap_bp_sum': 'overlap_bp'}, inplace=True)    
+df.rename(columns={'repeat_types_mix': 'repeat_types', 'repeat_overlap_bp_sum': 'repeat_overlap_bp'}, inplace=True)    
 df = df.reset_index(drop=True)
 df.columns = df.columns.str.replace('bed_', '')
 
-print("Defining copy-number of regions...")
+print("Normalizing depth by median depth...")
+genome_median_depth = df['depth'].median()
+df.loc[:,'norm_depth'] = df['depth'] / genome_median_depth
+df.loc[:,'norm_depth'] = df.loc[:,'norm_depth']
+
+print("Smoothing depth values...")
+cov_array = np.array(df["norm_depth"])
+smoothed_array = ndimage.median_filter(cov_array, size=smoothing_size)
+df.loc[:,'smooth_depth']=pd.Series(smoothed_array)
+
+print("Reorganizing columns...")
+df = df[['accession', 'start', 'end', 'depth', 'norm_depth', 'smooth_depth', 'repeat_types', 'repeat_overlap_bp']]
+df = df.round(2)
+df.to_csv(depth_output, sep='\t', index=False, header=True)
+
+print("Defining copy-number of windows...")
 cnv_windows = pd.DataFrame()
 
 for accession in df['accession'].unique():
@@ -76,10 +94,10 @@ cnv_regions = cnv_windows.groupby(['accession','region_index']).agg(start=('star
                                                                     norm_depth=('norm_depth', 'median'), 
                                                                     smooth_depth=('smooth_depth', 'median'),
                                                                     cnv=('cnv', 'first'), 
-                                                                    overlap_bp=('overlap_bp', 'sum')).reset_index()
+                                                                    repeat_overlap_bp=('repeat_overlap_bp', 'sum')).reset_index()
 
 cnv_regions['region_size'] = cnv_regions['end'] - cnv_regions['start']
-cnv_regions['repeat_fraction'] = (cnv_regions['overlap_bp'] / cnv_regions['region_size']).round(2)
+cnv_regions['repeat_fraction'] = (cnv_regions['repeat_overlap_bp'] / cnv_regions['region_size']).round(2)
 cnv_regions = cnv_regions.drop(['region_index'], axis=1)
 
 print("Rounding values and adding sample names...")
@@ -101,10 +119,10 @@ annot_intersection = pd.read_csv(io.StringIO(annot_intersection), sep='\t', head
 temp_cnv_file.unlink()
 
 print("Naming and reording columns...")
-annot_header = ['accession', 'start', 'end', 'depth', 'norm_depth', 'smooth_depth', 'cnv', 'overlap_bp', 'region_size', 'repeat_fraction', 'sample', 'feature_id']
+annot_header = ['accession', 'start', 'end', 'depth', 'norm_depth', 'smooth_depth', 'cnv', 'repeat_overlap_bp', 'region_size', 'repeat_fraction', 'sample', 'feature_id']
 annot_intersection.columns = annot_header
 annot_intersection['feature_id'] = annot_intersection['feature_id'].replace('.', np.nan)
-col_order = ['sample', 'accession', 'start', 'end', 'cnv','region_size', 'depth', 'norm_depth', 'smooth_depth', 'repeat_fraction', 'overlap_bp', 'feature_id']
+col_order = ['sample', 'accession', 'start', 'end', 'cnv','region_size', 'depth', 'norm_depth', 'smooth_depth', 'repeat_fraction', 'repeat_overlap_bp', 'feature_id']
 annot_intersection = annot_intersection[col_order]
 
 print("Saving CNV regions to file...")

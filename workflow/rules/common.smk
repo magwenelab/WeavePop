@@ -555,10 +555,7 @@ def depth_distribution_plot_input(wildcards):
 def cnv_calling_input(wildcards):
     s = METADATA_TABLE.loc[wildcards.sample,]
     return {
-        "depth": INT_SAMPLES_DIR
-        / "depth_quality"
-        / s["sample"]
-        / "depth_by_windows.tsv",
+        "depth" : INT_SAMPLES_DIR / "mosdepth" / s["sample"] / "coverage_good.regions.bed.gz",
         "repeats": REFS_DIR / s["lineage"] / (s["lineage"] + "_repeats.bed"),
         "annotation": SAMPLES_DIR / "annotation" / s["sample"] / "annotation.gff.tsv",
         "chrom_length": INT_REFS_DIR / s["lineage"] / "chromosomes.csv",

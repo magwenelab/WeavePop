@@ -8,7 +8,7 @@ suppressPackageStartupMessages(library(patchwork))
 suppressPackageStartupMessages(library(ggbeeswarm))
 
 print("Reading files...")
-windows <- read.delim(snakemake@input[[1]], sep= "\t", col.names = c("accession", "start", "end", "depth", "norm_depth", "smooth_depth"), stringsAsFactors = TRUE, na = c("", "N/A"))
+windows <- read.delim(snakemake@input[[1]], sep= "\t", col.names = c("accession", "start", "end", "depth", "norm_depth", "smooth_depth", 'repeat_types', 'repeat_overlap_bp'), stringsAsFactors = TRUE, na = c("", "N/A"))
 chromosomes <- read.csv(snakemake@input[[2]], sep= ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
 metadata <- read.delim(snakemake@input[[3]], sep = ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
 sample <- snakemake@wildcards$sample
