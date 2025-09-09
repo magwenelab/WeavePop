@@ -249,7 +249,7 @@ rule symlink_ref_gff:
     input:
         input_symlink_ref_gff,
     output:
-        INT_REFS_DIR / "{lineage}.gff.tsv",
+        tsv=INT_REFS_DIR / "{lineage}.gff.tsv",
     log:
         LOGS / "join_datasets" / "symlink_ref_gff_{lineage}.log",
     conda:
@@ -261,7 +261,7 @@ rule symlink_ref_gff:
 rule extract_vcf_annotation:
     input:
         vcf=rules.snpeff.output.vcf,
-        tsv=rules.symlink_ref_gff.output,
+        tsv=rules.symlink_ref_gff.output.tsv,
     output:
         effects=INT_DATASET_DIR / "snpeff" / "{lineage}_effects.tsv",
         variants=INT_DATASET_DIR / "snpeff" / "{lineage}_variants.tsv",

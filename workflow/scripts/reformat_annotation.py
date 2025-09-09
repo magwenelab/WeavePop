@@ -46,9 +46,42 @@ if any(column in df.columns for column in ref_mutations):
     print(set(df['start_stop_mutations']))
     df = df.drop(columns=exising_ref_mutations)
     
-print("Renaming matches_ref_protein to indentical_to_main_ref if present...")
-if 'matches_ref_protein' in df.columns:
-    df.rename(columns={'matches_ref_protein': 'identical_to_main_ref'}, inplace=True)
+liftoff_cols = ['repeat_fraction',
+                'start_stop_mutations', 
+                'sequence_ID',
+                'copy_num_ID',
+                'extra_copy_number',
+                'coverage',
+                'low_identity',
+                'partial_mapping',
+                'valid_ORF',
+                'valid_ORFs']
+
+if version == "lineage":
+        
+    print("Adding ref_ suffix to liftoff columns...")
+    new_liftoff_cols = []
+    for col in liftoff_cols:
+        if col in df.columns:
+            df.rename(columns={col: 'ref_' + col}, inplace=True)
+            new_liftoff_cols.append('ref_' + col)
+    
+    print("Renaming matches_ref_protein to ref_indentical_to_main_ref if present...")
+    if 'matches_ref_protein' in df.columns:
+        df.rename(columns={'matches_ref_protein': 'ref_identical_to_main_ref'}, inplace=True)
+        new_liftoff_cols.insert(1,'ref_identical_to_main_ref')
+        
+
+    
+elif version == "sample":
+    new_liftoff_cols = [col for col in liftoff_cols if col in df.columns]
+    print("Renaming matches_ref_protein to indentical_to_ref if present...")
+    if 'matches_ref_protein' in df.columns:
+        df.rename(columns={'matches_ref_protein': 'identical_to_ref'}, inplace=True)
+        new_liftoff_cols.insert(0,'identical_to_ref')
+
+print("Liftoff columns after renaming:")
+print(new_liftoff_cols)
     
 print("Converting to GFF format...")
 attribute_columns = [
@@ -57,20 +90,13 @@ attribute_columns = [
 "Parent",
 "Name",
 "description",
-"old_ID",
-"sequence_ID",
-"copy_num_ID",
-"coverage",
-"extra_copy_number",
-"identical_to_main_ref",
-"start_stop_mutations",
-"low_identity",
-"partial_mapping",
-"valid_ORF",
-"valid_ORFs",
-"repeat_fraction"]
+"old_ID"] + new_liftoff_cols
 
 existing_attributes = [column for column in attribute_columns if column in df.columns]
+
+print("Creating attributes column...")
+print("Attributes to include in GFF:")
+print(existing_attributes)
 
 df_gff = df.copy()
 
@@ -93,18 +119,39 @@ df = df.rename(columns={
     'old_ID': 'old_feature_id'})
 
 df.columns = df.columns.str.lower()
+new_liftoff_cols = [col.lower() for col in new_liftoff_cols]
 
 print("Reordering columns...")
 existing_columns = df.columns.tolist()
+print("Existing columns:")
+print(existing_columns)
+
 priority_columns = [
     'accession', 'source_tag', 'primary_tag', 'start', 'end', 'score', 'strand', 'frame',
-    'feature_id', 'gene_id', 'parent', 'gene_name',  'description', 'old_feature_id',
-    'identical_to_main_ref', 'start_stop_mutations']
+    'feature_id', 'gene_id', 'parent', 'gene_name',  'description', 'old_feature_id']
 
 existing_priority_columns = [column for column in priority_columns if column in existing_columns]
 
-other_columns = [column for column in existing_columns if column not in existing_priority_columns]
-df = df[existing_priority_columns + other_columns]
+if version == "sample":
+    ref_liftoff_cols = ['ref_repeat_fraction',
+                        'ref_identical_to_main_ref',
+                        'ref_start_stop_mutations',
+                        'ref_sequence_id',
+                        'ref_copy_num_id',
+                        'ref_extra_copy_number',
+                        'ref_coverage',
+                        'ref_low_identity',
+                        'ref_partial_mapping',
+                        'ref_valid_orf',
+                        'ref_valid_orfs']
+    existing_ref_liftoff_cols = [column for column in ref_liftoff_cols if column in df.columns]
+    other_columns = [column for column in existing_columns if column not in existing_priority_columns and column not in existing_ref_liftoff_cols and column not in new_liftoff_cols]
+    other_columns = existing_ref_liftoff_cols + other_columns
+elif version == "lineage":
+    other_columns = [column for column in existing_columns if column not in existing_priority_columns and column not in new_liftoff_cols]
+    
+    
+df = df[existing_priority_columns + new_liftoff_cols + other_columns]
 
 if version == "lineage":
     print("Add new column with lineage name...")

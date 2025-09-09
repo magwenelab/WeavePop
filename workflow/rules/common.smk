@@ -453,9 +453,9 @@ d = {
     "refgenome": INT_REFS_DIR
     / METADATA_UNFILTERED["lineage"]
     / (METADATA_UNFILTERED["lineage"] + ".fasta"),
-    "refgff": INT_REFS_DIR
+    "refgff": REFS_DIR
     / METADATA_UNFILTERED["lineage"]
-    / (METADATA_UNFILTERED["lineage"] + "_interg_introns.gff"),
+    / (METADATA_UNFILTERED["lineage"] + ".gff"),
 }
 
 METADATA_TABLE = pd.DataFrame(data=d).set_index("sample", drop=False)

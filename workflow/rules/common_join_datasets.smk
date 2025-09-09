@@ -341,10 +341,9 @@ def input_symlink_ref_gff(wildcards):
         for lineage in lineages:
             gff = os.path.join(
                 dir,
-                INTDIR_NAME,
                 REFS_DIR_NAME,
                 lineage,
-                f"{lineage}_interg_introns.gff.tsv",
+                f"{lineage}.gff.tsv",
             )
             paths[lineage] = gff
     lineage_path = paths[wildcards.lineage]

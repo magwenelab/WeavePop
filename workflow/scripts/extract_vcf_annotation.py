@@ -92,13 +92,7 @@ print("Reading GFF file...")
 df_gff = pd.read_csv(gff_tsv, sep='\t', header = 0, low_memory=False)
 
 print("Getting gene IDs from GFF file...")  
-id_cols = ['locus', 'Name', 'ID']
-existing_id_cols = [col for col in id_cols if col in df_gff.columns]
-gff_ids = df_gff[existing_id_cols].drop_duplicates().copy()
-rename_dict = {'locus': 'gene_id', 'Name': 'gene_name', 'ID': 'feature_id'}
-existing_columns = gff_ids.columns
-filtered_rename_dict = {k: v for k, v in rename_dict.items() if k in existing_columns}
-gff_ids.rename(columns=filtered_rename_dict, inplace=True)
+gff_ids = df_gff[['gene_id', 'gene_name', 'feature_id']].drop_duplicates().copy()
 gff_ids = gff_ids.dropna(subset=['gene_id'])
 
 print("Subsetting effects table...")

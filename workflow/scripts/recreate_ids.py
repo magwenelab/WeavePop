@@ -30,7 +30,7 @@ keep_columns = ['seq_id',
 exisiting_columns = [column for column in keep_columns if column in df.columns]
 df = df[exisiting_columns]
 print("Adding source_tag...")
-df['source_tag'] = 'FungalPop'
+df['source_tag'] = 'WeavePop'
 print("Replacing protein_coding_gene by gene")
 df['primary_tag'] = df['primary_tag'].replace('protein_coding_gene', 'gene')
 print("Defining feature number and suffix...")
