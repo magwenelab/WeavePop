@@ -66,6 +66,8 @@ rule depth_by_windows_plots:
         metadata=METADATA_ORIGINAL_FILE,
     output:
         SAMPLES_DIR / "plots" / "{sample}" / "depth_by_windows.png",
+    params:
+        find_repeats=config["repeats"]["activate"],
     conda:
         "../envs/r.yaml"
     log:
@@ -94,6 +96,8 @@ rule mapq_plots:
         metadata=METADATA_ORIGINAL_FILE,
     output:
         SAMPLES_DIR / "plots" / "{sample}" / "mapq.png",
+    params:
+        find_repeats=config["repeats"]["activate"],
     conda:
         "../envs/r.yaml"
     log:

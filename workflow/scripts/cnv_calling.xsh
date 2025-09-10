@@ -12,7 +12,6 @@ from itertools import product
 from scipy import ndimage
 
 depth_input=snakemake.input.depth
-repeats_input=snakemake.input.repeats
 annotation_input=snakemake.input.annotation
 chromosome_input=snakemake.input.chrom_length
 
@@ -24,27 +23,37 @@ sample_name=snakemake.wildcards.sample
 smoothing_size=snakemake.params.smoothing_size
 window_size=snakemake.params.window_size
 depth_threshold=snakemake.params.depth_threshold
+find_repeats=snakemake.params.find_repeats
 
 temp_dir=snakemake.resources.tmpdir
 
+if find_repeats is True:
+    repeats_input=snakemake.input.repeats
+        
+    print("Merging overlapping repeats and intersect with windows...")
+    intersect = $(bedtools intersect -a @(depth_input) -b @(repeats_input) -wao 2>> @(log_file))
 
-print("Merging overlapping repeats and intersect with windows...")
-intersect = $(bedtools intersect -a @(depth_input) -b @(repeats_input) -wao 2>> @(log_file))
+    print("Reorganize intersection...")
+    df = pd.read_csv(io.StringIO(intersect), sep='\t', header=None)
+    header = ['bed_accession', 'bed_start', 'bed_end','bed_depth', 'r_accession', 'r_start', 'r_end','repeat_types', 'repeat_overlap_bp'] 
+    df.columns = header
+    df = df.drop(['r_accession', 'r_start', 'r_end'], axis=1)
 
-print("Reorganize intersection...")
-df = pd.read_csv(io.StringIO(intersect), sep='\t', header=None)
-header = ['bed_accession', 'bed_start', 'bed_end','bed_depth', 'r_accession', 'r_start', 'r_end', 'repeat_types', 'repeat_overlap_bp'] 
-df.columns = header
-
-print("Calculate overlap in base pairs...")
-df = df.drop(['r_accession', 'r_start', 'r_end'], axis=1)
-df['repeat_types_mix'] = df.groupby(['bed_accession', 'bed_start', 'bed_end', 'bed_depth'])['repeat_types'].transform(lambda x: ','.join(x.str.split(',').explode().unique()))
-df['repeat_overlap_bp_sum'] = df.groupby(['bed_accession', 'bed_start', 'bed_end', 'bed_depth'])['repeat_overlap_bp'].transform('sum')
-df = df.drop(['repeat_types', 'repeat_overlap_bp'], axis=1)
-df = df.drop_duplicates()
-df.rename(columns={'repeat_types_mix': 'repeat_types', 'repeat_overlap_bp_sum': 'repeat_overlap_bp'}, inplace=True)    
-df = df.reset_index(drop=True)
-df.columns = df.columns.str.replace('bed_', '')
+    print("Calculate overlap in base pairs...")
+    df['repeat_types_mix'] = df.groupby(['bed_accession', 'bed_start', 'bed_end', 'bed_depth'])['repeat_types'].transform(lambda x: ','.join(x.str.split(',').explode().unique()))
+    df['repeat_overlap_bp_sum'] = df.groupby(['bed_accession', 'bed_start', 'bed_end', 'bed_depth'])['repeat_overlap_bp'].transform('sum')
+    df = df.drop(['repeat_types', 'repeat_overlap_bp'], axis=1)
+    df = df.drop_duplicates()
+    df.rename(columns={'repeat_types_mix': 'repeat_types', 'repeat_overlap_bp_sum': 'repeat_overlap_bp'}, inplace=True)    
+    df = df.reset_index(drop=True)
+    df.columns = df.columns.str.replace('bed_', '')
+else:
+    print("No repeats file provided, skipping intersection with repeats...")
+    print("Reading depth file...")
+    df = pd.read_csv(depth_input, sep='\t', header=None)
+    df.columns = ['accession', 'start', 'end', 'depth']
+    df['repeat_types'] = "."
+    df['repeat_overlap_bp'] = 0
 
 print("Normalizing depth by median depth...")
 genome_median_depth = df['depth'].median()
@@ -170,7 +179,7 @@ summary['sample'] = sample_name
 print("Reading chromosome lengths...")
 chromosomes = pd.read_csv(chromosome_input, sep=',', header=0)
 
-lineage = Path(repeats_input).parent.name
+lineage = Path(chromosome_input).parent.name
 
 chromosomes = chromosomes[chromosomes['lineage'] == lineage]
 

@@ -370,47 +370,48 @@ if config["plotting"]["activate"]:
         print("Exiting...", flush=True)
         exit(1)
 
-# --Validate repeats file--------------------------------------------------------------------------
 
-if (
-    config["cnv"]["activate"]
-    or config["plotting"]["activate"]
-    or config["database"]["activate"]
-):
-    if config["repeats_database"]:
-        if os.path.isabs(config["repeats_database"]):
-            REPEATS_FILE = Path(config["repeats_database"])
+# --Validate repeats database file----------------------------------------------------------------
+
+print("", flush=True)
+print("Validating database of repetitive sequences...", flush=True)
+if config["repeats"]["activate"] is True:
+    if config["repeats"]["database"]:
+        if os.path.isabs(config["repeats"]["database"]):
+            REPEATS_FILE = Path(config["repeats"]["database"])
             REPEATS_FILE = os.path.relpath(REPEATS_FILE, Path(os.getcwd()))
         else:
             REPEATS_FILE = Path(
-                os.path.join(config["project_directory"], config["repeats_database"])
+                os.path.join(config["project_directory"], config["repeats"]["database"])
             )
         if not os.path.exists(REPEATS_FILE):
             print(
-                f"Database of repetitive sequences file {REPEATS_FILE} not found.",
+                f"    Database of repetitive sequences file {REPEATS_FILE} not found.",
                 flush=True,
             )
             print("Exiting...", flush=True)
             exit(1)
         else:
-            print("", flush=True)
             print(
-                f"Database of repetitive sequences file {REPEATS_FILE} found.",
+                f"    Database of repetitive sequences file {REPEATS_FILE} found.",
                 flush=True,
             )
     else:
-        print("", flush=True)
-        print("Database of repetitive sequences not provided.", flush=True)
-        if config["use_fake_database"]:
+        print("    Database of repetitive sequences not provided.", flush=True)
+        if config["repeats"]["use_fake_database"]:
             REPEATS_FILE = Path(os.path.join(INT_REFS_DIR, "fake_repeats.fasta"))
             REPEATS_FILE.parent.mkdir(parents=True, exist_ok=True)
             with open(REPEATS_FILE, "w") as f:
                 f.write(">fake\naaaaaaaaaaaaaa\n")
-            print(f"WARNING: Using a fake database file {REPEATS_FILE}.", flush=True)
-            print("The identification of repeats will not be accurate.", flush=True)
+            print(f"    WARNING: Using a fake database file {REPEATS_FILE}.", flush=True)
+            print("    The identification of repeats will not be accurate.", flush=True)
         else:
             print("Exiting...", flush=True)
             exit(1)
+else:
+    REPEATS_FILE = None
+    print("", flush=True)
+    print("    Identification of repetitive sequences is not required.", flush=True)
 
 print("", flush=True)
 print(
@@ -498,6 +499,13 @@ def depth_distribution_input(wildcards):
         / "snps_good.bam.bai",
     }
 
+def ref_add_repeats_input(wildcards):
+    d = {
+        "gff": rules.ref_add_introns.output.gff,
+    }
+    if config["repeats"]["activate"] is True:
+        d["repeats"] = REFS_DIR / "{lineage}" / "{lineage}_repeats.bed",
+    return d
 
 def depth_boxplot_input(wildcards):
     s = METADATA_TABLE.loc[wildcards.sample,]
@@ -512,16 +520,18 @@ def depth_boxplot_input(wildcards):
 
 def depth_by_windows_plots_input(wildcards):
     s = METADATA_TABLE.loc[wildcards.sample,]
-    return {
+    d = {
         "depth": INT_SAMPLES_DIR
         / "depth_quality"
         / s["sample"]
         / "depth_by_windows.tsv",
         "cnv": SAMPLES_DIR / "cnv" / s["sample"] / "cnv_calls.tsv",
-        "repeats": REFS_DIR / s["lineage"] / (s["lineage"] + "_repeats.bed"),
         "chroms": INT_REFS_DIR / s["lineage"] / "chromosomes.csv",
         "loci": INT_REFS_DIR / s["lineage"] / "loci_to_plot.tsv",
     }
+    if config["repeats"]["activate"] is True:
+        d["repeats"] = REFS_DIR / s["lineage"] / (s["lineage"] + "_repeats.bed"),
+    return d
 
 
 def depth_vs_cnvs_plots_input(wildcards):
@@ -534,13 +544,15 @@ def depth_vs_cnvs_plots_input(wildcards):
 
 def mapq_plot_input(wildcards):
     s = METADATA_TABLE.loc[wildcards.sample,]
-    return {
+    d = {
         "mapq": INT_SAMPLES_DIR / "depth_quality" / s["sample"] / "mapq_by_window.bed",
         "cnv": SAMPLES_DIR / "cnv" / s["sample"] / "cnv_calls.tsv",
-        "repeats": REFS_DIR / s["lineage"] / (s["lineage"] + "_repeats.bed"),
         "chroms": INT_REFS_DIR / s["lineage"] / "chromosomes.csv",
         "loci": INT_REFS_DIR / s["lineage"] / "loci_to_plot.tsv",
     }
+    if config["repeats"]["activate"] is True:
+        d["repeats"] = REFS_DIR / s["lineage"] / (s["lineage"] + "_repeats.bed"),
+    return d
 
 
 def depth_distribution_plot_input(wildcards):
@@ -556,12 +568,15 @@ def depth_distribution_plot_input(wildcards):
 
 def cnv_calling_input(wildcards):
     s = METADATA_TABLE.loc[wildcards.sample,]
-    return {
+    d = {
         "depth" : INT_SAMPLES_DIR / "mosdepth" / s["sample"] / "coverage_good.regions.bed.gz",
-        "repeats": REFS_DIR / s["lineage"] / (s["lineage"] + "_repeats.bed"),
         "annotation": SAMPLES_DIR / "annotation" / s["sample"] / "annotation.gff.tsv",
         "chrom_length": INT_REFS_DIR / s["lineage"] / "chromosomes.csv",
     }
+    if config["repeats"]["activate"] is True:
+        d["repeats"] = REFS_DIR / s["lineage"] / (s["lineage"] + "_repeats.bed"),
+
+    return d
 
 
 def intersect_vcfs_input(wildcards):

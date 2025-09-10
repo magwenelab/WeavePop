@@ -39,7 +39,7 @@ rule repeat_modeler:
         dir=lambda wildcards: INT_REFS_DIR / wildcards.lineage / "repeats",
     log:
         LOGS / "references" / "repeats" / "repeatmodeler_{lineage}.log",
-    threads: config["cnv"]["repeats"]["repeats_threads"]
+    threads: config["repeats"]["threads"]
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -84,7 +84,7 @@ rule repeat_masker_1:
         tmp=lambda wildcards: INT_REFS_DIR / wildcards.lineage / "repeats",
     log:
         LOGS / "references" / "repeats" / "repeatmasker1_{lineage}.log",
-    threads: config["cnv"]["repeats"]["repeats_threads"]
+    threads: config["repeats"]["threads"]
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -120,7 +120,7 @@ rule repeat_masker_2:
         tmp=lambda wildcards: INT_REFS_DIR / wildcards.lineage / "repeats",
     log:
         LOGS / "references" / "repeats" / "repeatmasker2_{lineage}.log",
-    threads: config["cnv"]["repeats"]["repeats_threads"]
+    threads: config["repeats"]["threads"]
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -152,7 +152,7 @@ rule repeat_masker_3:
         tmp=lambda wildcards: INT_REFS_DIR / wildcards.lineage / "repeats",
     log:
         LOGS / "references" / "repeats" / "repeatmasker3_{lineage}.log",
-    threads: config["cnv"]["repeats"]["repeats_threads"]
+    threads: config["repeats"]["threads"]
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -193,7 +193,7 @@ rule repeat_masker_4:
         tmp=lambda wildcards: INT_REFS_DIR / wildcards.lineage / "repeats",
     log:
         LOGS / "references" / "repeats" / "repeatmasker4_{lineage}.log",
-    threads: config["cnv"]["repeats"]["repeats_threads"]
+    threads: config["repeats"]["threads"]
     resources:
         tmpdir=TEMPDIR,
     conda:

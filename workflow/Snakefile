@@ -100,7 +100,7 @@ if config["workflow"] == "analysis":
     include: "rules/database.smk"
     include: "rules/ref_processing.smk"
 
-    # ------------------Reference annotation rules-------------------------------------------------
+    # ------------------Reference processing rules-------------------------------------------------
     if config["annotate_references"]["activate"]:
 
         include: "rules/references_annotate.smk"
@@ -108,6 +108,16 @@ if config["workflow"] == "analysis":
     if not config["annotate_references"]["activate"]:
 
         include: "rules/references_no_annotate.smk"
+    
+    if config["repeats"]["activate"]:
+
+        if config["repeats"]["use_container"]:
+            
+            include: "rules/repeatmasker_containers.smk"
+
+        else:
+
+            include: "rules/repeatmasker.smk"
 
     # ------------------Module rules---------------------------------------------------------------
     if config["database"]["activate"]:
@@ -116,14 +126,6 @@ if config["workflow"] == "analysis":
         include: "rules/cnv.smk"
         include: "rules/snpeff.smk"
         include: "rules/mapq_depth.smk"
-
-        if config["cnv"]["repeats"]["use_container"]:
-
-            include: "rules/repeatmasker_containers.smk"
-
-        else:
-
-            include: "rules/repeatmasker.smk"
 
     else:
         if (
@@ -149,13 +151,6 @@ if config["workflow"] == "analysis":
 
             include: "rules/cnv.smk"
 
-            if config["cnv"]["repeats"]["use_container"]:
-
-                include: "rules/repeatmasker_containers.smk"
-
-            else:
-
-                include: "rules/repeatmasker.smk"
 
     if config["plotting"]["activate"]:
 

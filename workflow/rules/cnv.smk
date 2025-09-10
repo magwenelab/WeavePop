@@ -14,6 +14,7 @@ rule cnv_calling:
         smoothing_size=config["cnv"]["smoothing_size"],
         window_size=config["depth_quality"]["mosdepth"]["window"],
         depth_threshold=config["cnv"]["depth_threshold"],
+        find_repeats=config["repeats"]["activate"],
     log:
         LOGS / "samples" / "cnv" / "cnv_calling_{sample}.log",
     resources:

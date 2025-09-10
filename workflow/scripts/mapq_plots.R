@@ -9,13 +9,26 @@ suppressPackageStartupMessages(library(scales))
 suppressPackageStartupMessages(library(ggnewscale))
 
 print("Reading files...")
-mapq<- read.delim(snakemake@input[[1]], header = FALSE, col.names = c("accession", "start", "end", "mapq"), stringsAsFactors = TRUE)
-cnv <- read.delim(snakemake@input[[2]], sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
-repeats_table <- read.delim(snakemake@input[[3]], sep= "\t", header = FALSE, col.names = c("accession", "start", "end", "repeat_type"), stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
-chrom_names <- read.csv(snakemake@input[[4]],sep= ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
-loci_table <- read.delim(snakemake@input[[5]], header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
-metadata <- read.delim(snakemake@input[[6]], sep = ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
+mapq<- read.delim(snakemake@input$mapq, header = FALSE, col.names = c("accession", "start", "end", "mapq"), stringsAsFactors = TRUE)
+cnv <- read.delim(snakemake@input$cnv, sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
+chrom_names <- read.csv(snakemake@input$chroms,sep= ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
+loci_table <- read.delim(snakemake@input$loci, header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
+metadata <- read.delim(snakemake@input$metadata, sep = ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
+
 sample <- snakemake@wildcards$sample
+find_repeats <- snakemake@params$find_repeats
+
+if (find_repeats == TRUE){
+  repeats_table <- read.delim(snakemake@input$repeats, sep= "\t", header = FALSE, col.names = c("accession", "start", "end", "repeat_type"), stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
+} else {
+  col_names <- c("accession", "start", "end", "repeat_type")
+  repeats_table <- data.frame(matrix(ncol = length(col_names), nrow = length(chrom_names$accession)))
+  colnames(repeats_table) <- col_names
+  repeats_table$accession <- chrom_names$accession
+  repeats_table$start <- 0
+  repeats_table$end <- 1
+  repeats_table$repeat_type <- "."
+}
 
 print("Obtaining lineage of sample...")
 

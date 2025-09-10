@@ -43,10 +43,11 @@ rule ref_add_introns:
 
 rule ref_add_repeats:
     input:
-        gff=rules.ref_add_introns.output.gff,
-        repeats=REFS_DIR / "{lineage}" / "{lineage}_repeats.bed",
+        unpack(ref_add_repeats_input),
     output:
         INT_REFS_DIR / "{lineage}" / "{lineage}_repeats.gff",
+    params:
+        find_repeats=config["repeats"]["activate"],
     log:
         LOGS / "references" / "ref_processing" / "ref_add_repeats_{lineage}.log",
     resources:
