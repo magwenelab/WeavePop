@@ -27,8 +27,14 @@ fastq_suffix2: "_R2.fastq.gz" # Suffix after the sample id of the reverse reads 
 
 references_directory: "data/references" # Path of directory with reference genomes. Relative to project_directory or absolute.
 
-repeats_database: "" # Path to the RepBase FASTA file. Relative to project_directory or absolute. 
-use_fake_database: True # True to use a fake database in absence of a real one.
+# ------------------Identification of repeats in reference genomes--------------
+
+repeats:
+  activate: True # True to run RepeatModeler/RepeatMasker to find repeats in the reference genomes. Empty or False to skip.
+  database: "" # Path to the RepBase FASTA file. Relative to project_directory or absolute.
+  use_fake_database: True # True to use a fake database in absence of a real one.
+  threads: 20 # Number of threads for RepeatModeler and RepeatMasker.
+  use_container: False # True to use Apptainer containers for RepeatModeler and RepeatMasker.
 
 # ------------------Annotation of reference genomes----------------------------
 
@@ -53,7 +59,7 @@ depth_quality:
     min_percent_mapped_reads: 90 # If percent of mapped reads is below this value, the sample is flagged.
   mosdepth: 
     threads: 12  # Number of threads for mosdepth.
-    window: 5000 # Window size for mosdepth.
+    window: 500 # Window size for mosdepth.
     extra: "" # Extra parameters for mosdepth.
 
 # ------------------Functional Annotation--------------------------------------
@@ -75,9 +81,6 @@ cnv:
   activate: # True to activate the module. Empty or False to skip.
   smoothing_size: 15 # Parameter for median filtering smoothing of the read depth.
   depth_threshold: 0.6 # Min deviation from the global depth to be considered a CNV.
-  repeats:
-    repeats_threads: 20 # Number of threads for RepeatModeler and RepeatMasker.
-    use_container: False # True to use Apptainer containers for RepeatModeler and RepeatMasker.
 
 # ------------------Annotation of SNP effects----------------------------------
 
