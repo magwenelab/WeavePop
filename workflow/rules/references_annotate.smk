@@ -180,7 +180,7 @@ rule refs_unmapped_features:
     conda:
         "../envs/pandas.yaml"
     params:
-        refdir=str(INT_REFS_DIR),
+        refdir=INT_REFS_DIR,
     log:
         LOGS / "references" / "annotation" / "refs_unmapped_features.log",
     script:

@@ -108,11 +108,11 @@ if config["workflow"] == "analysis":
     if not config["annotate_references"]["activate"]:
 
         include: "rules/references_no_annotate.smk"
-    
+
     if config["repeats"]["activate"]:
 
         if config["repeats"]["use_container"]:
-            
+
             include: "rules/repeatmasker_containers.smk"
 
         else:
@@ -150,7 +150,6 @@ if config["workflow"] == "analysis":
         if config["cnv"]["activate"]:
 
             include: "rules/cnv.smk"
-
 
     if config["plotting"]["activate"]:
 

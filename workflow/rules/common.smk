@@ -403,7 +403,9 @@ if config["repeats"]["activate"] is True:
             REPEATS_FILE.parent.mkdir(parents=True, exist_ok=True)
             with open(REPEATS_FILE, "w") as f:
                 f.write(">fake\naaaaaaaaaaaaaa\n")
-            print(f"    WARNING: Using a fake database file {REPEATS_FILE}.", flush=True)
+            print(
+                f"    WARNING: Using a fake database file {REPEATS_FILE}.", flush=True
+            )
             print("    The identification of repeats will not be accurate.", flush=True)
         else:
             print("Exiting...", flush=True)
@@ -499,13 +501,15 @@ def depth_distribution_input(wildcards):
         / "snps_good.bam.bai",
     }
 
+
 def ref_add_repeats_input(wildcards):
     d = {
         "gff": rules.ref_add_introns.output.gff,
     }
     if config["repeats"]["activate"] is True:
-        d["repeats"] = REFS_DIR / "{lineage}" / "{lineage}_repeats.bed",
+        d["repeats"] = (REFS_DIR / "{lineage}" / "{lineage}_repeats.bed",)
     return d
+
 
 def depth_boxplot_input(wildcards):
     s = METADATA_TABLE.loc[wildcards.sample,]
@@ -530,7 +534,7 @@ def depth_by_windows_plots_input(wildcards):
         "loci": INT_REFS_DIR / s["lineage"] / "loci_to_plot.tsv",
     }
     if config["repeats"]["activate"] is True:
-        d["repeats"] = REFS_DIR / s["lineage"] / (s["lineage"] + "_repeats.bed"),
+        d["repeats"] = (REFS_DIR / s["lineage"] / (s["lineage"] + "_repeats.bed"),)
     return d
 
 
@@ -551,7 +555,7 @@ def mapq_plot_input(wildcards):
         "loci": INT_REFS_DIR / s["lineage"] / "loci_to_plot.tsv",
     }
     if config["repeats"]["activate"] is True:
-        d["repeats"] = REFS_DIR / s["lineage"] / (s["lineage"] + "_repeats.bed"),
+        d["repeats"] = (REFS_DIR / s["lineage"] / (s["lineage"] + "_repeats.bed"),)
     return d
 
 
@@ -569,12 +573,15 @@ def depth_distribution_plot_input(wildcards):
 def cnv_calling_input(wildcards):
     s = METADATA_TABLE.loc[wildcards.sample,]
     d = {
-        "depth" : INT_SAMPLES_DIR / "mosdepth" / s["sample"] / "coverage_good.regions.bed.gz",
+        "depth": INT_SAMPLES_DIR
+        / "mosdepth"
+        / s["sample"]
+        / "coverage_good.regions.bed.gz",
         "annotation": SAMPLES_DIR / "annotation" / s["sample"] / "annotation.gff.tsv",
         "chrom_length": INT_REFS_DIR / s["lineage"] / "chromosomes.csv",
     }
     if config["repeats"]["activate"] is True:
-        d["repeats"] = REFS_DIR / s["lineage"] / (s["lineage"] + "_repeats.bed"),
+        d["repeats"] = (REFS_DIR / s["lineage"] / (s["lineage"] + "_repeats.bed"),)
 
     return d
 

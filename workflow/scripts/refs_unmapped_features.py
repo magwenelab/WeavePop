@@ -8,8 +8,10 @@ import os
 import pandas as pd
 
 metadata_path=snakemake.input[0]
-lineages_path=snakemake.params[0]
 genes_path=snakemake.input[1]
+
+lineages_path=str(snakemake.params.refdir)
+
 output_path=snakemake.output[0]
 
 print("Reading files...")
