@@ -47,6 +47,8 @@ INT_DATASET_DIR = INTDIR / DATASET_DIR_NAME
 INT_REFS_DIR = INTDIR / REFS_DIR_NAME
 TEMPDIR = str(INTDIR / TEMPDIR_NAME)
 
+os.makedirs(TEMPDIR, exist_ok=True)
+
 # =================================================================================================
 #  Print configuration
 # =================================================================================================
