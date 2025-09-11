@@ -8,18 +8,34 @@ suppressPackageStartupMessages(library(RColorBrewer))
 suppressPackageStartupMessages(library(scales))
 suppressPackageStartupMessages(library(ggnewscale))
 
-print("Reading files...")
-mapq<- read.delim(snakemake@input$mapq, header = FALSE, col.names = c("accession", "start", "end", "mapq"), stringsAsFactors = TRUE)
-cnv <- read.delim(snakemake@input$cnv, sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
-chrom_names <- read.csv(snakemake@input$chroms,sep= ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
-loci_table <- read.delim(snakemake@input$loci, header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
-metadata <- read.delim(snakemake@input$metadata, sep = ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
+print("Reading input parameters...")
+mapq_input <- snakemake@input$mapq
+cnv_input <- snakemake@input$cnv
+chroms_input <- snakemake@input$chroms
+loci_input <- snakemake@input$loci
+metadata_input <- snakemake@input$metadata
+
+output <- snakemake@output[[1]] 
 
 sample <- snakemake@wildcards$sample
 find_repeats <- snakemake@params$find_repeats
+if (find_repeats == TRUE){
+  repeats_input <- snakemake@input$repeats
+}
+gheight <- 9
+gwidth <- 16
+gdpi <- 600
+
+
+print("Reading files...")
+mapq<- read.delim(mapq_input, header = FALSE, col.names = c("accession", "start", "end", "mapq"), stringsAsFactors = TRUE)
+cnv <- read.delim(cnv_input, sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
+chrom_names <- read.csv(chroms_input,sep= ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
+loci_table <- read.delim(loci_input, header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
+metadata <- read.delim(metadata_input, sep = ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
 
 if (find_repeats == TRUE){
-  repeats_table <- read.delim(snakemake@input$repeats, sep= "\t", header = FALSE, col.names = c("accession", "start", "end", "repeat_type"), stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
+  repeats_table <- read.delim(repeats_input, sep= "\t", header = FALSE, col.names = c("accession", "start", "end", "repeat_type"), stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
 } else {
   col_names <- c("accession", "start", "end", "repeat_type")
   repeats_table <- data.frame(matrix(ncol = length(col_names), nrow = length(chrom_names$accession)))
@@ -127,6 +143,6 @@ if (nrow(loci_table) != 0){
 }
 
 print("Saving plot...")
-ggsave(snakemake@output[[1]], plot = plot, units = "in", height = 9, width = 16, dpi = 600)
+ggsave(output, plot = plot, units = "in", height = gheight , width = gwidth, dpi = gdpi)
 
 print("Done!")

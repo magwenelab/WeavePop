@@ -6,11 +6,23 @@ print("Loading libraries...")
 suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(ggrepel))
 
-print("Reading files...")
-cnv_chromosomes <- read.delim(snakemake@input[[1]], sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
-chrom_names <- read.csv(snakemake@input[[2]],sep= ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
-metadata <- read.delim(snakemake@input[[3]], sep = ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
+print("Reading input parameters...")
+cnv_chromosomes_input <- snakemake@input[[1]]
+chrom_names_input <- snakemake@input[[2]]
+metadata_input <- snakemake@input[[3]]
+
+output <- snakemake@output[[1]]
+
 sample <- snakemake@wildcards$sample
+
+gheight <- 6
+gwidth <- 8
+gdpi <- 300
+
+print("Reading files...")
+cnv_chromosomes <- read.delim(cnv_chromosomes_input, sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
+chrom_names <- read.csv(chrom_names_input,sep= ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
+metadata <- read.delim(metadata_input, sep = ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
 
 print("Obtaining lineage of sample...")
 
@@ -42,5 +54,5 @@ p <- ggplot(chrom_metrics, aes(x = coverage_percent, y = norm_chrom_median, colo
              shape = "CNV")
 
 print("Saving plot...")
-ggsave(snakemake@output[[1]], p,  width = 8, height = 6, dpi = 300)
+ggsave(output, p,  width = gwidth, height = gheight, dpi = gdpi)
 print("Done.")

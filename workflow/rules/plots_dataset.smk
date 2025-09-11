@@ -5,13 +5,13 @@
 
 rule dataset_summary_plot:
     input:
-        rules.quality_filter.output.metadata,
-        rules.quality_filter.output.chromosomes,
-        rules.join_mapping_stats.output,
+        metadata=rules.quality_filter.output.metadata,
+        chroms=rules.quality_filter.output.chromosomes,
+        stats=rules.join_mapping_stats.output,
     output:
-        DATASET_DIR / "plots" / "dataset_summary.png",
+        plot=DATASET_DIR / "plots" / "dataset_summary.png",
     params:
-        config["plotting"]["scale"],
+        scale=config["plotting"]["scale"],
     log:
         LOGS / "dataset" / "plots" / "dataset_summary.log",
     conda:
@@ -27,11 +27,11 @@ rule dataset_summary_plot:
 
 rule dataset_depth_by_chrom_plot:
     input:
-        rules.quality_filter.output.metadata,
-        rules.quality_filter.output.chromosomes,
-        rules.join_cnv_chromosomes.output,
+        metadata=rules.quality_filter.output.metadata,
+        chroms=rules.quality_filter.output.chromosomes,
+        cnv=rules.join_cnv_chromosomes.output,
     output:
-        DATASET_DIR / "plots" / "dataset_depth_by_chrom.png",
+        plot=DATASET_DIR / "plots" / "dataset_depth_by_chrom.png",
     params:
         column=config["plotting"]["metadata2color"],
         scale=config["plotting"]["scale"],

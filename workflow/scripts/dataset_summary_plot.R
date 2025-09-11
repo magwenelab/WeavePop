@@ -8,10 +8,21 @@ suppressPackageStartupMessages(library(RColorBrewer))
 suppressPackageStartupMessages(library(scales))
 suppressPackageStartupMessages(library(patchwork))
 
+print("Reading input parameters...")
+metadata_input <- snakemake@input$metadata
+chrom_names_input <- snakemake@input$chroms
+map_stats_input <- snakemake@input$stats
+
+output <- snakemake@output$plot
+
+gscale <- snakemake@params$scale
+gheight <- 9
+gwidth <- 16
+
 print("Reading files...")
-metadata <- read.csv(snakemake@input[[1]], header = TRUE, stringsAsFactors = TRUE)
-chrom_names <- read.csv(snakemake@input[[2]], header = TRUE, colClasses = "factor")
-map_stats <- read.table(snakemake@input[[3]], header = TRUE, stringsAsFactors = TRUE, sep = "\t")
+metadata <- read.csv(metadata_input, header = TRUE, stringsAsFactors = TRUE)
+chrom_names <- read.csv(chrom_names_input, header = TRUE, colClasses = "factor")
+map_stats <- read.table(map_stats_input, header = TRUE, stringsAsFactors = TRUE, sep = "\t")
 
 print("Joining and arranging data...")
 metadata <- metadata %>%
@@ -114,6 +125,5 @@ print("Joining plots...")
 plot <- g/reads/mapq
 
 print("Saving plot...")
-gscale = snakemake@params[[1]]
-ggsave(snakemake@output[[1]], plot = plot, units = "in", height = 9, width = 16, scale = gscale)
+ggsave(output, plot = plot, units = "in", height = gheight, width = gwidth, scale = gscale)
 print("Done!")

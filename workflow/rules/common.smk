@@ -722,10 +722,10 @@ def get_dataset_output():
     if config["cnv"]["activate"]:
         final_output.append(DATASET_DIR / "cnv" / "cnv_calls.tsv")
         final_output.append(DATASET_DIR / "cnv" / "cnv_chromosomes.tsv")
-        if config["plotting"]["activate"]:
-            final_output.append(DATASET_DIR / "plots" / "dataset_depth_by_chrom.png")
-    if config["plotting"]["activate"]:
-        final_output.append(DATASET_DIR / "plots" / "dataset_summary.png")
     if config["database"]["activate"]:
         final_output.append(expand(DATASET_DIR / "database.db"))
+    if config["plotting"]["activate"] 
+        final_output.append(DATASET_DIR / "plots" / "dataset_summary.png")
+        if config["cnv"]["activate"] or config["database"]["activate"]:
+            final_output.append(DATASET_DIR / "plots" / "dataset_depth_by_chrom.png")
     return final_output

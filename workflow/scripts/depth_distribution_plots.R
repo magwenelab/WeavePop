@@ -8,12 +8,25 @@ suppressPackageStartupMessages(library(RColorBrewer))
 suppressPackageStartupMessages(library(scales))
 suppressPackageStartupMessages(library(patchwork))
 
+print("Reading input parameters...")
+depth_input <- snakemake@input$distrib
+chrom_names_input <- snakemake@input$chroms
+metadata_input <- snakemake@input$metadata
+
+output_chrom <- snakemake@output$chrom
+output_global <- snakemake@output$globl
+
+sample <- snakemake@wildcards$sample
+gscale <- 1.5
+gheight <- 4.5
+gwidth <- 8
+gdpi <- 300
+
 
 print("Reading files and joining data with chromosome names...")
-sample <- snakemake@wildcards$sample
-depth <- read.table(snakemake@input[[1]], header = TRUE, stringsAsFactors = TRUE, sep = "\t")
-chrom_names <- read.csv(snakemake@input[[2]], header = TRUE , sep = ",")
-metadata <- read.delim(snakemake@input[[3]], sep = ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
+depth <- read.table(depth_input, header = TRUE, stringsAsFactors = TRUE, sep = "\t")
+chrom_names <- read.csv(chrom_names_input, header = TRUE , sep = ",")
+metadata <- read.delim(metadata_input, sep = ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
 
 print("Obtaining lineage of sample...")
 
@@ -117,8 +130,8 @@ plot_chrom <- plot_chrom +
     theme(plot.title = element_text(hjust = 0.5))
 
 print("Saving plots...")
-ggsave(snakemake@output[[1]], plot = plot_chrom, units = "in", height = 4.5, width = 8, dpi = 300, scale = 1.5)
-ggsave(snakemake@output[[2]], plot = combined,  units = "in", height = 4.5, width = 8, dpi = 300, scale = 1.5)
+ggsave(output_chrom, plot = plot_chrom, units = "in", height = gheight, width = gwidth, dpi = gdpi, scale = gscale)
+ggsave(output_global, plot = combined,  units = "in", height = gheight, width = gwidth, dpi = gdpi, scale = gscale)
 
 print("Done!")
 

@@ -31,8 +31,8 @@ rule depth_distribution_plots:
         chroms=CHROM_NAMES_FILE,
         metadata=METADATA_ORIGINAL_FILE,
     output:
-        SAMPLES_DIR / "plots" / "{sample}" / "depth_chrom_distribution.png",
-        SAMPLES_DIR / "plots" / "{sample}" / "depth_global_distribution.png",
+        chrom=SAMPLES_DIR / "plots" / "{sample}" / "depth_chrom_distribution.png",
+        globl=SAMPLES_DIR / "plots" / "{sample}" / "depth_global_distribution.png",
     conda:
         "../envs/r.yaml"
     log:
@@ -51,7 +51,7 @@ rule depth_boxplot:
         unpack(depth_boxplot_input),
         metadata=METADATA_ORIGINAL_FILE,
     output:
-        SAMPLES_DIR / "plots" / "{sample}" / "depth_boxplot.png",
+        plot=SAMPLES_DIR / "plots" / "{sample}" / "depth_boxplot.png",
     conda:
         "../envs/r.yaml"
     log:
@@ -65,7 +65,7 @@ rule depth_by_windows_plots:
         unpack(depth_by_windows_plots_input),
         metadata=METADATA_ORIGINAL_FILE,
     output:
-        SAMPLES_DIR / "plots" / "{sample}" / "depth_by_windows.png",
+        plot=SAMPLES_DIR / "plots" / "{sample}" / "depth_by_windows.png",
     params:
         find_repeats=config["repeats"]["activate"],
     conda:

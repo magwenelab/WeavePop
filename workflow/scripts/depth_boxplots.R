@@ -7,11 +7,23 @@ suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(patchwork))
 suppressPackageStartupMessages(library(ggbeeswarm))
 
-print("Reading files...")
-windows <- read.delim(snakemake@input[[1]], sep= "\t", col.names = c("accession", "start", "end", "depth", "norm_depth", "smooth_depth", 'repeat_types', 'repeat_overlap_bp'), stringsAsFactors = TRUE, na = c("", "N/A"))
-chromosomes <- read.csv(snakemake@input[[2]], sep= ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
-metadata <- read.delim(snakemake@input[[3]], sep = ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
+print("Reading input parameters...")
+windows_input <- snakemake@input$depth
+chromosomes_input <- snakemake@input$chroms
+metadata_input <- snakemake@input$metadata
+
+output <- snakemake@output$plot
+
 sample <- snakemake@wildcards$sample
+gheight <- 9
+gwidth <- 16
+gdpi <- 600
+
+
+print("Reading files...")
+windows <- read.delim(windows_input, sep= "\t", col.names = c("accession", "start", "end", "depth", "norm_depth", "smooth_depth", 'repeat_types', 'repeat_overlap_bp'), stringsAsFactors = TRUE, na = c("", "N/A"))
+chromosomes <- read.csv(chromosomes_input, sep= ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
+metadata <- read.delim(metadata_input, sep = ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
 
 print("Obtaining lineage of sample...")
 
@@ -21,22 +33,6 @@ strain_name <- as.character(metadata$strain[metadata$sample == sample])
 print("Obtaining lineage of sample...")
 
 lineage_name <- as.character(metadata$lineage[metadata$sample == sample])
-
-
-# windows_path <- "../Crypto_Desjardins/results/04.Intermediate_files/01.Samples/depth_quality/SRS881238/depth_by_windows.tsv"
-# chromosomes_path <- "../Crypto_Desjardins/results/04.Intermediate_files/03.References/chromosome_lengths.tsv"
-# windows <- read.delim(
-#                 windows_path,
-#                 header = FALSE,
-#                 col.names = c("accession", "start", "end", "depth", "norm_depth", "smooth_depth"),
-#                 sep = "\t",
-#                 stringsAsFactors = TRUE)
-
-# chromosomes <- read.delim(
-#                     chromosomes_path,
-#                     header = TRUE,
-#                     sep = "\t",
-#                     stringsAsFactors = TRUE) 
 
 print("Filtering and ordering chromosomes...")
 chromosomes <- chromosomes %>%
@@ -128,7 +124,7 @@ s <- c + g + plot_layout(, nrow =1, widths = c(5,1))
 p <- d / n / s
 
 print("Saving plot...")
-ggsave(snakemake@output[[1]], p, height =9, width = 16, dpi = 600)
+ggsave(output, p, height = gheight, width = gwidth, dpi = gdpi, units = "in")
 
 print("Done!")
 
