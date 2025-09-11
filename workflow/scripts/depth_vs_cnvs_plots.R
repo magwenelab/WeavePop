@@ -15,9 +15,10 @@ output <- snakemake@output[[1]]
 
 sample <- snakemake@wildcards$sample
 
-gheight <- 6
-gwidth <- 8
-gdpi <- 300
+gscale <- 0.7
+gheight <- 9
+gwidth <- 16
+gdpi <- 600
 
 print("Reading files...")
 cnv_chromosomes <- read.delim(cnv_chromosomes_input, sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
@@ -54,5 +55,5 @@ p <- ggplot(chrom_metrics, aes(x = coverage_percent, y = norm_chrom_median, colo
              shape = "CNV")
 
 print("Saving plot...")
-ggsave(output, p,  width = gwidth, height = gheight, dpi = gdpi)
+ggsave(output, p,  width = gwidth, height = gheight, dpi = gdpi, scale = gscale, units = "in")
 print("Done.")

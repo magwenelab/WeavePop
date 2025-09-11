@@ -17,10 +17,10 @@ output_chrom <- snakemake@output$chrom
 output_global <- snakemake@output$globl
 
 sample <- snakemake@wildcards$sample
-gscale <- 1.5
-gheight <- 4.5
-gwidth <- 8
-gdpi <- 300
+gscale <- 0.7
+gheight <- 9
+gwidth <- 16
+gdpi <- 600
 
 
 print("Reading files and joining data with chromosome names...")
