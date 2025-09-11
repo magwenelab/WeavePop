@@ -522,7 +522,7 @@ def get_cnv(db, dataset = None, lineage=None, sample=None, strain=None, chromoso
         SELECT metadata.strain, metadata.sample, metadata.lineage, 
             chromosomes.chromosome, chromosomes.accession,
             cnvs.start, cnvs."end",
-            cnvs.region_size, cnvs.cnv, cnvs.depth, cnvs.norm_depth, cnvs.smooth_depth, cnvs.repeat_fraction, cnvs.overlap_bp, cnvs.feature_id,
+            cnvs.region_size, cnvs.cnv, cnvs.depth, cnvs.norm_depth, cnvs.smooth_depth, cnvs.repeat_fraction, cnvs.repeat_overlap_bp, cnvs.feature_id,
             metadata.dataset
         FROM cnvs
         JOIN metadata ON cnvs.sample = metadata.sample
@@ -593,15 +593,15 @@ def genes(db, gene_name=None, gene_id=None, chromosome=None, start=None, end=Non
     
     columns = con.execute("SELECT column_name FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'gff'").fetchdf()['column_name'].tolist()
     
-    if 'identical_to_main_ref' and 'start_stop_mutations' in columns:
+    if 'ref_identical_to_main_ref' and 'ref_start_stop_mutations' in columns:
         query = f"""
             SELECT gff.lineage, chromosomes.chromosome,
                 chromosomes.accession,
                 gff.start, gff."end", gff.strand, gff.primary_tag,
                 gff.gene_name, gff.gene_id,
                 gff.feature_id, gff.parent,
-                gff.description, gff.repeat_fraction,
-                gff.identical_to_main_ref, gff.start_stop_mutations, 
+                gff.description, gff.ref_repeat_fraction,
+                gff.ref_identical_to_main_ref, gff.ref_start_stop_mutations, 
             FROM gff
             JOIN chromosomes ON gff.accession = chromosomes.accession
             WHERE gff.lineage IN {lineage}
@@ -613,7 +613,7 @@ def genes(db, gene_name=None, gene_id=None, chromosome=None, start=None, end=Non
                 gff.start, gff."end", gff.strand, gff.primary_tag,
                 gff.gene_name, gff.gene_id,
                 gff.feature_id, gff.parent,
-                gff.description, gff.repeat_fraction,
+                gff.description, gff.ref_repeat_fraction,
             FROM gff
             JOIN chromosomes ON gff.accession = chromosomes.accession
             WHERE gff.lineage IN {lineage}

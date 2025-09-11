@@ -6,7 +6,7 @@ import datetime
 from Bio import SeqIO
 import pandas as pd
 
-mydb='database.db'
+mydb='/FastData/czirion/WeavePop/test/results/02.Dataset/database.db'
 with ui.navset_pill(id="Database"):
     with ui.nav_panel("Home"):
         ui.h1(ui.markdown("WeavePop Database"), style="padding-top: 20px;padding-bottom: 20px;")

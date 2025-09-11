@@ -29,8 +29,8 @@ print("Concatenate dataframes into one...")
 df = pd.concat(dfs)
 keep_columns = [
     'accession', 'source_tag', 'primary_tag', 'start', 'end', 'score', 'strand', 'frame', 
-    'feature_id', 'parent', 'gene_id', 'gene_name', 'description', 'old_feature_id', 'repeat_fraction', 'lineage',
-    'identical_to_main_ref','start_stop_mutations']
+    'feature_id', 'parent', 'gene_id', 'gene_name', 'description', 'old_feature_id', 'ref_repeat_fraction', 'lineage',
+    'ref_identical_to_main_ref','ref_start_stop_mutations']
 existing_columns = [column for column in keep_columns if column in df.columns]
 print("Keeping columns:")
 print(existing_columns)
