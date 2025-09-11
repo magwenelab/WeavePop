@@ -271,6 +271,11 @@ else:
     print("Exiting...", flush=True)
     exit(1)
 
+if CHROM_NAMES_TABLE["accession"].duplicated().any():
+        print("Chromosome names file contains duplicated accession names.", flush=True)
+        print("Exiting...", flush=True)
+        exit(1)
+
 if all(
     item in CHROM_NAMES_TABLE["lineage"].unique()
     for item in METADATA_UNFILTERED["lineage"].unique()
