@@ -27,7 +27,7 @@ chrom_names <- read.csv(chrom_names_input, header = TRUE, stringsAsFactors = TRU
 chrom_depth <- read.delim(chrom_depth_input, sep = "\t", header = TRUE, stringsAsFactors = TRUE)
 
 chrom_depth <- chrom_depth %>%
-    select("sample", "accession", "genome_median_depth", "norm_chrom_median") %>%
+    select("sample", "accession", "genome_depth", "chrom_norm_depth") %>%
     distinct()
 
 print("Filtering chromosome names...")
@@ -40,11 +40,11 @@ chrom_depth <- left_join(chrom_depth, metadata, by = "sample")
 chrom_depth <- left_join(chrom_depth, chrom_names, by = c("accession", "lineage"))
 
 print("Getting plot parameters...")
-toplim <- ceiling(max(chrom_depth$norm_chrom_median))
+toplim <- ceiling(max(chrom_depth$chrom_norm_depth))
 values <- seq(0, toplim, by = 1)
 
 print("Plotting...")
-medianplot <- ggplot(chrom_depth, aes(x = reorder(name, -genome_median_depth, sum), y = norm_chrom_median)) +
+medianplot <- ggplot(chrom_depth, aes(x = reorder(name, -genome_depth, sum), y = chrom_norm_depth)) +
     geom_point(aes(color = get(color_by))) +
     ylim(0, toplim) +
     facet_grid(scale = "free_x", space = "free_x", rows = vars(chromosome), cols = vars(lineage)) +

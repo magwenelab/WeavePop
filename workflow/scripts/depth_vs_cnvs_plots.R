@@ -40,7 +40,7 @@ chrom_metrics$chromosome <- factor(chrom_metrics$chromosome)
 
    
 print("Plotting...")
-p <- ggplot(chrom_metrics, aes(x = coverage_percent, y = norm_chrom_median, color = chromosome, shape = cnv)) +
+p <- ggplot(chrom_metrics, aes(x = coverage_percent, y = chrom_norm_depth, color = chromosome, shape = cnv)) +
         geom_hline(yintercept = c(0, 1, 2), color = "black", linetype = "solid") +
         geom_point(size = 2) +
         geom_text_repel(aes(label = chromosome), size = 3, max.overlaps = 10, show.legend = FALSE) +

@@ -214,7 +214,7 @@ def get_cnv_max_length(db):
     con = con.execute(f"SET temp_directory = '{cwd}'")
 
     query = f"""
-        SELECT MAX("region_size") AS max_length
+        SELECT MAX("size") AS max_length
         FROM cnvs"""
     df = con.execute(query).fetchdf()
     result = df['max_length'].values[0] 
@@ -522,7 +522,7 @@ def get_cnv(db, dataset = None, lineage=None, sample=None, strain=None, chromoso
         SELECT metadata.strain, metadata.sample, metadata.lineage, 
             chromosomes.chromosome, chromosomes.accession,
             cnvs.start, cnvs."end",
-            cnvs.region_size, cnvs.cnv, cnvs.depth, cnvs.norm_depth, cnvs.smooth_depth, cnvs.repeat_fraction, cnvs.repeat_overlap_bp, cnvs.feature_id,
+            cnvs.size, cnvs.cnv, cnvs.depth, cnvs.norm_depth, cnvs.smooth_depth, cnvs.repeat_fraction, cnvs.repeat_overlap_bp, cnvs.feature_id,
             metadata.dataset
         FROM cnvs
         JOIN metadata ON cnvs.sample = metadata.sample
@@ -544,9 +544,9 @@ def get_cnv(db, dataset = None, lineage=None, sample=None, strain=None, chromoso
     if end:
         query += f"""AND cnvs."end" <= {end} """
     if min_size:
-        query += f"AND cnvs.region_size >= {min_size} "
+        query += f"AND cnvs.size >= {min_size} "
     if max_size:
-        query += f"AND cnvs.region_size <= {max_size} "
+        query += f"AND cnvs.size <= {max_size} "
     if repeat_fraction or repeat_fraction == 0:
         query += f"AND cnvs.repeat_fraction <= {repeat_fraction}"
 
@@ -661,13 +661,13 @@ def get_cnv_chroms(db, dataset = None, lineage=None, sample=None, strain=None, c
     query = f"""
         SELECT metadata.strain, metadata.sample, metadata.lineage, 
             chromosomes.chromosome, chromosomes.accession, chromosomes.length,
-            cnv_chroms.cnv, cnv_chroms.n_regions,
-            cnv_chroms.total_size_regions, cnv_chroms.coverage_percent,
-            cnv_chroms.size_smallest_region, cnv_chroms.size_largest_region,
+            cnv_chroms.cnv, cnv_chroms.n_cnvs,
+            cnv_chroms.total_size, cnv_chroms.coverage_percent,
+            cnv_chroms.size_smallest, cnv_chroms.size_largest,
             cnv_chroms.norm_depth_mean, cnv_chroms.norm_depth_median,
             cnv_chroms.smooth_depth_mean, cnv_chroms.smooth_depth_median,
-            cnv_chroms.chrom_median, cnv_chroms.genome_median_depth, 
-            cnv_chroms.norm_chrom_median,
+            cnv_chroms.chrom_depth, cnv_chroms.chrom_norm_depth,
+             cnv_chroms.genome_depth,
             metadata.dataset
         FROM cnv_chroms
         JOIN chromosomes ON cnv_chroms.accession = chromosomes.accession

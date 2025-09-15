@@ -56,8 +56,8 @@ else:
     df['repeat_overlap_bp'] = 0
 
 print("Normalizing depth by median depth...")
-genome_median_depth = df['depth'].median()
-df.loc[:,'norm_depth'] = df['depth'] / genome_median_depth
+genome_depth = df['depth'].median()
+df.loc[:,'norm_depth'] = df['depth'] / genome_depth
 df.loc[:,'norm_depth'] = df.loc[:,'norm_depth']
 
 print("Smoothing depth values...")
@@ -105,8 +105,8 @@ cnv_regions = cnv_windows.groupby(['accession','region_index']).agg(start=('star
                                                                     cnv=('cnv', 'first'), 
                                                                     repeat_overlap_bp=('repeat_overlap_bp', 'sum')).reset_index()
 
-cnv_regions['region_size'] = cnv_regions['end'] - cnv_regions['start']
-cnv_regions['repeat_fraction'] = (cnv_regions['repeat_overlap_bp'] / cnv_regions['region_size']).round(2)
+cnv_regions['size'] = cnv_regions['end'] - cnv_regions['start']
+cnv_regions['repeat_fraction'] = (cnv_regions['repeat_overlap_bp'] / cnv_regions['size']).round(2)
 cnv_regions = cnv_regions.drop(['region_index'], axis=1)
 
 print("Rounding values and adding sample names...")
@@ -128,27 +128,27 @@ annot_intersection = pd.read_csv(io.StringIO(annot_intersection), sep='\t', head
 temp_cnv_file.unlink()
 
 print("Naming and reording columns...")
-annot_header = ['accession', 'start', 'end', 'depth', 'norm_depth', 'smooth_depth', 'cnv', 'repeat_overlap_bp', 'region_size', 'repeat_fraction', 'sample', 'feature_id']
+annot_header = ['accession', 'start', 'end', 'depth', 'norm_depth', 'smooth_depth', 'cnv', 'repeat_overlap_bp', 'size', 'repeat_fraction', 'sample', 'feature_id']
 annot_intersection.columns = annot_header
 annot_intersection['feature_id'] = annot_intersection['feature_id'].replace('.', np.nan)
-col_order = ['sample', 'accession', 'start', 'end', 'cnv','region_size', 'depth', 'norm_depth', 'smooth_depth', 'repeat_fraction', 'repeat_overlap_bp', 'feature_id']
+col_order = ['sample', 'accession', 'start', 'end', 'cnv','size', 'depth', 'norm_depth', 'smooth_depth', 'repeat_fraction', 'repeat_overlap_bp', 'feature_id']
 annot_intersection = annot_intersection[col_order]
 
-print("Saving CNV regions to file...")
+print("Saving CNVs to file...")
 output_path = Path(cnv_output)
 output_path.parent.mkdir(parents=True, exist_ok=True)
 annot_intersection.to_csv(output_path, sep='\t', index=False, header=True)
 
 print("Calculating depth of chromosomes...")
 chromosome_depth = cnv_windows.groupby('accession')['depth'].median().round(2).reset_index()
-chromosome_depth.columns = ['accession', 'chrom_median']
+chromosome_depth.columns = ['accession', 'chrom_depth']
 
 print("Normalizing chromosome depth...")
-genome_median_depth = cnv_windows['depth'].median().round(4)
+genome_depth = cnv_windows['depth'].median().round(4)
 
-chromosome_depth['genome_median_depth'] = genome_median_depth
-chromosome_depth['norm_chrom_median'] = chromosome_depth['chrom_median'] / genome_median_depth
-chromosome_depth['norm_chrom_median'] = chromosome_depth['norm_chrom_median'].round(2)
+chromosome_depth['chrom_norm_depth'] = chromosome_depth['chrom_depth'] / genome_depth
+chromosome_depth['chrom_norm_depth'] = chromosome_depth['chrom_norm_depth'].round(2)
+chromosome_depth['genome_depth'] = genome_depth
 
 print("Summarizing information for each chromosome and type of region...")
 summary_windows = cnv_windows.groupby(['accession', 'cnv']).agg({'norm_depth':['mean', 'median'],
@@ -160,16 +160,16 @@ summary_windows.columns = ['accession', 'cnv',
                                     'smooth_depth_mean',
                                     'smooth_depth_median']
 
-summary_regions = cnv_regions.groupby(['accession', 'cnv']).agg({'region_size' :['sum', 'min', 'max', 'std'],     
+summary_regions = cnv_regions.groupby(['accession', 'cnv']).agg({'size' :['sum', 'min', 'max', 'std'],     
                                                         'start': ['size','min'],
                                                         'end': 'max',
                                                         }).reset_index()
 summary_regions.columns = ['accession', 'cnv', 
-                                    'total_size_regions',
-                                    'size_smallest_region',
-                                    'size_largest_region',
+                                    'total_size',
+                                    'size_smallest',
+                                    'size_largest',
                                     'std_regions_size',
-                                    'n_regions',
+                                    'n_cnvs',
                                     'first', 
                                     'last']
 
@@ -202,10 +202,10 @@ regions_per_chromosome = pd.merge(all_combinations, summary,
                                 how='left', 
                                 left_on=['sample','accession', 'cnv'], 
                                 right_on=['sample','accession', 'cnv']) 
-regions_per_chromosome.loc[:, ['n_regions',  'total_size_regions']] = regions_per_chromosome.loc[:, ['n_regions', 'total_size_regions']].fillna(0).astype(int)
+regions_per_chromosome.loc[:, ['n_cnvs',  'total_size']] = regions_per_chromosome.loc[:, ['n_cnvs', 'total_size']].fillna(0).astype(int)
 
 print("Calculating coverage and span percentages...")
-regions_per_chromosome['coverage_percent'] = regions_per_chromosome['total_size_regions'] / regions_per_chromosome['length'] * 100
+regions_per_chromosome['coverage_percent'] = regions_per_chromosome['total_size'] / regions_per_chromosome['length'] * 100
 regions_per_chromosome['span_percent'] = (regions_per_chromosome['last'] - regions_per_chromosome['first']) / regions_per_chromosome['length'] * 100
 regions_per_chromosome = regions_per_chromosome.drop(columns=['first', 'last'])
 regions_per_chromosome['span_percent'] = regions_per_chromosome['span_percent'].fillna(0)
@@ -213,7 +213,7 @@ regions_per_chromosome['span_percent'] = regions_per_chromosome['span_percent'].
 regions_per_chromosome = round(regions_per_chromosome, 2)
 
 print("Reorganizing columns...")
-regions_per_chromosome = regions_per_chromosome[['sample', 'cnv', 'accession', 'n_regions', 'total_size_regions', 'coverage_percent', 'span_percent', 'size_smallest_region', 'size_largest_region', 'std_regions_size', 'norm_depth_mean', 'norm_depth_median', 'smooth_depth_mean', 'smooth_depth_median']]
+regions_per_chromosome = regions_per_chromosome[['sample', 'cnv', 'accession', 'n_cnvs', 'total_size', 'coverage_percent', 'span_percent', 'size_smallest', 'size_largest', 'std_regions_size', 'norm_depth_mean', 'norm_depth_median', 'smooth_depth_mean', 'smooth_depth_median']]
 
 print("Adding chromosome depth to summary...")
 regions_per_chromosome = pd.merge(regions_per_chromosome, chromosome_depth, how='left', left_on='accession', right_on='accession')
