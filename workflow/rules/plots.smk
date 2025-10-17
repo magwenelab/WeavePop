@@ -114,6 +114,8 @@ rule variant_classification_plots:
         barplot=SAMPLES_DIR / "plots" / "{sample}" / "variants_barplot.png",
         status=SAMPLES_DIR / "plots" / "{sample}" / "variants_by_windows_status.png",
         impact=SAMPLES_DIR / "plots" / "{sample}" / "variants_by_windows_impact.png",
+    params:
+        window_size=config["depth_quality"]["mosdepth"]["window"],
     conda:
         "../envs/r.yaml"
     log:

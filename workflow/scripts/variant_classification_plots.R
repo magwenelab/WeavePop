@@ -10,6 +10,7 @@ suppressPackageStartupMessages(library(patchwork))
 
 print("Reading input parameters...")
 samp = snakemake@wildcards$sample
+window_size = snakemake@params$window_size
 variants_path = snakemake@input$variants
 presence_path = snakemake@input$presence
 chromosomes_path = snakemake@input$chromosomes
@@ -17,29 +18,28 @@ barplot_path = snakemake@output$barplot
 status_path = snakemake@output$status
 impact_path = snakemake@output$impact
 
-# Add window information to variants table
-n <- 1000
+print("Reading files...")
 variants = read.delim(variants_path, sep = "\t", header = TRUE, stringsAsFactors = TRUE)
 presence = read.delim(presence_path, sep = "\t", header = TRUE, stringsAsFactors = TRUE)
 chromosomes = read.delim(chromosomes_path, sep = ",", header = TRUE, stringsAsFactors = TRUE)
 
-
+print("Add chromosome name and creating windows")
 vars_windows <- variants %>%
     left_join(chromosomes, by = c("accession", "lineage"))%>%
     group_by(chromosome) %>%
-    mutate(window = floor(pos / n) + 1)%>%
+    mutate(window = floor(pos / window_size) + 1)%>%
     ungroup()%>%
     group_by(chromosome, window) %>%
-    mutate(window_start = (window - 1) * n + 1,
-            window_end = window * n)%>%
+    mutate(window_start = (window - 1) * window_size + 1,
+            window_end = window * window_size)%>%
     ungroup()
     
+print("Filtering variants of sample")
 vars_sample <- presence %>%
     filter(sample == samp)%>%
     droplevels()
 
 n_vars <- length(unique(vars_sample$var_id))
-
 vars <- vars_windows %>%
     filter(var_id %in% vars_sample$var_id)
 
@@ -52,14 +52,17 @@ if (length(unique(presence$sample)) > 1){
     print("Only one sample in lineage, plotting all variants")
 }
 
+print("Getting number of variants per window for each status")
 status_density <- vars %>% 
     group_by(chromosome, window,window_start, window_end, status)%>%
     summarize(n = n())
 
+print("Getting number of variants per window for each impact")
 effs_density <- vars%>% 
     group_by(chromosome, window,window_start, window_end, impact)%>%
     summarize(n = n())
 
+print("Plotting status density")
 p <- ggplot(status_density)+
     geom_col(aes(x = window_start, y = n, color = status))+
     facet_grid(chromosome~status)+
@@ -76,6 +79,7 @@ p <- ggplot(status_density)+
     panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 2),
     legend.position = "none")
 
+print("Plotting impact density")
 e <- ggplot(effs_density)+
     geom_col(aes(x = window_start, y = n, color = impact))+
     facet_grid(chromosome~impact, scales = "free_x")+#, ncol =1, strip.position = "right")+
@@ -92,6 +96,7 @@ e <- ggplot(effs_density)+
     panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 2),
     legend.position = "none")
 
+print("Plotting summary of number of variants")
 total_vars = nrow(vars)
 b <- ggplot(vars, aes(x = status, fill = impact))+
     geom_bar(stat = "count", position = "dodge")+
@@ -107,7 +112,7 @@ b <- ggplot(vars, aes(x = status, fill = impact))+
     theme_classic()
 
 print("Saving plots...")
-ggsave(barplot_path, b, width = 16, height = 9)
+ggsave(barplot_path, b, width = 8, height = 5)
 ggsave(status_path, p, width = 16, height = 9)
-ggsave(impact_path, e, width = 8, height = 5)
+ggsave(impact_path, e, width = 16, height = 9)
 print("Done!")
