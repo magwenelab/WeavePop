@@ -130,3 +130,24 @@ rule extract_vcf_annotation:
         "../envs/variants.yaml"
     script:
         "../scripts/extract_vcf_annotation.py"
+
+rule variant_classification:
+    input:
+        effects=rules.extract_vcf_annotation.output.effects,
+        variants=rules.extract_vcf_annotation.output.variants,
+        presence=rules.intersect_vcfs.output.tsv,
+        metadata=rules.quality_filter.output.metadata,
+        chromosomes=rules.quality_filter.output.chromosomes,
+    output:
+        tsv=INT_DATASET_DIR / "snpeff" / "{lineage}_variant_classification.tsv",
+        plot=DATASET_DIR / "plots" / "{lineage}_variant_summary.png",
+    log:
+        LOGS / "dataset" / "snpeff" / "variant_classification_{lineage}.log",
+    resources:
+        tmpdir=TEMPDIR,
+    conda:
+        "../envs/r.yaml"
+    script:
+        "../scripts/variant_classification.R"
+
+

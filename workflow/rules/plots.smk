@@ -104,3 +104,19 @@ rule mapq_plots:
         LOGS / "samples" / "plots" / "mapq_plots_{sample}.log",
     script:
         "../scripts/mapq_plots.R"
+
+
+        
+rule variant_classification_plots:
+    input:
+        unpack(variant_classification_plots_input)
+    output:
+        barplot=SAMPLES_DIR / "plots" / "{sample}" / "variants_barplot.png",
+        status=SAMPLES_DIR / "plots" / "{sample}" / "variants_by_windows_status.png",
+        impact=SAMPLES_DIR / "plots" / "{sample}" / "variants_by_windows_impact.png",
+    conda:
+        "../envs/r.yaml"
+    log:
+        LOGS / "samples" / "plots" / "variant_classification_plots_{sample}.log",
+    script:
+        "../scripts/variant_classification_plots.R"

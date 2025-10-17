@@ -117,6 +117,9 @@ rule join_variant_annotation:
         presence=expand(
             INT_DATASET_DIR / "snpeff" / "{lineage}_presence.tsv", lineage=LINEAGES
         ),
+        classification=expand(
+            INT_DATASET_DIR / "snpeff" / "{lineage}_variant_classification.tsv", lineage=LINEAGES
+        ),
     output:
         effects=DATASET_DIR / "snpeff" / "effects.tsv",
         variants=DATASET_DIR / "snpeff" / "variants.tsv",

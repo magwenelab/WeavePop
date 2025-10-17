@@ -601,6 +601,14 @@ def intersect_vcfs_input(wildcards):
         )
     }
 
+def variant_classification_plots_input(wildcards):
+    s = METADATA_TABLE.loc[wildcards.sample,]
+    return {
+        "variants": INT_DATASET_DIR / "snpeff" / (s["lineage"] + "_variant_classification.tsv"),
+        "presence": INT_DATASET_DIR / "snpeff" / (s["lineage"] + "_presence.tsv"),
+        "chromosomes": INT_REFS_DIR / s["lineage"] / "chromosomes.csv",
+    }
+
 
 # =================================================================================================
 #   Checkpoint functions
@@ -709,6 +717,12 @@ def get_filtered_output():
             final_output = final_output, expand(
                 SAMPLES_DIR / "plots" / "{sample}" / "mapq.png", sample=SAMPLES
             )
+        final_output = final_output, expand(
+                SAMPLES_DIR / "plots" / "{sample}" / "variants_barplot.png", sample=SAMPLES)
+        final_output = final_output, expand(
+                SAMPLES_DIR / "plots" / "{sample}" / "variants_by_windows_status.png", sample=SAMPLES)
+        final_output = final_output, expand(
+                SAMPLES_DIR / "plots" / "{sample}" / "variants_by_windows_impact.png", sample=SAMPLES)
     return final_output
 
 
