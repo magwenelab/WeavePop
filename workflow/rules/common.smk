@@ -609,6 +609,15 @@ def variant_classification_plots_input(wildcards):
         "chromosomes": INT_REFS_DIR / s["lineage"] / "chromosomes.csv",
     }
 
+def refs_unmapped_plots_input(wildcards):
+    main_ref=config["annotate_references"]["fasta"].split(".")[0]
+    main_ref_repeats = REFS_DIR / main_ref / (main_ref + "_repeats.bed")
+    return {
+        "tsv": REFS_DIR / "refs_unmapped_features.tsv",
+        "chroms": DATASET_DIR / "chromosomes.csv",
+        "repeats": main_ref_repeats
+    }
+
 
 # =================================================================================================
 #   Checkpoint functions
@@ -723,6 +732,10 @@ def get_filtered_output():
                 SAMPLES_DIR / "plots" / "{sample}" / "variants_by_windows_status.png", sample=SAMPLES)
         final_output = final_output, expand(
                 SAMPLES_DIR / "plots" / "{sample}" / "variants_by_windows_impact.png", sample=SAMPLES)
+        if config["annotate_references"]["activate"]:
+            final_output = final_output, expand(
+                REFS_DIR / "{lineage}" / "{lineage}_unmapped.png", lineage=LINEAGES)
+
     return final_output
 
 

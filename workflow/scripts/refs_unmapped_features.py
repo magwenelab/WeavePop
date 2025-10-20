@@ -7,12 +7,12 @@ sys.stderr = sys.stdout
 import os
 import pandas as pd
 
-metadata_path=snakemake.input[0]
-genes_path=snakemake.input[1]
+metadata_path=snakemake.input.metadata
+genes_path=snakemake.input.genes
 
 lineages_path=str(snakemake.params.refdir)
 
-output_path=snakemake.output[0]
+output_path=snakemake.output.tsv
 
 print("Reading files...")
 metadata = pd.read_csv(metadata_path, header=0)

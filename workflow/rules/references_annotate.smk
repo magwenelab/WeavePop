@@ -172,11 +172,11 @@ rule rename_polished:
 
 rule refs_unmapped_features:
     input:
-        DATASET_DIR / "metadata.csv",
-        rules.main_ref_recreate_ids.output.tsv,
-        expand(rules.ref2ref_liftoff.output.unmapped, lineage=LINEAGES),
+        metadata=DATASET_DIR / "metadata.csv",
+        genes=rules.main_ref_recreate_ids.output.tsv,
+        unmapped=expand(rules.ref2ref_liftoff.output.unmapped, lineage=LINEAGES),
     output:
-        REFS_DIR / "refs_unmapped_features.tsv",
+        tsv=REFS_DIR / "refs_unmapped_features.tsv",
     conda:
         "../envs/pandas.yaml"
     params:
@@ -185,3 +185,18 @@ rule refs_unmapped_features:
         LOGS / "references" / "annotation" / "refs_unmapped_features.log",
     script:
         "../scripts/refs_unmapped_features.py"
+
+
+rule refs_unmapped_plots:
+    input:
+        unpack(refs_unmapped_plots_input)
+    output:
+        plot=REFS_DIR / "{lineage}" / "{lineage}_unmapped.png",
+    conda:
+        "../envs/r.yaml"
+    params:
+        main_ref=config["annotate_references"]["fasta"].split(".")[0],
+    log:
+        LOGS / "references" / "annotation" / "refs_unmapped_plots_{lineage}.log",
+    script:
+        "../scripts/ref_unmapped_plots.R"

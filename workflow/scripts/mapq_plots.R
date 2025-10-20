@@ -112,13 +112,15 @@ plot <- ggplot()+
   labs(title = "Mapping Quality of Windows Along Chromosomes",
       subtitle = paste("Lineage: ", lineage_name," Sample: ", sample, "Strain:", strain_name,  sep = " "), 
       y = "Mapping Quality (Phred score)")+
-  theme(panel.grid = element_blank(),
-        panel.grid.major.x = element_blank(),
-        panel.grid.minor.x = element_blank(),
-        panel.grid.major.y = element_blank(),
-        panel.grid.minor.y = element_blank(),
-        panel.background = element_blank(),
-        panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 2))+
+  theme_classic()+
+  theme(panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 1))+
+  # theme(panel.grid = element_blank(),
+  #       panel.grid.major.x = element_blank(),
+  #       panel.grid.minor.x = element_blank(),
+  #       panel.grid.major.y = element_blank(),
+  #       panel.grid.minor.y = element_blank(),
+  #       panel.background = element_blank(),
+  #       panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 2))+
   scale_y_continuous(breaks = c(0, 20, 40, 60))
 
 print("Adding loci to plot if available...")

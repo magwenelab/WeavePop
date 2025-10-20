@@ -21,7 +21,11 @@ impact_path = snakemake@output$impact
 print("Reading files...")
 variants = read.delim(variants_path, sep = "\t", header = TRUE, stringsAsFactors = TRUE)
 presence = read.delim(presence_path, sep = "\t", header = TRUE, stringsAsFactors = TRUE)
-chromosomes = read.delim(chromosomes_path, sep = ",", header = TRUE, stringsAsFactors = TRUE)
+chromosomes = read.delim(chromosomes_path, sep = ",", header = TRUE)
+
+variants$status <- factor(variants$status, levels = c("Reference private","Private", "Non-private"))
+chromosomes$chromosome  <- factor(chromosomes$chromosome, levels = unique(chromosomes$chromosome))
+
 
 print("Add chromosome name and creating windows")
 vars_windows <- variants %>%
@@ -54,47 +58,37 @@ if (length(unique(presence$sample)) > 1){
 
 print("Getting number of variants per window for each status")
 status_density <- vars %>% 
-    group_by(chromosome, window,window_start, window_end, status)%>%
+    group_by(chromosome, window,window_start, window_end, status, length)%>%
     summarize(n = n())
 
 print("Getting number of variants per window for each impact")
 effs_density <- vars%>% 
-    group_by(chromosome, window,window_start, window_end, impact)%>%
+    group_by(chromosome, window,window_start, window_end, impact, length)%>%
     summarize(n = n())
 
 print("Plotting status density")
 p <- ggplot(status_density)+
-    geom_col(aes(x = window_start, y = n, color = status))+
+    geom_segment(aes(x=1, xend=length, y=-1, yend=-1), linewidth = 0.1, color = "black")+
+    geom_col(aes(x = window_start, y = n, color = status, fill = status))+
     facet_grid(chromosome~status)+
     scale_x_continuous(name = "Position (bp) ", labels = comma)+
     labs(title = "Number of variants of each status per window ",
         subtitle= paste("Sample: ", samp," Number of variants: ", scales::comma(n_vars)),
             y = "Number of variants")+
-    theme(panel.grid = element_blank(),
-    panel.grid.major.x = element_blank(),
-    panel.grid.minor.x = element_blank(),
-    panel.grid.major.y = element_blank(),
-    panel.grid.minor.y = element_blank(),
-    panel.background = element_blank(),
-    panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 2),
-    legend.position = "none")
+    theme_classic()+
+    theme(legend.position = "none")
 
 print("Plotting impact density")
 e <- ggplot(effs_density)+
-    geom_col(aes(x = window_start, y = n, color = impact))+
+    geom_segment(aes(x=1, xend=length, y=-1, yend=-1), linewidth = 0.1, color = "black")+
+    geom_col(aes(x = window_start, y = n, color = impact, fill = impact))+
     facet_grid(chromosome~impact, scales = "free_x")+#, ncol =1, strip.position = "right")+
     scale_x_continuous(name = "Position (bp) ", labels = comma)+
     labs(title="Number of variants per window per impact",
         subtitle= paste("Sample: ", samp," Number of variants: ", scales::comma(n_vars)),
             y = "Number of variants")+
-    theme(panel.grid = element_blank(),
-    panel.grid.major.x = element_blank(),
-    panel.grid.minor.x = element_blank(),
-    panel.grid.major.y = element_blank(),
-    panel.grid.minor.y = element_blank(),
-    panel.background = element_blank(),
-    panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 2),
-    legend.position = "none")
+    theme_classic()+
+    theme(legend.position = "none")
 
 print("Plotting summary of number of variants")
 total_vars = nrow(vars)

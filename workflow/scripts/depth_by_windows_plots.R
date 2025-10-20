@@ -112,6 +112,7 @@ my_labeller <- function(value){
 print("Plotting depth by windows...")
 c <- ggplot()+
   coord_cartesian(ylim= c(0,r_lim +1), xlim = c(0, max(depth$end)))+
+  # geom_hline(yintercept = 0, color = "darkgray", linetype = 1)+
   geom_hline(yintercept = 1, color = "darkgray", linetype = 2)+
   geom_hline(yintercept = 2, color = "darkgray", linetype = 2)+
   geom_col(data = depth, aes(x=start, y = depth), color = "black")+
@@ -129,13 +130,16 @@ c <- ggplot()+
       title = "Normalized Depth of Windows Along Chromosomes", 
       subtitle = paste("Lineage:", lineage_name, " Sample:", sample, "Strain:", strain_name, sep = " "))+
   scale_y_continuous(breaks = c(1, 2)) +
-  theme(panel.grid = element_blank(),
-        panel.grid.major.x = element_blank(),
-        panel.grid.minor.x = element_blank(),
-        panel.grid.major.y = element_blank(),
-        panel.grid.minor.y = element_blank(),
-        panel.background = element_blank(),
-        panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 2))
+  theme_classic()+
+  theme(panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 1))
+
+  # theme(panel.grid = element_blank(),
+  #       panel.grid.major.x = element_blank(),
+  #       panel.grid.minor.x = element_blank(),
+  #       panel.grid.major.y = element_blank(),
+  #       panel.grid.minor.y = element_blank(),
+  #       panel.background = element_blank(),
+  #       panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 2))
 
 print("Adding loci data if available...")
 if (nrow(loci_table)!= 0){

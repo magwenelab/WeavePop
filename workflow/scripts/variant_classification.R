@@ -111,5 +111,5 @@ print("Saving variant classification table...")
 write_delim(vars_classification, variant_classification_path, delim = "\t")
 
 print("Saving plot...")
-ggsave(lineage_barplot_path, b, width = 8, height = 5) # Choose g, b, or c
+ggsave(lineage_barplot_path, c, width = 8, height = 5) # Choose g, b, or c
 print("Done!")

@@ -255,7 +255,7 @@ rule repeat_masker_combine:
         known=rules.repeat_masker_bed.output.known,
         unknown=rules.repeat_masker_bed.output.unknown,
     output:
-        REFS_DIR / "{lineage}" / "{lineage}_repeats.bed",
+        bed=REFS_DIR / "{lineage}" / "{lineage}_repeats.bed",
     log:
         LOGS / "references" / "repeats" / "repeatmasker_combine_{lineage}.log",
     conda:
@@ -265,5 +265,5 @@ rule repeat_masker_combine:
         cat {input.simple} {input.complx} {input.known} {input.unknown} \
         | bedtools sort \
         | bedtools merge -c 4 -o distinct \
-        | awk '{{print $1"\t"$2"\t"$3"\t"$4}}' > {output} 2> {log}
+        | awk '{{print $1"\t"$2"\t"$3"\t"$4}}' > {output.bed} 2> {log}
         """
