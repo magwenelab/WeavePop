@@ -41,3 +41,27 @@ rule dataset_depth_by_chrom_plot:
         "../envs/r.yaml"
     script:
         "../scripts/dataset_depth_by_chrom_plot.R"
+
+
+# =================================================================================================
+#   Per lineage | Plot classification of variants
+# =================================================================================================
+
+rule refs_variant_classification_plots:
+    input:
+        chromosomes=rules.quality_filter.output.chromosomes,
+        variants=rules.variant_classification.output.tsv,
+        presence=rules.intersect_vcfs.output.tsv,
+    output:
+        plot=DATASET_DIR / "plots" / "{lineage}_variant_summary.png",
+        plot_density=DATASET_DIR / "plots" / "{lineage}_reference_variants.png",
+    params:
+        window_size=config["depth_quality"]["mosdepth"]["window"],
+    log:
+        LOGS / "dataset" / "plots" / "refs_variant_classification_plots_{lineage}.log",
+    resources:
+        tmpdir=TEMPDIR,
+    conda:
+        "../envs/r.yaml"
+    script:
+        "../scripts/refs_variant_classification_plots.R"

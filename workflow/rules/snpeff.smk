@@ -140,7 +140,8 @@ rule variant_classification:
         chromosomes=rules.quality_filter.output.chromosomes,
     output:
         tsv=INT_DATASET_DIR / "snpeff" / "{lineage}_variant_classification.tsv",
-        plot=DATASET_DIR / "plots" / "{lineage}_variant_summary.png",
+    params:
+        window_size=config["depth_quality"]["mosdepth"]["window"],
     log:
         LOGS / "dataset" / "snpeff" / "variant_classification_{lineage}.log",
     resources:

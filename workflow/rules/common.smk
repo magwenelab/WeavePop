@@ -732,9 +732,14 @@ def get_filtered_output():
                 SAMPLES_DIR / "plots" / "{sample}" / "variants_by_windows_status.png", sample=SAMPLES)
         final_output = final_output, expand(
                 SAMPLES_DIR / "plots" / "{sample}" / "variants_by_windows_impact.png", sample=SAMPLES)
+        final_output = final_output, expand(
+                    DATASET_DIR / "plots" / "{lineage}_variant_summary.png", lineage = LINEAGES)
+        final_output = final_output, expand(
+                    DATASET_DIR / "plots" / "{lineage}_reference_variants.png", lineage = LINEAGES)     
         if config["annotate_references"]["activate"]:
             final_output = final_output, expand(
                 REFS_DIR / "{lineage}" / "{lineage}_unmapped.png", lineage=LINEAGES)
+
 
     return final_output
 
@@ -755,7 +760,7 @@ def get_dataset_output():
         final_output.append(DATASET_DIR / "cnv" / "cnv_calls.tsv")
         final_output.append(DATASET_DIR / "cnv" / "cnv_chromosomes.tsv")
     if config["database"]["activate"]:
-        final_output.append(expand(DATASET_DIR / "database.db"))
+        final_output.append(DATASET_DIR / "database.db")
     if config["plotting"]["activate"]:
         final_output.append(DATASET_DIR / "plots" / "dataset_summary.png")
         if config["cnv"]["activate"] or config["database"]["activate"]:
