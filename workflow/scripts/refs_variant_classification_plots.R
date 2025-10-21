@@ -10,20 +10,24 @@ suppressPackageStartupMessages(library(patchwork))
 
 print("Reading input parameters...")
 
-chromosomes_path = snakemake@input$chromosomes
-variant_classification_path = snakemake@input$variants
-presence_path = snakemake@input$presence
+chromosomes_path = snakemake@input$chromosomes #"/FastData/czirion/WeavePop_Cneoformans/Crypto_Desjardins/results/02.Dataset/chromosomes.csv"
+variant_classification_path = snakemake@input$variants#"/FastData/czirion/WeavePop_Cneoformans/Crypto_Desjardins/results/04.Intermediate_files/02.Dataset/snpeff/VNBI_variant_classification.tsv"#
+presence_path = snakemake@input$presence#"/FastData/czirion/WeavePop_Cneoformans/Crypto_Desjardins/results/04.Intermediate_files/02.Dataset/snpeff/VNBI_presence.tsv"#
 
-lineage=snakemake@wildcards$lineage
-window_size = snakemake@params$window_size
+lineage=snakemake@wildcards$lineage#"VNBI" #
+window_size =snakemake@params$window_size#500 # 
 
-lineage_barplot_path = snakemake@output$plot
-ref_private_path = snakemake@output$plot_density
+lineage_barplot_path = snakemake@output$plot#"/FastData/czirion/WeavePop_Cneoformans/Crypto_Desjardins/results/02.Dataset/plots/VNBI_variant_summary.png"#
+ref_private_path = snakemake@output$plot_density#"/FastData/czirion/WeavePop_Cneoformans/Crypto_Desjardins/results/02.Dataset/plots/VNBI_reference_variants.png"#
+   
 
 print("Reading files...")
 vars_classification = read.delim(variant_classification_path, sep = "\t", header = TRUE, stringsAsFactors = TRUE)
 presence = read.delim(presence_path, sep = "\t", header = TRUE, stringsAsFactors = TRUE)
 chromosomes = read.delim(chromosomes_path, sep = ",", header = TRUE, stringsAsFactors = TRUE)
+
+vars_classification$status <- factor(vars_classification$status, levels = c("Reference private","Private", "Non-private"))
+vars_classification$impact<- factor(vars_classification$impact, levels = c("High","Moderate","Low", "Modifier"))
 
 print("Ordering chromosome names...")
 
@@ -42,29 +46,25 @@ vars_type <- vars_classification%>%
 
 total_vars = nrow(vars_type)
 
-# Barplot summary of number of variants per status and impact in lineage VERSION 1
-b <- ggplot(vars_type, aes(x = status, fill = impact))+
-    geom_bar(stat = "count", position = "dodge")+
-    geom_text(stat= "count", position = position_dodge(width =0.9), 
-                aes(label = scales::comma(after_stat(count))),
-                vjust = -0.5,
-                size = 3)+
-    scale_y_continuous(name = "Number of variants", labels = comma)+
-    labs(title = paste("Number of variants in each status and impact of lineage ", lineage),
-         subtitle = paste("Total number of variants:", scales::comma(total_vars)),
-         x = "", 
-         fill = "Impact")+
-    theme_classic()
-
-# Boxplot summary of number of variants per sample per status and impact VERSION 2
 vars_type_sample <- left_join(presence, vars_type, by = "var_id")%>%
     group_by(sample, lineage, status, impact)%>%
-    summarize(n_variants = n())
+    summarize(n_variants = n())%>%
+    ungroup()
+
+vars_type_sample_max <- vars_type_sample %>%
+    group_by(status)%>%
+    summarize(max_variants = max(n_variants) + max(n_variants)/10)
+
+vars_summary <- vars_type %>%
+    group_by(impact, status)%>%
+    summarize(n_variants = n())%>%
+    left_join(vars_type_sample_max, by = "status")
 
 g <- ggplot(vars_type_sample, aes(x = impact, y = n_variants))+
     expand_limits(y = 0)+
     geom_quasirandom(aes(color = impact), alpha = 0.5)+
     geom_boxplot(alpha = 0)+
+    geom_text(data = vars_summary, aes(y = max_variants, x = impact, label = scales::comma(n_variants)))+
     facet_wrap(~status, nrow = 1, scales = "free")+
     scale_y_continuous(name = "Number of variants per sample", labels = comma)+
     labs(title = paste("Number of variants per sample in each status and impact of lineage ", lineage),
@@ -72,10 +72,6 @@ g <- ggplot(vars_type_sample, aes(x = impact, y = n_variants))+
          x = "", 
          color = "Impact")+
     theme_classic()
-
-# Boxplot and barplot summaries of number of variants per sample per status and impact VERSION 3
-## It would be better to just add the number of the barplot to the top of the boxplots
-c <- g / b
 
 print("Making density plot of reference private variants")
 
@@ -97,20 +93,23 @@ status_density <- vars_windows %>%
 n_vars <- length(unique(vars_windows$var_id))
 
 print("Plotting status density")
-p <- ggplot(status_density)+
-    geom_segment(aes(x=1, xend=length, y=-1, yend=-1), linewidth = 0.1, color = "black")+
-    geom_col(aes(x = window_start, y = n), color = "black", fill = "black")+
+p <- ggplot()+
+    geom_segment(data = chromosomes, 
+                aes(x=1, xend=length, y=-1, yend=-1), 
+                linewidth = 0.1, color = "black")+
+    geom_col(data = status_density, 
+            aes(x = window_start, y = n), 
+            color = "black", fill = "black")+
     facet_wrap(~chromosome, ncol = 2, strip.position = "right")+
     scale_x_continuous(name = "Position (bp) ", labels = comma)+
     labs(title = "Number of Variants Private to Reference Along Chromosomes",
-        subtitle= paste("Number of variants : ", scales::comma(n_vars)),
-            y = "Number of variants")+
+         subtitle= paste("Number of variants : ", scales::comma(n_vars)),
+         y = "Number of variants")+
     theme_classic()+
     theme(legend.position = "none")
 
-
 print("Saving plot...")
-ggsave(lineage_barplot_path, c, width = 8, height = 5) # Choose g, b, or c
+ggsave(lineage_barplot_path, g, width = 16, height = 9)
 ggsave(ref_private_path, p, width = 16, height = 9)
 
 print("Done!")
