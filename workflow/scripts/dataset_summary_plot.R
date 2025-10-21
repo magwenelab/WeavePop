@@ -44,6 +44,17 @@ depth_raw <- map_stats %>%
     mutate(quality = "All mappings")
 depth <- rbind(depth_good, depth_raw)
 
+coverage_good <- map_stats %>%
+    select(sample, name, lineage, Coverage = coverage_good) %>%
+    pivot_longer(cols = Coverage, names_to = "measurement", values_to = "value") %>%
+    mutate(quality = "Good quality mappings")
+coverage_raw <- map_stats %>%
+    select(sample, name, lineage, Coverage = coverage_raw) %>%
+    pivot_longer(cols = Coverage, names_to = "measurement", values_to = "value") %>%
+    mutate(quality = "All mappings")
+coverage <- rbind(coverage_good, coverage_raw)
+
+
 print("Getting plot parameters...")
 topylim <- max(depth$value) + max(depth$value/ 10)
 raw_color = "gray50"
@@ -69,6 +80,24 @@ g <- ggplot(depth) +
     labs(title = "Genome-Wide Read Depth",
          y = "Read Depth (X)",
          x = "")
+
+print("Plotting coverage...")
+c <- ggplot(coverage) +
+    geom_point(aes(x = name, y = value, color = quality)) +
+    facet_grid(~lineage, scale = "free_x", space = "free_x") +
+    scale_color_manual(name= "", values= color_quality)+
+    scale_shape_manual(values = c(16,15, 17), name = NULL)+
+    theme_bw() +
+    theme(panel.background = element_blank(), 
+          panel.grid.minor = element_blank(),
+          strip.background = element_blank(),
+          panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 1),
+          axis.text.x = element_blank(), 
+          axis.ticks.x = element_blank())+
+    labs(title = "Coverage",
+         y = "Percentage of Coverage",
+         x = "")
+
 
 print("Joining and arranging data...")
 
@@ -122,7 +151,7 @@ mapq <- ggplot() +
     scale_fill_manual(values = palette_qualit, name = "")
 
 print("Joining plots...")
-plot <- g/reads/mapq
+plot <- g/c/reads/mapq
 
 print("Saving plot...")
 ggsave(output, plot = plot, units = "in", height = gheight, width = gwidth, scale = gscale)
