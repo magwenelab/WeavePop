@@ -609,6 +609,7 @@ def variant_classification_plots_input(wildcards):
         "chromosomes": INT_REFS_DIR / s["lineage"] / "chromosomes.csv",
     }
 
+
 def refs_unmapped_plots_input(wildcards):
     main_ref=config["annotate_references"]["fasta"].split(".")[0]
     main_ref_repeats = REFS_DIR / main_ref / (main_ref + "_repeats.bed")
@@ -726,16 +727,17 @@ def get_filtered_output():
             final_output = final_output, expand(
                 SAMPLES_DIR / "plots" / "{sample}" / "mapq.png", sample=SAMPLES
             )
-        final_output = final_output, expand(
-                SAMPLES_DIR / "plots" / "{sample}" / "variants_barplot.png", sample=SAMPLES)
-        final_output = final_output, expand(
-                SAMPLES_DIR / "plots" / "{sample}" / "variants_by_windows_status.png", sample=SAMPLES)
-        final_output = final_output, expand(
-                SAMPLES_DIR / "plots" / "{sample}" / "variants_by_windows_impact.png", sample=SAMPLES)
-        final_output = final_output, expand(
-                    DATASET_DIR / "plots" / "{lineage}_variant_summary.png", lineage = LINEAGES)
-        final_output = final_output, expand(
-                    REFS_DIR / "{lineage}" / "{lineage}_reference_variants.png", lineage = LINEAGES)     
+        if config["snpeff"]["activate"] or config["database"]["activate"]:
+            final_output = final_output, expand(
+                    SAMPLES_DIR / "plots" / "{sample}" / "variants_barplot.png", sample=SAMPLES)
+            final_output = final_output, expand(
+                    SAMPLES_DIR / "plots" / "{sample}" / "variants_by_windows_status.png", sample=SAMPLES)
+            final_output = final_output, expand(
+                    SAMPLES_DIR / "plots" / "{sample}" / "variants_by_windows_impact.png", sample=SAMPLES)
+            final_output = final_output, expand(
+                        DATASET_DIR / "plots" / "{lineage}_variant_summary.png", lineage = LINEAGES)
+            final_output = final_output, expand(
+                        REFS_DIR / "{lineage}" / "{lineage}_reference_variants.png", lineage = LINEAGES)     
         if config["annotate_references"]["activate"]:
             final_output = final_output, expand(
                 REFS_DIR / "{lineage}" / "{lineage}_unmapped.png", lineage=LINEAGES)
