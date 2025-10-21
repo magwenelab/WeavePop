@@ -735,7 +735,7 @@ def get_filtered_output():
         final_output = final_output, expand(
                     DATASET_DIR / "plots" / "{lineage}_variant_summary.png", lineage = LINEAGES)
         final_output = final_output, expand(
-                    DATASET_DIR / "plots" / "{lineage}_reference_variants.png", lineage = LINEAGES)     
+                    REFS_DIR / "{lineage}" / "{lineage}_reference_variants.png", lineage = LINEAGES)     
         if config["annotate_references"]["activate"]:
             final_output = final_output, expand(
                 REFS_DIR / "{lineage}" / "{lineage}_unmapped.png", lineage=LINEAGES)

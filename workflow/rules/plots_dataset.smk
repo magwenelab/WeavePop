@@ -54,7 +54,7 @@ rule refs_variant_classification_plots:
         presence=rules.intersect_vcfs.output.tsv,
     output:
         plot=DATASET_DIR / "plots" / "{lineage}_variant_summary.png",
-        plot_density=DATASET_DIR / "plots" / "{lineage}_reference_variants.png",
+        plot_density=REFS_DIR / "{lineage}" / "{lineage}_reference_variants.png",
     params:
         window_size=config["depth_quality"]["mosdepth"]["window"],
     log:
