@@ -46,18 +46,20 @@ rule depth_distribution_plots:
 # =================================================================================================
 
 
-rule depth_boxplot:
+rule depth_window_distribution:
     input:
-        unpack(depth_boxplot_input),
+        unpack(depth_window_distribution_input),
         metadata=METADATA_ORIGINAL_FILE,
     output:
-        plot=SAMPLES_DIR / "plots" / "{sample}" / "depth_boxplot.png",
+        plot=SAMPLES_DIR / "plots" / "{sample}" / "depth_window_distribution.png",
+    params:
+        window_size=config["depth_quality"]["mosdepth"]["window"],
     conda:
         "../envs/r.yaml"
     log:
-        LOGS / "samples" / "plots" / "depth_boxplot_{sample}.log",
+        LOGS / "samples" / "plots" / "depth_window_distribution_{sample}.log",
     script:
-        "../scripts/depth_boxplots.R"
+        "../scripts/depth_window_distribution.R"
 
 
 rule depth_by_windows_plots:
@@ -68,6 +70,7 @@ rule depth_by_windows_plots:
         plot=SAMPLES_DIR / "plots" / "{sample}" / "depth_by_windows.png",
     params:
         find_repeats=config["repeats"]["activate"],
+        window_size=config["depth_quality"]["mosdepth"]["window"],
     conda:
         "../envs/r.yaml"
     log:
@@ -90,29 +93,31 @@ rule depth_vs_cnvs_plots:
         "../scripts/depth_vs_cnvs_plots.R"
 
 
-rule mapq_plots:
+rule mapq_by_windows_plots:
     input:
-        unpack(mapq_plot_input),
+        unpack(mapq_by_windows_plot_input),
         metadata=METADATA_ORIGINAL_FILE,
     output:
-        SAMPLES_DIR / "plots" / "{sample}" / "mapq.png",
+        SAMPLES_DIR / "plots" / "{sample}" / "mapq_by_windows.png",
     params:
         find_repeats=config["repeats"]["activate"],
+        window_size=config["depth_quality"]["mosdepth"]["window"],
     conda:
         "../envs/r.yaml"
     log:
-        LOGS / "samples" / "plots" / "mapq_plots_{sample}.log",
+        LOGS / "samples" / "plots" / "mapq_by_windows_plots_{sample}.log",
     script:
-        "../scripts/mapq_plots.R"
+        "../scripts/mapq_by_windows_plots.R"
 
 
         
 rule variant_classification_plots:
     input:
-        unpack(variant_classification_plots_input)
+        unpack(variant_classification_plots_input),
+        metadata=METADATA_ORIGINAL_FILE,
     output:
-        barplot=SAMPLES_DIR / "plots" / "{sample}" / "variants_barplot.png",
-        status=SAMPLES_DIR / "plots" / "{sample}" / "variants_by_windows_status.png",
+        summary=SAMPLES_DIR / "plots" / "{sample}" / "variants_summary.png",
+        status=SAMPLES_DIR / "plots" / "{sample}" / "variants_by_windows_privateness.png",
         impact=SAMPLES_DIR / "plots" / "{sample}" / "variants_by_windows_impact.png",
     params:
         window_size=config["depth_quality"]["mosdepth"]["window"],

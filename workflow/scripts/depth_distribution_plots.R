@@ -90,9 +90,8 @@ plot_truncated <- ggplot()+
 
 combined <- plot_global / plot_truncated_log / plot_truncated 
 combined <- combined +
-  plot_annotation(title = "Depth Distribution of Whole Genome by Quality of Read mappings",
-                  subtitle = paste("Lineage:", lineage_name, " Sample:", sample,"Strain:", strain_name, sep = " ")) &
-    theme(plot.title = element_text(hjust = 0.5))
+  plot_annotation(title = "Depth Distribution of Whole Genome by Quality of Read Mappings",
+                  subtitle = paste("Sample:", sample,"Strain:", strain_name, " Lineage:", lineage_name,  sep = " "))
 
 print("Plotting depth distribution by chromosome...")
 by_chrom <- ggplot(depth)+
@@ -125,9 +124,8 @@ by_chrom_truncated <- ggplot(depth)+
 
 plot_chrom <- by_chrom / by_chrom_log / by_chrom_truncated
 plot_chrom <- plot_chrom +
-  plot_annotation(title = "Depth Distribution of Good Quality mappings of each Chromosome",
-                  subtitle = paste("Lineage:", lineage_name, " Sample:", sample, "Strain:", strain_name, sep = " ")) &
-    theme(plot.title = element_text(hjust = 0.5))
+  plot_annotation(title = "Depth Distribution of Good Quality Mappings of each Chromosome",
+                  subtitle = paste("Sample:", sample,"Strain:", strain_name, " Lineage:", lineage_name,  sep = " "))
 
 print("Saving plots...")
 ggsave(output_chrom, plot = plot_chrom, units = "in", height = gheight, width = gwidth, dpi = gdpi, scale = gscale)

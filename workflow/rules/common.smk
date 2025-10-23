@@ -516,7 +516,7 @@ def ref_add_repeats_input(wildcards):
     return d
 
 
-def depth_boxplot_input(wildcards):
+def depth_window_distribution_input(wildcards):
     s = METADATA_TABLE.loc[wildcards.sample,]
     return {
         "depth": INT_SAMPLES_DIR
@@ -551,7 +551,7 @@ def depth_vs_cnvs_plots_input(wildcards):
     }
 
 
-def mapq_plot_input(wildcards):
+def mapq_by_windows_plot_input(wildcards):
     s = METADATA_TABLE.loc[wildcards.sample,]
     d = {
         "mapq": INT_SAMPLES_DIR / "depth_quality" / s["sample"] / "mapq_by_window.bed",
@@ -719,25 +719,25 @@ def get_filtered_output():
                 sample=SAMPLES,
             )
             final_output = final_output, expand(
-                SAMPLES_DIR / "plots" / "{sample}" / "depth_boxplot.png", sample=SAMPLES
+                SAMPLES_DIR / "plots" / "{sample}" / "depth_window_distribution.png", sample=SAMPLES
             )
             final_output = final_output, expand(
                 SAMPLES_DIR / "plots" / "{sample}" / "depth_vs_cnvs.png", sample=SAMPLES
             )
             final_output = final_output, expand(
-                SAMPLES_DIR / "plots" / "{sample}" / "mapq.png", sample=SAMPLES
+                SAMPLES_DIR / "plots" / "{sample}" / "mapq_by_windows.png", sample=SAMPLES
             )
         if config["snpeff"]["activate"] or config["database"]["activate"]:
             final_output = final_output, expand(
-                    SAMPLES_DIR / "plots" / "{sample}" / "variants_barplot.png", sample=SAMPLES)
+                    SAMPLES_DIR / "plots" / "{sample}" / "variants_summary.png", sample=SAMPLES)
             final_output = final_output, expand(
-                    SAMPLES_DIR / "plots" / "{sample}" / "variants_by_windows_status.png", sample=SAMPLES)
+                    SAMPLES_DIR / "plots" / "{sample}" / "variants_by_windows_privateness.png", sample=SAMPLES)
             final_output = final_output, expand(
                     SAMPLES_DIR / "plots" / "{sample}" / "variants_by_windows_impact.png", sample=SAMPLES)
             final_output = final_output, expand(
                         DATASET_DIR / "plots" / "{lineage}_variant_summary.png", lineage = LINEAGES)
             final_output = final_output, expand(
-                        REFS_DIR / "{lineage}" / "{lineage}_reference_variants.png", lineage = LINEAGES)     
+                        REFS_DIR / "{lineage}" / "{lineage}_variants_by_windows.png", lineage = LINEAGES)     
         if config["annotate_references"]["activate"]:
             final_output = final_output, expand(
                 REFS_DIR / "{lineage}" / "{lineage}_unmapped.png", lineage=LINEAGES)
@@ -764,7 +764,7 @@ def get_dataset_output():
     if config["database"]["activate"]:
         final_output.append(DATASET_DIR / "database.db")
     if config["plotting"]["activate"]:
-        final_output.append(DATASET_DIR / "plots" / "dataset_summary.png")
+        final_output.append(DATASET_DIR / "plots" / "mapping_summary.png")
         if config["cnv"]["activate"] or config["database"]["activate"]:
             final_output.append(DATASET_DIR / "plots" / "dataset_depth_by_chrom.png")
     return final_output

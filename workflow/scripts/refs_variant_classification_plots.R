@@ -69,8 +69,8 @@ g <- ggplot(vars_type_sample, aes(x = impact, y = n_variants))+
     geom_text(data = vars_summary, aes(y = max_variants, x = impact, label = scales::comma(n_variants)))+
     facet_wrap(~status, nrow = 1, scales = "free")+
     scale_y_continuous(name = "Number of variants per sample", labels = comma)+
-    labs(title = paste("Number of variants per sample in each status and impact of lineage ", lin),
-         subtitle = paste("Total number of variants:", scales::comma(total_vars)),
+    labs(title = paste("Number of Variants per Impact and Privateness Category in each Sample of Lineage ", lin),
+         subtitle = paste("Total variants:", scales::comma(total_vars)),
          x = "", 
          color = "Impact")+
     theme_classic()
@@ -113,8 +113,8 @@ p <- ggplot()+
                          b
                        },
                        labels = comma)+
-    labs(title = "Number of Variants Private to Reference Along Chromosomes",
-         subtitle= paste("Number of variants : ", scales::comma(n_vars)))+
+    labs(title = "Number of Variants in Windows Along Chromosomes Private to the Reference Genome",
+         subtitle= paste("Lineage: ", lin, " Window size: ", window_size, " Total variants: ", scales::comma(n_vars)))+
     theme_classic()+
     theme(legend.position = "none")
 

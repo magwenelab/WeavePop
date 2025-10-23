@@ -48,7 +48,7 @@ p <- ggplot(chrom_metrics, aes(x = coverage_percent, y = chrom_norm_depth, color
         theme_bw() +
         theme(legend.position = "right") +
         labs(title = "Normalized Depth vs.\nPercent of CNV Coverage per Chromosome",
-            subtitle = paste("Lineage:", lineage_name, " Sample:", sample, "Strain:", strain_name, sep = " "),
+            subtitle = paste("Sample:", sample, "Strain:", strain_name," Lineage:", lineage_name,  sep = " "),
              y = "Normalized Median Depth of Chromosome",
              x = "Percent of Chromosome Covered by CNVs",
              color = "Chromosome",

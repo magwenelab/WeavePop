@@ -15,6 +15,8 @@ chroms_input <- snakemake@input$chroms
 loci_input <- snakemake@input$loci
 metadata_input <- snakemake@input$metadata
 
+window_size <- snakemake@params$window_size
+
 output <- snakemake@output[[1]] 
 
 sample <- snakemake@wildcards$sample
@@ -110,7 +112,7 @@ plot <- ggplot()+
   facet_wrap(~accession_chromosome, strip.position = "right", ncol = 2, labeller = as_labeller(my_labeller)) +
   scale_x_continuous(name = "Position (bp) ", labels = comma)+
   labs(title = "Mapping Quality of Windows Along Chromosomes",
-      subtitle = paste("Lineage: ", lineage_name," Sample: ", sample, "Strain:", strain_name,  sep = " "), 
+      subtitle = paste("Sample:", sample, "Strain:", strain_name, " Lineage:", lineage_name, " Window size:", window_size, sep = " "),
       y = "Mapping Quality (Phred score)")+
   theme_classic()+
   theme(panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 1))+

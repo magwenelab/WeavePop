@@ -14,6 +14,7 @@ metadata_input <- snakemake@input$metadata
 
 output <- snakemake@output$plot
 
+window_size <- snakemake@params$window_size
 sample <- snakemake@wildcards$sample
 gheight <- 9
 gwidth <- 16
@@ -59,7 +60,7 @@ c <- ggplot(windows, aes(x = chromosome, y = depth))+
         axis.title.x = element_blank())+
     labs(y="Depth\n(truncated)",
         title = "Distribution of all Depth Metrics of Windows per Chromosome and Whole Genome",
-        subtitle = paste("Lineage:", lineage_name, " Sample:", sample, "Strain:", strain_name, sep = " "))
+        subtitle = paste("Sample:", sample, "Strain:", strain_name, " Lineage:", lineage_name, " Window size:", window_size,  sep = " "))
 
 g <- ggplot(windows, aes(y = depth, x = 1))+
     geom_quasirandom(alpha = 0.05)+

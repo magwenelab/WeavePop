@@ -14,18 +14,26 @@ window_size = snakemake@params$window_size
 variants_path = snakemake@input$variants
 presence_path = snakemake@input$presence
 chromosomes_path = snakemake@input$chromosomes
-barplot_path = snakemake@output$barplot
+metadata_input <- snakemake@input$metadata
+summary_path = snakemake@output$summary
 status_path = snakemake@output$status
 impact_path = snakemake@output$impact
+
 
 print("Reading files...")
 variants = read.delim(variants_path, sep = "\t", header = TRUE, stringsAsFactors = TRUE)
 presence = read.delim(presence_path, sep = "\t", header = TRUE, stringsAsFactors = TRUE)
 chromosomes = read.delim(chromosomes_path, sep = ",", header = TRUE)
+metadata <- read.delim(metadata_input, sep = ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
 
 variants$status <- factor(variants$status, levels = c("Reference private","Private", "Non-private"))
 chromosomes$chromosome  <- factor(chromosomes$chromosome, levels = unique(chromosomes$chromosome))
 
+print("Obtaining lineage of sample...")
+
+
+lineage_name <- as.character(metadata$lineage[metadata$sample == samp])
+strain_name <- as.character(metadata$strain[metadata$sample == samp])
 
 print("Add chromosome name and creating windows")
 vars_windows <- variants %>%
@@ -72,8 +80,8 @@ p <- ggplot(status_density)+
     geom_col(aes(x = window_start, y = n, color = status, fill = status))+
     facet_grid(chromosome~status)+
     scale_x_continuous(name = "Position (bp) ", labels = comma)+
-    labs(title = "Number of variants of each status per window ",
-        subtitle= paste("Sample: ", samp," Number of variants: ", scales::comma(n_vars)),
+    labs(title = "Number of Variants in Windows Along Chromosomes by Privateness Category",
+        subtitle= paste("Sample:", samp, "Strain:", strain_name, " Lineage:", lineage_name, " Window size:", window_size, " Total variants: ", scales::comma(n_vars)),
             y = "Number of variants")+
     theme_classic()+
     theme(legend.position = "none")
@@ -84,8 +92,8 @@ e <- ggplot(effs_density)+
     geom_col(aes(x = window_start, y = n, color = impact, fill = impact))+
     facet_grid(chromosome~impact, scales = "free_x")+#, ncol =1, strip.position = "right")+
     scale_x_continuous(name = "Position (bp) ", labels = comma)+
-    labs(title="Number of variants per window per impact",
-        subtitle= paste("Sample: ", samp," Number of variants: ", scales::comma(n_vars)),
+    labs(title="Number of Variants in Windows Along Chromosomes by Impact",
+        subtitle= paste("Sample:", samp, "Strain:", strain_name, " Lineage:", lineage_name, " Window size:", window_size," Total variants: ", scales::comma(n_vars)),
             y = "Number of variants")+
     theme_classic()+
     theme(legend.position = "none")
@@ -99,14 +107,14 @@ b <- ggplot(vars, aes(x = status, fill = impact))+
                 vjust = -0.5,
                 size = 3)+
     scale_y_continuous(name = "Number of variants", labels = comma)+
-    labs(title = "Number of variants in each status and impact",
-        subtitle= paste("Sample: ", samp," Total number of variants:", scales::comma(total_vars)),
+    labs(title = "Number of Variants per Impact and Privateness Category",
+        subtitle= paste("Sample:", samp, "Strain:", strain_name, " Lineage:", lineage_name, " Total variants:", scales::comma(total_vars)),
         x = "", 
         fill = "Impact")+
     theme_classic()
 
 print("Saving plots...")
-ggsave(barplot_path, b, width = 8, height = 5)
+ggsave(summary_path, b, width = 8, height = 5)
 ggsave(status_path, p, width = 16, height = 9)
 ggsave(impact_path, e, width = 16, height = 9)
 print("Done!")

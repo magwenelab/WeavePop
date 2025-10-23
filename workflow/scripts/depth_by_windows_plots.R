@@ -19,6 +19,7 @@ output <- snakemake@output$plot
 
 find_repeats <- snakemake@params$find_repeats
 sample <- snakemake@wildcards$sample
+window_size <- snakemake@params$window_size
 gheight <- 9
 gwidth <- 16
 gdpi <- 600
@@ -128,7 +129,7 @@ c <- ggplot()+
   facet_wrap(~accession_chromosome, strip.position = "right", ncol = 2, labeller = as_labeller(my_labeller)) +
   labs(y = "Normalized Depth",
       title = "Normalized Depth of Windows Along Chromosomes", 
-      subtitle = paste("Lineage:", lineage_name, " Sample:", sample, "Strain:", strain_name, sep = " "))+
+      subtitle = paste("Sample:", sample, "Strain:", strain_name, " Lineage:", lineage_name, " Window size:", window_size, sep = " "))+
   scale_y_continuous(breaks = c(1, 2)) +
   theme_classic()+
   theme(panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 1))

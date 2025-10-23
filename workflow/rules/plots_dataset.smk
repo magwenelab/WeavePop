@@ -9,7 +9,7 @@ rule dataset_summary_plot:
         chroms=rules.quality_filter.output.chromosomes,
         stats=rules.join_mapping_stats.output,
     output:
-        plot=DATASET_DIR / "plots" / "dataset_summary.png",
+        plot=DATASET_DIR / "plots" / "mapping_summary.png",
     params:
         scale=config["plotting"]["scale"],
     log:
@@ -54,7 +54,7 @@ rule refs_variant_classification_plots:
         presence=INT_DATASET_DIR / "snpeff" / "{lineage}_presence.tsv",
     output:
         plot=DATASET_DIR / "plots" / "{lineage}_variant_summary.png",
-        plot_density=REFS_DIR / "{lineage}" / "{lineage}_reference_variants.png",
+        plot_density=REFS_DIR / "{lineage}" / "{lineage}_variants_by_windows.png",
     params:
         window_size=config["depth_quality"]["mosdepth"]["window"],
     log:
