@@ -72,7 +72,7 @@ depth_by_chrom_raw = distribution.groupby('accession').apply(calculate_mean_medi
 depth_genome_good = distribution.groupby('sample').apply(calculate_mean_median, 'count_good', include_groups=False).reset_index()
 depth_genome_raw = distribution.groupby('sample').apply(calculate_mean_median, 'count_raw', include_groups=False).reset_index()
 
-print("Gathering results of good alignments in dataframe ...")
+print("Gathering results of good mappings in dataframe ...")
 
 summary_depth = pd.merge(depth_by_chrom_good, depth_by_chrom_raw, on = ['accession'], how = 'outer')
 summary_depth.columns = ['accession', 'chrom_mean_good', 'chrom_median_good', 'chrom_mean_raw', 'chrom_median_raw']

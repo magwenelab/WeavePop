@@ -58,8 +58,8 @@ max_depth <- depth_global %>%
 
 print("Plotting genome-wide depth distribution...")
 plot_global <- ggplot()+
-  geom_line(data = depth_global, aes(x=depth,y = count_raw_global, color = "All alignments"))+
-  geom_line(data = depth_global, aes(x=depth,y = count_good_global, color = "Good quality alignments"))+ 
+  geom_line(data = depth_global, aes(x=depth,y = count_raw_global, color = "All mappings"))+
+  geom_line(data = depth_global, aes(x=depth,y = count_good_global, color = "Good quality mappings"))+ 
   scale_y_log10(name = "Number of Sites", labels = comma)+
   scale_x_continuous(name = "Depth (X)", labels = comma, n.breaks = 10)+
   labs(subtitle = "Log10 scale in Y-axis")+
@@ -68,8 +68,8 @@ plot_global <- ggplot()+
         legend.position = "none")
 
 plot_truncated_log <- ggplot()+
-  geom_line(data = depth_global, aes(x=depth,y = count_raw_global, color = "All alignments"))+ 
-  geom_line(data = depth_global, aes(x=depth,y = count_good_global, color = "Good quality alignments"))+ 
+  geom_line(data = depth_global, aes(x=depth,y = count_raw_global, color = "All mappings"))+ 
+  geom_line(data = depth_global, aes(x=depth,y = count_good_global, color = "Good quality mappings"))+ 
   scale_y_log10(name = "Number of Sites", labels = comma)+
   scale_x_continuous(name = "Depth (X)", labels = comma, n.breaks = 10, limits = c(0,max_depth*10))+
   labs(subtitle = "Log10 scale in Y-axis, truncated X-axis") +
@@ -78,8 +78,8 @@ plot_truncated_log <- ggplot()+
         legend.position = "none")
 
 plot_truncated <- ggplot()+
-  geom_line(data = depth_global, aes(x=depth,y = count_raw_global, color = "All alignments"))+ 
-  geom_line(data = depth_global, aes(x=depth,y = count_good_global, color = "Good quality alignments"))+ 
+  geom_line(data = depth_global, aes(x=depth,y = count_raw_global, color = "All mappings"))+ 
+  geom_line(data = depth_global, aes(x=depth,y = count_good_global, color = "Good quality mappings"))+ 
   scale_y_continuous(name = "Number of Sites", labels = comma)+
   scale_x_continuous(name = "Depth (X)", labels = comma, n.breaks = 10, limits = c(0,max_depth*10))+
   labs(subtitle = "Truncated X-axis")+
@@ -90,7 +90,7 @@ plot_truncated <- ggplot()+
 
 combined <- plot_global / plot_truncated_log / plot_truncated 
 combined <- combined +
-  plot_annotation(title = "Depth Distribution of Whole Genome by Quality of Read Alignments",
+  plot_annotation(title = "Depth Distribution of Whole Genome by Quality of Read mappings",
                   subtitle = paste("Lineage:", lineage_name, " Sample:", sample,"Strain:", strain_name, sep = " ")) &
     theme(plot.title = element_text(hjust = 0.5))
 
@@ -125,7 +125,7 @@ by_chrom_truncated <- ggplot(depth)+
 
 plot_chrom <- by_chrom / by_chrom_log / by_chrom_truncated
 plot_chrom <- plot_chrom +
-  plot_annotation(title = "Depth Distribution of Good Quality Alignments of each Chromosome",
+  plot_annotation(title = "Depth Distribution of Good Quality mappings of each Chromosome",
                   subtitle = paste("Lineage:", lineage_name, " Sample:", sample, "Strain:", strain_name, sep = " ")) &
     theme(plot.title = element_text(hjust = 0.5))
 
