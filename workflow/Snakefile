@@ -95,7 +95,7 @@ if config["workflow"] not in ["analysis", "join_datasets"]:
 if config["workflow"] == "analysis":
 
     include: "rules/common.smk"
-    include: "rules/snippy.smk"
+    include: "rules/mapping_and_variants.smk"
     include: "rules/quality_filter.smk"
     include: "rules/database.smk"
     include: "rules/ref_processing.smk"

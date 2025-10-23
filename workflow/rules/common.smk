@@ -476,7 +476,7 @@ LINEAGE_REFERENCE = pd.DataFrame(data=d).set_index("lineage", drop=False)
 # =================================================================================================
 
 
-def snippy_input(wildcards):
+def mapping_and_variants_input(wildcards):
     s = METADATA_TABLE.loc[wildcards.unf_sample,]
     return {
         "fq1": FQ_DATA / (s["sample"] + FQ1),
@@ -488,7 +488,7 @@ def snippy_input(wildcards):
 def liftoff_input(wildcards):
     s = METADATA_TABLE.loc[wildcards.sample,]
     return {
-        "target": SAMPLES_DIR / "snippy" / s["sample"] / "snps.consensus.fa",
+        "target": SAMPLES_DIR / "mapping_and_variants" / s["sample"] / "snps.consensus.fa",
         "refgff": s["refgff"],
         "refgenome": s["refgenome"],
     }
@@ -497,8 +497,8 @@ def liftoff_input(wildcards):
 def depth_distribution_input(wildcards):
     s = METADATA_TABLE.loc[wildcards.unf_sample,]
     return {
-        "bam": SAMPLES_DIR / "snippy" / s["sample"] / "snps.bam",
-        "bai": SAMPLES_DIR / "snippy" / s["sample"] / "snps.bam.bai",
+        "bam": SAMPLES_DIR / "mapping_and_variants" / s["sample"] / "snps.bam",
+        "bai": SAMPLES_DIR / "mapping_and_variants" / s["sample"] / "snps.bam.bai",
         "bam_good": INT_SAMPLES_DIR / "depth_quality" / s["sample"] / "snps_good.bam",
         "bai_good": INT_SAMPLES_DIR
         / "depth_quality"
@@ -597,7 +597,7 @@ def intersect_vcfs_input(wildcards):
     l = l.loc[wildcards.lineage,]
     return {
         "vcfs": expand(
-            SAMPLES_DIR / "snippy" / "{sample}" / "snps.vcf.gz", sample=l["sample"]
+            SAMPLES_DIR / "mapping_and_variants" / "{sample}" / "snps.vcf.gz", sample=l["sample"]
         )
     }
 
@@ -658,18 +658,18 @@ UNFILT_SAMPLES = list(set(METADATA_UNFILTERED["sample"]))
 # --Output per sample previous to sample filtering-------------------------------------------------
 def get_unfiltered_output():
     final_output = expand(
-        SAMPLES_DIR / "snippy" / "{unf_sample}" / "snps.consensus.fa",
+        SAMPLES_DIR / "mapping_and_variants" / "{unf_sample}" / "snps.consensus.fa",
         unf_sample=UNFILT_SAMPLES,
     )
     final_output.extend(
         expand(
-            SAMPLES_DIR / "snippy" / "{unf_sample}" / "snps.bam",
+            SAMPLES_DIR / "mapping_and_variants" / "{unf_sample}" / "snps.bam",
             unf_sample=UNFILT_SAMPLES,
         )
     )
     final_output.extend(
         expand(
-            SAMPLES_DIR / "snippy" / "{unf_sample}" / "snps.vcf.gz",
+            SAMPLES_DIR / "mapping_and_variants" / "{unf_sample}" / "snps.vcf.gz",
             unf_sample=UNFILT_SAMPLES,
         )
     )
@@ -768,3 +768,38 @@ def get_dataset_output():
         if config["cnv"]["activate"] or config["database"]["activate"]:
             final_output.append(DATASET_DIR / "plots" / "dataset_depth_by_chrom.png")
     return final_output
+
+# =================================================================================================
+#   Setup rules
+# =================================================================================================
+
+
+rule ref_fasta_symlinks:
+    input:
+        REF_DATA / "{lineage}.fasta",
+    output:
+        INT_REFS_DIR / "{lineage}" / "{lineage}.fasta",
+    log:
+        LOGS / "references" / "ref_fasta_symlinks_{lineage}.log",
+    resources:
+        tmpdir=TEMPDIR,
+    conda:
+        "../envs/shell.yaml"
+    shell:
+        "ln -s -r {input} {output} 2> {log}"
+
+
+# Edit the agat config file to avoid creating log files
+rule agat_config:
+    output:
+        INT_REFS_DIR / "agat_config.yaml",
+    log:
+        LOGS / "references" / "agat_config.log",
+    resources:
+        tmpdir=TEMPDIR,
+    conda:
+        "../envs/agat.yaml"
+    shell:
+        "agat config --expose &> {log} && "
+        "mv agat_config.yaml {output} &> {log} && "
+        "sed -i 's/log: true/log: false/g' {output} &>> {log} "

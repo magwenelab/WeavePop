@@ -31,8 +31,8 @@ rule liftoff:
                 / "intermediate_liftoff"
             )
         ),
-        fai=temp(SAMPLES_DIR / "snippy" / "{sample}" / "snps.consensus.fa.fai"),
-        mmi=temp(SAMPLES_DIR / "snippy" / "{sample}" / "snps.consensus.fa.mmi"),
+        fai=temp(SAMPLES_DIR / "mapping_and_variants" / "{sample}" / "snps.consensus.fa.fai"),
+        mmi=temp(SAMPLES_DIR / "mapping_and_variants" / "{sample}" / "snps.consensus.fa.mmi"),
     params:
         extra=config["annotation"]["liftoff"]["extra"],
         outpath=INT_SAMPLES_DIR / "annotation" / "{sample}" / "liftoff",
@@ -147,7 +147,7 @@ rule reformat_annotation:
 rule extract_cds:
     input:
         gff=rules.reformat_annotation.output.gff,
-        fa=SAMPLES_DIR / "snippy" / "{sample}" / "snps.consensus.fa",
+        fa=SAMPLES_DIR / "mapping_and_variants" / "{sample}" / "snps.consensus.fa",
         config=rules.agat_config.output,
     output:
         fa=SAMPLES_DIR / "annotation" / "{sample}" / "cds.fa",
@@ -169,7 +169,7 @@ rule extract_cds:
 rule extract_prots:
     input:
         gff=rules.reformat_annotation.output.gff,
-        fa=SAMPLES_DIR / "snippy" / "{sample}" / "snps.consensus.fa",
+        fa=SAMPLES_DIR / "mapping_and_variants" / "{sample}" / "snps.consensus.fa",
         config=rules.agat_config.output,
         cds=rules.extract_cds.output.fa,
     output:

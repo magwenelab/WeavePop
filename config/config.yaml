@@ -101,9 +101,9 @@ plotting:
 database:
   activate: # True to activate the module. Empty or False to skip.
 
-# ------------------Snippy parameters------------------------------------------
+# ------------------Parameters of the mapping and variants module--------------
 
-snippy:
+mapping_and_variants:
   threads: 12
   extra: ""
 

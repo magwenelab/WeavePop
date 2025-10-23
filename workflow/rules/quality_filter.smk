@@ -5,7 +5,7 @@
 
 rule bam_good:
     input:
-        bam=rules.snippy.output.bam,
+        bam=SAMPLES_DIR / "mapping_and_variants" / "{unf_sample}" / "snps.bam",
     output:
         bam_good=temp(
             INT_SAMPLES_DIR / "depth_quality" / "{unf_sample}" / "snps_good.bam"
@@ -52,8 +52,8 @@ rule depth_distribution:
 
 rule mapping_stats:
     input:
-        bam=rules.snippy.output.bam,
-        bai=rules.snippy.output.bai,
+        bam=SAMPLES_DIR / "mapping_and_variants" / "{unf_sample}" / "snps.bam",
+        bai=SAMPLES_DIR / "mapping_and_variants" / "{unf_sample}" / "snps.bam.bai",
         depth=rules.depth_distribution.output.summary,
     output:
         SAMPLES_DIR / "depth_quality" / "{unf_sample}" / "mapping_stats.tsv",
