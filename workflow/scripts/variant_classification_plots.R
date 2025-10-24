@@ -12,21 +12,23 @@ print("Reading input parameters...")
 samp = snakemake@wildcards$sample
 window_size = snakemake@params$window_size
 variants_path = snakemake@input$variants
+classif_path = snakemake@input$classif
 presence_path = snakemake@input$presence
 chromosomes_path = snakemake@input$chromosomes
 metadata_input <- snakemake@input$metadata
 summary_path = snakemake@output$summary
-status_path = snakemake@output$status
+category_path = snakemake@output$category
 impact_path = snakemake@output$impact
 
 
 print("Reading files...")
 variants = read.delim(variants_path, sep = "\t", header = TRUE, stringsAsFactors = TRUE)
+classif = read.delim(classif_path, sep = "\t", header = TRUE, stringsAsFactors = TRUE)
 presence = read.delim(presence_path, sep = "\t", header = TRUE, stringsAsFactors = TRUE)
 chromosomes = read.delim(chromosomes_path, sep = ",", header = TRUE)
 metadata <- read.delim(metadata_input, sep = ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
 
-variants$status <- factor(variants$status, levels = c("Reference private","Private", "Non-private"))
+classif$category <- factor(classif$category, levels = c("Reference private","Private", "Non-private"))
 chromosomes$chromosome  <- factor(chromosomes$chromosome, levels = unique(chromosomes$chromosome))
 
 print("Obtaining lineage of sample...")
@@ -34,6 +36,9 @@ print("Obtaining lineage of sample...")
 
 lineage_name <- as.character(metadata$lineage[metadata$sample == samp])
 strain_name <- as.character(metadata$strain[metadata$sample == samp])
+
+print("Merge variant description and classification")
+variants <- left_join(variants, classif, by = "var_id")
 
 print("Add chromosome name and creating windows")
 vars_windows <- variants %>%
@@ -58,15 +63,15 @@ vars <- vars_windows %>%
 if (length(unique(presence$sample)) > 1){
     print("Removing variants private to reference genome")
     vars <- vars%>%
-        filter(status != "Reference private")%>%
+        filter(category != "Reference private")%>%
         droplevels()
 } else {
     print("Only one sample in lineage, plotting all variants")
 }
 
-print("Getting number of variants per window for each status")
-status_density <- vars %>% 
-    group_by(chromosome, window,window_start, window_end, status, length)%>%
+print("Getting number of variants per window for each category")
+category_density <- vars %>% 
+    group_by(chromosome, window,window_start, window_end, category, length)%>%
     summarize(n = n())
 
 print("Getting number of variants per window for each impact")
@@ -74,11 +79,11 @@ effs_density <- vars%>%
     group_by(chromosome, window,window_start, window_end, impact, length)%>%
     summarize(n = n())
 
-print("Plotting status density")
-p <- ggplot(status_density)+
+print("Plotting category density")
+p <- ggplot(category_density)+
     geom_segment(aes(x=1, xend=length, y=-1, yend=-1), linewidth = 0.1, color = "black")+
-    geom_col(aes(x = window_start, y = n, color = status, fill = status))+
-    facet_grid(chromosome~status)+
+    geom_col(aes(x = window_start, y = n, color = category, fill = category))+
+    facet_grid(chromosome~category)+
     scale_x_continuous(name = "Position (bp) ", labels = comma)+
     labs(title = "Number of Variants in Windows Along Chromosomes by Privateness Category",
         subtitle= paste("Sample:", samp, "Strain:", strain_name, " Lineage:", lineage_name, " Window size:", window_size, " Total variants: ", scales::comma(n_vars)),
@@ -100,7 +105,7 @@ e <- ggplot(effs_density)+
 
 print("Plotting summary of number of variants")
 total_vars = nrow(vars)
-b <- ggplot(vars, aes(x = status, fill = impact))+
+b <- ggplot(vars, aes(x = category, fill = impact))+
     geom_bar(stat = "count", position = "dodge")+
     geom_text(stat= "count", position = position_dodge(width =0.9), 
                 aes(label = scales::comma(after_stat(count))),
@@ -115,6 +120,6 @@ b <- ggplot(vars, aes(x = status, fill = impact))+
 
 print("Saving plots...")
 ggsave(summary_path, b, width = 8, height = 5)
-ggsave(status_path, p, width = 16, height = 9)
+ggsave(category_path, p, width = 16, height = 9)
 ggsave(impact_path, e, width = 16, height = 9)
 print("Done!")

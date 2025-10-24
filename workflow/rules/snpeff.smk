@@ -117,11 +117,14 @@ rule extract_vcf_annotation:
     input:
         vcf=rules.snpeff.output.vcf,
         tsv=rules.ref_reformat_annotation.output.tsv,
+        metadata=rules.quality_filter.output.metadata,
+        presence=rules.intersect_vcfs.output.tsv,
     output:
         effects=INT_DATASET_DIR / "snpeff" / "{lineage}_effects.tsv",
         variants=INT_DATASET_DIR / "snpeff" / "{lineage}_variants.tsv",
         lofs=INT_DATASET_DIR / "snpeff" / "{lineage}_lofs.tsv",
         nmds=INT_DATASET_DIR / "snpeff" / "{lineage}_nmds.tsv",
+        classif=INT_DATASET_DIR / "snpeff" / "{lineage}_variant_classification.tsv",
     log:
         LOGS / "dataset" / "snpeff" / "extract_vcf_annotation_{lineage}.log",
     resources:
@@ -130,25 +133,5 @@ rule extract_vcf_annotation:
         "../envs/variants.yaml"
     script:
         "../scripts/extract_vcf_annotation.py"
-
-rule variant_classification:
-    input:
-        effects=rules.extract_vcf_annotation.output.effects,
-        variants=rules.extract_vcf_annotation.output.variants,
-        presence=rules.intersect_vcfs.output.tsv,
-        metadata=rules.quality_filter.output.metadata,
-        chromosomes=rules.quality_filter.output.chromosomes,
-    output:
-        tsv=INT_DATASET_DIR / "snpeff" / "{lineage}_variant_classification.tsv",
-    params:
-        window_size=config["depth_quality"]["mosdepth"]["window"],
-    log:
-        LOGS / "dataset" / "snpeff" / "variant_classification_{lineage}.log",
-    resources:
-        tmpdir=TEMPDIR,
-    conda:
-        "../envs/r.yaml"
-    script:
-        "../scripts/variant_classification.R"
 
 

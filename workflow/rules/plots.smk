@@ -117,7 +117,7 @@ rule variant_classification_plots:
         metadata=METADATA_ORIGINAL_FILE,
     output:
         summary=SAMPLES_DIR / "plots" / "{sample}" / "variants_summary.png",
-        status=SAMPLES_DIR / "plots" / "{sample}" / "variants_by_windows_privateness.png",
+        category=SAMPLES_DIR / "plots" / "{sample}" / "variants_by_windows_privateness.png",
         impact=SAMPLES_DIR / "plots" / "{sample}" / "variants_by_windows_impact.png",
     params:
         window_size=config["depth_quality"]["mosdepth"]["window"],

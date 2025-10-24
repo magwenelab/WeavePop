@@ -604,7 +604,8 @@ def intersect_vcfs_input(wildcards):
 def variant_classification_plots_input(wildcards):
     s = METADATA_TABLE.loc[wildcards.sample,]
     return {
-        "variants": INT_DATASET_DIR / "snpeff" / (s["lineage"] + "_variant_classification.tsv"),
+        "variants": INT_DATASET_DIR / "snpeff" / (s["lineage"] + "_variants.tsv"),
+        "classif": INT_DATASET_DIR / "snpeff" / (s["lineage"] + "_variant_classification.tsv"),
         "presence": INT_DATASET_DIR / "snpeff" / (s["lineage"] + "_presence.tsv"),
         "chromosomes": INT_REFS_DIR / s["lineage"] / "chromosomes.csv",
     }

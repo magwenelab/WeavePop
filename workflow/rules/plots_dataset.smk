@@ -50,7 +50,8 @@ rule dataset_depth_by_chrom_plot:
 rule refs_variant_classification_plots:
     input:
         chromosomes=DATASET_DIR / "chromosomes.csv",
-        variants=INT_DATASET_DIR / "snpeff" / "{lineage}_variant_classification.tsv",
+        classif=INT_DATASET_DIR / "snpeff" / "{lineage}_variant_classification.tsv",
+        variants=INT_DATASET_DIR / "snpeff" / "{lineage}_variants.tsv",
         presence=INT_DATASET_DIR / "snpeff" / "{lineage}_presence.tsv",
     output:
         plot=DATASET_DIR / "plots" / "{lineage}_variant_summary.png",

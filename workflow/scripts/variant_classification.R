@@ -13,7 +13,6 @@ effects_path  = snakemake@input$effects
 presence_path = snakemake@input$presence
 variants_path = snakemake@input$variants
 metadata_path = snakemake@input$metadata
-chromosomes_path = snakemake@input$chromosomes
 lineage = snakemake@wildcards$lineage
 
 # presence_path = "/FastData/czirion/WeavePop/test_bigger/results/04.Intermediate_files/02.Dataset/snpeff/VNI_presence.tsv"
@@ -32,7 +31,6 @@ variants = read.delim(variants_path, sep = "\t", header = TRUE, stringsAsFactors
 effects = read.delim(effects_path, sep = "\t", header = TRUE, stringsAsFactors = TRUE)
 presence = read.delim(presence_path, sep = "\t", header = TRUE, stringsAsFactors = TRUE)
 metadata = read.delim(metadata_path, sep = ",", header = TRUE, stringsAsFactors = TRUE)
-chromosomes = read.delim(chromosomes_path, sep = ",", header = TRUE, stringsAsFactors = TRUE)
 
 print("Assigning one impact per variant in order of priority HIGH > MODERATE > LOW > MODIFIER")
 effs <- effects %>%

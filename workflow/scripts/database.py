@@ -15,11 +15,12 @@ mapq_depth=snakemake.input[4]
 gff_tsv=snakemake.input[5]
 effects=snakemake.input[6]
 variants=snakemake.input[7]
-presence=snakemake.input[8]
-lofs=snakemake.input[9]
-nmds=snakemake.input[10]
-coding_sequences=snakemake.input[11]
-ref_coding_sequences=snakemake.input[12]
+classif=snakemake.input[8]
+presence=snakemake.input[9]
+lofs=snakemake.input[10]
+nmds=snakemake.input[11]
+coding_sequences=snakemake.input[12]
+ref_coding_sequences=snakemake.input[13]
 
 output=snakemake.output[0]
 
@@ -32,12 +33,13 @@ print(f"5. mapq_depth: {mapq_depth}")
 print(f"6. gff: {gff_tsv}")
 print(f"7. effects: {effects}")
 print(f"8. variants: {variants}")
-print(f"9. presence: {presence}")
-print(f"10. lofs: {lofs}")
-print(f"11. nmds: {nmds}")
-print(f"12. coding_sequences: {coding_sequences}")
-print(f"13. ref_coding_sequences: {ref_coding_sequences}")
-print(f"14. output: {output}")
+print(f"9. variants classification: {classif}")
+print(f"10. presence: {presence}")
+print(f"11. lofs: {lofs}")
+print(f"12. nmds: {nmds}")
+print(f"13. coding_sequences: {coding_sequences}")
+print(f"14. ref_coding_sequences: {ref_coding_sequences}")
+print(f"15. output: {output}")
 
 print("Reading metadata table...")
 df_metadata = pd.read_csv(metadata) 
@@ -70,6 +72,10 @@ print("Effects table done!")
 print("Reading variants table...")
 df_variants = pd.read_csv(variants, header = 0, sep='\t')
 print("Variants table done!")
+
+print("Reading variant classification table...")
+df_classif = pd.read_csv(classif, header = 0, sep='\t')
+print("Variant classification table done!")
 
 print("Reading presence table...")
 df_presence = pd.read_csv(presence, header = 0, sep='\t')
@@ -166,6 +172,9 @@ create_table_with_constraints(con, df_ref_coding_sequences, 'ref_coding_sequence
 create_table_with_constraints(con, df_variants, 'variants', [
     "PRIMARY KEY (var_id)",
     "FOREIGN KEY (accession) REFERENCES chromosomes(accession)"
+])
+create_table_with_constraints(con, df_classif, 'variant_classification', [
+    "PRIMARY KEY (var_id)"
 ])
 create_table_with_constraints(con, df_presence, 'presence',[
     "PRIMARY KEY (var_id,sample)",

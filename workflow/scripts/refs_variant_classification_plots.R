@@ -11,7 +11,8 @@ suppressPackageStartupMessages(library(patchwork))
 print("Reading input parameters...")
 
 chromosomes_path = snakemake@input$chromosomes
-variant_classification_path = snakemake@input$variants
+variant_classification_path = snakemake@input$classif
+variants_path = snakemake@input$variants
 presence_path = snakemake@input$presence
 
 lin=snakemake@wildcards$lineage
@@ -23,11 +24,14 @@ ref_private_path = snakemake@output$plot_density
 
 print("Reading files...")
 vars_classification = read.delim(variant_classification_path, sep = "\t", header = TRUE, stringsAsFactors = TRUE)
+variants = read.delim(variants_path, sep = "\t", header = TRUE, stringsAsFactors = TRUE)
 presence = read.delim(presence_path, sep = "\t", header = TRUE, stringsAsFactors = TRUE)
 chromosomes = read.delim(chromosomes_path, sep = ",", header = TRUE, stringsAsFactors = TRUE)
 
-vars_classification$status <- factor(vars_classification$status, levels = c("Reference private","Private", "Non-private"))
+vars_classification$category <- factor(vars_classification$category, levels = c("Reference private","Private", "Non-private"))
 vars_classification$impact<- factor(vars_classification$impact, levels = c("High","Moderate","Low", "Modifier"))
+
+vars_classification <- left_join(variants, vars_classification, by = "var_id")
 
 print("Ordering chromosome names...")
 chromosomes <- chromosomes %>%
@@ -44,30 +48,30 @@ chromosomes$chromosome <- factor(chromosomes$chromosome, levels = new_order)
 print("Creating summary plot...")
 vars_type <- vars_classification%>%
     left_join(chromosomes, by = c("accession", "lineage"))%>% 
-    select(var_id, lineage, chromosome, impact, status )
+    select(var_id, lineage, chromosome, impact, category )
 
 total_vars = nrow(vars_type)
 
 vars_type_sample <- left_join(presence, vars_type, by = "var_id")%>%
-    group_by(sample, lineage, status, impact)%>%
+    group_by(sample, lineage, category, impact)%>%
     summarize(n_variants = n())%>%
     ungroup()
 
 vars_type_sample_max <- vars_type_sample %>%
-    group_by(status)%>%
+    group_by(category)%>%
     summarize(max_variants = max(n_variants) + max(n_variants)/10)
 
 vars_summary <- vars_type %>%
-    group_by(impact, status)%>%
+    group_by(impact, category)%>%
     summarize(n_variants = n())%>%
-    left_join(vars_type_sample_max, by = "status")
+    left_join(vars_type_sample_max, by = "category")
 
 g <- ggplot(vars_type_sample, aes(x = impact, y = n_variants))+
     expand_limits(y = 0)+
     geom_quasirandom(aes(color = impact), alpha = 0.5)+
     geom_boxplot(alpha = 0)+
     geom_text(data = vars_summary, aes(y = max_variants, x = impact, label = scales::comma(n_variants)))+
-    facet_wrap(~status, nrow = 1, scales = "free")+
+    facet_wrap(~category, nrow = 1, scales = "free")+
     scale_y_continuous(name = "Number of variants per sample", labels = comma)+
     labs(title = paste("Number of Variants per Impact and Privateness Category in each Sample of Lineage ", lin),
          subtitle = paste("Total variants:", scales::comma(total_vars)),
@@ -86,20 +90,20 @@ vars_windows <- vars_classification %>%
     mutate(window_start = (window - 1) * window_size + 1,
             window_end = window * window_size)%>%
     ungroup()%>%
-    filter(status == "Reference private")
+    filter(category == "Reference private")
 
-status_density <- vars_windows %>% 
-    group_by(chromosome, window,window_start, window_end, status, length)%>%
+category_density <- vars_windows %>% 
+    group_by(chromosome, window,window_start, window_end, category, length)%>%
     summarize(n = as.integer(n()))
 
 n_vars <- length(unique(vars_windows$var_id))
 
-print("Plotting status density")
+print("Plotting category density")
 p <- ggplot()+
     geom_segment(data = chromosomes, 
                 aes(x=1, xend=length, y=0, yend=0), 
                 linewidth = 1, color = "black", alpha = 0.1)+
-    geom_col(data = status_density, 
+    geom_col(data = category_density, 
             aes(x = window_start, y = n), 
             color = "black", fill = "black")+
     facet_wrap(~chromosome, ncol = 2, strip.position = "right")+
