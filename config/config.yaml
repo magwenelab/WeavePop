@@ -62,7 +62,13 @@ depth_quality:
     window: 500 # Window size for mosdepth.
     extra: "" # Extra parameters for mosdepth.
 
-# ------------------Functional Annotation--------------------------------------
+# ------------------Mapping and variants module--------------------------------
+
+mapping_and_variants:
+  threads: 12
+  extra: ""
+
+# ------------------Annotation-------------------------------------------------
 
 annotation:
   activate: # True to activate the module. Empty or False to skip.
@@ -100,12 +106,6 @@ plotting:
 
 database:
   activate: # True to activate the module. Empty or False to skip.
-
-# ------------------Parameters of the mapping and variants module--------------
-
-mapping_and_variants:
-  threads: 12
-  extra: ""
 
 # =============================================================================
 #   Parameters for the join_datasets workflow
