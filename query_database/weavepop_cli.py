@@ -514,12 +514,14 @@ def get_variants(db, dataset=None, sample=None, strain=None, gene_name=None, gen
             effects.impact, effects.effect_type, effects.effect,
             effects.codon_change, effects.amino_acid_change, effects.amino_acid_length,
             effects.transcript_biotype, effects.gene_coding, effects.exon_rank,
+            variant_classification.category,
             mapq_depth.mean_depth_normalized, mapq_depth.mean_mapq
         FROM variants 
         JOIN chromosomes ON variants.accession = chromosomes.accession
         JOIN presence ON variants.var_id = presence.var_id
         JOIN effects ON variants.var_id = effects.var_id
         JOIN metadata ON presence.sample = metadata.sample
+        JOIN variant_classification ON variants.var_id = variant_classification.var_id
         LEFT JOIN mapq_depth ON mapq_depth.feature_id = effects.feature_id AND mapq_depth.sample = presence.sample
         WHERE metadata.dataset IN {dataset}
         """
