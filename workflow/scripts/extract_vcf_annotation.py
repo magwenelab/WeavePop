@@ -151,9 +151,9 @@ df_metadata = pd.read_csv(metadata, header = 0)
 df_samples_in_lineage= df_metadata.groupby(['lineage']).size().reset_index(name='samples_in_lineage')
 df_private['samples_in_lineage'] = df_samples_in_lineage.loc[df_samples_in_lineage['lineage'] == lineage, ['samples_in_lineage']]['samples_in_lineage'].iloc[0]
   
-df_private['category'] = df_private.apply(lambda row: "Reference private" if row['n_samples'] == row['samples_in_lineage']
-                                                            else "Private" if row['n_samples'] == 1
-                                                            else "Non-private", axis = 1)
+df_private['category'] = df_private.apply(lambda row: "Private" if row['n_samples'] == 1 
+                                                        else "Reference private" if row['n_samples'] == row['samples_in_lineage']
+                                                        else "Non-private", axis = 1)
 df_private = df_private[['var_id', 'category']]
 
 

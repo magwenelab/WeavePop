@@ -7,26 +7,30 @@ suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(scales))
 suppressPackageStartupMessages(library(ggbeeswarm))
 suppressPackageStartupMessages(library(patchwork))
+suppressPackageStartupMessages(library(RColorBrewer))
+
 
 print("Reading input parameters...")
 
-chromosomes_path = snakemake@input$chromosomes
-variant_classification_path = snakemake@input$classif
-variants_path = snakemake@input$variants
-presence_path = snakemake@input$presence
+chromosomes_path <- snakemake@input$chromosomes
+variant_classification_path <- snakemake@input$classif
+variants_path <- snakemake@input$variants
+presence_path <- snakemake@input$presence
+loci_path <- snakemake@input$loci
 
-lin=snakemake@wildcards$lineage
-window_size =snakemake@params$window_size
+lin<-snakemake@wildcards$lineage
+window_size <-snakemake@params$window_size
 
-lineage_vars_path = snakemake@output$plot
-ref_private_path = snakemake@output$plot_density
+lineage_vars_path <- snakemake@output$plot
+ref_private_path <- snakemake@output$plot_density
    
 
 print("Reading files...")
-vars_classification = read.delim(variant_classification_path, sep = "\t", header = TRUE, stringsAsFactors = TRUE)
-variants = read.delim(variants_path, sep = "\t", header = TRUE, stringsAsFactors = TRUE)
-presence = read.delim(presence_path, sep = "\t", header = TRUE, stringsAsFactors = TRUE)
-chromosomes = read.delim(chromosomes_path, sep = ",", header = TRUE, stringsAsFactors = TRUE)
+vars_classification <- read.delim(variant_classification_path, sep = "\t", header = TRUE, stringsAsFactors = TRUE)
+variants <- read.delim(variants_path, sep = "\t", header = TRUE, stringsAsFactors = TRUE)
+presence <- read.delim(presence_path, sep = "\t", header = TRUE, stringsAsFactors = TRUE)
+chromosomes <- read.delim(chromosomes_path, sep = ",", header = TRUE, stringsAsFactors = TRUE)
+loci_table <- read.delim(loci_path, header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
 
 vars_classification$category <- factor(vars_classification$category, levels = c("Reference private","Private", "Non-private"))
 vars_classification$impact<- factor(vars_classification$impact, levels = c("High","Moderate","Low", "Modifier"))
@@ -119,8 +123,27 @@ p <- ggplot()+
                        labels = comma)+
     labs(title = "Number of Variants in Windows Along Chromosomes Private to the Reference Genome",
          subtitle= paste("Lineage: ", lin, " Window size: ", window_size, " Total variants: ", scales::comma(n_vars)))+
-    theme_classic()+
-    theme(legend.position = "none")
+    theme_classic()
+
+max_vars <- max(category_density$n)
+
+print("Adding loci data if available...")
+if (nrow(loci_table)!= 0){
+  loci_sample <- loci_table %>% 
+    filter(lineage == lin) %>%
+    select(accession, start , end , loci)%>%
+    droplevels()
+  loci <- left_join(loci_sample, chromosomes, by = c("accession"))%>%
+    select(accession, chromosome, start, end, loci)
+  dark2 <- brewer.pal(8, "Dark2")[1:6]
+  l_colors <- dark2[1:nlevels(loci$loci)]
+  l_lim <- max_vars + max_vars*0.1
+  print("Adding loci to plot...")
+  p <- p +  
+      geom_point(data = loci, aes(x=start, y = l_lim, color = loci))+  
+      scale_color_manual(name = "Features", values = l_colors)+
+      guides(color = guide_legend(order=3))
+}
 
 print("Saving plot...")
 ggsave(lineage_vars_path, g, width = 16, height = 9)

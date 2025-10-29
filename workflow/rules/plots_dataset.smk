@@ -53,6 +53,7 @@ rule refs_variant_classification_plots:
         classif=INT_DATASET_DIR / "snpeff" / "{lineage}_variant_classification.tsv",
         variants=INT_DATASET_DIR / "snpeff" / "{lineage}_variants.tsv",
         presence=INT_DATASET_DIR / "snpeff" / "{lineage}_presence.tsv",
+        loci=INT_REFS_DIR / "{lineage}" / "loci_to_plot.tsv",
     output:
         plot=DATASET_DIR / "plots" / "{lineage}_variant_summary.png",
         plot_density=REFS_DIR / "{lineage}" / "{lineage}_variants_by_windows.png",

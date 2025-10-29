@@ -80,7 +80,7 @@ u <- ggplot()+
     facet_wrap(~chromosome, ncol=2, strip.position = "right")+
     theme_classic()+
     theme(legend.position = "bottom")+
-    labs(title = paste("Location of genes per chromosome of main reference not mapped to ", lin),
+    labs(title = paste("Location of Genes of the Main Reference Unmapped in ", lin),
         y = "")
 
 print("Saving plot...")
