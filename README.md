@@ -16,16 +16,6 @@ The database allows users to easily explore the results using WeavePop-Shiny, an
 
 Check the [Wiki](https://github.com/magwenelab/WeavePop/wiki) for detailed information on how to use WeavePop.
 
-[Overview](#overview)  
-[Installation](#installation)  
-[Input files](#input-files)  
-[Configuration](#configuration)  
-[Testing](#testing)   
-[Execution](#execution)   
-[Output](#output)  
-[WeavePop-Shiny](#weavepop-shiny)  
-
-## Overview
 
 <div style="text-align: center;">
   <img src=".figs/pipeline_diagram.png" alt="Diagram" />
@@ -35,11 +25,12 @@ Check the [Wiki](https://github.com/magwenelab/WeavePop/wiki) for detailed infor
 
 ### Requirements
 
-Requires a **Linux** operating system.
+Requires a **Linux** operating system.  
+If you are using a cluster with SLURM, check the Wiki [SLURM Execution](https://github.com/magwenelab/WeavePop/wiki/SLURM-Execution) for specific instructions.
 
 ### 1. Install Conda
 
-Install Mamba or Miniconda following the instructions on their webpage:
+Install Mamba or Miniconda from:
 * Mamba: [https://github.com/conda-forge/miniforge](https://github.com/conda-forge/miniforge) (recommended)
 * Miniconda: [https://docs.anaconda.com/miniconda/](https://docs.anaconda.com/miniconda/)
 
@@ -59,7 +50,7 @@ To download, use the green button `<> Code` and click `Download ZIP`, then extra
 
 ### 3. Install the Snakemake Conda environment
 
-In your terminal, go to the directory you downloaded and run  
+In your terminal, go to the directory you downloaded and run:  
 ```
 mamba env create --file workflow/envs/snakemake.yaml # use conda instead of mamba if you installed Miniconda
 ```
@@ -86,15 +77,16 @@ The environments for particular software used by the pipeline will be installed 
 </details>
 
 ## Input files
-To see a full description of the input files and their format, go to the [Input Wiki](https://github.com/magwenelab/WeavePop/wiki/Input-files).
 
-* FASTQ files: Paired-end short-read FASTQ files for all samples in the same directory.  
+* FASTQ files: Paired-end short-reads of all samples.  
 * Reference genomes: FASTA and GFF files for each lineage. Or FASTA for each lineage and FASTA and GFF for a main reference to use to annotate the other references.
-* `metadata.csv`: A comma-separated table with one sample per row, with the columns  `sample`, `lineage`, and `strain`. [Example](https://github.com/magwenelab/WeavePop/blob/main/test/config/metadata.csv).  
-* `chromosomes.csv`: A comma-separated table with one row per chromosome per lineage, with the columns `lineage`, `accession`, and `chromosome`. [Example](https://github.com/magwenelab/WeavePop/blob/main/test/config/chromosomes.csv).  
-* `RepBase.fasta`: Database of repetitive sequences in FASTA format to use for RepeatMasker. We recommend the [RepBase database](https://www.girinst.org/). You need to download it, extract the files, and concatenate them all in one FASTA file. The database is needed if the CNV, plotting, or database modules are activated. If you don't provide a database, you can choose to run it with a **fake database, which will generate inaccurate identification of repetitive sequences**.
-* `loci.csv`: If you want genetic features to be plotted in the depth and MAPQ plots, provide a comma-separated table with one row per gene, with the columns `gene_id` and `feature`. Max 8 features.   [Example](https://github.com/magwenelab/WeavePop/blob/main/test/config/loci.csv).  
-* `exclude.txt`: If you want to exclude from all analysis some of the samples in your metadata file, you can provide a file with a list of sample IDs to exclude. 
+* `metadata.csv`: Table with the columns  `sample`, `lineage`, and `strain`. [Example](https://github.com/magwenelab/WeavePop/blob/main/test/config/metadata.csv).  
+* `chromosomes.csv`: Table with the chromosome names per lineage, with the columns `lineage`, `accession`, and `chromosome`. [Example](https://github.com/magwenelab/WeavePop/blob/main/test/config/chromosomes.csv).  
+* `RepBase.fasta`: Database of repetitive sequences. We recommend the [RepBase database](https://www.girinst.org/). You need to download it, extract the files, and concatenate them all in one FASTA file. The database is needed if the CNV, or database modules are activated. If you don't provide a database, you can choose to run it with a **fake database, which will generate inaccurate identification of repetitive sequences**.
+* `loci.csv`: Optional table with columns `gene_id` and `feature`. Max 8 features. If you want genetic features to be plotted in the depth and MAPQ plots. [Example](https://github.com/magwenelab/WeavePop/blob/main/test/config/loci.csv).  
+* `exclude.txt`: Optional file with a list of sample IDs to exclude. 
+
+To see a full description of the input files and their format, go to the Wiki [Input](https://github.com/magwenelab/WeavePop/wiki/Input-files).
 
 ## Configuration
 
@@ -102,19 +94,22 @@ To execute the workflow, you need to edit the configuration file located in `con
 
 * Select the workflow to run: The `analysis` workflow will run the analysis for one dataset. If you have the complete results (database module activated) of the `analysis` workflow for multiple datasets, you can use the `join_datasets` workflow to create a database with all of them.  
 * Provide the paths to the input files and project directory. The working directory should be `WeavePop/`, which contains `config/` and `workflow/`.  
-* Activate modules: When running the `analysis` workflow, you can select which of its modules to activate.  Activating the `database` module automatically activates the modules `cnv`, `genes_mapq_depth`, and `snpeff`.  
-* Specify parameters. The output description in [Output Wiki](https://github.com/magwenelab/WeavePop/wiki/Output) explains which files are created by each module.  
+* Activate modules: When running the `analysis` workflow, you can select which of its modules to activate.  Activating the `database` module automatically activates the modules `annotation`, `depth_quality_features`, `cnv`, and `snpeff`.  
+* Specify parameters. 
 
-To see a full description of the configuration, go to the [Configuration Wiki](https://github.com/magwenelab/WeavePop/wiki/Configuration).
+Full description in [Configuration](https://github.com/magwenelab/WeavePop/wiki/Configuration).  
+
+The [Output Wiki](https://github.com/magwenelab/WeavePop/wiki/Output) explains which files are created by each module.  
 
 ## Testing
 
+To test the workflow and let Snakemake install the conda environments, run WeavePop with the test data before trying it on your data.  
 ```
 cd /<path-to>/WeavePop/
 conda activate snakemake
 snakemake --profile test/config/default
 ```
-See more details in the Wiki [Testing](https://github.com/magwenelab/WeavePop/wiki/Testing).  
+See more details in [Testing](https://github.com/magwenelab/WeavePop/wiki/Testing).  
 
 ## Execution
 
@@ -122,32 +117,31 @@ See more details in the Wiki [Testing](https://github.com/magwenelab/WeavePop/wi
 2) Activate the Snakemake environment: `conda activate snakemake`.
 3) Specify the command-line parameters in the execution profile `config/default/config.yaml`. 
 4) Run: 
+
 ```
 snakemake --profile config/default
 ```
 
-Learn more about the execution options in the Wiki pages [Basic usage](https://github.com/magwenelab/WeavePop/wiki/Basic-usage), [Execution profiles](https://github.com/magwenelab/WeavePop/wiki/Execution-profiles) and [Working with multiple projects and runs](https://github.com/magwenelab/WeavePop/wiki/Working-with-multiple-projects-and-runs).
+Learn more about the execution options in the Wiki pages [Basic usage](https://github.com/magwenelab/WeavePop/wiki/Basic-usage), [Execution profiles](https://github.com/magwenelab/WeavePop/wiki/Execution-profiles), [Working with multiple projects and runs](https://github.com/magwenelab/WeavePop/wiki/Working-with-multiple-projects-and-runs), and [SLURM Execution](https://github.com/magwenelab/WeavePop/wiki/SLURM-Execution).
 
 ## Output
 
-The output will be generated in the `results/` directory by default. Check the Wiki [Working with multiple projects and runs](https://github.com/magwenelab/WeavePop/wiki/Working-with-multiple-projects-and-runs) for more information.  
-
-Here is a list of the most relevant outputs. To see the full list and know which module produces each file, go to the [Output Wiki](https://github.com/magwenelab/WeavePop/wiki/Output).  
+Here is a list of the most relevant outputs. To see the full list and know which module produces each file, go to the Wiki [Output](https://github.com/magwenelab/WeavePop/wiki/Output).  
 
 <details>
 <summary>Output files </summary> 
 
 | File | Description |
 | :---------------- | ----: |
-| `01.Samples/snippy/{sample}/snps.bam` | BAM file of alignment between short reads of the sample and the corresponding reference genome. |
-| `01.Samples/snippy/{sample}/snps.consensus.fa` | FASTA file of the reference genome with all variants instantiated. |
-| `01.Samples/snippy/{sample}/snps.vcf` | Called variants in VCF format. Positions are 01-Based.|
+| `01.Samples/mapping_and_variants/{sample}/snps.bam` | BAM file of mapping between short reads of the sample and the corresponding reference genome. |
+| `01.Samples/mapping_and_variants/{sample}/snps.consensus.fa` | FASTA file of the reference genome with the sample's variants instantiated. |
+| `01.Samples/mapping_and_variants/{sample}/snps.vcf` | Called variants in VCF format. Positions are 01-Based.|
 | `01.Samples/annotation/{sample}/annotation.gff` | Standardized GFF file of annotation by Liftoff. Positions are 1-Based. |
 | `01.Samples/annotation/{sample}/cds.fa` | Nucleotide sequences of all transcripts of the sample. |
 | `01.Samples/annotation/{sample}/proteins.fa` | Protein sequences of all isoforms of the sample. |
 | `01.Samples/plots/{sample}/depth_by_windows.png` | Plot of normalized depth of windows along each chromosome, with specified genetic features, called CNVs, and repetitive sequences of the corresponding reference. |
 | `02.Dataset/plots/dataset_depth_by_chrom.png` | Normalized mean depth of each chromosome in the samples that survived the quality filter.  |
-| `02.Dataset/plots/dataset_summary.png` | Genome-wide depth and mapping quality metrics of the samples that survived the quality filter.|
+| `02.Dataset/plots/mapping_summary.png` | Genome-wide depth, coverage, and mapping quality metrics of the samples that survived the quality filter.|
 | `02.Dataset/depth_quality/mapq_depth_by_feature.tsv` | MAPQ and mean depth of each feature in all the samples. |
 | `02.Dataset/cnv/cnv_calls.tsv` | Table of deleted and duplicated regions in all samples and their overlap with repetitive sequences. Positions are 1-Based.|
 | `02.Dataset/snpeff/effects.tsv`|Table with the effects of the possible variants in all lineages.|
@@ -155,12 +149,11 @@ Here is a list of the most relevant outputs. To see the full list and know which
 | `02.Dataset/snpeff/variants.tsv`|Table with the description of all variants of all lineages. Positions are 1-Based.|
 | `02.Dataset/database.db` |  SQL database with the main results. |
 
-
 </details>
 
 ## WeavePop-Shiny
 
-WeavePop-Shiny is an interactive web app that allows you to query the database generated by WeavePop. It is useful to explore the results of the analysis. To use the command-line interface instead, see  [WeavePop-CLI Wiki](https://github.com/magwenelab/WeavePop/wiki/WeavePop%E2%80%90CLI).
+WeavePop-Shiny is an interactive web app that allows you to query the database generated by WeavePop. It is useful to explore the results of the analysis. To use the command-line interface instead, see the Wiki [WeavePop-CLI](https://github.com/magwenelab/WeavePop/wiki/WeavePop%E2%80%90CLI).
 
 ### Installation
 
@@ -180,9 +173,9 @@ cd /<path-to>/WeavePop/<my-project>/results/02.Dataset
 conda activate shiny
 shiny run /<path-to>/WeavePop/query_database/app.py
 ```
-Use the app in a browser: Copy the link that appears in the output (e.g. http://127.0.0.1:8000) and paste it into your web browser. Don't close the terminal while you are using the app.  
+To open the app in a browser: Copy the link that appears in the output (e.g. http://127.0.0.1:8000) and paste it into your web browser. Don't close the terminal while you are using the app.  
 
-These steps assume that you are using a local machine. If you have WeavePop and your results in a remote machine, you can either download `query_database/` and the `results/02.Datasets/database.db` file and do the installation and use the WeavePop-Shiny locally, or use VSCode with the Remote extension and Shiny extension to use the WeavePop-Shiny remotely.
+These steps assume that you are using a local machine. If you have WeavePop and your results in a remote machine, you can either download `query_database/` and the `results/02.Datasets/database.db` file, do the installation and use the WeavePop-Shiny locally, or use VSCode with extensions and **Remote** and **Shiny** to use the WeavePop-Shiny remotely.
 
 <div style="text-align: center;">
   <img src=".figs/shiny.png" alt="Shiny CNV window example" />
