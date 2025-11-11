@@ -172,7 +172,6 @@ rule rename_polished:
 
 rule refs_unmapped_features:
     input:
-        metadata=DATASET_DIR / "metadata.csv",
         genes=rules.main_ref_recreate_ids.output.tsv,
         unmapped=expand(rules.ref2ref_liftoff.output.unmapped, lineage=LINEAGES),
     output:
@@ -181,6 +180,7 @@ rule refs_unmapped_features:
         "../envs/pandas.yaml"
     params:
         refdir=INT_REFS_DIR,
+        lins=expand("{lineage}", lineage=LINEAGES),
     log:
         LOGS / "references" / "annotation" / "refs_unmapped_features.log",
     script:
