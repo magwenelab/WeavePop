@@ -27,9 +27,9 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="mm"
-     inkscape:zoom="0.35355339"
-     inkscape:cx="417.193"
-     inkscape:cy="328.09755"
+     inkscape:zoom="0.70710678"
+     inkscape:cx="581.24178"
+     inkscape:cy="424.26407"
      inkscape:window-width="1920"
      inkscape:window-height="962"
      inkscape:window-x="0"
@@ -34679,43 +34679,43 @@
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;white-space:pre;shape-inside:url(#rect26-4);display:inline;fill:#2f6a69;fill-opacity:1;stroke:#2f6a69;stroke-width:0.869291;stroke-linecap:round;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"><tspan
              x="50.5"
              y="375.70113"
-             id="tspan14">&gt; S1 gene1
+             id="tspan18">&gt; S1 gene1
 </tspan><tspan
              x="50.5"
              y="395.70113"
-             id="tspan26"><tspan
+             id="tspan20"><tspan
                style="font-size:10.7099px;font-family:Sans;-inkscape-font-specification:'Sans, Normal'"
-               id="tspan15">AGATAGACAGTAC
+               id="tspan19">AGATAGACAGTAC
 </tspan></tspan><tspan
              x="50.5"
              y="415.70113"
-             id="tspan33"><tspan
+             id="tspan25"><tspan
    style="font-size:10.7099px;font-family:Sans;-inkscape-font-specification:'Sans, Normal'"
-   id="tspan31">AGATCAGAGAATT</tspan>
+   id="tspan21">AGATCAGAGAATT</tspan>
 </tspan><tspan
              x="50.5"
              y="435.70113"
-             id="tspan34">
+             id="tspan28">
 </tspan><tspan
              x="50.5"
              y="455.70113"
-             id="tspan35">&gt; S1 gene2
+             id="tspan29">&gt; S1 gene2
 </tspan><tspan
              x="50.5"
              y="475.70113"
-             id="tspan41"><tspan
+             id="tspan32"><tspan
                style="font-size:10.7099px;font-family:Sans;-inkscape-font-specification:'Sans, Normal'"
-               id="tspan36">TGAAATGCAGTAC
+               id="tspan30">TGAAATGCAGTAC
 </tspan></tspan><tspan
              x="50.5"
              y="495.70113"
-             id="tspan43"><tspan
+             id="tspan69"><tspan
    style="font-size:10.7099px;font-family:Sans;-inkscape-font-specification:'Sans, Normal'"
-   id="tspan42">GATCCAAATCACC</tspan>
+   id="tspan68">GATCCAAATCACC</tspan>
 </tspan><tspan
              x="50.5"
              y="515.70113"
-             id="tspan44">
+             id="tspan70">
 </tspan></text></g><g
          id="g3"
          transform="translate(5.4125895,0.161841)"><path
@@ -34729,43 +34729,43 @@
            style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;white-space:pre;shape-inside:url(#rect26-4-2);display:inline;fill:#2f6a69;fill-opacity:1;stroke:#2f6a69;stroke-width:0.869291;stroke-linecap:round;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"><tspan
              x="50.5"
              y="375.70113"
-             id="tspan45">&gt; S1 gene1
+             id="tspan71">&gt; S1 gene1
 </tspan><tspan
              x="50.5"
              y="395.70113"
-             id="tspan47"><tspan
+             id="tspan73"><tspan
                style="font-size:10.6667px;font-family:Sans;-inkscape-font-specification:'Sans, Normal'"
-               id="tspan46">MHCKHIISIHASF
+               id="tspan72">MHCKHIISIHASF
 </tspan></tspan><tspan
              x="50.5"
              y="415.70113"
-             id="tspan49"><tspan
+             id="tspan75"><tspan
    style="font-size:10.6667px;font-family:Sans;-inkscape-font-specification:'Sans, Normal'"
-   id="tspan48">FGSIFSRSHPYIL</tspan>
+   id="tspan74">FGSIFSRSHPYIL</tspan>
 </tspan><tspan
              x="50.5"
              y="435.70113"
-             id="tspan50">
+             id="tspan76">
 </tspan><tspan
              x="50.5"
              y="455.70113"
-             id="tspan51">&gt; S1 gene2
+             id="tspan77">&gt; S1 gene2
 </tspan><tspan
              x="50.5"
              y="475.70113"
-             id="tspan53"><tspan
+             id="tspan79"><tspan
                style="font-size:10.6667px;font-family:Sans;-inkscape-font-specification:'Sans, Normal'"
-               id="tspan52">MHFIHPPIHPSIY
+               id="tspan78">MHFIHPPIHPSIY
 </tspan></tspan><tspan
              x="50.5"
              y="495.70113"
-             id="tspan55"><tspan
+             id="tspan81"><tspan
    style="font-size:10.6667px;font-family:Sans;-inkscape-font-specification:'Sans, Normal'"
-   id="tspan54">HLLIIHTGLQQLA</tspan>
+   id="tspan80">HLLIIHTGLQQLA</tspan>
 </tspan><tspan
              x="50.5"
              y="515.70113"
-             id="tspan56">
+             id="tspan82">
 </tspan></text></g></g><g
        id="g7"
        transform="translate(-5.2905229,-25.131736)"
@@ -34776,23 +34776,23 @@
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;white-space:pre;shape-inside:url(#rect26);display:inline;opacity:1;fill:#2f6a69;fill-opacity:1;stroke:#2f6a69;stroke-width:0.869291;stroke-linecap:round;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"><tspan
            x="50.5"
            y="375.70113"
-           id="tspan57">R1 -------A------
+           id="tspan83">R1 -------A------
 </tspan><tspan
            x="50.5"
            y="395.70113"
-           id="tspan58">S1 -------A------
+           id="tspan84">S1 -------A------
 </tspan><tspan
            x="50.5"
            y="415.70113"
-           id="tspan59">S2 -------C------
+           id="tspan85">S2 -------C------
 </tspan><tspan
            x="50.5"
            y="435.70113"
-           id="tspan60">
+           id="tspan86">
 </tspan><tspan
            x="50.5"
            y="455.70113"
-           id="tspan61">
+           id="tspan87">
 </tspan></text><text
          xml:space="preserve"
          transform="matrix(0.26458333,0,0,0.26458333,12.088768,31.784258)"
@@ -34800,23 +34800,23 @@
          style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;white-space:pre;shape-inside:url(#rect26-6);display:inline;fill:#7570b3;fill-opacity:1;stroke:#7570b3;stroke-width:0.869291;stroke-linecap:round;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"><tspan
            x="50.5"
            y="375.70113"
-           id="tspan62">R2 ------T------
+           id="tspan88">R2 ------T------
 </tspan><tspan
            x="50.5"
            y="395.70113"
-           id="tspan63">S3 ------TG------
+           id="tspan89">S3 ------TG------
 </tspan><tspan
            x="50.5"
            y="415.70113"
-           id="tspan64">S4 ------TG------
+           id="tspan90">S4 ------TG------
 </tspan><tspan
            x="50.5"
            y="435.70113"
-           id="tspan65">
+           id="tspan91">
 </tspan><tspan
            x="50.5"
            y="455.70113"
-           id="tspan66">
+           id="tspan92">
 </tspan></text><g
          id="g31"
          transform="translate(15.220097,-8.0886617)"><text
@@ -35208,14 +35208,14 @@
          y="153.83347">  effect prediction</tspan></text><text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.58611px;font-family:sans-serif;-inkscape-font-specification:'sans-serif, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;fill:#639ba5;fill-opacity:1;stroke:#639ba5;stroke-width:0;stroke-linecap:square;stroke-linejoin:bevel;stroke-dasharray:none;stroke-opacity:1"
-       x="165.49202"
+       x="183.05511"
        y="146.77791"
        id="text27-9-9"><tspan
          sodipodi:role="line"
-         id="tspan32"
-         x="165.49202"
+         x="183.05511"
          y="146.77791"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.64444px;font-family:Sans;-inkscape-font-specification:'Sans, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal">Functional annotation</tspan></text><g
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.64444px;font-family:Sans;-inkscape-font-specification:'Sans, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal"
+         id="tspan4">Annotation</tspan></text><g
        id="g34"
        transform="translate(0,-3.7041668)"><g
          id="g25"
@@ -35335,7 +35335,7 @@
            style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:21.4198px;font-family:'Liberation Sans';-inkscape-font-specification:'Liberation Sans, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;white-space:pre;shape-inside:url(#rect26-4-29);display:inline;fill:#2f6a69;fill-opacity:1;stroke:#2f6a69;stroke-width:0.110051;stroke-linecap:round;stroke-linejoin:miter;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"><tspan
              x="50.5"
              y="380.58304"
-             id="tspan67">DB</tspan></text></g><g
+             id="tspan93">DB</tspan></text></g><g
          id="g30"
          transform="translate(1.6489751,-6.0936011)"><path
            style="fill:none;fill-opacity:1;stroke:url(#linearGradient22);stroke-width:0.4;stroke-linecap:square;stroke-linejoin:bevel;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#CapTriangle-4-1-7-3-3-3-6-4)"
