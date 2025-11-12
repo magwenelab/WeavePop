@@ -55,7 +55,7 @@ medianplot <- ggplot(chrom_depth, aes(x = reorder(name, -genome_depth, sum), y =
             strip.background = element_blank(),
             panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 1),
             axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 5))+
-    labs(title = "Normalized Median of the Depth of the Windows Along Each Chromosome",
+    labs(title = "Normalized Median Depth per Chromosome",
          x = "Sample",
          y = "Normalized Depth")
 
