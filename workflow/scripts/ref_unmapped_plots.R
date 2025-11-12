@@ -13,7 +13,6 @@ path<-snakemake@input$tsv
 chromosomes_path<-snakemake@input$chroms
 
 main_ref <- snakemake@params$main_ref
-# find_repeats <- snakemake@params$find_repeats
 
 output_path <- snakemake@output$plot
 lin <- snakemake@wildcards$lineage 
@@ -26,8 +25,10 @@ unmapped_genes <- read.delim(path, sep = "\t", header = TRUE, stringsAsFactors =
 if (!is.null(snakemake@input$repeats)) {
   print("Repeats file provided...")
   print("Reading repeats file...")
-
-
+  repeats_path<-snakemake@input$repeats
+  repeats_table <- read.delim(repeats_path, sep= "\t", header = FALSE, 
+                      col.names = c("accession", "start", "end", "repeat_type"), 
+                      stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
 } else {
   print("No repeats file provided, creating empty repeats table...")
   col_names <- c("accession", "start", "end", "repeat_type")
