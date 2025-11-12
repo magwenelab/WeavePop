@@ -13,7 +13,7 @@ and saved as SVG, PNG, and PDF
 conda activate snakemake
 mamba install conda-forge::nodejs
 npm install -g duckerd
-duckerd -d test/results/02.Dataset/database.db -f svg -t neutral -o .figs/database.svg
+duckerd -d test/results/02.Dataset/database.db -f pdf -t neutral -o .figs/database.pdf
 ```
 5) shiny.png is a screenshot of the Shiny app using the test dataset
 
