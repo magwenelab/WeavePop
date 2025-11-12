@@ -174,7 +174,8 @@ create_table_with_constraints(con, df_variants, 'variants', [
     "FOREIGN KEY (accession) REFERENCES chromosomes(accession)"
 ])
 create_table_with_constraints(con, df_classif, 'variant_classification', [
-    "PRIMARY KEY (var_id)"
+    "PRIMARY KEY (var_id)",
+    "FOREIGN KEY (var_id) REFERENCES variants(var_id)"
 ])
 create_table_with_constraints(con, df_presence, 'presence',[
     "PRIMARY KEY (var_id,sample)",
