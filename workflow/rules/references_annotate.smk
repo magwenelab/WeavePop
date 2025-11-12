@@ -196,7 +196,7 @@ rule refs_unmapped_plots:
         "../envs/r.yaml"
     params:
         main_ref=config["annotate_references"]["fasta"].split(".")[0],
-        find_repeats=config["repeats"]["activate"],
+        # find_repeats=config["repeats"]["activate"],
     log:
         LOGS / "references" / "annotation" / "refs_unmapped_plots_{lineage}.log",
     script:

@@ -20,10 +20,7 @@ window_size <- snakemake@params$window_size
 output <- snakemake@output[[1]] 
 
 sample <- snakemake@wildcards$sample
-find_repeats <- snakemake@params$find_repeats
-if (find_repeats == TRUE){
-  repeats_input <- snakemake@input$repeats
-}
+
 gheight <- 9
 gwidth <- 16
 gdpi <- 600
@@ -36,9 +33,14 @@ chrom_names <- read.csv(chroms_input,sep= ",", header = TRUE, stringsAsFactors =
 loci_table <- read.delim(loci_input, header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
 metadata <- read.delim(metadata_input, sep = ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
 
-if (find_repeats == TRUE){
-  repeats_table <- read.delim(repeats_input, sep= "\t", header = FALSE, col.names = c("accession", "start", "end", "repeat_type"), stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
-} else {
+if (!is.null(snakemake@input$repeats)) {
+  print("Reading repeats file...")
+  repeats_path<-snakemake@input$repeats
+  repeats_table <- read.delim(repeats_path, sep= "\t", header = FALSE, 
+                      col.names = c("accession", "start", "end", "repeat_type"), 
+                      stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
+  } else {
+  print("No repeats file provided, creating empty repeats table...")
   col_names <- c("accession", "start", "end", "repeat_type")
   repeats_table <- data.frame(matrix(ncol = length(col_names), nrow = length(chrom_names$accession)))
   colnames(repeats_table) <- col_names
