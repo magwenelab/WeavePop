@@ -6,29 +6,31 @@ import datetime
 from Bio import SeqIO
 import pandas as pd
 
-mydb='/FastData/czirion/WeavePop/test/results/02.Dataset/database.db'
+mydb='database.db'
 with ui.navset_pill(id="Database"):
     with ui.nav_panel("Home"):
         ui.h1(ui.markdown("WeavePop Database"), style="padding-top: 20px;padding-bottom: 20px;")
         ui.markdown(
             """
-            This database is the result of WeavePop, a workflow for the discovery of genomic diversity in a population.   
+            This database is the result of using WeavePop in the samples listed in the Metadata tab.  
+            WeavePop is a workflow for the discovery of genomic diversity in a population.   
             In summary, the analyses consisted of the following steps:
             1. Processing of the annotation of the reference genome. 
             2. Map the short reads of each sample to the corresponding reference genome using [Snippy](https://github.com/tseemann/snippy).  
                 * Reference-based assemblies.
                 * Called variants.
-                * Depth of coverage.
-            3. Annotate the assembly of each sample by lifting over the annotation of the corresponding reference genome to extract the DNA and protein sequences of each isoform of each gene using [AGAT](https://agat.readthedocs.io/en/latest/index.html).
+                * Read depth.
+            3. Annotate the assembly of each sample by lifting over the annotation of the corresponding reference genome, using [Liftoff](https://github.com/agshumate/Liftoff),
+            to extract the DNA and protein sequences of each isoform of each gene using [AGAT](https://agat.readthedocs.io/en/latest/index.html).
             4. Annotate the predicted effects of the called variants using [SnpEff](https://pcingola.github.io/SnpEff/).
-            5. Analyze the depth of coverage to identify copy number variants (deletions and duplications).
+            5. Analyze the read depth to identify copy number variants (deletions and duplications).
             
             """
         )
         ui.markdown("Please see the Citation tab for information on how to cite this resource, and the Glossary tab for definitions of the terms used in the filters and tables.")
         ui.h1("Available Data",style="padding-top: 20px;padding-bottom: 10px;")
         ui.h4("Metadata",style="padding-top: 10px;padding-bottom: 10px;")
-        "Metadata of the samples, including the strain, sample ID, lineage, isolation source and other information."
+        "Metadata of the samples included in this database, including the strain, sample ID, lineage, isolation source and other information."
         ui.h4("Reference Annotations",style="padding-top: 10px;padding-bottom: 10px;")
         "Table with the description of the genes in the reference genome of each lineage. Including the nested features of the genes."
         ui.h4("Reference Coding Sequences",style="padding-top: 10px;padding-bottom: 10px;")
@@ -42,16 +44,9 @@ with ui.navset_pill(id="Database"):
                     the variants have an ID that corresponds to the lineage (e.g. var_VNI_1), and they are associated with the samples 
                     they were found in.    
                     The table contains one row per combination of variant, effect, and samples where the variant it is present in.   
-                    In the example below, the variant var_VNBI_10000 has two effects, one with impact LOW in gene CNAG_00148 
-                    and the other with impact MODIFIER in gene CNAG_00147 and is present in the strains Muc479-1 and Ftc555-1.  
-                    
+                   
                     """)
-        @render.data_frame
-        def show_variants():
-            df = qdb.effects(db = mydb,strain = ("Muc479-1","Ftc555-1"), impact = ("LOW", "MODIFIER") )
-            df.sort_values(by = "var_id", inplace = True)
-            df = df[df["var_id"] == "var_VNBI_10000"]
-            return df
+
         ui.h4("Copy Number Variants",style="padding-top: 10px;padding-bottom: 10px;")
         "Table with predicted duplicated and deleted regions in the samples."
         ui.h4("Chromosome CNVs",style="padding-top: 10px;padding-bottom: 10px;")
@@ -62,7 +57,9 @@ with ui.navset_pill(id="Database"):
         
     with ui.nav_panel("Metadata"):
         ui.h1("Metadata", style="padding-top: 20px;padding-bottom: 20px;")
-
+        ui.markdown("""
+                    Metadata of the samples included in the database
+                    """)
         with ui.card():
             ui.card_header("Download metadata table") 
             @render.download(
