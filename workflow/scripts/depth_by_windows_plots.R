@@ -17,20 +17,11 @@ metadata_input <- snakemake@input$metadata
 
 output <- snakemake@output$plot
 
-find_repeats <- snakemake@params$find_repeats
 sample <- snakemake@wildcards$sample
 window_size <- snakemake@params$window_size
 gheight <- 9
 gwidth <- 16
 gdpi <- 600
-
-if (find_repeats == TRUE){
-  print("Repeats file provided...")
-  repeats_input <- snakemake@input$repeats
-} else {
-  print("No repeats file provided...")
-}
-
 
 print("Reading files...")
 depth_windows <- read.delim(depth_input, sep= "\t", col.names = c("accession", "start", "end", "depth", "norm_depth", "smooth_depth", 'repeat_types', 'repeat_overlap_bp'), stringsAsFactors = TRUE, na = c("", "N/A"))
@@ -40,10 +31,13 @@ loci_table <- read.delim(loci_input, header = TRUE, stringsAsFactors = TRUE, na 
 metadata <- read.delim(metadata_input, sep = ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
 
 
-if (find_repeats == TRUE){
+if (!is.null(snakemake@input$repeats)) {
   print("Reading repeats file...")
-  repeats_table <- read.delim(repeats_input, sep= "\t", header = FALSE, col.names = c("accession", "start", "end", "repeat_type"), stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
-} else {
+  repeats_path<-snakemake@input$repeats
+  repeats_table <- read.delim(repeats_path, sep= "\t", header = FALSE, 
+                      col.names = c("accession", "start", "end", "repeat_type"), 
+                      stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
+  } else {
   print("No repeats file provided, creating empty repeats table...")
   col_names <- c("accession", "start", "end", "repeat_type")
   repeats_table <- data.frame(matrix(ncol = length(col_names), nrow = length(chrom_names$accession)))

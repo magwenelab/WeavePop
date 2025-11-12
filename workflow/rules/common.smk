@@ -612,13 +612,14 @@ def variant_classification_plots_input(wildcards):
 
 
 def refs_unmapped_plots_input(wildcards):
-    main_ref=config["annotate_references"]["fasta"].split(".")[0]
-    main_ref_repeats = REFS_DIR / main_ref / (main_ref + "_repeats.bed")
-    return {
+    d = {
         "tsv": REFS_DIR / "refs_unmapped_features.tsv",
         "chroms": DATASET_DIR / "chromosomes.csv",
-        "repeats": main_ref_repeats
     }
+    if config["repeats"]["activate"] is True:
+        main_ref=config["annotate_references"]["fasta"].split(".")[0]
+        d["repeats"] =  (REFS_DIR / main_ref / (main_ref + "_repeats.bed"),)
+    return d
 
 
 # =================================================================================================

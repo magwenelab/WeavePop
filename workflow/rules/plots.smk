@@ -69,7 +69,6 @@ rule depth_by_windows_plots:
     output:
         plot=SAMPLES_DIR / "plots" / "{sample}" / "depth_by_windows.png",
     params:
-        find_repeats=config["repeats"]["activate"],
         window_size=config["depth_quality"]["mosdepth"]["window"],
     conda:
         "../envs/r.yaml"
@@ -100,7 +99,6 @@ rule mapq_by_windows_plots:
     output:
         SAMPLES_DIR / "plots" / "{sample}" / "mapq_by_windows.png",
     params:
-        find_repeats=config["repeats"]["activate"],
         window_size=config["depth_quality"]["mosdepth"]["window"],
     conda:
         "../envs/r.yaml"
