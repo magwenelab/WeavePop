@@ -22,7 +22,7 @@ gdpi <- 600
 
 
 print("Reading files...")
-windows <- read.delim(windows_input, sep= "\t", col.names = c("accession", "start", "end", "depth", "norm_depth", "smooth_depth", 'repeat_types', 'repeat_overlap_bp'), stringsAsFactors = TRUE, na = c("", "N/A"))
+windows <- read.delim(windows_input, sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
 chromosomes <- read.csv(chromosomes_input, sep= ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
 metadata <- read.delim(metadata_input, sep = ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
 

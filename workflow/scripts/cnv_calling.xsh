@@ -68,7 +68,6 @@ df.loc[:,'smooth_depth']=pd.Series(smoothed_array)
 print("Reorganizing columns...")
 df = df[['accession', 'start', 'end', 'depth', 'norm_depth', 'smooth_depth', 'repeat_types', 'repeat_overlap_bp']]
 df = df.round(2)
-df.to_csv(depth_output, sep='\t', index=False, header=True)
 
 print("Defining copy-number of windows...")
 cnv_windows = pd.DataFrame()
@@ -95,6 +94,8 @@ for accession in df['accession'].unique():
             windows.loc[i, 'region_index'] = windows.loc[i - 1, 'region_index'] + 1
 
     cnv_windows = pd.concat([cnv_windows, windows], ignore_index=True)
+
+cnv_windows.to_csv(depth_output, sep='\t', index=False, header=True)
 
 print("Merging windows with same CNV into regions...")
 cnv_regions = cnv_windows.groupby(['accession','region_index']).agg(start=('start', 'first'), 

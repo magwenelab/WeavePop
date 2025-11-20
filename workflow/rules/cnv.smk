@@ -7,7 +7,7 @@ rule cnv_calling:
     input:
         unpack(cnv_calling_input),
     output:
-        windows=INT_SAMPLES_DIR / "depth_quality" / "{sample}" / "depth_by_windows.tsv",
+        windows=SAMPLES_DIR / "cnv" / "{sample}" / "depth_by_windows.tsv",
         cnvs=SAMPLES_DIR / "cnv" / "{sample}" / "cnv_calls.tsv",
         chrom_cnvs=SAMPLES_DIR / "cnv" / "{sample}" / "cnv_chromosomes.tsv",
     params:

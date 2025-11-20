@@ -519,8 +519,8 @@ def ref_add_repeats_input(wildcards):
 def depth_window_distribution_input(wildcards):
     s = METADATA_TABLE.loc[wildcards.sample,]
     return {
-        "depth": INT_SAMPLES_DIR
-        / "depth_quality"
+        "depth": SAMPLES_DIR
+        / "cnv"
         / s["sample"]
         / "depth_by_windows.tsv",
         "chroms": INT_REFS_DIR / s["lineage"] / "chromosomes.csv",
@@ -530,8 +530,8 @@ def depth_window_distribution_input(wildcards):
 def depth_by_windows_plots_input(wildcards):
     s = METADATA_TABLE.loc[wildcards.sample,]
     d = {
-        "depth": INT_SAMPLES_DIR
-        / "depth_quality"
+        "depth": SAMPLES_DIR
+        / "cnv"
         / s["sample"]
         / "depth_by_windows.tsv",
         "cnv": SAMPLES_DIR / "cnv" / s["sample"] / "cnv_calls.tsv",

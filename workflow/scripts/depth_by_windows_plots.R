@@ -24,7 +24,7 @@ gwidth <- 16
 gdpi <- 600
 
 print("Reading files...")
-depth_windows <- read.delim(depth_input, sep= "\t", col.names = c("accession", "start", "end", "depth", "norm_depth", "smooth_depth", 'repeat_types', 'repeat_overlap_bp'), stringsAsFactors = TRUE, na = c("", "N/A"))
+depth_windows <- read.delim(depth_input, sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
 cnv <- read.delim(cnv_input, sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
 chrom_names <- read.csv(chroms_input, sep= ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
 loci_table <- read.delim(loci_input, header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
