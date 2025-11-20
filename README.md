@@ -14,7 +14,7 @@ generates a variety of useful diagnostic plots,
 and integrates all the results into an SQL database. 
 The database allows users to easily explore the results using WeavePop-Shiny, an interactive web app, or the command-line interface WeavePop-CLI. 
 
-Check the [Wiki](https://github.com/magwenelab/WeavePop/wiki) for detailed information on how to use WeavePop.
+Refer to the [Wiki](https://github.com/magwenelab/WeavePop/wiki) for detailed information on how to use WeavePop.
 
 
 <div style="text-align: center;">
@@ -55,7 +55,7 @@ In your terminal, go to the directory you downloaded and run:
 mamba env create --file workflow/envs/snakemake.yaml # use conda instead of mamba if you installed Miniconda
 ```
 
-The environments for particular software used by the pipeline will be installed by Snakemake when you run it, so you don't need to install them. The programs in each environment are described in the table below.  
+The environments for the particular software used by the pipeline will be installed by Snakemake when you run it, so you don't need to install them. The programs in each environment are described in the table below.  
 <details>
 <summary>Software in the environments used in the pipeline </summary> 
 
@@ -82,7 +82,7 @@ The environments for particular software used by the pipeline will be installed 
 * Reference genomes: FASTA and GFF files for each lineage. Or FASTA for each lineage and FASTA and GFF for a main reference to use to annotate the other references.
 * `metadata.csv`: Table with the columns  `sample`, `lineage`, and `strain`. [Example](https://github.com/magwenelab/WeavePop/blob/main/test/config/metadata.csv).  
 * `chromosomes.csv`: Table with the chromosome names per lineage, with the columns `lineage`, `accession`, and `chromosome`. [Example](https://github.com/magwenelab/WeavePop/blob/main/test/config/chromosomes.csv).  
-* `RepBase.fasta`: Database of repetitive sequences. We recommend the [RepBase database](https://www.girinst.org/). You need to download it, extract the files, and concatenate them all in one FASTA file. The database is needed if the CNV, or database modules are activated. If you don't provide a database, you can choose to run it with a **fake database, which will generate inaccurate identification of repetitive sequences**.
+* `RepBase.fasta`: Database of repetitive sequences. We recommend the [RepBase database](https://www.girinst.org/). You need to download it, extract the files, and concatenate them all in one FASTA file. The database is needed if the CNV or database modules are activated. If you don't provide a database, you can choose to run it with a **fake database, which will generate inaccurate identification of repetitive sequences**.
 * `loci.csv`: Optional table with columns `gene_id` and `feature`. Max 8 features. If you want genetic features to be plotted in the depth and MAPQ plots. [Example](https://github.com/magwenelab/WeavePop/blob/main/test/config/loci.csv).  
 * `exclude.txt`: Optional file with a list of sample IDs to exclude. 
 
@@ -136,17 +136,17 @@ Here is a list of the most relevant outputs. To see the full list and know which
 | `01.Samples/mapping_and_variants/{sample}/snps.bam` | BAM file of mapping between short reads of the sample and the corresponding reference genome. |
 | `01.Samples/mapping_and_variants/{sample}/snps.consensus.fa` | FASTA file of the reference genome with the sample's variants instantiated. |
 | `01.Samples/mapping_and_variants/{sample}/snps.vcf` | Called variants in VCF format. Positions are 01-Based.|
-| `01.Samples/annotation/{sample}/annotation.gff` | Standardized GFF file of annotation by Liftoff. Positions are 1-Based. |
+| `01.Samples/annotation/{sample}/annotation.gff` | Standardized GFF file of annotation by Liftoff. Positions are 1-based. |
 | `01.Samples/annotation/{sample}/cds.fa` | Nucleotide sequences of all transcripts of the sample. |
 | `01.Samples/annotation/{sample}/proteins.fa` | Protein sequences of all isoforms of the sample. |
 | `01.Samples/plots/{sample}/depth_by_windows.png` | Plot of normalized depth of windows along each chromosome, with specified genetic features, called CNVs, and repetitive sequences of the corresponding reference. |
 | `02.Dataset/plots/dataset_depth_by_chrom.png` | Normalized mean depth of each chromosome in the samples that survived the quality filter.  |
 | `02.Dataset/plots/mapping_summary.png` | Genome-wide depth, coverage, and mapping quality metrics of the samples that survived the quality filter.|
 | `02.Dataset/depth_quality/mapq_depth_by_feature.tsv` | MAPQ and mean depth of each feature in all the samples. |
-| `02.Dataset/cnv/cnv_calls.tsv` | Table of deleted and duplicated regions in all samples and their overlap with repetitive sequences. Positions are 1-Based.|
+| `02.Dataset/cnv/cnv_calls.tsv` | Table of deleted and duplicated regions in all samples and their overlap with repetitive sequences. Positions are 1-based.|
 | `02.Dataset/snpeff/effects.tsv`|Table with the effects of the possible variants in all lineages.|
 | `02.Dataset/snpeff/presence.tsv`|Table with the variant IDs of all lineages and the samples they are present in.|
-| `02.Dataset/snpeff/variants.tsv`|Table with the description of all variants of all lineages. Positions are 1-Based.|
+| `02.Dataset/snpeff/variants.tsv`|Table with the description of all variants of all lineages. Positions are 1-based.|
 | `02.Dataset/database.db` |  SQL database with the main results. |
 
 </details>
@@ -173,9 +173,9 @@ cd /<path-to>/WeavePop/<my-project>/results/02.Dataset
 conda activate shiny
 shiny run /<path-to>/WeavePop/query_database/app.py
 ```
-To open the app in a browser: Copy the link that appears in the output (e.g. http://127.0.0.1:8000) and paste it into your web browser. Don't close the terminal while you are using the app.  
+To open the app in a browser: Copy the link that appears in the output (e.g., http://127.0.0.1:8000) and paste it into your web browser. Don't close the terminal while you are using the app.  
 
-These steps assume that you are using a local machine. If you have WeavePop and your results in a remote machine, you can either download `query_database/` and the `results/02.Datasets/database.db` file, do the installation and use the WeavePop-Shiny locally, or use VSCode with extensions and **Remote** and **Shiny** to use the WeavePop-Shiny remotely.
+These steps assume that you are using a local machine. If WeavePop and your results are on a remote machine, you have two options. Download `query_database/` and the `results/02.Datasets/database.db` file, do the installation, and use the WeavePop-Shiny locally. Or use VSCode with the extensions **Remote** and **Shiny** to access WeavePop-Shiny in VSCode connected to your server.
 
 <div style="text-align: center;">
   <img src=".figs/shiny.png" alt="Shiny CNV window example" />
