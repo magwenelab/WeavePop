@@ -54,6 +54,8 @@ rule depth_window_distribution:
         plot=SAMPLES_DIR / "plots" / "{sample}" / "depth_window_distribution.png",
     params:
         window_size=config["depth_quality"]["mosdepth"]["window"],
+        depth_threshold=config["cnv"]["depth_threshold"],
+        smoothing_size=config["cnv"]["smoothing_size"],
     conda:
         "../envs/r.yaml"
     log:
