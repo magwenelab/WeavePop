@@ -22,6 +22,16 @@ print("Reading files...")
 chrom_names <- read.delim(chromosomes_path, sep = ",", header = TRUE, stringsAsFactors = TRUE)
 unmapped_genes <- read.delim(path, sep = "\t", header = TRUE, stringsAsFactors = FALSE)
 
+if (nrow(unmapped_genes) == 0 | filter(unmapped_genes, !!sym(lin) == "unmapped") %>% nrow() == 0) {
+  print("No unmapped genes found, creating empty plot...")
+  u <- ggplot() + 
+        theme_classic() +
+        labs(title = paste("No unmapped genes found in", lin))
+  ggsave(output_path, u, width = 4, height = 1)
+  print("Done!")
+  quit(status = 0)
+}
+
 if (!is.null(snakemake@input$repeats)) {
   print("Repeats file provided...")
   print("Reading repeats file...")
@@ -58,6 +68,8 @@ chroms2 <- chrom_names %>%
     mutate(feature = "Unmapped genes")
 chroms <- rbind(chroms1, chroms2)
 
+print(unmapped_genes)
+print(chrom_names)
 print("Wrangling table of genes...")
 genes <- left_join(unmapped_genes, chrom_names, by = "accession")%>%
         select(chromosome,length,  start, end, gene_id, description,gene_name, feature = all_of(lin))%>%

@@ -82,8 +82,20 @@ g <- ggplot(vars_type_sample, aes(x = impact, y = n_variants))+
          x = "", 
          color = "Impact")+
     theme_classic()
+print("Saving plot...")
+ggsave(lineage_vars_path, g, width = 16, height = 9)
 
 print("Making density plot of reference private variants")
+
+if (filter(vars_classification, category == "Reference private") %>% nrow() == 0) {
+  print("No reference private variants, creating empty plot...")
+  u <- ggplot() + 
+        theme_classic() +
+        labs(title = paste("No reference private variants found in", lin))
+  ggsave(ref_private_path, u, width = 4, height = 1)
+  print("Done!")
+  quit(status = 0)
+}
 
 vars_windows <- vars_classification %>%
     left_join(chromosomes, by = c("accession", "lineage"))%>%
@@ -146,7 +158,6 @@ if (nrow(loci_table)!= 0){
 }
 
 print("Saving plot...")
-ggsave(lineage_vars_path, g, width = 16, height = 9)
 ggsave(ref_private_path, p, width = 16, height = 9)
 
 print("Done!")
