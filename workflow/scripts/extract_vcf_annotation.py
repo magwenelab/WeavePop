@@ -164,7 +164,7 @@ df_impact['one_effect'] = 1
 
 df_impact = df_impact.pivot(index='var_id', columns='impact' , values='one_effect').reset_index()
 df_impact = df_impact.fillna(0)
-
+df_impact = df_impact.reindex(columns=['var_id', 'HIGH', 'MODERATE', 'LOW', 'MODIFIER'], fill_value=0)
 df_impact['impact'] = df_impact.apply(lambda row: "High" if row['HIGH'] == 1 
                                       else "Moderate" if row['MODERATE'] == 1 
                                       else "Low" if row['LOW'] == 1 
