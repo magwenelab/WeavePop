@@ -458,15 +458,15 @@
      inkscape:pagecheckerboard="0"
      inkscape:deskcolor="#d1d1d1"
      inkscape:document-units="pt"
-     inkscape:zoom="0.5"
-     inkscape:cx="886"
-     inkscape:cy="674"
+     inkscape:zoom="1.4142136"
+     inkscape:cx="586.19152"
+     inkscape:cy="841.45707"
      inkscape:window-width="1920"
-     inkscape:window-height="1016"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
+     inkscape:window-height="956"
+     inkscape:window-x="1920"
+     inkscape:window-y="27"
      inkscape:window-maximized="1"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="g35"
      showguides="true" />
   <g
      inkscape:groupmode="layer"
@@ -547,7 +547,7 @@
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16px;font-family:Sans;-inkscape-font-specification:'Sans, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;white-space:pre;shape-inside:url(#rect28);display:inline;fill:none;stroke:#c2c4c3;stroke-width:1.51181;stroke-linecap:square;stroke-linejoin:bevel"><tspan
          x="1445.957"
          y="716.80273"
-         id="tspan40">`</tspan></text>
+         id="tspan18">`</tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.74999997,0,0,0.74999997,-0.09182649,0)"
@@ -577,7 +577,7 @@
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:13.3333px;font-family:FreeMono;-inkscape-font-specification:'FreeMono, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;white-space:pre;shape-inside:url(#rect4-5-5);display:inline;fill:#000000;fill-opacity:1;stroke-width:1.62133;stroke-linecap:square;stroke-linejoin:bevel;paint-order:stroke fill markers"><tspan
            x="121.41016"
            y="99.557912"
-           id="tspan61">quality_filter.smk</tspan></text>
+           id="tspan19">quality_filter.smk</tspan></text>
       <g
          id="node4"
          class="node"
@@ -924,7 +924,7 @@
          id="path355-4"
          inkscape:connector-type="polyline"
          inkscape:connector-curvature="0"
-         d="m 953.94769,1134.5895 -10.10372,4.2485 -221.42824,120.5074"
+         d="m 953.94769,1134.8168 -141.88734,86.9694 -89.64462,37.5592"
          inkscape:connection-start="#rect19-9-0"
          sodipodi:nodetypes="ccc" />
       <path
@@ -941,7 +941,7 @@
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:13.3333px;font-family:FreeMono;-inkscape-font-specification:'FreeMono, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;white-space:pre;shape-inside:url(#rect4-5-4);display:inline;fill:#000000;fill-opacity:1;stroke-width:1.62133;stroke-linecap:square;stroke-linejoin:bevel;paint-order:stroke fill markers"><tspan
            x="121.41016"
            y="99.557912"
-           id="tspan62">database.smk</tspan></text>
+           id="tspan20">database.smk</tspan></text>
       <g
          id="node49"
          class="node"
@@ -1124,7 +1124,7 @@
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:13.3333px;font-family:FreeMono;-inkscape-font-specification:'FreeMono, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;white-space:pre;shape-inside:url(#rect4-5);display:inline;fill:#000000;fill-opacity:1;stroke-width:1.62133;stroke-linecap:square;stroke-linejoin:bevel;paint-order:stroke fill markers"><tspan
            x="121.41016"
            y="99.557912"
-           id="tspan63">references_annotate.smk</tspan></text>
+           id="tspan21">references_annotate.smk</tspan></text>
       <g
          id="node20"
          class="node"
@@ -1666,7 +1666,7 @@
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:13.3333px;font-family:FreeMono;-inkscape-font-specification:'FreeMono, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;white-space:pre;shape-inside:url(#rect4-5-63);display:inline;fill:#000000;fill-opacity:1;stroke-width:1.62133;stroke-linecap:square;stroke-linejoin:bevel;paint-order:stroke fill markers"><tspan
            x="121.41016"
            y="99.557912"
-           id="tspan64">ref_processing.smk</tspan></text>
+           id="tspan22">ref_processing.smk</tspan></text>
       <g
          id="g6"
          transform="translate(337.82721,-47.845197)"
@@ -1688,7 +1688,7 @@
            style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:13.3333px;font-family:FreeMono;-inkscape-font-specification:'FreeMono, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;white-space:pre;shape-inside:url(#rect4);display:inline;fill:#000000;fill-opacity:1;stroke-width:1.33417;stroke-linecap:square;stroke-linejoin:bevel;stroke-dasharray:none;paint-order:stroke fill markers"><tspan
              x="121.41016"
              y="99.557912"
-             id="tspan65">repeatmasker.smk</tspan></text>
+             id="tspan23">repeatmasker.smk</tspan></text>
         <g
            id="node29"
            class="node"
@@ -2041,7 +2041,7 @@
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:13.3333px;font-family:FreeMono;-inkscape-font-specification:'FreeMono, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;white-space:pre;shape-inside:url(#rect4-5-8);display:inline;fill:#000000;fill-opacity:1;stroke-width:1.62133;stroke-linecap:square;stroke-linejoin:bevel;paint-order:stroke fill markers"><tspan
            x="121.41016"
            y="99.557912"
-           id="tspan66">cnv.smk</tspan></text>
+           id="tspan24">cnv.smk</tspan></text>
       <g
          id="node24"
          class="node"
@@ -2129,7 +2129,7 @@
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:13.3333px;font-family:FreeMono;-inkscape-font-specification:'FreeMono, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;white-space:pre;shape-inside:url(#rect4-5-10);display:inline;fill:#000000;fill-opacity:1;stroke-width:1.62133;stroke-linecap:square;stroke-linejoin:bevel;paint-order:stroke fill markers"><tspan
            x="121.41016"
            y="99.557912"
-           id="tspan67">mapq_depth.smk</tspan></text>
+           id="tspan25">mapq_depth.smk</tspan></text>
       <g
          id="node48"
          class="node"
@@ -2199,7 +2199,7 @@
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:13.3333px;font-family:FreeMono;-inkscape-font-specification:'FreeMono, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;white-space:pre;shape-inside:url(#rect4-5-59);display:inline;fill:#000000;fill-opacity:1;stroke-width:1.62133;stroke-linecap:square;stroke-linejoin:bevel;paint-order:stroke fill markers"><tspan
            x="121.41016"
            y="99.557912"
-           id="tspan68">snpeff.smk</tspan></text>
+           id="tspan26">snp_effects.smk</tspan></text>
       <g
          id="node56"
          class="node"
@@ -2355,7 +2355,7 @@
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:13.3333px;font-family:FreeMono;-inkscape-font-specification:'FreeMono, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;white-space:pre;shape-inside:url(#rect4-5-1);display:inline;fill:#000000;fill-opacity:1;stroke-width:1.62133;stroke-linecap:square;stroke-linejoin:bevel;paint-order:stroke fill markers"><tspan
            x="121.41016"
            y="99.557912"
-           id="tspan69">annotation.smk</tspan></text>
+           id="tspan27">annotation.smk</tspan></text>
       <g
          id="node40"
          class="node"
@@ -2651,7 +2651,7 @@
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:13.3333px;font-family:FreeMono;-inkscape-font-specification:'FreeMono, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;white-space:pre;shape-inside:url(#rect4-5-6);display:inline;fill:#000000;fill-opacity:1;stroke-width:1.62133;stroke-linecap:square;stroke-linejoin:bevel;paint-order:stroke fill markers"><tspan
            x="121.41016"
            y="99.557912"
-           id="tspan70">mapping_and_variants.smk</tspan></text>
+           id="tspan29">mapping_and_variants.smk</tspan></text>
       <g
          id="node1-6"
          class="node"
@@ -2796,105 +2796,105 @@
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:17.3333px;font-family:FreeMono;-inkscape-font-specification:'FreeMono, Bold';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;white-space:pre;shape-inside:url(#rect74);shape-padding:6.38933;display:inline;fill:#000000;fill-opacity:1;stroke:#ffffff;stroke-width:12.8202;stroke-linecap:square;stroke-linejoin:bevel;stroke-dasharray:9.37323, 4.68661;stroke-opacity:1"><tspan
            x="1453.4082"
            y="599.57822"
-           id="tspan72"><tspan
+           id="tspan31"><tspan
              style="stroke:none"
-             id="tspan71">Modules
+             id="tspan30">Modules
 </tspan></tspan><tspan
            x="1453.4082"
            y="621.24485"
-           id="tspan74"><tspan
+           id="tspan40"><tspan
              style="stroke:none"
-             id="tspan73">
+             id="tspan32">
 </tspan></tspan><tspan
            x="1453.4082"
            y="642.91148"
-           id="tspan76"><tspan
+           id="tspan43"><tspan
              style="stroke:none"
-             id="tspan75">1. Processing of reference genomes
+             id="tspan42">1. Processing of reference genomes
 </tspan></tspan><tspan
            x="1453.4082"
            y="664.5781"
-           id="tspan78"><tspan
+           id="tspan45"><tspan
              style="stroke:none"
-             id="tspan77">
+             id="tspan44">
 </tspan></tspan><tspan
            x="1453.4082"
            y="686.24473"
-           id="tspan80"><tspan
+           id="tspan47"><tspan
              style="stroke:none"
-             id="tspan79">2. Read mapping and variant calling
+             id="tspan46">2. Read mapping and variant calling
 </tspan></tspan><tspan
            x="1453.4082"
            y="707.91135"
-           id="tspan82"><tspan
+           id="tspan49"><tspan
              style="stroke:none"
-             id="tspan81">
+             id="tspan48">
 </tspan></tspan><tspan
            x="1453.4082"
            y="729.57798"
-           id="tspan84"><tspan
+           id="tspan51"><tspan
              style="stroke:none"
-             id="tspan83">3. Depth and quality
+             id="tspan50">3. Depth and quality
 </tspan></tspan><tspan
            x="1453.4082"
            y="751.24461"
-           id="tspan86"><tspan
+           id="tspan53"><tspan
              style="stroke:none"
-             id="tspan85">
+             id="tspan52">
 </tspan></tspan><tspan
            x="1453.4082"
            y="772.91123"
-           id="tspan88"><tspan
+           id="tspan55"><tspan
              style="stroke:none"
-             id="tspan87">4. Annotation of SNP effects
+             id="tspan54">4. Annotation of SNP effects
 </tspan></tspan><tspan
            x="1453.4082"
            y="794.57786"
-           id="tspan90"><tspan
+           id="tspan57"><tspan
              style="stroke:none"
-             id="tspan89">
+             id="tspan56">
 </tspan></tspan><tspan
            x="1453.4082"
            y="816.24448"
-           id="tspan92"><tspan
+           id="tspan59"><tspan
              style="stroke:none"
-             id="tspan91">5. Annotation
+             id="tspan58">5. Annotation
 </tspan></tspan><tspan
            x="1453.4082"
            y="837.91111"
-           id="tspan94"><tspan
+           id="tspan61"><tspan
              style="stroke:none"
-             id="tspan93">
+             id="tspan60">
 </tspan></tspan><tspan
            x="1453.4082"
            y="859.57774"
-           id="tspan96"><tspan
+           id="tspan63"><tspan
              style="stroke:none"
-             id="tspan95">6. Depth and quality of genes
+             id="tspan62">6. Depth and quality of genes
 </tspan></tspan><tspan
            x="1453.4082"
            y="881.24436"
-           id="tspan98"><tspan
+           id="tspan65"><tspan
              style="stroke:none"
-             id="tspan97">
+             id="tspan64">
 </tspan></tspan><tspan
            x="1453.4082"
            y="902.91099"
-           id="tspan100"><tspan
+           id="tspan67"><tspan
              style="stroke:none"
-             id="tspan99">7. Copy-number variant calling
+             id="tspan66">7. Copy-number variant calling
 </tspan></tspan><tspan
            x="1453.4082"
            y="924.57761"
-           id="tspan102"><tspan
+           id="tspan69"><tspan
              style="stroke:none"
-             id="tspan101">
+             id="tspan68">
 </tspan></tspan><tspan
            x="1453.4082"
            y="946.24424"
-           id="tspan104"><tspan
+           id="tspan107"><tspan
              style="stroke:none"
-             id="tspan103">8. Database</tspan></tspan></text>
+             id="tspan70">8. Database</tspan></tspan></text>
       <path
          style="display:inline;fill:none;fill-rule:evenodd;stroke:#949494;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4.1;stroke-dasharray:none;stroke-opacity:0.700999;marker-end:url(#ConcaveTriangle)"
          d="m 432.4327,1030.5587 68.17571,-34.68939"
@@ -3320,7 +3320,7 @@
     </g>
     <path
        style="display:inline;fill:none;fill-rule:evenodd;stroke:#3d1c4e;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4.1;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Triangle)"
-       d="m 936.8382,-1113.1211 14.1321,40.211 3.41059,4.5098 4.77358,3.1579 542.55853,271.38325 79.3682,36.15757"
+       d="m 960.65751,-1113.1211 105.45839,62.8809 522.3051,292.53862"
        id="path325"
        inkscape:connector-type="polyline"
        inkscape:connector-curvature="0"
@@ -3330,7 +3330,7 @@
        sodipodi:nodetypes="cccccc" />
     <path
        style="display:inline;fill:none;fill-rule:evenodd;stroke:#3d1c4e;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4.1;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Triangle)"
-       d="m 1146.8568,-517.29668 69.3358,18.98636 333.2823,111.53142"
+       d="m 1146.3566,-515.92117 402.4854,129.5581"
        id="path332"
        inkscape:connector-type="polyline"
        inkscape:connector-curvature="0"
@@ -3375,7 +3375,7 @@
        inkscape:connection-end="#node73-6" />
     <path
        style="display:inline;fill:none;fill-rule:evenodd;stroke:#3d1c4e;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4.1;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Triangle-2)"
-       d="m 1155.9802,1137.9269 68.7298,-49.3136 3.1952,-4.5174 193.7334,-298.08447 134.0061,-51.27333"
+       d="m 1150.2295,1137.9269 433.123,-403.1888"
        id="path339-0"
        inkscape:connector-type="polyline"
        inkscape:connector-curvature="0"
@@ -3383,7 +3383,7 @@
        inkscape:connection-end="#node17" />
     <path
        style="display:inline;fill:none;fill-rule:evenodd;stroke:#3d1c4e;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4.1;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Triangle)"
-       d="m 1137.314,-543.82401 280.3246,-222.16456 h 352.4685 l 34.5447,219.12347"
+       d="m 1147.263,-527.02773 657.3888,-19.83737"
        id="path340"
        inkscape:connector-type="polyline"
        inkscape:connector-curvature="0"
@@ -3391,7 +3391,7 @@
        inkscape:connection-start="#node24" />
     <path
        style="display:inline;fill:none;fill-rule:evenodd;stroke:#3d1c4e;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4.1;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Triangle)"
-       d="m 1197.612,-1116.4798 66.0824,12.0546 6.0716,1.1311 424.7298,155.11845 75.6113,182.18708 34.5447,219.12347"
+       d="m 1138.5626,-1113.2027 666.0892,566.3376"
        id="path341"
        inkscape:connector-type="polyline"
        inkscape:connector-curvature="0"
@@ -3400,7 +3400,7 @@
        sodipodi:nodetypes="ccc" />
     <path
        style="display:inline;fill:none;fill-rule:evenodd;stroke:#3d1c4e;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4.1;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Triangle)"
-       d="m 1112.2097,-1113.2026 -5.1881,17.4551 -1.5209,5.1725 v 12.572 l 1.5209,5.1725 28.2721,61.5625 2.6009,4.5201 444.9991,527.9446"
+       d="m 1138.5585,-1113.2026 29.1622,24.7996 3.8041,3.3076 414.2426,606.2921"
        id="path343"
        inkscape:connector-type="polyline"
        inkscape:connector-curvature="0"
@@ -3410,7 +3410,7 @@
        sodipodi:nodetypes="ccc" />
     <path
        style="display:inline;fill:none;fill-rule:evenodd;stroke:#3d1c4e;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4.1;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Triangle)"
-       d="m 1197.612,-1116.4798 66.0824,12.0546 6.0716,1.1311 5.4515,3.0692 3.9786,4.4774 222.5169,301.88835 123.7117,150.42005"
+       d="m 1138.5585,-1113.2026 29.1622,24.7996 3.8041,3.3076 450.3496,441.6563"
        id="path344"
        inkscape:connector-type="polyline"
        inkscape:connector-curvature="0"
@@ -3420,7 +3420,7 @@
        inkscape:connection-end="#node73-6" />
     <path
        style="display:inline;fill:none;fill-opacity:1;fill-rule:evenodd;stroke:#3d1c4e;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4.1;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Triangle)"
-       d="m 914.86741,-968.10353 180.84359,21.88043 431.2302,95.13306"
+       d="m 914.74079,-965.28915 65.6178,12.76617 544.46821,103.25378"
        id="path347"
        inkscape:connector-type="polyline"
        inkscape:connector-curvature="0"
@@ -3457,7 +3457,7 @@
        inkscape:connection-start="#rect17-3" />
     <path
        style="display:inline;fill:none;fill-rule:evenodd;stroke:#3d1c4e;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4.1;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#Triangle)"
-       d="m 183.84394,-688.95315 423.22652,-31.17325 243.92464,-4.4211 573.0122,-6.79115"
+       d="m 183.84394,-684.34691 121.06094,-0.38707 454.00736,-22.6134 665.09506,-23.36284"
        id="path336"
        inkscape:connector-type="polyline"
        inkscape:connector-curvature="0"
@@ -3475,7 +3475,7 @@
        sodipodi:nodetypes="cccc" />
     <path
        style="display:inline;fill:none;fill-rule:evenodd;stroke:#3d1c4e;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="M 918.86741,583.5447 1532.519,652.19757"
+       d="m 918.74079,586.71085 65.6178,12.76617 548.01961,53.66247"
        id="path359-8"
        inkscape:connector-type="polyline"
        inkscape:connector-curvature="0"
@@ -3537,7 +3537,7 @@
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:13.3333px;font-family:FreeMono;-inkscape-font-specification:'FreeMono, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;white-space:pre;shape-inside:url(#rect4-5-8-6);display:inline;fill:#000000;fill-opacity:1;stroke-width:1.62133;stroke-linecap:square;stroke-linejoin:bevel;paint-order:stroke fill markers"><tspan
          x="121.41016"
          y="99.557912"
-         id="tspan105">plots.smk</tspan></text>
+         id="tspan108">plots.smk</tspan></text>
     <text
        xml:space="preserve"
        transform="matrix(0.74999997,0,0,0.74999997,1462.18,538.85189)"
@@ -3545,10 +3545,10 @@
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:13.3333px;font-family:FreeMono;-inkscape-font-specification:'FreeMono, Normal';font-variant-ligatures:normal;font-variant-caps:normal;font-variant-numeric:normal;font-variant-east-asian:normal;white-space:pre;shape-inside:url(#rect4-5-8-6-0);display:inline;fill:#000000;fill-opacity:1;stroke-width:1.62133;stroke-linecap:square;stroke-linejoin:bevel;paint-order:stroke fill markers"><tspan
          x="121.41016"
          y="99.557912"
-         id="tspan106">plots_dataset.smk</tspan></text>
+         id="tspan109">plots_dataset.smk</tspan></text>
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="M 918.86741,578.29869 1517.9146,563.88872"
+       d="m 918.74079,571.74321 65.6178,-12.76619 h 39.76961 l 493.7864,2.63722"
        id="path41"
        inkscape:connector-type="polyline"
        inkscape:connector-curvature="0"
@@ -3556,7 +3556,7 @@
        inkscape:connection-end="#node17-3" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 567.66391,640.28842 4.06046,-0.95032 357.8504,-33.53878 588.33983,-38.68431"
+       d="M 606.14184,651.87423 1517.9718,569.05045"
        id="path43"
        inkscape:connector-type="polyline"
        inkscape:connector-curvature="0"
@@ -3564,7 +3564,7 @@
        inkscape:connection-end="#node17-3" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 1728.844,811.29811 -30.3482,-207.47376 -58.76,-23.79687"
+       d="M 1725.4449,811.29811 1604.6882,580.02748"
        id="path45"
        inkscape:connector-type="polyline"
        inkscape:connector-curvature="0"
@@ -3572,7 +3572,7 @@
        inkscape:connection-end="#node17-3" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 1116.2097,438.79735 -5.1881,17.45515 -1.5209,5.17248 v 12.57204 l 1.5209,5.17248 28.2721,61.56245 2.6009,4.52014 447.1521,618.22971"
+       d="m 1142.5585,438.79735 29.1622,24.79966 3.8041,3.30763 415.7965,696.57716"
        id="path46"
        inkscape:connector-type="polyline"
        inkscape:connector-curvature="0"
@@ -3580,7 +3580,7 @@
        inkscape:connection-end="#node74" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 1116.2097,438.79735 -5.1881,17.45515 -1.5209,5.17248 v 12.57204 l 1.5209,5.17248 28.2721,61.56245 2.6009,4.52014 444.9991,527.94461"
+       d="m 1142.5585,438.79735 29.1622,24.79966 3.8041,3.30763 414.2426,606.29206"
        id="path47"
        inkscape:connector-type="polyline"
        inkscape:connector-curvature="0"
@@ -3588,7 +3588,7 @@
        inkscape:connection-end="#node71" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 1201.612,435.52021 66.0824,12.05456 6.0716,1.13111 5.4515,3.06925 3.9786,4.4774 366.6356,528.58337"
+       d="m 1142.5585,438.79735 29.1622,24.79966 3.8041,3.30763 470.4424,517.93126"
        id="path48"
        inkscape:connector-type="polyline"
        inkscape:connector-curvature="0"
@@ -3596,7 +3596,7 @@
        inkscape:connection-end="#node71-3" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 1151.263,1019.9441 36.3316,-6.7391 400.7222,-8.7528"
+       d="m 1151.263,1024.5722 437.0538,-18.5889"
        id="path50"
        inkscape:connector-type="polyline"
        inkscape:connector-curvature="0"
@@ -3675,7 +3675,7 @@
        inkscape:connection-end="#node75" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 918.86741,580.38723 779.62839,23.43712 205.6198,210.85537"
+       d="M 918.27405,588.47538 1847.7097,814.67972"
        id="path66"
        inkscape:connector-type="polyline"
        inkscape:connector-curvature="0"
@@ -3683,7 +3683,7 @@
        inkscape:connection-end="#node75" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 546.80061,1065.5669 h 374.19696 l 5.08703,-1.1906 495.554,-278.36487 h 352.4685 l 90.6469,28.66829"
+       d="m 546.76137,1058.0133 137.86436,-13.9657 276.51859,-24.8755 879.51218,-170.76332"
        id="path67"
        inkscape:connector-type="polyline"
        inkscape:connector-curvature="0"
@@ -3691,7 +3691,7 @@
        inkscape:connection-end="#node75" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 612.87239,999.55901 8.69807,0.22729 h 54.01958 l 5.08703,-1.19058 242.42464,-67.8338 498.53689,-144.75049 h 352.4685 l 90.6469,28.66829"
+       d="m 612.6837,990.64802 62.44203,-12.381 L 1836.0206,842.6828"
        id="path68"
        inkscape:connector-type="polyline"
        inkscape:connector-curvature="0"
@@ -3699,7 +3699,7 @@
        inkscape:connection-end="#node75" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 1201.612,435.52021 66.0824,12.05456 6.0716,1.13111 424.7298,155.11847 197.3817,282.97375"
+       d="M 1150.6129,438.79735 1879.161,886.7981"
        id="path69"
        inkscape:connector-type="polyline"
        inkscape:connector-curvature="0"
@@ -3707,7 +3707,7 @@
        inkscape:connection-end="#node74-3" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 612.87239,999.55901 8.69807,0.22729 h 54.01958 l 5.08703,-1.19058 242.42464,-67.8338 498.53689,-144.75049 h 352.4685 l 113.9712,100.78667"
+       d="m 612.6837,990.64802 62.44203,-12.381 1158.80727,-69.03091"
        id="path70"
        inkscape:connector-type="polyline"
        inkscape:connector-curvature="0"
@@ -3715,7 +3715,7 @@
        inkscape:connection-end="#node74-3" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 546.80061,1065.5669 h 374.19696 l 5.08703,-1.1906 495.554,-278.36487 h 352.4685 l 113.9712,100.78667"
+       d="m 546.76137,1058.0133 137.86436,-13.9657 276.51859,-24.8755 873.25058,-105.43477"
        id="path72"
        inkscape:connector-type="polyline"
        inkscape:connector-curvature="0"
@@ -3723,7 +3723,7 @@
        inkscape:connection-end="#node74-3" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.75px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       d="m 860.7735,597.20464 -259.30745,239.05476 -90.44678,127.4127 -3.19522,4.51738 -23.31411,78.67032"
+       d="m 856.60026,597.20464 -78.79243,59.83378 -241.42464,259.8338 -3.19522,4.51738 -25.95294,88.4742 -18.87567,36.996"
        id="path73"
        inkscape:connector-type="polyline"
        inkscape:connector-curvature="0"
