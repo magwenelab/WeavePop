@@ -4,9 +4,11 @@ sink(log, type = "message")
 
 print("Loading libraries...")
 suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(RColorBrewer))
 suppressPackageStartupMessages(library(scales))
 suppressPackageStartupMessages(library(ggbeeswarm))
 suppressPackageStartupMessages(library(patchwork))
+
 
 print("Reading input parameters...")
 samp = snakemake@wildcards$sample
@@ -33,14 +35,13 @@ chromosomes$chromosome  <- factor(chromosomes$chromosome, levels = unique(chromo
 
 print("Obtaining lineage of sample...")
 
-
 lineage_name <- as.character(metadata$lineage[metadata$sample == samp])
 strain_name <- as.character(metadata$strain[metadata$sample == samp])
 
-print("Merge variant description and classification")
+print("Merge variant description and classification...")
 variants <- left_join(variants, classif, by = "var_id")
 
-print("Add chromosome name and creating windows")
+print("Adding chromosome name and creating windows..")
 vars_windows <- variants %>%
     left_join(chromosomes, by = c("accession", "lineage"))%>%
     group_by(chromosome) %>%
@@ -51,7 +52,7 @@ vars_windows <- variants %>%
             window_end = window * window_size)%>%
     ungroup()
     
-print("Filtering variants of sample")
+print("Filtering variants of sample...")
 vars_sample <- presence %>%
     filter(sample == samp)%>%
     droplevels()
@@ -61,13 +62,15 @@ vars <- vars_windows %>%
     filter(var_id %in% vars_sample$var_id)
 
 if (length(unique(presence$sample)) > 1){
-    print("Removing variants private to reference genome")
+    print("Removing variants private to reference genome...")
     vars <- vars%>%
         filter(category != "Reference private")%>%
         droplevels()
 } else {
     print("Only one sample in lineage, plotting all variants")
 }
+
+vars$impact <- factor(vars$impact, levels = c("High", "Moderate", "Low", "Modifier"))
 
 print("Getting number of variants per window for each category")
 category_density <- vars %>% 
@@ -79,31 +82,45 @@ effs_density <- vars%>%
     group_by(chromosome, window,window_start, window_end, impact, length)%>%
     summarize(n = n())
 
-print("Plotting category density")
+
+print("Creating color palettes...")
+
+
+paired <- brewer.pal(12, "Paired")
+i_colors <- c(paired[c(6,8,2,10)])
+names(i_colors) <- levels(effs_density$impact)
+
+paired <- brewer.pal(12, "Paired")
+c_colors <- c(paired[c(4,7,12)])
+names(c_colors) <- levels(category_density$category)
+
+print("Plotting category density...")
 p <- ggplot(category_density)+
     geom_segment(aes(x=1, xend=length, y=-1, yend=-1), linewidth = 0.1, color = "black")+
     geom_col(aes(x = window_start, y = n, color = category, fill = category))+
     facet_grid(chromosome~category)+
     scale_x_continuous(name = "Position (bp) ", labels = comma)+
+    scale_color_manual(values = c_colors, name = "Category")+
     labs(title = "Number of Variants in Windows Along Chromosomes by Privateness Category",
         subtitle= paste("Sample:", samp, "Strain:", strain_name, " Lineage:", lineage_name, " Window size:", window_size, " Total variants: ", scales::comma(n_vars)),
             y = "Number of variants")+
     theme_classic()+
     theme(legend.position = "none")
 
-print("Plotting impact density")
+print("Plotting impact density...")
 e <- ggplot(effs_density)+
     geom_segment(aes(x=1, xend=length, y=-1, yend=-1), linewidth = 0.1, color = "black")+
     geom_col(aes(x = window_start, y = n, color = impact, fill = impact))+
     facet_grid(chromosome~impact, scales = "free_x")+#, ncol =1, strip.position = "right")+
     scale_x_continuous(name = "Position (bp) ", labels = comma)+
+    scale_color_manual(values = i_colors, name = "Impact")+
     labs(title="Number of Variants in Windows Along Chromosomes by Impact",
         subtitle= paste("Sample:", samp, "Strain:", strain_name, " Lineage:", lineage_name, " Window size:", window_size," Total variants: ", scales::comma(n_vars)),
             y = "Number of variants")+
     theme_classic()+
     theme(legend.position = "none")
 
-print("Plotting summary of number of variants")
+print("Plotting summary of number of variants...")
 total_vars = nrow(vars)
 b <- ggplot(vars, aes(x = category, fill = impact))+
     geom_bar(stat = "count", position = "dodge")+
@@ -112,6 +129,7 @@ b <- ggplot(vars, aes(x = category, fill = impact))+
                 vjust = -0.5,
                 size = 3)+
     scale_y_continuous(name = "Number of variants", labels = comma)+
+    scale_fill_manual(values = i_colors, name = "Impact")+
     labs(title = "Number of Variants per Impact and Privateness Category",
         subtitle= paste("Sample:", samp, "Strain:", strain_name, " Lineage:", lineage_name, " Total variants:", scales::comma(total_vars)),
         x = "", 

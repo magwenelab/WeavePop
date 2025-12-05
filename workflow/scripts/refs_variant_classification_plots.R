@@ -49,6 +49,11 @@ if (length(unique_levels) %% 2 != 0){
 }
 chromosomes$chromosome <- factor(chromosomes$chromosome, levels = new_order)
 
+vars_classification$impact <- factor(vars_classification$impact, levels = c("High", "Moderate", "Low", "Modifier"))
+paired <- brewer.pal(12, "Paired")
+i_colors <- c(paired[c(6,8,2,10)])
+names(i_colors) <- levels(vars_classification$impact)
+
 print("Creating summary plot...")
 vars_type <- vars_classification%>%
     left_join(chromosomes, by = c("accession", "lineage"))%>% 
@@ -77,6 +82,7 @@ g <- ggplot(vars_type_sample, aes(x = impact, y = n_variants))+
     geom_text(data = vars_summary, aes(y = max_variants, x = impact, label = scales::comma(n_variants)))+
     facet_wrap(~category, nrow = 1, scales = "free")+
     scale_y_continuous(name = "Number of variants per sample", labels = comma)+
+    scale_color_manual(values = i_colors, name = "Impact")+
     labs(title = paste("Number of Variants per Impact and Privateness Category in each Sample of Lineage ", lin),
          subtitle = paste("Total variants:", scales::comma(total_vars)),
          x = "", 

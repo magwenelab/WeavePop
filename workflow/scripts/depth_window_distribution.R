@@ -53,6 +53,7 @@ print("Plotting depth..")
 
 set2 <- rev(brewer.pal(8, "Set2")[1:6])
 s_colors <- c(set2[1:2], "black")
+names(s_colors) <- levels(windows$cnv)
 
 median_depth <- windows %>%
   summarise(median = median(depth)) %>%
@@ -60,7 +61,7 @@ median_depth <- windows %>%
 
 c <- ggplot(windows, aes(x = chromosome, y = depth))+
     geom_quasirandom(aes(color = cnv), alpha = 0.5)+
-    scale_color_manual(values = s_colors, name = "CNV")+
+    scale_color_manual(values = s_colors, name = "Impact")+
     geom_boxplot(color = "gray", outlier.shape = NA, fill = NA)+
     scale_y_continuous(limits = c(0,median_depth*4))+
     theme_minimal()+
