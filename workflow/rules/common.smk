@@ -611,15 +611,15 @@ def variant_classification_plots_input(wildcards):
     }
 
 
-def refs_unmapped_plots_input(wildcards):
-    d = {
-        "tsv": REFS_DIR / "refs_unmapped_features.tsv",
-        "chroms": DATASET_DIR / "chromosomes.csv",
-    }
-    if config["repeats"]["activate"] is True:
-        main_ref=config["annotate_references"]["fasta"].split(".")[0]
-        d["repeats"] =  (REFS_DIR / main_ref / (main_ref + "_repeats.bed"),)
-    return d
+# def refs_unmapped_plots_input(wildcards):
+#     d = {
+#         "tsv": REFS_DIR / "refs_unmapped_features.tsv",
+#         "chroms": DATASET_DIR / "chromosomes.csv",
+#     }
+#     if config["repeats"]["activate"] is True:
+#         main_ref=config["annotate_references"]["fasta"].split(".")[0]
+#         d["repeats"] =  (REFS_DIR / main_ref / (main_ref + "_repeats.bed"),)
+#     return d
 
 
 # =================================================================================================
@@ -740,9 +740,6 @@ def get_filtered_output():
                         DATASET_DIR / "plots" / "{lineage}_variant_summary.png", lineage = LINEAGES)
             final_output = final_output, expand(
                         REFS_DIR / "{lineage}" / "{lineage}_variants_by_windows.png", lineage = LINEAGES)     
-        if config["annotate_references"]["activate"]:
-            final_output = final_output, expand(
-                REFS_DIR / "{lineage}" / "{lineage}_unmapped.png", lineage=LINEAGES)
 
 
     return final_output

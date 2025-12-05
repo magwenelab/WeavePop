@@ -185,18 +185,3 @@ rule refs_unmapped_features:
         LOGS / "references" / "annotation" / "refs_unmapped_features.log",
     script:
         "../scripts/refs_unmapped_features.py"
-
-
-rule refs_unmapped_plots:
-    input:
-        unpack(refs_unmapped_plots_input)
-    output:
-        plot=REFS_DIR / "{lineage}" / "{lineage}_unmapped.png",
-    conda:
-        "../envs/r.yaml"
-    params:
-        main_ref=config["annotate_references"]["fasta"].split(".")[0],
-    log:
-        LOGS / "references" / "annotation" / "refs_unmapped_plots_{lineage}.log",
-    script:
-        "../scripts/refs_unmapped_plots.R"
