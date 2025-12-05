@@ -8,14 +8,45 @@ suppressPackageStartupMessages(library(scales))
 suppressPackageStartupMessages(library(ggnewscale))
 suppressPackageStartupMessages(library(RColorBrewer))
 
-print("Reading files...")
-depth_windows <- read.delim(snakemake@input[[1]], sep= "\t", col.names = c("accession", "start", "end", "depth", "norm_depth", "smooth_depth"), stringsAsFactors = TRUE, na = c("", "N/A"))
-cnv <- read.delim(snakemake@input[[2]], sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
-repeats_table <- read.delim(snakemake@input[[3]], sep= "\t", header = FALSE, col.names = c("accession", "start", "end", "repeat_type"), stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
-chrom_names <- read.csv(snakemake@input[[4]], sep= ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
-loci_table <- read.delim(snakemake@input[[5]], header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
+print("Reading input parameters...")
+depth_input <- snakemake@input$depth
+cnv_input <- snakemake@input$cnv
+chroms_input <- snakemake@input$chroms
+loci_input <- snakemake@input$loci
+metadata_input <- snakemake@input$metadata
+
+output <- snakemake@output$plot
+
 sample <- snakemake@wildcards$sample
-metadata <- read.delim(snakemake@input[[6]], sep = ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
+window_size <- snakemake@params$window_size
+gheight <- 9
+gwidth <- 16
+gdpi <- 600
+
+print("Reading files...")
+depth_windows <- read.delim(depth_input, sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
+cnv <- read.delim(cnv_input, sep= "\t", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
+chrom_names <- read.csv(chroms_input, sep= ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
+loci_table <- read.delim(loci_input, header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
+metadata <- read.delim(metadata_input, sep = ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
+
+
+if (!is.null(snakemake@input$repeats)) {
+  print("Reading repeats file...")
+  repeats_path<-snakemake@input$repeats
+  repeats_table <- read.delim(repeats_path, sep= "\t", header = FALSE, 
+                      col.names = c("accession", "start", "end", "repeat_type"), 
+                      stringsAsFactors = TRUE, na = c("", "N/A", "NA"))
+  } else {
+  print("No repeats file provided, creating empty repeats table...")
+  col_names <- c("accession", "start", "end", "repeat_type")
+  repeats_table <- data.frame(matrix(ncol = length(col_names), nrow = length(chrom_names$accession)))
+  colnames(repeats_table) <- col_names
+  repeats_table$accession <- chrom_names$accession
+  repeats_table$start <- 0
+  repeats_table$end <- 1
+  repeats_table$repeat_type <- "."
+}
 
 print("Obtaining lineage of sample...")
 
@@ -76,6 +107,7 @@ my_labeller <- function(value){
 print("Plotting depth by windows...")
 c <- ggplot()+
   coord_cartesian(ylim= c(0,r_lim +1), xlim = c(0, max(depth$end)))+
+  # geom_hline(yintercept = 0, color = "darkgray", linetype = 1)+
   geom_hline(yintercept = 1, color = "darkgray", linetype = 2)+
   geom_hline(yintercept = 2, color = "darkgray", linetype = 2)+
   geom_col(data = depth, aes(x=start, y = depth), color = "black")+
@@ -91,15 +123,18 @@ c <- ggplot()+
   facet_wrap(~accession_chromosome, strip.position = "right", ncol = 2, labeller = as_labeller(my_labeller)) +
   labs(y = "Normalized Depth",
       title = "Normalized Depth of Windows Along Chromosomes", 
-      subtitle = paste("Lineage:", lineage_name, " Sample:", sample, "Strain:", strain_name, sep = " "))+
+      subtitle = paste("Sample:", sample, "Strain:", strain_name, " Lineage:", lineage_name, " Window size:", window_size, sep = " "))+
   scale_y_continuous(breaks = c(1, 2)) +
-  theme(panel.grid = element_blank(),
-        panel.grid.major.x = element_blank(),
-        panel.grid.minor.x = element_blank(),
-        panel.grid.major.y = element_blank(),
-        panel.grid.minor.y = element_blank(),
-        panel.background = element_blank(),
-        panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 2))
+  theme_classic()+
+  theme(panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 1))
+
+  # theme(panel.grid = element_blank(),
+  #       panel.grid.major.x = element_blank(),
+  #       panel.grid.minor.x = element_blank(),
+  #       panel.grid.major.y = element_blank(),
+  #       panel.grid.minor.y = element_blank(),
+  #       panel.background = element_blank(),
+  #       panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 2))
 
 print("Adding loci data if available...")
 if (nrow(loci_table)!= 0){
@@ -120,6 +155,6 @@ if (nrow(loci_table)!= 0){
 }
 
 print("Saving plot...")
-ggsave(snakemake@output[[1]], c, height =9, width = 16, dpi = 600)
+ggsave(output, c, height = gheight, width = gwidth, dpi = gdpi, units = "in")
 
 print("Done!")

@@ -214,7 +214,7 @@ def get_cnv_max_length(db):
     con = con.execute(f"SET temp_directory = '{cwd}'")
 
     query = f"""
-        SELECT MAX("region_size") AS max_length
+        SELECT MAX("size") AS max_length
         FROM cnvs"""
     df = con.execute(query).fetchdf()
     result = df['max_length'].values[0] 
@@ -272,12 +272,14 @@ def effects(db, dataset = None, sample=None, strain=None, gene_name=None, gene_i
             effects.impact, effects.effect_type, effects.effect,
             effects.codon_change, effects.amino_acid_change, effects.amino_acid_length,
             effects.transcript_biotype, effects.gene_coding, effects.exon_rank,
+            variant_classification.category,
             mapq_depth.mean_depth_normalized, mapq_depth.mean_mapq
         FROM variants 
         JOIN chromosomes ON variants.accession = chromosomes.accession
         JOIN presence ON variants.var_id = presence.var_id
         JOIN effects ON variants.var_id = effects.var_id
         JOIN metadata ON presence.sample = metadata.sample
+        JOIN variant_classification ON variants.var_id = variant_classification.var_id
         LEFT JOIN mapq_depth ON mapq_depth.feature_id = effects.feature_id AND mapq_depth.sample = presence.sample
         WHERE metadata.dataset IN {dataset}
         """
@@ -522,7 +524,7 @@ def get_cnv(db, dataset = None, lineage=None, sample=None, strain=None, chromoso
         SELECT metadata.strain, metadata.sample, metadata.lineage, 
             chromosomes.chromosome, chromosomes.accession,
             cnvs.start, cnvs."end",
-            cnvs.region_size, cnvs.cnv, cnvs.depth, cnvs.norm_depth, cnvs.smooth_depth, cnvs.repeat_fraction, cnvs.overlap_bp, cnvs.feature_id,
+            cnvs.size, cnvs.cnv, cnvs.depth, cnvs.norm_depth, cnvs.smooth_depth, cnvs.repeat_fraction, cnvs.repeat_overlap_bp, cnvs.feature_id,
             metadata.dataset
         FROM cnvs
         JOIN metadata ON cnvs.sample = metadata.sample
@@ -544,9 +546,9 @@ def get_cnv(db, dataset = None, lineage=None, sample=None, strain=None, chromoso
     if end:
         query += f"""AND cnvs."end" <= {end} """
     if min_size:
-        query += f"AND cnvs.region_size >= {min_size} "
+        query += f"AND cnvs.size >= {min_size} "
     if max_size:
-        query += f"AND cnvs.region_size <= {max_size} "
+        query += f"AND cnvs.size <= {max_size} "
     if repeat_fraction or repeat_fraction == 0:
         query += f"AND cnvs.repeat_fraction <= {repeat_fraction}"
 
@@ -593,15 +595,15 @@ def genes(db, gene_name=None, gene_id=None, chromosome=None, start=None, end=Non
     
     columns = con.execute("SELECT column_name FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'gff'").fetchdf()['column_name'].tolist()
     
-    if 'identical_to_main_ref' and 'start_stop_mutations' in columns:
+    if 'ref_identical_to_main_ref' and 'ref_start_stop_mutations' in columns:
         query = f"""
             SELECT gff.lineage, chromosomes.chromosome,
                 chromosomes.accession,
                 gff.start, gff."end", gff.strand, gff.primary_tag,
                 gff.gene_name, gff.gene_id,
                 gff.feature_id, gff.parent,
-                gff.description, gff.repeat_fraction,
-                gff.identical_to_main_ref, gff.start_stop_mutations, 
+                gff.description, gff.ref_repeat_fraction,
+                gff.ref_identical_to_main_ref, gff.ref_start_stop_mutations, 
             FROM gff
             JOIN chromosomes ON gff.accession = chromosomes.accession
             WHERE gff.lineage IN {lineage}
@@ -613,7 +615,7 @@ def genes(db, gene_name=None, gene_id=None, chromosome=None, start=None, end=Non
                 gff.start, gff."end", gff.strand, gff.primary_tag,
                 gff.gene_name, gff.gene_id,
                 gff.feature_id, gff.parent,
-                gff.description, gff.repeat_fraction,
+                gff.description, gff.ref_repeat_fraction,
             FROM gff
             JOIN chromosomes ON gff.accession = chromosomes.accession
             WHERE gff.lineage IN {lineage}
@@ -661,13 +663,13 @@ def get_cnv_chroms(db, dataset = None, lineage=None, sample=None, strain=None, c
     query = f"""
         SELECT metadata.strain, metadata.sample, metadata.lineage, 
             chromosomes.chromosome, chromosomes.accession, chromosomes.length,
-            cnv_chroms.cnv, cnv_chroms.n_regions,
-            cnv_chroms.total_size_regions, cnv_chroms.coverage_percent,
-            cnv_chroms.size_smallest_region, cnv_chroms.size_largest_region,
+            cnv_chroms.cnv, cnv_chroms.n_cnvs,
+            cnv_chroms.total_size, cnv_chroms.coverage_percent,
+            cnv_chroms.size_smallest, cnv_chroms.size_largest,
             cnv_chroms.norm_depth_mean, cnv_chroms.norm_depth_median,
             cnv_chroms.smooth_depth_mean, cnv_chroms.smooth_depth_median,
-            cnv_chroms.chrom_median, cnv_chroms.genome_median_depth, 
-            cnv_chroms.norm_chrom_median,
+            cnv_chroms.chrom_depth, cnv_chroms.chrom_norm_depth,
+             cnv_chroms.genome_depth,
             metadata.dataset
         FROM cnv_chroms
         JOIN chromosomes ON cnv_chroms.accession = chromosomes.accession

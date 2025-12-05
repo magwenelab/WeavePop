@@ -6,7 +6,7 @@
 # Make symbolic links in the snpeff_data directory and create config file
 rule prepare_refs_db:
     input:
-        gff=INT_REFS_DIR / "{lineage}" / "{lineage}_interg_introns.gff",
+        gff=REFS_DIR / "{lineage}" / "{lineage}.gff",
         fasta=rules.extract_cds_seqs.input.fasta,
         cds=rules.extract_cds_seqs.output.cds,
         prots=rules.extract_protein_seqs.output.prots,
@@ -116,12 +116,15 @@ rule snpeff:
 rule extract_vcf_annotation:
     input:
         vcf=rules.snpeff.output.vcf,
-        tsv=rules.ref_gff2tsv.output.tsv,
+        tsv=rules.ref_reformat_annotation.output.tsv,
+        metadata=rules.quality_filter.output.metadata,
+        presence=rules.intersect_vcfs.output.tsv,
     output:
         effects=INT_DATASET_DIR / "snpeff" / "{lineage}_effects.tsv",
         variants=INT_DATASET_DIR / "snpeff" / "{lineage}_variants.tsv",
         lofs=INT_DATASET_DIR / "snpeff" / "{lineage}_lofs.tsv",
         nmds=INT_DATASET_DIR / "snpeff" / "{lineage}_nmds.tsv",
+        classif=INT_DATASET_DIR / "snpeff" / "{lineage}_variant_classification.tsv",
     log:
         LOGS / "dataset" / "snpeff" / "extract_vcf_annotation_{lineage}.log",
     resources:
@@ -130,3 +133,5 @@ rule extract_vcf_annotation:
         "../envs/variants.yaml"
     script:
         "../scripts/extract_vcf_annotation.py"
+
+

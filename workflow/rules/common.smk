@@ -47,6 +47,8 @@ INT_DATASET_DIR = INTDIR / DATASET_DIR_NAME
 INT_REFS_DIR = INTDIR / REFS_DIR_NAME
 TEMPDIR = str(INTDIR / TEMPDIR_NAME)
 
+os.makedirs(TEMPDIR, exist_ok=True)
+
 # =================================================================================================
 #  Print configuration
 # =================================================================================================
@@ -269,6 +271,11 @@ else:
     print("Exiting...", flush=True)
     exit(1)
 
+if CHROM_NAMES_TABLE["accession"].duplicated().any():
+        print("Chromosome names file contains duplicated accession names.", flush=True)
+        print("Exiting...", flush=True)
+        exit(1)
+
 if all(
     item in CHROM_NAMES_TABLE["lineage"].unique()
     for item in METADATA_UNFILTERED["lineage"].unique()
@@ -368,47 +375,50 @@ if config["plotting"]["activate"]:
         print("Exiting...", flush=True)
         exit(1)
 
-# --Validate repeats file--------------------------------------------------------------------------
 
-if (
-    config["cnv"]["activate"]
-    or config["plotting"]["activate"]
-    or config["database"]["activate"]
-):
-    if config["repeats_database"]:
-        if os.path.isabs(config["repeats_database"]):
-            REPEATS_FILE = Path(config["repeats_database"])
+# --Validate repeats database file----------------------------------------------------------------
+
+print("", flush=True)
+print("Validating database of repetitive sequences...", flush=True)
+if config["repeats"]["activate"] is True:
+    if config["repeats"]["database"]:
+        if os.path.isabs(config["repeats"]["database"]):
+            REPEATS_FILE = Path(config["repeats"]["database"])
             REPEATS_FILE = os.path.relpath(REPEATS_FILE, Path(os.getcwd()))
         else:
             REPEATS_FILE = Path(
-                os.path.join(config["project_directory"], config["repeats_database"])
+                os.path.join(config["project_directory"], config["repeats"]["database"])
             )
         if not os.path.exists(REPEATS_FILE):
             print(
-                f"Database of repetitive sequences file {REPEATS_FILE} not found.",
+                f"    Database of repetitive sequences file {REPEATS_FILE} not found.",
                 flush=True,
             )
             print("Exiting...", flush=True)
             exit(1)
         else:
-            print("", flush=True)
             print(
-                f"Database of repetitive sequences file {REPEATS_FILE} found.",
+                f"    Database of repetitive sequences file {REPEATS_FILE} found.",
                 flush=True,
             )
     else:
-        print("", flush=True)
-        print("Database of repetitive sequences not provided.", flush=True)
-        if config["use_fake_database"]:
+        print("    Database of repetitive sequences not provided.", flush=True)
+        if config["repeats"]["use_fake_database"]:
             REPEATS_FILE = Path(os.path.join(INT_REFS_DIR, "fake_repeats.fasta"))
             REPEATS_FILE.parent.mkdir(parents=True, exist_ok=True)
             with open(REPEATS_FILE, "w") as f:
                 f.write(">fake\naaaaaaaaaaaaaa\n")
-            print(f"WARNING: Using a fake database file {REPEATS_FILE}.", flush=True)
-            print("The identification of repeats will not be accurate.", flush=True)
+            print(
+                f"    WARNING: Using a fake database file {REPEATS_FILE}.", flush=True
+            )
+            print("    The identification of repeats will not be accurate.", flush=True)
         else:
             print("Exiting...", flush=True)
             exit(1)
+else:
+    REPEATS_FILE = None
+    print("", flush=True)
+    print("    Identification of repetitive sequences is not required.", flush=True)
 
 print("", flush=True)
 print(
@@ -453,9 +463,9 @@ d = {
     "refgenome": INT_REFS_DIR
     / METADATA_UNFILTERED["lineage"]
     / (METADATA_UNFILTERED["lineage"] + ".fasta"),
-    "refgff": INT_REFS_DIR
+    "refgff": REFS_DIR
     / METADATA_UNFILTERED["lineage"]
-    / (METADATA_UNFILTERED["lineage"] + "_interg_introns.gff"),
+    / (METADATA_UNFILTERED["lineage"] + ".gff"),
 }
 
 METADATA_TABLE = pd.DataFrame(data=d).set_index("sample", drop=False)
@@ -466,7 +476,7 @@ LINEAGE_REFERENCE = pd.DataFrame(data=d).set_index("lineage", drop=False)
 # =================================================================================================
 
 
-def snippy_input(wildcards):
+def mapping_and_variants_input(wildcards):
     s = METADATA_TABLE.loc[wildcards.unf_sample,]
     return {
         "fq1": FQ_DATA / (s["sample"] + FQ1),
@@ -478,7 +488,7 @@ def snippy_input(wildcards):
 def liftoff_input(wildcards):
     s = METADATA_TABLE.loc[wildcards.sample,]
     return {
-        "target": SAMPLES_DIR / "snippy" / s["sample"] / "snps.consensus.fa",
+        "target": SAMPLES_DIR / "mapping_and_variants" / s["sample"] / "snps.consensus.fa",
         "refgff": s["refgff"],
         "refgenome": s["refgenome"],
     }
@@ -487,8 +497,8 @@ def liftoff_input(wildcards):
 def depth_distribution_input(wildcards):
     s = METADATA_TABLE.loc[wildcards.unf_sample,]
     return {
-        "bam": SAMPLES_DIR / "snippy" / s["sample"] / "snps.bam",
-        "bai": SAMPLES_DIR / "snippy" / s["sample"] / "snps.bam.bai",
+        "bam": SAMPLES_DIR / "mapping_and_variants" / s["sample"] / "snps.bam",
+        "bai": SAMPLES_DIR / "mapping_and_variants" / s["sample"] / "snps.bam.bai",
         "bam_good": INT_SAMPLES_DIR / "depth_quality" / s["sample"] / "snps_good.bam",
         "bai_good": INT_SAMPLES_DIR
         / "depth_quality"
@@ -497,11 +507,20 @@ def depth_distribution_input(wildcards):
     }
 
 
-def depth_boxplot_input(wildcards):
+def ref_add_repeats_input(wildcards):
+    d = {
+        "gff": rules.ref_add_introns.output.gff,
+    }
+    if config["repeats"]["activate"] is True:
+        d["repeats"] = (REFS_DIR / "{lineage}" / "{lineage}_repeats.bed",)
+    return d
+
+
+def depth_window_distribution_input(wildcards):
     s = METADATA_TABLE.loc[wildcards.sample,]
     return {
-        "depth": INT_SAMPLES_DIR
-        / "depth_quality"
+        "depth": SAMPLES_DIR
+        / "cnv"
         / s["sample"]
         / "depth_by_windows.tsv",
         "chroms": INT_REFS_DIR / s["lineage"] / "chromosomes.csv",
@@ -510,16 +529,18 @@ def depth_boxplot_input(wildcards):
 
 def depth_by_windows_plots_input(wildcards):
     s = METADATA_TABLE.loc[wildcards.sample,]
-    return {
-        "depth": INT_SAMPLES_DIR
-        / "depth_quality"
+    d = {
+        "depth": SAMPLES_DIR
+        / "cnv"
         / s["sample"]
         / "depth_by_windows.tsv",
         "cnv": SAMPLES_DIR / "cnv" / s["sample"] / "cnv_calls.tsv",
-        "repeats": REFS_DIR / s["lineage"] / (s["lineage"] + "_repeats.bed"),
         "chroms": INT_REFS_DIR / s["lineage"] / "chromosomes.csv",
         "loci": INT_REFS_DIR / s["lineage"] / "loci_to_plot.tsv",
     }
+    if config["repeats"]["activate"] is True:
+        d["repeats"] = (REFS_DIR / s["lineage"] / (s["lineage"] + "_repeats.bed"),)
+    return d
 
 
 def depth_vs_cnvs_plots_input(wildcards):
@@ -530,15 +551,17 @@ def depth_vs_cnvs_plots_input(wildcards):
     }
 
 
-def mapq_plot_input(wildcards):
+def mapq_by_windows_plot_input(wildcards):
     s = METADATA_TABLE.loc[wildcards.sample,]
-    return {
+    d = {
         "mapq": INT_SAMPLES_DIR / "depth_quality" / s["sample"] / "mapq_by_window.bed",
         "cnv": SAMPLES_DIR / "cnv" / s["sample"] / "cnv_calls.tsv",
-        "repeats": REFS_DIR / s["lineage"] / (s["lineage"] + "_repeats.bed"),
         "chroms": INT_REFS_DIR / s["lineage"] / "chromosomes.csv",
         "loci": INT_REFS_DIR / s["lineage"] / "loci_to_plot.tsv",
     }
+    if config["repeats"]["activate"] is True:
+        d["repeats"] = (REFS_DIR / s["lineage"] / (s["lineage"] + "_repeats.bed"),)
+    return d
 
 
 def depth_distribution_plot_input(wildcards):
@@ -554,15 +577,18 @@ def depth_distribution_plot_input(wildcards):
 
 def cnv_calling_input(wildcards):
     s = METADATA_TABLE.loc[wildcards.sample,]
-    return {
+    d = {
         "depth": INT_SAMPLES_DIR
-        / "depth_quality"
+        / "mosdepth"
         / s["sample"]
-        / "depth_by_windows.tsv",
-        "repeats": REFS_DIR / s["lineage"] / (s["lineage"] + "_repeats.bed"),
+        / "coverage_good.regions.bed.gz",
         "annotation": SAMPLES_DIR / "annotation" / s["sample"] / "annotation.gff.tsv",
         "chrom_length": INT_REFS_DIR / s["lineage"] / "chromosomes.csv",
     }
+    if config["repeats"]["activate"] is True:
+        d["repeats"] = (REFS_DIR / s["lineage"] / (s["lineage"] + "_repeats.bed"),)
+
+    return d
 
 
 def intersect_vcfs_input(wildcards):
@@ -571,9 +597,29 @@ def intersect_vcfs_input(wildcards):
     l = l.loc[wildcards.lineage,]
     return {
         "vcfs": expand(
-            SAMPLES_DIR / "snippy" / "{sample}" / "snps.vcf.gz", sample=l["sample"]
+            SAMPLES_DIR / "mapping_and_variants" / "{sample}" / "snps.vcf.gz", sample=l["sample"]
         )
     }
+
+def variant_classification_plots_input(wildcards):
+    s = METADATA_TABLE.loc[wildcards.sample,]
+    return {
+        "variants": INT_DATASET_DIR / "snpeff" / (s["lineage"] + "_variants.tsv"),
+        "classif": INT_DATASET_DIR / "snpeff" / (s["lineage"] + "_variant_classification.tsv"),
+        "presence": INT_DATASET_DIR / "snpeff" / (s["lineage"] + "_presence.tsv"),
+        "chromosomes": INT_REFS_DIR / s["lineage"] / "chromosomes.csv",
+    }
+
+
+# def refs_unmapped_plots_input(wildcards):
+#     d = {
+#         "tsv": REFS_DIR / "refs_unmapped_features.tsv",
+#         "chroms": DATASET_DIR / "chromosomes.csv",
+#     }
+#     if config["repeats"]["activate"] is True:
+#         main_ref=config["annotate_references"]["fasta"].split(".")[0]
+#         d["repeats"] =  (REFS_DIR / main_ref / (main_ref + "_repeats.bed"),)
+#     return d
 
 
 # =================================================================================================
@@ -614,18 +660,18 @@ UNFILT_SAMPLES = list(set(METADATA_UNFILTERED["sample"]))
 # --Output per sample previous to sample filtering-------------------------------------------------
 def get_unfiltered_output():
     final_output = expand(
-        SAMPLES_DIR / "snippy" / "{unf_sample}" / "snps.consensus.fa",
+        SAMPLES_DIR / "mapping_and_variants" / "{unf_sample}" / "snps.consensus.fa",
         unf_sample=UNFILT_SAMPLES,
     )
     final_output.extend(
         expand(
-            SAMPLES_DIR / "snippy" / "{unf_sample}" / "snps.bam",
+            SAMPLES_DIR / "mapping_and_variants" / "{unf_sample}" / "snps.bam",
             unf_sample=UNFILT_SAMPLES,
         )
     )
     final_output.extend(
         expand(
-            SAMPLES_DIR / "snippy" / "{unf_sample}" / "snps.vcf.gz",
+            SAMPLES_DIR / "mapping_and_variants" / "{unf_sample}" / "snps.vcf.gz",
             unf_sample=UNFILT_SAMPLES,
         )
     )
@@ -675,14 +721,27 @@ def get_filtered_output():
                 sample=SAMPLES,
             )
             final_output = final_output, expand(
-                SAMPLES_DIR / "plots" / "{sample}" / "depth_boxplot.png", sample=SAMPLES
+                SAMPLES_DIR / "plots" / "{sample}" / "depth_window_distribution.png", sample=SAMPLES
             )
             final_output = final_output, expand(
                 SAMPLES_DIR / "plots" / "{sample}" / "depth_vs_cnvs.png", sample=SAMPLES
             )
             final_output = final_output, expand(
-                SAMPLES_DIR / "plots" / "{sample}" / "mapq.png", sample=SAMPLES
+                SAMPLES_DIR / "plots" / "{sample}" / "mapq_by_windows.png", sample=SAMPLES
             )
+        if config["snpeff"]["activate"] or config["database"]["activate"]:
+            final_output = final_output, expand(
+                    SAMPLES_DIR / "plots" / "{sample}" / "variants_summary.png", sample=SAMPLES)
+            final_output = final_output, expand(
+                    SAMPLES_DIR / "plots" / "{sample}" / "variants_by_windows_privateness.png", sample=SAMPLES)
+            final_output = final_output, expand(
+                    SAMPLES_DIR / "plots" / "{sample}" / "variants_by_windows_impact.png", sample=SAMPLES)
+            final_output = final_output, expand(
+                        DATASET_DIR / "plots" / "{lineage}_variant_summary.png", lineage = LINEAGES)
+            final_output = final_output, expand(
+                        REFS_DIR / "{lineage}" / "{lineage}_variants_by_windows.png", lineage = LINEAGES)     
+
+
     return final_output
 
 
@@ -701,9 +760,45 @@ def get_dataset_output():
     if config["cnv"]["activate"]:
         final_output.append(DATASET_DIR / "cnv" / "cnv_calls.tsv")
         final_output.append(DATASET_DIR / "cnv" / "cnv_chromosomes.tsv")
-    if config["plotting"]["activate"]:
-        final_output.append(DATASET_DIR / "plots" / "dataset_depth_by_chrom.png")
-        final_output.append(DATASET_DIR / "plots" / "dataset_summary.png")
     if config["database"]["activate"]:
-        final_output.append(expand(DATASET_DIR / "database.db"))
+        final_output.append(DATASET_DIR / "database.db")
+    if config["plotting"]["activate"]:
+        final_output.append(DATASET_DIR / "plots" / "mapping_summary.png")
+        if config["cnv"]["activate"] or config["database"]["activate"]:
+            final_output.append(DATASET_DIR / "plots" / "dataset_depth_by_chrom.png")
     return final_output
+
+# =================================================================================================
+#   Setup rules
+# =================================================================================================
+
+
+rule ref_fasta_symlinks:
+    input:
+        REF_DATA / "{lineage}.fasta",
+    output:
+        INT_REFS_DIR / "{lineage}" / "{lineage}.fasta",
+    log:
+        LOGS / "references" / "ref_fasta_symlinks_{lineage}.log",
+    resources:
+        tmpdir=TEMPDIR,
+    conda:
+        "../envs/shell.yaml"
+    shell:
+        "ln -s -r {input} {output} 2> {log}"
+
+
+# Edit the agat config file to avoid creating log files
+rule agat_config:
+    output:
+        INT_REFS_DIR / "agat_config.yaml",
+    log:
+        LOGS / "references" / "agat_config.log",
+    resources:
+        tmpdir=TEMPDIR,
+    conda:
+        "../envs/agat.yaml"
+    shell:
+        "agat config --expose &> {log} && "
+        "mv agat_config.yaml {output} &> {log} && "
+        "sed -i 's/log: true/log: false/g' {output} &>> {log} "

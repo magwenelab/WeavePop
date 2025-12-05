@@ -514,12 +514,14 @@ def get_variants(db, dataset=None, sample=None, strain=None, gene_name=None, gen
             effects.impact, effects.effect_type, effects.effect,
             effects.codon_change, effects.amino_acid_change, effects.amino_acid_length,
             effects.transcript_biotype, effects.gene_coding, effects.exon_rank,
+            variant_classification.category,
             mapq_depth.mean_depth_normalized, mapq_depth.mean_mapq
         FROM variants 
         JOIN chromosomes ON variants.accession = chromosomes.accession
         JOIN presence ON variants.var_id = presence.var_id
         JOIN effects ON variants.var_id = effects.var_id
         JOIN metadata ON presence.sample = metadata.sample
+        JOIN variant_classification ON variants.var_id = variant_classification.var_id
         LEFT JOIN mapq_depth ON mapq_depth.feature_id = effects.feature_id AND mapq_depth.sample = presence.sample
         WHERE metadata.dataset IN {dataset}
         """
@@ -714,14 +716,14 @@ def get_annotation(db, lineage=None, gene_name=None, gene_id=None, chromosome=No
 
     columns = con.execute("SELECT column_name FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'gff'").fetchdf()['column_name'].tolist()
     
-    if 'identical_to_main_ref' and 'start_stop_mutations' in columns:
+    if 'ref_identical_to_main_ref' and 'ref_start_stop_mutations' in columns:
         query = f"""
             SELECT gff.lineage, chromosomes.chromosome,
                 gff.start, gff."end", gff.strand, gff.primary_tag,
                 gff.gene_name, gff.gene_id,
                 gff.feature_id, gff.parent,
-                gff.description, gff.repeat_fraction,
-                gff.identical_to_main_ref, gff.start_stop_mutations, 
+                gff.description, gff.ref_repeat_fraction,
+                gff.ref_identical_to_main_ref, gff.ref_start_stop_mutations, 
             FROM gff
             JOIN chromosomes ON gff.accession = chromosomes.accession
             WHERE gff.lineage IN {lineage}
@@ -732,7 +734,7 @@ def get_annotation(db, lineage=None, gene_name=None, gene_id=None, chromosome=No
                 gff.start, gff."end", gff.strand, gff.primary_tag,
                 gff.gene_name, gff.gene_id,
                 gff.feature_id, gff.parent,
-                gff.description, gff.repeat_fraction,
+                gff.description, gff.ref_repeat_fraction,
             FROM gff
             JOIN chromosomes ON gff.accession = chromosomes.accession
             WHERE gff.lineage IN {lineage}

@@ -12,43 +12,54 @@ with ui.navset_pill(id="Database"):
         ui.h1(ui.markdown("WeavePop Database"), style="padding-top: 20px;padding-bottom: 20px;")
         ui.markdown(
             """
-            This database is the result of WeavePop, a workflow for the discovery of genomic diversity in a population.   
+            This database is the result of using WeavePop in the samples listed in the Metadata tab.  
+            WeavePop is a workflow for the discovery of genomic diversity in a population.   
             In summary, the analyses consisted of the following steps:
             1. Processing of the annotation of the reference genome. 
             2. Map the short reads of each sample to the corresponding reference genome using [Snippy](https://github.com/tseemann/snippy).  
                 * Reference-based assemblies.
                 * Called variants.
-                * Depth of coverage.
-            3. Annotate the assembly of each sample by lifting over the annotation of the corresponding reference genome to extract the DNA and protein sequences of each isoform of each gene using [AGAT](https://agat.readthedocs.io/en/latest/index.html).
+                * Read depth.
+            3. Annotate the assembly of each sample by lifting over the annotation of the corresponding reference genome, using [Liftoff](https://github.com/agshumate/Liftoff),
+            to extract the DNA and protein sequences of each isoform of each gene using [AGAT](https://agat.readthedocs.io/en/latest/index.html).
             4. Annotate the predicted effects of the called variants using [SnpEff](https://pcingola.github.io/SnpEff/).
-            5. Analyze the depth of coverage to identify copy number variants (deletions and duplications).
+            5. Analyze the read depth to identify copy number variants (deletions and duplications).
             
             """
         )
-        ui.h1("Available data",style="padding-top: 20px;padding-bottom: 10px;")
+        ui.markdown("Please see the Citation tab for information on how to cite this resource, and the Glossary tab for definitions of the terms used in the filters and tables.")
+        ui.h1("Available Data",style="padding-top: 20px;padding-bottom: 10px;")
         ui.h4("Metadata",style="padding-top: 10px;padding-bottom: 10px;")
-        "Metadata of the samples, including the strain, sample ID, lineage, etc."
-        ui.h4(" Reference Genomes’ Annotations",style="padding-top: 10px;padding-bottom: 10px;")
+        "Metadata of the samples included in this database, including the strain, sample ID, lineage, isolation source and other information."
+        ui.h4("Reference Annotations",style="padding-top: 10px;padding-bottom: 10px;")
         "Table with the description of the genes in the reference genome of each lineage. Including the nested features of the genes."
+        ui.h4("Reference Coding Sequences",style="padding-top: 10px;padding-bottom: 10px;")
+        "DNA and protein sequences of each isoform of each gene in all reference genomes."
         ui.h4("Coding Sequences",style="padding-top: 10px;padding-bottom: 10px;")
         "DNA and protein sequences of each isoform of each gene in all samples."
         ui.h4("Variants",style="padding-top: 10px;padding-bottom: 10px;")
         ui.markdown("""
                     Variants (SNPs, INDELs, and MNPs) and their predicted effects. Visit [SnpEff](https://pcingola.github.io/SnpEff/snpeff/inputoutput/) to see the description of the effects and impacts.  
                     Since the variants were called comparing each sample to the reference genome of its lineage, 
-                    the variants have an ID that corresponds to the lineage, and they are associated with the samples 
+                    the variants have an ID that corresponds to the lineage (e.g. var_VNI_1), and they are associated with the samples 
                     they were found in.    
-                    The table contains one row per combination of variant, effect, and samples where the variant it is present in.                     
+                    The table contains one row per combination of variant, effect, and samples where the variant it is present in.   
+                   
                     """)
+
         ui.h4("Copy Number Variants",style="padding-top: 10px;padding-bottom: 10px;")
         "Table with predicted duplicated and deleted regions in the samples."
+        ui.h4("Chromosome CNVs",style="padding-top: 10px;padding-bottom: 10px;")
+        "Table with summary metrics of CNVs per chromosome."
         ui.h4("Glossary",style="padding-top: 10px;padding-bottom: 10px;")
         "Definitions of the terms used in the tables."
         ui.h1("",style="padding-top: 20px;padding-bottom: 10px;")
         
     with ui.nav_panel("Metadata"):
         ui.h1("Metadata", style="padding-top: 20px;padding-bottom: 20px;")
-
+        ui.markdown("""
+                    Metadata of the samples included in the database
+                    """)
         with ui.card():
             ui.card_header("Download metadata table") 
             @render.download(
@@ -723,8 +734,8 @@ with ui.navset_pill(id="Database"):
                         df.to_csv(buf, index=False, sep="\t")
                         yield buf.getvalue()
 
-    with ui.nav_panel("Chromosome CNV and Depth"):
-        ui.h1("Chromosome CNV and Depth", style="padding-top: 20px;padding-bottom: 20px;")
+    with ui.nav_panel("Chromosome CNVs"):
+        ui.h1("Chromosome CNVs", style="padding-top: 20px;padding-bottom: 20px;")
         list_datasets = qdb.list_datasets(db = mydb)
         if len(list_datasets) > 1:
             with ui.card():
@@ -865,15 +876,16 @@ with ui.navset_pill(id="Database"):
             **End position / end**: The end position of the feature in the chromosome.    
             """
         )
-        ui.h3("Genes")
+        ui.h3("Annotation")
         ui.markdown(
             """
             **Description / description**: The description of the gene product.  
-            **Feature type / primary_tag**: The type of annotated gene feature, (i.e. gene, mRNA, exon, CDS, three_prime_UTR, five_prime_UTR). Genes with more than one isoform will have multiple mRNA features.   
-            **feature_id**: The unique identifier of the feature, it includes the gene ID, the type of feature and number within the gene.  
+            **Feature type / primary_tag**: The type of annotated gene feature, (i.e. gene, mRNA, exon, CDS, three_prime_UTR, five_prime_UTR, etc.). Genes with more than one isoform will have multiple mRNA features.   
+            **feature_id**: The unique identifier of the feature, it includes the gene ID, the type of feature and number of that feature within the gene.  
             **parent**: The gene ID of the gene that the feature is part of, empty for the feature type gene.  
-            **identical_to_main_ref**: In the mRNA feature type, if the isoform sequence of the lineage specific reference genome is identical to the main reference sequence the value is Yes, otherwise No.  
-            **start_top_mutation**: In the mRNA feature type, if the isoform sequence of the reference genome has a missing stop or start codon or a inframe stop codon, compared to the sequence fo the main reference the value will be one of missing_stop_codon, missing_start_codon or inframe_stop_codon.  
+            **ref_repeat_fraction**: The proportion of the feature that is covered by repetitive sequences in the reference genome.
+            **ref_identical_to_main_ref**: In the mRNA feature type, if the isoform sequence of the lineage specific reference genome is identical to the main reference sequence the value is Yes, otherwise No.  
+            **ref_start_top_mutation**: In the mRNA feature type, if the isoform sequence of the reference genome has a missing stop or start codon or a inframe stop codon, compared to the sequence fo the main reference the value will be one of missing_stop_codon, missing_start_codon or inframe_stop_codon.  
             """
         )
         ui.h3("Variants")
@@ -899,9 +911,39 @@ with ui.navset_pill(id="Database"):
         ui.h3("Copy number variants")
         ui.markdown(
             """
-            **Feature type / CNV**: The type of copy number variant (deletion or duplication).  
-            **Size range**: The range of sizes of the features to include in the table.  
-            **region_size**: The size of the feature in base pairs.  
-            **Repeats threshold**: Parameter to filter out features with a repeat_fraction larger than this threshold.  
-            **repeat_fraction**: The proportion of the feature that is covered by repetitive sequences.  
+            **CNV type / cnv**: The type of copy number variant (deletion or duplication).  
+            **Size range**: The range of sizes of the CNVs to include in the table.  
+            **size**: The size of the CNV in base pairs.  
+            **Repeats threshold**: Parameter to filter out CNVs with a repeat_fraction larger than this threshold.  
+            **repeat_fraction**: The proportion of the CNV that is covered by repetitive sequences. 
+            **repeat_overlap_bp**: The number of base pairs of the CNV that is covered by repetitive sequences.  
+            **depth**: The mean depth of the CNV.  
+            **norm_depth**: The mean depth of the CNV, normalized by the genome-wide depth.   
+            **smooth_depth**: The normalized mean depth of the CNV after applying a smoothing function.  
             """)
+        ui.h3("Chromosome CNVs")
+        ui.markdown(
+            """
+            **cnv**: Type of copy number variant (deletion, duplication or single-copy).
+            **n_cnvs**: Number of CNVs in the chromosome.  
+            **total_size**: Sum of the size in base pairs of the CNVs in the chromosome.  
+            **coverage_percent**: Proportion of the chromosome that is covered by CNVs.  
+            **size_smallest**: Size in base pairs of the smallest CNV in the chromosome.  
+            **size_largest**: Size in base pairs of the largest CNV in the chromosome.  
+            **norm_depth_mean**: Mean of the normalized depth of the CNVs in the chromosome.  
+            **norm_depth_median**: Median of the normalized depth of the CNVs in the chromosome.  
+            **smooth_depth_mean**: Mean of the smoothed normalized depth of the CNVs in the chromosome.  
+            **smooth_depth_median**: Median of the smoothed normalized depth of the CNVs in the chromosome.  
+            **chrom_depth**: Median of the depth of the chromosome.  
+            **chrom_norm_depth**: Normalized median of the depth of the chromosome.  
+            **genome_depth**: Median of the depth of the genome.  
+            """
+        )
+
+    with ui.nav_panel("Citation"):
+        ui.h1("Citation", style="padding-top: 20px;padding-bottom: 20px;")
+        ui.markdown("""
+                    WeavePop: A bioinformatics workflow to explore and analyze genomic variants of eukaryotic populations  
+                    Claudia Zirión-Martínez, Paul M. Magwene  
+                    bioRxiv 2025.08.15.670593; doi: https://doi.org/10.1101/2025.08.15.670593
+                    """)

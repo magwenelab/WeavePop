@@ -39,7 +39,7 @@ rule repeat_modeler:
         dir=lambda wildcards: INT_REFS_DIR / wildcards.lineage / "repeats",
     log:
         LOGS / "references" / "repeats" / "repeatmodeler_{lineage}.log",
-    threads: config["cnv"]["repeats"]["repeats_threads"]
+    threads: config["repeats"]["threads"]
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -84,7 +84,7 @@ rule repeat_masker_1:
         tmp=lambda wildcards: INT_REFS_DIR / wildcards.lineage / "repeats",
     log:
         LOGS / "references" / "repeats" / "repeatmasker1_{lineage}.log",
-    threads: config["cnv"]["repeats"]["repeats_threads"]
+    threads: config["repeats"]["threads"]
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -120,7 +120,7 @@ rule repeat_masker_2:
         tmp=lambda wildcards: INT_REFS_DIR / wildcards.lineage / "repeats",
     log:
         LOGS / "references" / "repeats" / "repeatmasker2_{lineage}.log",
-    threads: config["cnv"]["repeats"]["repeats_threads"]
+    threads: config["repeats"]["threads"]
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -152,7 +152,7 @@ rule repeat_masker_3:
         tmp=lambda wildcards: INT_REFS_DIR / wildcards.lineage / "repeats",
     log:
         LOGS / "references" / "repeats" / "repeatmasker3_{lineage}.log",
-    threads: config["cnv"]["repeats"]["repeats_threads"]
+    threads: config["repeats"]["threads"]
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -193,7 +193,7 @@ rule repeat_masker_4:
         tmp=lambda wildcards: INT_REFS_DIR / wildcards.lineage / "repeats",
     log:
         LOGS / "references" / "repeats" / "repeatmasker4_{lineage}.log",
-    threads: config["cnv"]["repeats"]["repeats_threads"]
+    threads: config["repeats"]["threads"]
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -255,7 +255,7 @@ rule repeat_masker_combine:
         known=rules.repeat_masker_bed.output.known,
         unknown=rules.repeat_masker_bed.output.unknown,
     output:
-        REFS_DIR / "{lineage}" / "{lineage}_repeats.bed",
+        bed=REFS_DIR / "{lineage}" / "{lineage}_repeats.bed",
     log:
         LOGS / "references" / "repeats" / "repeatmasker_combine_{lineage}.log",
     conda:
@@ -264,6 +264,6 @@ rule repeat_masker_combine:
         """
         cat {input.simple} {input.complx} {input.known} {input.unknown} \
         | bedtools sort \
-        | bedtools merge -c 4 -o collapse \
-        | awk '{{print $1"\t"$2"\t"$3"\t"$4}}' > {output} 2> {log}
+        | bedtools merge -c 4 -o distinct \
+        | awk '{{print $1"\t"$2"\t"$3"\t"$4}}' > {output.bed} 2> {log}
         """

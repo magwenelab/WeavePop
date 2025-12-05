@@ -8,12 +8,25 @@ suppressPackageStartupMessages(library(RColorBrewer))
 suppressPackageStartupMessages(library(scales))
 suppressPackageStartupMessages(library(patchwork))
 
+print("Reading input parameters...")
+depth_input <- snakemake@input$distrib
+chrom_names_input <- snakemake@input$chroms
+metadata_input <- snakemake@input$metadata
+
+output_chrom <- snakemake@output$chrom
+output_global <- snakemake@output$globl
+
+sample <- snakemake@wildcards$sample
+gscale <- 0.7
+gheight <- 9
+gwidth <- 16
+gdpi <- 600
+
 
 print("Reading files and joining data with chromosome names...")
-sample <- snakemake@wildcards$sample
-depth <- read.table(snakemake@input[[1]], header = TRUE, stringsAsFactors = TRUE, sep = "\t")
-chrom_names <- read.csv(snakemake@input[[2]], header = TRUE , sep = ",")
-metadata <- read.delim(snakemake@input[[3]], sep = ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
+depth <- read.table(depth_input, header = TRUE, stringsAsFactors = TRUE, sep = "\t")
+chrom_names <- read.csv(chrom_names_input, header = TRUE , sep = ",")
+metadata <- read.delim(metadata_input, sep = ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
 
 print("Obtaining lineage of sample...")
 
@@ -45,8 +58,8 @@ max_depth <- depth_global %>%
 
 print("Plotting genome-wide depth distribution...")
 plot_global <- ggplot()+
-  geom_line(data = depth_global, aes(x=depth,y = count_raw_global, color = "All alignments"))+
-  geom_line(data = depth_global, aes(x=depth,y = count_good_global, color = "Good quality alignments"))+ 
+  geom_line(data = depth_global, aes(x=depth,y = count_raw_global, color = "All mappings"))+
+  geom_line(data = depth_global, aes(x=depth,y = count_good_global, color = "Good quality mappings"))+ 
   scale_y_log10(name = "Number of Sites", labels = comma)+
   scale_x_continuous(name = "Depth (X)", labels = comma, n.breaks = 10)+
   labs(subtitle = "Log10 scale in Y-axis")+
@@ -55,8 +68,8 @@ plot_global <- ggplot()+
         legend.position = "none")
 
 plot_truncated_log <- ggplot()+
-  geom_line(data = depth_global, aes(x=depth,y = count_raw_global, color = "All alignments"))+ 
-  geom_line(data = depth_global, aes(x=depth,y = count_good_global, color = "Good quality alignments"))+ 
+  geom_line(data = depth_global, aes(x=depth,y = count_raw_global, color = "All mappings"))+ 
+  geom_line(data = depth_global, aes(x=depth,y = count_good_global, color = "Good quality mappings"))+ 
   scale_y_log10(name = "Number of Sites", labels = comma)+
   scale_x_continuous(name = "Depth (X)", labels = comma, n.breaks = 10, limits = c(0,max_depth*10))+
   labs(subtitle = "Log10 scale in Y-axis, truncated X-axis") +
@@ -65,8 +78,8 @@ plot_truncated_log <- ggplot()+
         legend.position = "none")
 
 plot_truncated <- ggplot()+
-  geom_line(data = depth_global, aes(x=depth,y = count_raw_global, color = "All alignments"))+ 
-  geom_line(data = depth_global, aes(x=depth,y = count_good_global, color = "Good quality alignments"))+ 
+  geom_line(data = depth_global, aes(x=depth,y = count_raw_global, color = "All mappings"))+ 
+  geom_line(data = depth_global, aes(x=depth,y = count_good_global, color = "Good quality mappings"))+ 
   scale_y_continuous(name = "Number of Sites", labels = comma)+
   scale_x_continuous(name = "Depth (X)", labels = comma, n.breaks = 10, limits = c(0,max_depth*10))+
   labs(subtitle = "Truncated X-axis")+
@@ -77,9 +90,8 @@ plot_truncated <- ggplot()+
 
 combined <- plot_global / plot_truncated_log / plot_truncated 
 combined <- combined +
-  plot_annotation(title = "Depth Distribution of Whole Genome by Quality of Read Alignments",
-                  subtitle = paste("Lineage:", lineage_name, " Sample:", sample,"Strain:", strain_name, sep = " ")) &
-    theme(plot.title = element_text(hjust = 0.5))
+  plot_annotation(title = "Depth Distribution of Whole Genome by Quality of Read Mappings",
+                  subtitle = paste("Sample:", sample,"Strain:", strain_name, " Lineage:", lineage_name,  sep = " "))
 
 print("Plotting depth distribution by chromosome...")
 by_chrom <- ggplot(depth)+
@@ -112,13 +124,12 @@ by_chrom_truncated <- ggplot(depth)+
 
 plot_chrom <- by_chrom / by_chrom_log / by_chrom_truncated
 plot_chrom <- plot_chrom +
-  plot_annotation(title = "Depth Distribution of Good Quality Alignments of each Chromosome",
-                  subtitle = paste("Lineage:", lineage_name, " Sample:", sample, "Strain:", strain_name, sep = " ")) &
-    theme(plot.title = element_text(hjust = 0.5))
+  plot_annotation(title = "Depth Distribution of Good Quality Mappings of each Chromosome",
+                  subtitle = paste("Sample:", sample,"Strain:", strain_name, " Lineage:", lineage_name,  sep = " "))
 
 print("Saving plots...")
-ggsave(snakemake@output[[1]], plot = plot_chrom, units = "in", height = 4.5, width = 8, dpi = 300, scale = 1.5)
-ggsave(snakemake@output[[2]], plot = combined,  units = "in", height = 4.5, width = 8, dpi = 300, scale = 1.5)
+ggsave(output_chrom, plot = plot_chrom, units = "in", height = gheight, width = gwidth, dpi = gdpi, scale = gscale)
+ggsave(output_global, plot = combined,  units = "in", height = gheight, width = gwidth, dpi = gdpi, scale = gscale)
 
 print("Done!")
 

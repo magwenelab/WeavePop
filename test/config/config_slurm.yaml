@@ -34,7 +34,7 @@ repeats:
   database: "" # Path to the RepBase FASTA file. Relative to project_directory or absolute.
   use_fake_database: True # True to use a fake database in absence of a real one.
   threads: 20 # Number of threads for RepeatModeler and RepeatMasker.
-  use_container: False # True to use Apptainer containers for RepeatModeler and RepeatMasker.
+  use_container: True # True to use Apptainer containers for RepeatModeler and RepeatMasker.
 
 # ------------------Annotation of reference genomes----------------------------
 

@@ -7,16 +7,15 @@ sys.stderr = sys.stdout
 import os
 import pandas as pd
 
-metadata_path=snakemake.input[0]
-lineages_path=snakemake.params[0]
-genes_path=snakemake.input[1]
-output_path=snakemake.output[0]
+genes_path=snakemake.input.genes
+
+lineages_path=str(snakemake.params.refdir)
+lineages = snakemake.params.lins
+
+output_path=snakemake.output.tsv
 
 print("Reading files...")
-metadata = pd.read_csv(metadata_path, header=0)
 genes = pd.read_csv(genes_path, header=0, sep="\t")
-print("Getting lineages...")
-lineages = metadata["lineage"].unique()
 print("Selecting columns of main reference...")
 columns_to_select = ["seq_id", "start", "end", "primary_tag", "ID", "description" , "Name"]
 existing_columns = [col for col in columns_to_select if col in genes.columns]

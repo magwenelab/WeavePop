@@ -327,7 +327,7 @@ def input_intersect_vcfs(wildcards):
         samps_dir_df = samps_dir_df.loc[samps_dir_df["lineage"] == wildcards.lineage]
         samps = samps_dir_df["sample"]
         for samp in samps:
-            vcf = os.path.join(dir, SAMPLES_DIR_NAME, "snippy", samp, "snps.vcf.gz")
+            vcf = os.path.join(dir, SAMPLES_DIR_NAME, "mapping_and_variants", samp, "snps.vcf.gz")
             paths.append(vcf)
     return {"vcfs": paths}
 
@@ -341,10 +341,9 @@ def input_symlink_ref_gff(wildcards):
         for lineage in lineages:
             gff = os.path.join(
                 dir,
-                INTDIR_NAME,
                 REFS_DIR_NAME,
                 lineage,
-                f"{lineage}_interg_introns.gff.tsv",
+                f"{lineage}.gff.tsv",
             )
             paths[lineage] = gff
     lineage_path = paths[wildcards.lineage]

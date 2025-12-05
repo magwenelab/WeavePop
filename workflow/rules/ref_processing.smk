@@ -41,32 +41,13 @@ rule ref_add_introns:
         "&> {log}"
 
 
-rule ref_gff2tsv:
-    input:
-        target=rules.ref_add_introns.output.gff,
-        config=rules.agat_config.output,
-    output:
-        tsv=INT_REFS_DIR / "{lineage}" / "{lineage}_interg_introns.gff.tsv",
-    log:
-        LOGS / "references" / "ref_processing" / "gff2tsv_{lineage}.log",
-    resources:
-        tmpdir=TEMPDIR,
-    conda:
-        "../envs/agat.yaml"
-    shell:
-        "agat_convert_sp_gff2tsv.pl "
-        "-gff {input.target} "
-        "-c {input.config} "
-        "-o {output.tsv} "
-        "&> {log}"
-
-
 rule ref_add_repeats:
     input:
-        gff=rules.ref_add_introns.output.gff,
-        repeats=REFS_DIR / "{lineage}" / "{lineage}_repeats.bed",
+        unpack(ref_add_repeats_input),
     output:
         INT_REFS_DIR / "{lineage}" / "{lineage}_repeats.gff",
+    params:
+        find_repeats=config["repeats"]["activate"],
     log:
         LOGS / "references" / "ref_processing" / "ref_add_repeats_{lineage}.log",
     resources:
@@ -77,7 +58,7 @@ rule ref_add_repeats:
         "../scripts/ref_add_repeats.xsh"
 
 
-rule ref_gff2tsv_2:
+rule ref_gff2tsv:
     input:
         target=rules.ref_add_repeats.output,
         config=rules.agat_config.output,
@@ -99,7 +80,7 @@ rule ref_gff2tsv_2:
 
 rule ref_reformat_annotation:
     input:
-        tsv=rules.ref_gff2tsv_2.output.tsv,
+        tsv=rules.ref_gff2tsv.output.tsv,
     output:
         tsv=REFS_DIR / "{lineage}" / "{lineage}.gff.tsv",
         gff=REFS_DIR / "{lineage}" / "{lineage}.gff",
@@ -121,7 +102,7 @@ rule ref_reformat_annotation:
 
 rule extract_cds_seqs:
     input:
-        gff=INT_REFS_DIR / "{lineage}" / "{lineage}_interg_introns.gff",
+        gff=REFS_DIR / "{lineage}" / "{lineage}.gff",
         fasta=INT_REFS_DIR / "{lineage}" / "{lineage}.fasta",
         config=rules.agat_config.output,
     output:
@@ -143,7 +124,7 @@ rule extract_cds_seqs:
 
 rule extract_protein_seqs:
     input:
-        gff=INT_REFS_DIR / "{lineage}" / "{lineage}_interg_introns.gff",
+        gff=REFS_DIR / "{lineage}" / "{lineage}.gff",
         fasta=INT_REFS_DIR / "{lineage}" / "{lineage}.fasta",
         config=rules.agat_config.output,
         cds=rules.extract_cds_seqs.output.cds,

@@ -1,5 +1,5 @@
 # =================================================================================================
-#   Join all lineages | Create table with loci to add to plots
+#   Per lineage | Create table with loci to add to plots
 # =================================================================================================
 
 
@@ -31,8 +31,8 @@ rule depth_distribution_plots:
         chroms=CHROM_NAMES_FILE,
         metadata=METADATA_ORIGINAL_FILE,
     output:
-        SAMPLES_DIR / "plots" / "{sample}" / "depth_chrom_distribution.png",
-        SAMPLES_DIR / "plots" / "{sample}" / "depth_global_distribution.png",
+        chrom=SAMPLES_DIR / "plots" / "{sample}" / "depth_chrom_distribution.png",
+        globl=SAMPLES_DIR / "plots" / "{sample}" / "depth_global_distribution.png",
     conda:
         "../envs/r.yaml"
     log:
@@ -46,18 +46,22 @@ rule depth_distribution_plots:
 # =================================================================================================
 
 
-rule depth_boxplot:
+rule depth_window_distribution:
     input:
-        unpack(depth_boxplot_input),
+        unpack(depth_window_distribution_input),
         metadata=METADATA_ORIGINAL_FILE,
     output:
-        SAMPLES_DIR / "plots" / "{sample}" / "depth_boxplot.png",
+        plot=SAMPLES_DIR / "plots" / "{sample}" / "depth_window_distribution.png",
+    params:
+        window_size=config["depth_quality"]["mosdepth"]["window"],
+        depth_threshold=config["cnv"]["depth_threshold"],
+        smoothing_size=config["cnv"]["smoothing_size"],
     conda:
         "../envs/r.yaml"
     log:
-        LOGS / "samples" / "plots" / "depth_boxplot_{sample}.log",
+        LOGS / "samples" / "plots" / "depth_window_distribution_{sample}.log",
     script:
-        "../scripts/depth_boxplots.R"
+        "../scripts/depth_window_distribution.R"
 
 
 rule depth_by_windows_plots:
@@ -65,7 +69,9 @@ rule depth_by_windows_plots:
         unpack(depth_by_windows_plots_input),
         metadata=METADATA_ORIGINAL_FILE,
     output:
-        SAMPLES_DIR / "plots" / "{sample}" / "depth_by_windows.png",
+        plot=SAMPLES_DIR / "plots" / "{sample}" / "depth_by_windows.png",
+    params:
+        window_size=config["depth_quality"]["mosdepth"]["window"],
     conda:
         "../envs/r.yaml"
     log:
@@ -88,15 +94,36 @@ rule depth_vs_cnvs_plots:
         "../scripts/depth_vs_cnvs_plots.R"
 
 
-rule mapq_plots:
+rule mapq_by_windows_plots:
     input:
-        unpack(mapq_plot_input),
+        unpack(mapq_by_windows_plot_input),
         metadata=METADATA_ORIGINAL_FILE,
     output:
-        SAMPLES_DIR / "plots" / "{sample}" / "mapq.png",
+        SAMPLES_DIR / "plots" / "{sample}" / "mapq_by_windows.png",
+    params:
+        window_size=config["depth_quality"]["mosdepth"]["window"],
     conda:
         "../envs/r.yaml"
     log:
-        LOGS / "samples" / "plots" / "mapq_plots_{sample}.log",
+        LOGS / "samples" / "plots" / "mapq_by_windows_plots_{sample}.log",
     script:
-        "../scripts/mapq_plots.R"
+        "../scripts/mapq_by_windows_plots.R"
+
+
+        
+rule variant_classification_plots:
+    input:
+        unpack(variant_classification_plots_input),
+        metadata=METADATA_ORIGINAL_FILE,
+    output:
+        summary=SAMPLES_DIR / "plots" / "{sample}" / "variants_summary.png",
+        category=SAMPLES_DIR / "plots" / "{sample}" / "variants_by_windows_privateness.png",
+        impact=SAMPLES_DIR / "plots" / "{sample}" / "variants_by_windows_impact.png",
+    params:
+        window_size=config["depth_quality"]["mosdepth"]["window"],
+    conda:
+        "../envs/r.yaml"
+    log:
+        LOGS / "samples" / "plots" / "variant_classification_plots_{sample}.log",
+    script:
+        "../scripts/variant_classification_plots.R"

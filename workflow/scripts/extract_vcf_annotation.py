@@ -9,10 +9,13 @@ import vcf
 
 vcf_path = snakemake.input.vcf
 gff_tsv = snakemake.input.tsv
+metadata = snakemake.input.metadata
+presence = snakemake.input.presence
 variants_out = snakemake.output.variants
 effects_out = snakemake.output.effects
 lofs_out = snakemake.output.lofs
 nmds_out = snakemake.output.nmds
+classif_out = snakemake.output.classif
 lineage = snakemake.wildcards.lineage
 
 print("Getting tables from SnpEff result...")
@@ -92,13 +95,7 @@ print("Reading GFF file...")
 df_gff = pd.read_csv(gff_tsv, sep='\t', header = 0, low_memory=False)
 
 print("Getting gene IDs from GFF file...")  
-id_cols = ['locus', 'Name', 'ID']
-existing_id_cols = [col for col in id_cols if col in df_gff.columns]
-gff_ids = df_gff[existing_id_cols].drop_duplicates().copy()
-rename_dict = {'locus': 'gene_id', 'Name': 'gene_name', 'ID': 'feature_id'}
-existing_columns = gff_ids.columns
-filtered_rename_dict = {k: v for k, v in rename_dict.items() if k in existing_columns}
-gff_ids.rename(columns=filtered_rename_dict, inplace=True)
+gff_ids = df_gff[['gene_id', 'gene_name', 'feature_id']].drop_duplicates().copy()
 gff_ids = gff_ids.dropna(subset=['gene_id'])
 
 print("Subsetting effects table...")
@@ -146,10 +143,46 @@ print("Concatenating dataframes...")
 df_effects = pd.concat([df_gene_transcript, df_gene_no_transcript_fixed, df_no_gene_no_transcript])
 print("Finished formatting effects dataframe!")
 
+print("Classifying variants according to privateness")
+df_presence = pd.read_csv(presence, sep='\t', header = 0, low_memory=False)
+df_private = df_presence.groupby(['var_id']).size().reset_index(name = "n_samples")
+
+df_metadata = pd.read_csv(metadata, header = 0)
+df_samples_in_lineage= df_metadata.groupby(['lineage']).size().reset_index(name='samples_in_lineage')
+df_private['samples_in_lineage'] = df_samples_in_lineage.loc[df_samples_in_lineage['lineage'] == lineage, ['samples_in_lineage']]['samples_in_lineage'].iloc[0]
+  
+df_private['category'] = df_private.apply(lambda row: "Private" if row['n_samples'] == 1 
+                                                        else "Reference private" if row['n_samples'] == row['samples_in_lineage']
+                                                        else "Non-private", axis = 1)
+df_private = df_private[['var_id', 'category']]
+
+
+print("Classifying variants according to impact")
+
+df_impact = df_effects.groupby(['var_id','impact']).size().reset_index(name='n_effects')
+df_impact['one_effect'] = 1
+
+df_impact = df_impact.pivot(index='var_id', columns='impact' , values='one_effect').reset_index()
+df_impact = df_impact.fillna(0)
+df_impact = df_impact.reindex(columns=['var_id', 'HIGH', 'MODERATE', 'LOW', 'MODIFIER'], fill_value=0)
+df_impact['impact'] = df_impact.apply(lambda row: "High" if row['HIGH'] == 1 
+                                      else "Moderate" if row['MODERATE'] == 1 
+                                      else "Low" if row['LOW'] == 1 
+                                      else "Modifier", axis =1)
+
+df_impact = df_impact[['var_id', 'impact']]
+
+print("Merging both classifications into one table")
+df_classif = pd.merge(df_private, df_impact, on = 'var_id', how = 'outer')
+
+print("Classification table")
+print(df_classif)
+
 print("Saving dataframes to CSV files...")
 df_variants.to_csv(variants_out, sep = "\t",  index=False)
 df_effects.to_csv(effects_out, sep = "\t", index=False)
 df_lofs.to_csv(lofs_out, sep = "\t", index=False)
 df_nmds.to_csv(nmds_out, sep = "\t",index=False)
+df_classif.to_csv(classif_out, sep = "\t",index=False)
 
 print("Done!")

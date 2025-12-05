@@ -8,10 +8,21 @@ suppressPackageStartupMessages(library(RColorBrewer))
 suppressPackageStartupMessages(library(scales))
 suppressPackageStartupMessages(library(patchwork))
 
+print("Reading input parameters...")
+metadata_input <- snakemake@input$metadata
+chrom_names_input <- snakemake@input$chroms
+map_stats_input <- snakemake@input$stats
+
+output <- snakemake@output$plot
+
+gscale <- snakemake@params$scale
+gheight <- 9
+gwidth <- 16
+
 print("Reading files...")
-metadata <- read.csv(snakemake@input[[1]], header = TRUE, stringsAsFactors = TRUE)
-chrom_names <- read.csv(snakemake@input[[2]], header = TRUE, colClasses = "factor")
-map_stats <- read.table(snakemake@input[[3]], header = TRUE, stringsAsFactors = TRUE, sep = "\t")
+metadata <- read.csv(metadata_input, header = TRUE, stringsAsFactors = TRUE)
+chrom_names <- read.csv(chrom_names_input, header = TRUE, colClasses = "factor")
+map_stats <- read.table(map_stats_input, header = TRUE, stringsAsFactors = TRUE, sep = "\t")
 
 print("Joining and arranging data...")
 metadata <- metadata %>%
@@ -32,6 +43,17 @@ depth_raw <- map_stats %>%
     pivot_longer(cols = c(Mean, Median), names_to = "measurement", values_to = "value") %>%
     mutate(quality = "All mappings")
 depth <- rbind(depth_good, depth_raw)
+
+coverage_good <- map_stats %>%
+    select(sample, name, lineage, Coverage = coverage_good) %>%
+    pivot_longer(cols = Coverage, names_to = "measurement", values_to = "value") %>%
+    mutate(quality = "Good quality mappings")
+coverage_raw <- map_stats %>%
+    select(sample, name, lineage, Coverage = coverage_raw) %>%
+    pivot_longer(cols = Coverage, names_to = "measurement", values_to = "value") %>%
+    mutate(quality = "All mappings")
+coverage <- rbind(coverage_good, coverage_raw)
+
 
 print("Getting plot parameters...")
 topylim <- max(depth$value) + max(depth$value/ 10)
@@ -58,6 +80,24 @@ g <- ggplot(depth) +
     labs(title = "Genome-Wide Read Depth",
          y = "Read Depth (X)",
          x = "")
+
+print("Plotting coverage...")
+c <- ggplot(coverage) +
+    geom_point(aes(x = name, y = value, color = quality)) +
+    facet_grid(~lineage, scale = "free_x", space = "free_x") +
+    scale_color_manual(name= "", values= color_quality)+
+    scale_shape_manual(values = c(16,15, 17), name = NULL)+
+    theme_bw() +
+    theme(panel.background = element_blank(), 
+          panel.grid.minor = element_blank(),
+          strip.background = element_blank(),
+          panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 1),
+          axis.text.x = element_blank(), 
+          axis.ticks.x = element_blank())+
+    labs(title = "Coverage",
+         y = "Percentage of Coverage",
+         x = "")
+
 
 print("Joining and arranging data...")
 
@@ -111,9 +151,8 @@ mapq <- ggplot() +
     scale_fill_manual(values = palette_qualit, name = "")
 
 print("Joining plots...")
-plot <- g/reads/mapq
+plot <- g/c/reads/mapq
 
 print("Saving plot...")
-gscale = snakemake@params[[1]]
-ggsave(snakemake@output[[1]], plot = plot, units = "in", height = 9, width = 16, scale = gscale)
+ggsave(output, plot = plot, units = "in", height = gheight, width = gwidth, scale = gscale)
 print("Done!")

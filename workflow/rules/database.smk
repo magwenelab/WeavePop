@@ -112,6 +112,9 @@ rule join_variant_annotation:
         variants=expand(
             INT_DATASET_DIR / "snpeff" / "{lineage}_variants.tsv", lineage=LINEAGES
         ),
+        classif=expand(
+            INT_DATASET_DIR / "snpeff" / "{lineage}_variant_classification.tsv", lineage=LINEAGES
+        ),
         lofs=expand(INT_DATASET_DIR / "snpeff" / "{lineage}_lofs.tsv", lineage=LINEAGES),
         nmds=expand(INT_DATASET_DIR / "snpeff" / "{lineage}_nmds.tsv", lineage=LINEAGES),
         presence=expand(
@@ -120,6 +123,7 @@ rule join_variant_annotation:
     output:
         effects=DATASET_DIR / "snpeff" / "effects.tsv",
         variants=DATASET_DIR / "snpeff" / "variants.tsv",
+        classif=DATASET_DIR / "snpeff" / "variant_classification.tsv",
         lofs=DATASET_DIR / "snpeff" / "lofs.tsv",
         nmds=DATASET_DIR / "snpeff" / "nmds.tsv",
         presence=DATASET_DIR / "snpeff" / "presence.tsv",
@@ -146,6 +150,7 @@ rule database:
         gffs=rules.join_ref_annotations.output,
         effects=rules.join_variant_annotation.output.effects,
         variants=rules.join_variant_annotation.output.variants,
+        classif=rules.join_variant_annotation.output.classif,
         presence=rules.join_variant_annotation.output.presence,
         lofs=rules.join_variant_annotation.output.lofs,
         nmds=rules.join_variant_annotation.output.nmds,
