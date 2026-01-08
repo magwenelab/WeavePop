@@ -614,8 +614,10 @@ def get_cnv(db, dataset = None, lineage=None, sample=None, strain=None, chromoso
     
     # Create query #
     query = f"""
-        SELECT metadata.strain, metadata.sample, metadata.lineage, chromosomes.chromosome, cnvs.start, cnvs."end",
-            cnvs.region_size, cnvs.cnv, cnvs.depth, cnvs.norm_depth, cnvs.smooth_depth, cnvs.repeat_fraction, cnvs.overlap_bp, cnvs.feature_id,
+        SELECT metadata.strain, metadata.sample, metadata.lineage, 
+            chromosomes.chromosome, chromosomes.accession,
+            cnvs.start, cnvs."end",
+            cnvs.size, cnvs.cnv, cnvs.depth, cnvs.norm_depth, cnvs.smooth_depth, cnvs.repeat_fraction, cnvs.repeat_overlap_bp, cnvs.feature_id,
             metadata.dataset
         FROM cnvs
         JOIN metadata ON cnvs.sample = metadata.sample
@@ -634,9 +636,9 @@ def get_cnv(db, dataset = None, lineage=None, sample=None, strain=None, chromoso
     if end:
         query += f"""AND cnvs."end" <= {end} """
     if min_size:
-        query += f"AND cnvs.region_size >= {min_size} "
+        query += f"AND cnvs.size >= {min_size} "
     if max_size:
-        query += f"AND cnvs.region_size <= {max_size} "
+        query += f"AND cnvs.size <= {max_size} "
     if repeat_fraction or repeat_fraction == 0:
         query += f"AND cnvs.repeat_fraction <= {repeat_fraction}"
 
