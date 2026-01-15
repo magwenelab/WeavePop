@@ -20,7 +20,7 @@ The names of the files must be the ones in the `lineage` column of the metadata 
 
 #### Metadata:
 
-A comma-separated table with one sample per row. [Example](https://github.com/magwenelab/DiversityPipeline/blob/main/test/config/metadata.csv). Path specified in `metadata:`.\
+A comma-separated table with one sample per row. [Example](https://github.com/magwenelab/WeavePop/blob/main/test/config/metadata.csv). Path specified in `metadata:`.\
 Mandatory columns with these exact names:
 
 -   `sample`: sample ID used in the FASTQ file names (no special characters or spaces).
@@ -30,7 +30,7 @@ Mandatory columns with these exact names:
 
 #### Chromosomes:
 
-A comma-separated table with one row per chromosome per lineage. [Example](https://github.com/magwenelab/DiversityPipeline/blob/main/test/config/chromosomes.csv). Path specified in `chromosomes:`.\
+A comma-separated table with one row per chromosome per lineage. [Example](https://github.com/magwenelab/WeavePop/blob/main/test/config/chromosomes.csv). Path specified in `chromosomes:`.\
 Mandatory columns with these exact names:
 
 -   `lineage`: Lineage name (the same as in the metadata table and the names of the reference files).
