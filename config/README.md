@@ -47,7 +47,7 @@ Database of repetitive sequences in FASTA format to use for RepeatMasker. Needed
 
 #### Genetic features for plots (optional):
 
-If you want genetic features to be plotted in the depth and MAPQ plots, provide a comma-separated table with one row per gene. [Example](https://github.com/magwenelab/DiversityPipeline/blob/main/test/config/loci.csv). Specify its path in `plotting: loci:`.
+If you want genetic features to be plotted in the depth and MAPQ plots, provide a comma-separated table with one row per gene. [Example](https://github.com/magwenelab/WeavePop/blob/main/test/config/loci.csv). Specify its path in `plotting: loci:`.
 
 Mandatory columns with these exact names:
 
@@ -66,7 +66,7 @@ You can activate the optional modules by setting `module-name: activate: True` i
 Some of the modules also have additional parameters to configure. The instructions are in the configuration file itself.  
 
 <u>Using a container for RepeatMasker and RepeatModeler</u>: If this programs don't work properly in the
-Conda environment (which is likely to happen when running in SLURM), they can be run in an Apptainer container. For this, you need to set `cnv: repeats: use_container: True` in `config/config.yaml` and in the execution profile (`config/default/config.yaml` or `config/slurm/config.yaml`) set `use-apptainer: True` and `apptainer-args: "--bind $(pwd):$(pwd)"`.
+Conda environment (which is likely to happen when running in SLURM, or Linux systems that are not Ubuntu), they can be run in an Apptainer container. For this, you need to set `repeats: use_container: True` in `config/config.yaml` and in the execution profile (`config/default/config.yaml` or `config/slurm/config.yaml`) set `use-apptainer: True` and `apptainer-args: "--bind $(pwd):$(pwd)"`.
 
 ## Configuration of the join datasets workflow
 
