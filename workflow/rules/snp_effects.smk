@@ -62,31 +62,31 @@ rule build_refs_db:
 
 
 # =================================================================================================
-#   Join samples per lineage | Intersect VCF files of all samples from each lineage and annotate
+#   Join samples per lineage | unite VCF files of all samples from each lineage and annotate
 # =================================================================================================
 
 
-rule intersect_vcfs:
+rule unite_vcfs:
     input:
-        unpack(intersect_vcfs_input),
+        unpack(unite_vcfs_input),
     output:
-        vcf=INT_DATASET_DIR / "snpeff" / "{lineage}_intersection.vcf",
+        vcf=INT_DATASET_DIR / "snpeff" / "{lineage}_union.vcf",
         tsv=INT_DATASET_DIR / "snpeff" / "{lineage}_presence.tsv",
     params:
         tmp_dir=os.path.join(TEMPDIR, "tmp_{lineage}"),
     log:
-        LOGS / "dataset" / "snpeff" / "intersect_vcfs_{lineage}.log",
+        LOGS / "dataset" / "snpeff" / "unite_vcfs_{lineage}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
         "../envs/variants.yaml"
     script:
-        "../scripts/intersect_vcfs.xsh"
+        "../scripts/unite_vcfs.xsh"
 
 
 rule snpeff:
     input:
-        vcf=rules.intersect_vcfs.output.vcf,
+        vcf=rules.unite_vcfs.output.vcf,
         db_done=rules.build_refs_db.output,
     output:
         vcf=INT_DATASET_DIR / "snpeff" / "{lineage}_snpeff.vcf",
@@ -118,7 +118,7 @@ rule extract_vcf_annotation:
         vcf=rules.snpeff.output.vcf,
         tsv=rules.ref_reformat_annotation.output.tsv,
         metadata=rules.quality_filter.output.metadata,
-        presence=rules.intersect_vcfs.output.tsv,
+        presence=rules.unite_vcfs.output.tsv,
     output:
         effects=INT_DATASET_DIR / "snpeff" / "{lineage}_effects.tsv",
         variants=INT_DATASET_DIR / "snpeff" / "{lineage}_variants.tsv",

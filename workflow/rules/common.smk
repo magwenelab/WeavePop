@@ -599,7 +599,7 @@ def cnv_calling_input(wildcards):
     return d
 
 
-def intersect_vcfs_input(wildcards):
+def unite_vcfs_input(wildcards):
     sample_wildcards = listing_samples(wildcards)
     l = LINEAGE_REFERENCE[LINEAGE_REFERENCE["sample"].isin(sample_wildcards)]
     l = l.loc[wildcards.lineage,]

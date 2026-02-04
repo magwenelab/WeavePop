@@ -18,13 +18,13 @@ lineage=snakemake.wildcards.lineage
 tempdir=snakemake.params.tmp_dir
 
 print("Creating comments for the top of the VCF file...")
-software_legend="##WeavePop_Script=intersect_vcfs.xsh"
+software_legend="##WeavePop_Script=unite_vcfs.xsh"
 var_id_legend=("##INFO=<ID=var_id,Number=1,Type=String,Description="+
     "\"Identifier of unique lineage variants.\">")
 
 
 if len(vcf_files) == 1:
-    print("Only one sample in lineage, no need to intersect. Copying VCF file...")
+    print("Only one sample in lineage, no need to unite. Copying VCF file...")
     vcf = pd.read_csv(
         vcf_files[0], sep='\t', comment='#', header=None,
         names=['#CHROM', 'POS', 'ID', 'REF', 'ALT', 'QUAL', 'FILTER','INFO', 'FORMAT', 'sample'],
@@ -57,7 +57,7 @@ else:
 
     sites_txt_file = os.path.join(tempdir, "sites.txt")
 
-    print("Running bcftools isec to intersect the variants of all the samples in the lineage...")
+    print("Running bcftools isec to unite the variants of all the samples in the lineage...")
     $(bcftools isec -p @(tempdir) @(vcf_files) 2>> @(log_file))
 
     print("Converting sites.txt to VCF...")
@@ -76,7 +76,7 @@ else:
     sites_vcf.insert(sites_vcf.columns.get_loc('ALT') + 1, 'QUAL', '.')
     sites_vcf.insert(sites_vcf.columns.get_loc('QUAL') + 1, 'FILTER', '.')
 
-    print("Saving the intersected VCF file...")
+    print("Saving the united VCF file...")
     sites_vcf.to_csv(vcf_output, sep='\t', index=False)
 
     print("Obtaining sample names from the order of the original VCF files...")

@@ -153,7 +153,7 @@ rule join_ref_sequences:
 
 
 # =================================================================================================
-#   Redo intersection of VCFs and variant annotation
+#   Redo union of VCFs and variant annotation
 # =================================================================================================
 
 
@@ -198,27 +198,27 @@ rule copy_snpeff_config:
         "cat {input.config} 1> {output} 2> {log}"
 
 
-rule intersect_vcfs:
+rule unite_vcfs:
     input:
-        unpack(input_intersect_vcfs),
+        unpack(input_unite_vcfs),
     output:
-        vcf=INT_DATASET_DIR / "snpeff" / "{lineage}_intersection.vcf",
+        vcf=INT_DATASET_DIR / "snpeff" / "{lineage}_union.vcf",
         tsv=INT_DATASET_DIR / "snpeff" / "{lineage}_presence.tsv",
     params:
         tmp_dir=os.path.join(TEMPDIR, "tmp_{lineage}"),
     log:
-        LOGS / "join_datasets" / "intersect_vcfs_{lineage}.log",
+        LOGS / "join_datasets" / "unite_vcfs_{lineage}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
         "../envs/variants.yaml"
     script:
-        "../scripts/intersect_vcfs.xsh"
+        "../scripts/unite_vcfs.xsh"
 
 
 rule snpeff:
     input:
-        vcf=rules.intersect_vcfs.output.vcf,
+        vcf=rules.unite_vcfs.output.vcf,
         config=rules.copy_snpeff_config.output,
     output:
         vcf=INT_DATASET_DIR / "snpeff" / "{lineage}_snpeff.vcf",
@@ -263,7 +263,7 @@ rule extract_vcf_annotation:
         vcf=rules.snpeff.output.vcf,
         tsv=rules.symlink_ref_gff.output.tsv,
         metadata=DATASET_DIR / "metadata.csv",
-        presence=rules.intersect_vcfs.output.tsv,
+        presence=rules.unite_vcfs.output.tsv,
     output:
         effects=INT_DATASET_DIR / "snpeff" / "{lineage}_effects.tsv",
         variants=INT_DATASET_DIR / "snpeff" / "{lineage}_variants.tsv",

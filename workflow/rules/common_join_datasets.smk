@@ -319,7 +319,7 @@ def input_copy_speff_data(wildcards):
     return list_paths
 
 
-def input_intersect_vcfs(wildcards):
+def input_unite_vcfs(wildcards):
     paths = []
     for dir in LIST_PATHS:
         metadata = os.path.join(dir, DATASET_DIR_NAME, "metadata.csv")
