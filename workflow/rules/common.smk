@@ -357,10 +357,8 @@ if config["plotting"]["activate"]:
                 print("Exiting...", flush=True)
                 exit(1)
     else:
-        LOCI_FILE = Path(os.path.join(INT_REFS_DIR, "loci_empty.txt"))
-        LOCI_FILE.parent.mkdir(parents=True, exist_ok=True)
-        with open(LOCI_FILE, "w") as f:
-            f.write("")
+        LOCI_FILE = None
+    print("", flush=True)
     if not config["plotting"]["metadata2color"]:
         print(
             "The parameter metadata2color is not provided. Ignoring...",
@@ -477,6 +475,14 @@ LINEAGE_REFERENCE = pd.DataFrame(data=d).set_index("lineage", drop=False)
 #   Input functions for rules
 # =================================================================================================
 
+def loci_input(wildcards):
+    if LOCI_FILE is None:
+        return {"gff": REFS_DIR / wildcards.lineage / (wildcards.lineage + ".gff.tsv")}
+    else:
+        return {
+            "gff": REFS_DIR / wildcards.lineage / (wildcards.lineage + ".gff.tsv"),
+            "loci": LOCI_FILE,
+        }
 
 def mapping_and_variants_input(wildcards):
     s = METADATA_TABLE.loc[wildcards.unf_sample,]

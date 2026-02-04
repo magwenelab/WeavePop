@@ -5,8 +5,7 @@
 
 rule loci:
     input:
-        gff=REFS_DIR / "{lineage}" / "{lineage}.gff.tsv",
-        loci=LOCI_FILE,
+        unpack(loci_input),
     output:
         locitable=INT_REFS_DIR / "{lineage}" / "loci_to_plot.tsv",
     log:
