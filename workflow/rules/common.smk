@@ -358,15 +358,15 @@ if config["plotting"]["activate"]:
                 exit(1)
     else:
         LOCI_FILE = Path(os.path.join(INT_REFS_DIR, "loci_empty.txt"))
+        LOCI_FILE.parent.mkdir(parents=True, exist_ok=True)
         with open(LOCI_FILE, "w") as f:
             f.write("")
     if not config["plotting"]["metadata2color"]:
         print(
-            "The plotting module is activated but the parameter metadata2color is not provided.",
+            "The parameter metadata2color is not provided. Ignoring...",
             flush=True,
         )
-        print("Exiting...", flush=True)
-        exit(1)
+        COLOR_BY = ""
     elif config["plotting"]["metadata2color"] not in METADATA_ORIGINAL.columns:
         print(
             f"Column {config['plotting']['metadata2color']} from the parameter metadata2color is not found in the metadata table.",
@@ -374,6 +374,8 @@ if config["plotting"]["activate"]:
         )
         print("Exiting...", flush=True)
         exit(1)
+    else:
+        COLOR_BY = config["plotting"]["metadata2color"]
 
 
 # --Validate repeats database file----------------------------------------------------------------

@@ -45,10 +45,8 @@ values <- seq(0, toplim, by = 1)
 
 print("Plotting...")
 medianplot <- ggplot(chrom_depth, aes(x = reorder(name, -genome_depth, sum), y = chrom_norm_depth)) +
-    geom_point(aes(color = get(color_by))) +
     ylim(0, toplim) +
     facet_grid(scale = "free_x", space = "free_x", rows = vars(chromosome), cols = vars(lineage)) +
-    scale_color_brewer(palette = "Set2", name = str_to_title(color_by)) +
     theme_bw() +
     theme(panel.background = element_blank(), 
             panel.grid.minor = element_blank(),
@@ -58,6 +56,16 @@ medianplot <- ggplot(chrom_depth, aes(x = reorder(name, -genome_depth, sum), y =
     labs(title = "Normalized Median Depth per Chromosome",
          x = "Sample",
          y = "Normalized Depth")
+
+if (color_by %in% colnames(metadata)){
+    medianplot <- medianplot +
+        geom_point(aes(color = get(color_by))) +
+        scale_color_brewer(palette = "Set2", name = str_to_title(color_by))
+} else {
+    medianplot <- medianplot +
+        geom_point(color = "black") 
+}
+
 
 print("Saving plot...")
 ggsave(output, plot = medianplot, units = "in", height = gheight, width = gwidth, scale = gscale)

@@ -33,7 +33,7 @@ rule dataset_depth_by_chrom_plot:
     output:
         plot=DATASET_DIR / "plots" / "dataset_depth_by_chrom.png",
     params:
-        column=config["plotting"]["metadata2color"],
+        column=COLOR_BY,
         scale=config["plotting"]["scale"],
     log:
         LOGS / "dataset" / "plots" / "dataset_depth_by_chrom.log",
