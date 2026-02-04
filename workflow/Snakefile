@@ -26,16 +26,16 @@ if config["project_directory"]:
     os.makedirs(config["project_directory"], exist_ok=True)
     if config["run_id"]:
         RUN = config["run_id"]
-        OUTPUT = Path(config["project_directory"], f"results_{RUN}")
-        LOGS = Path(config["project_directory"], f"logs_{RUN}")
+        OUTPUT = Path(config["project_directory"], f"results{RUN}")
+        LOGS = Path(config["project_directory"], f"logs{RUN}")
     else:
         OUTPUT = Path(config["project_directory"], "results")
         LOGS = Path(config["project_directory"], "logs")
 else:
     if config["run_id"]:
         RUN = config["run_id"]
-        OUTPUT = Path(f"results_{RUN}")
-        LOGS = Path(f"logs_{RUN}")
+        OUTPUT = Path(f"results{RUN}")
+        LOGS = Path(f"logs{RUN}")
     else:
         OUTPUT = Path("results")
         LOGS = Path("logs")
