@@ -61,7 +61,7 @@ n_vars <- length(unique(vars_sample$var_id))
 vars <- vars_windows %>%
     filter(var_id %in% vars_sample$var_id)
 
-if (length(unique(presence$sample)) > 1){
+if (length(unique(vars$category)) > 1){
     print("Removing variants private to reference genome...")
     vars <- vars%>%
         filter(category != "Reference private")%>%
