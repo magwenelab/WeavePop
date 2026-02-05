@@ -7,7 +7,7 @@
 use-conda: True
 
 # Config you can change
-cores: 60
+cores: 10
 keep-going: False
 rerun-incomplete: True
 printshellcmds: True

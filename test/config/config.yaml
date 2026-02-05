@@ -9,7 +9,7 @@ workflow: "analysis" # Options: "analysis", "join_datasets"
 # =============================================================================
 
 project_directory: "test" # Optional: Path of the project directory, relative to WeavePop/. If empty, the working directory is used.
-run_id: "_symlinks" # Optional: Suffix to append to the 'results/' and 'logs/' directories. 
+run_id: "2" # Optional: Suffix to append to the 'results/' and 'logs/' directories. 
 
 # =============================================================================
 #   Parameters for the analysis workflow
@@ -17,11 +17,11 @@ run_id: "_symlinks" # Optional: Suffix to append to the 'results/' and 'logs/' d
 
 # ------------------Input------------------------------------------------------
 
-metadata: "config/metadata.csv" # Path of metadata CSV table. Relative to project_directory or absolute.
+metadata: "config/metadata2.csv" # Path of metadata CSV table. Relative to project_directory or absolute.
 chromosomes: "config/chromosomes.csv" # Path of chromosomes CSV table. Relative to project_directory or absolute.
 samples_to_exclude: "" # Optional: Path of list of samples to exclude from analyses. Relative to project_directory or absolute.
 
-fastqs_directory: "data/samples" # Path of directory with all FASTQ files. Relative to project_directory or absolute.
+fastqs_directory: "data2/samples" # Path of directory with all FASTQ files. Relative to project_directory or absolute.
 fastq_suffix1: "_R1.fastq.gz" # Suffix after the sample id of the forward reads file.
 fastq_suffix2: "_R2.fastq.gz" # Suffix after the sample id of the reverse reads file.
 
@@ -100,7 +100,7 @@ plotting:
   activate: True # True to activate the module. Empty or False to skip.
   loci: "config/loci.csv" # Path to table with loci to add to plots. Relative to project_directory or absolute. Empty to ignore.
   metadata2color: "source" # Column name in the metadata table to color the samples in the plots. Empty to ignore.
-  scale: 0.7 # Ggsave scale parameter to adjust the size of the dataset plots. Use lower values for fewer samples and bigger values for more samples.
+  scale: 0.7 # ggsave scale parameter to adjust the size of the dataset plots. Use lower values for fewer samples and bigger values for more samples.
 
 # ------------------Database---------------------------------------------------
 
