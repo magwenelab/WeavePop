@@ -34,7 +34,11 @@ rule repeat_modeler:
         database=rules.repeat_modeler_build.output,
         fasta=rules.ref_fasta_symlinks.output,
     output:
-        INT_REFS_DIR / "{ref_genome}" / "repeats" / "db_rmodeler" / "{ref_genome}-families.fa",
+        INT_REFS_DIR
+        / "{ref_genome}"
+        / "repeats"
+        / "db_rmodeler"
+        / "{ref_genome}-families.fa",
     params:
         dir=lambda wildcards: INT_REFS_DIR / wildcards.ref_genome / "repeats",
     log:
@@ -78,9 +82,16 @@ rule repeat_masker_1:
         fasta=rules.ref_fasta_symlinks.output,
         rule_order=rules.repeat_modeler_separate.output.known,
     output:
-        INT_REFS_DIR / "{ref_genome}" / "repeats" / "01_simple" / "{ref_genome}.fasta.out",
+        INT_REFS_DIR
+        / "{ref_genome}"
+        / "repeats"
+        / "01_simple"
+        / "{ref_genome}.fasta.out",
     params:
-        dir=lambda wildcards: INT_REFS_DIR / wildcards.ref_genome / "repeats" / "01_simple",
+        dir=lambda wildcards: INT_REFS_DIR
+        / wildcards.ref_genome
+        / "repeats"
+        / "01_simple",
         tmp=lambda wildcards: INT_REFS_DIR / wildcards.ref_genome / "repeats",
     log:
         LOGS / "references" / "repeats" / "repeatmasker1_{ref_genome}.log",
@@ -111,7 +122,11 @@ rule repeat_masker_2:
         fasta=rules.ref_fasta_symlinks.output,
         rule_order=rules.repeat_masker_1.output,
     output:
-        INT_REFS_DIR / "{ref_genome}" / "repeats" / "02_complex" / "{ref_genome}.fasta.out",
+        INT_REFS_DIR
+        / "{ref_genome}"
+        / "repeats"
+        / "02_complex"
+        / "{ref_genome}.fasta.out",
     params:
         dir=lambda wildcards: INT_REFS_DIR
         / wildcards.ref_genome
@@ -146,9 +161,16 @@ rule repeat_masker_3:
         fasta=rules.ref_fasta_symlinks.output,
         rule_order=rules.repeat_masker_2.output,
     output:
-        INT_REFS_DIR / "{ref_genome}" / "repeats" / "03_known" / "{ref_genome}.fasta.out",
+        INT_REFS_DIR
+        / "{ref_genome}"
+        / "repeats"
+        / "03_known"
+        / "{ref_genome}.fasta.out",
     params:
-        dir=lambda wildcards: INT_REFS_DIR / wildcards.ref_genome / "repeats" / "03_known",
+        dir=lambda wildcards: INT_REFS_DIR
+        / wildcards.ref_genome
+        / "repeats"
+        / "03_known",
         tmp=lambda wildcards: INT_REFS_DIR / wildcards.ref_genome / "repeats",
     log:
         LOGS / "references" / "repeats" / "repeatmasker3_{ref_genome}.log",
@@ -184,7 +206,11 @@ rule repeat_masker_4:
         fasta=rules.ref_fasta_symlinks.output,
         rule_order=rules.repeat_masker_3.output,
     output:
-        INT_REFS_DIR / "{ref_genome}" / "repeats" / "04_unknown" / "{ref_genome}.fasta.out",
+        INT_REFS_DIR
+        / "{ref_genome}"
+        / "repeats"
+        / "04_unknown"
+        / "{ref_genome}.fasta.out",
     params:
         dir=lambda wildcards: INT_REFS_DIR
         / wildcards.ref_genome
@@ -227,10 +253,26 @@ rule repeat_masker_bed:
         known=rules.repeat_masker_3.output,
         unknown=rules.repeat_masker_4.output,
     output:
-        simple=INT_REFS_DIR / "{ref_genome}" / "repeats" / "01_simple" / "{ref_genome}.bed",
-        complx=INT_REFS_DIR / "{ref_genome}" / "repeats" / "02_complex" / "{ref_genome}.bed",
-        known=INT_REFS_DIR / "{ref_genome}" / "repeats" / "03_known" / "{ref_genome}.bed",
-        unknown=INT_REFS_DIR / "{ref_genome}" / "repeats" / "04_unknown" / "{ref_genome}.bed",
+        simple=INT_REFS_DIR
+        / "{ref_genome}"
+        / "repeats"
+        / "01_simple"
+        / "{ref_genome}.bed",
+        complx=INT_REFS_DIR
+        / "{ref_genome}"
+        / "repeats"
+        / "02_complex"
+        / "{ref_genome}.bed",
+        known=INT_REFS_DIR
+        / "{ref_genome}"
+        / "repeats"
+        / "03_known"
+        / "{ref_genome}.bed",
+        unknown=INT_REFS_DIR
+        / "{ref_genome}"
+        / "repeats"
+        / "04_unknown"
+        / "{ref_genome}.bed",
     log:
         LOGS / "references" / "repeats" / "repeatmasker_combine_{ref_genome}.log",
     conda:

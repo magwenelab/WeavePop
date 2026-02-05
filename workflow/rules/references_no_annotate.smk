@@ -49,7 +49,9 @@ rule ref_fix_descriptions:
         fixed_locus=rules.ref_add_locus_tag.output.fixed_locus,
         config=rules.agat_config.output,
     output:
-        fixed_description=INT_REFS_DIR / "{ref_genome}" / "{ref_genome}.fixed_description.gff",
+        fixed_description=INT_REFS_DIR
+        / "{ref_genome}"
+        / "{ref_genome}.fixed_description.gff",
     log:
         LOGS / "references" / "no_annotation" / "ref_fix_descriptions_{ref_genome}.log",
     resources:

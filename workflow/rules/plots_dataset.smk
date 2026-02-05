@@ -47,6 +47,7 @@ rule dataset_depth_by_chrom_plot:
 #   Per ref_genome | Plot classification of variants
 # =================================================================================================
 
+
 rule refs_variant_classification_plots:
     input:
         chromosomes=DATASET_DIR / "chromosomes.csv",
@@ -60,7 +61,10 @@ rule refs_variant_classification_plots:
     params:
         window_size=config["depth_quality"]["mosdepth"]["window"],
     log:
-        LOGS / "dataset" / "plots" / "refs_variant_classification_plots_{ref_genome}.log",
+        LOGS
+        / "dataset"
+        / "plots"
+        / "refs_variant_classification_plots_{ref_genome}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:

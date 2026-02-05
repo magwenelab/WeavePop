@@ -283,18 +283,28 @@ rule extract_vcf_annotation:
 rule join_variant_annotation:
     input:
         effects=expand(
-            INT_DATASET_DIR / "snpeff" / "{ref_genome}_effects.tsv", ref_genome=REF_GENOMES
+            INT_DATASET_DIR / "snpeff" / "{ref_genome}_effects.tsv",
+            ref_genome=REF_GENOMES,
         ),
         variants=expand(
-            INT_DATASET_DIR / "snpeff" / "{ref_genome}_variants.tsv", ref_genome=REF_GENOMES
+            INT_DATASET_DIR / "snpeff" / "{ref_genome}_variants.tsv",
+            ref_genome=REF_GENOMES,
         ),
         classif=expand(
-            INT_DATASET_DIR / "snpeff" / "{ref_genome}_variant_classification.tsv", ref_genome=REF_GENOMES
+            INT_DATASET_DIR / "snpeff" / "{ref_genome}_variant_classification.tsv",
+            ref_genome=REF_GENOMES,
         ),
-        lofs=expand(INT_DATASET_DIR / "snpeff" / "{ref_genome}_lofs.tsv", ref_genome=REF_GENOMES),
-        nmds=expand(INT_DATASET_DIR / "snpeff" / "{ref_genome}_nmds.tsv", ref_genome=REF_GENOMES),
+        lofs=expand(
+            INT_DATASET_DIR / "snpeff" / "{ref_genome}_lofs.tsv",
+            ref_genome=REF_GENOMES,
+        ),
+        nmds=expand(
+            INT_DATASET_DIR / "snpeff" / "{ref_genome}_nmds.tsv",
+            ref_genome=REF_GENOMES,
+        ),
         presence=expand(
-            INT_DATASET_DIR / "snpeff" / "{ref_genome}_presence.tsv", ref_genome=REF_GENOMES
+            INT_DATASET_DIR / "snpeff" / "{ref_genome}_presence.tsv",
+            ref_genome=REF_GENOMES,
         ),
     output:
         effects=DATASET_DIR / "snpeff" / "effects.tsv",

@@ -31,8 +31,12 @@ rule liftoff:
                 / "intermediate_liftoff"
             )
         ),
-        fai=temp(SAMPLES_DIR / "mapping_and_variants" / "{sample}" / "snps.consensus.fa.fai"),
-        mmi=temp(SAMPLES_DIR / "mapping_and_variants" / "{sample}" / "snps.consensus.fa.mmi"),
+        fai=temp(
+            SAMPLES_DIR / "mapping_and_variants" / "{sample}" / "snps.consensus.fa.fai"
+        ),
+        mmi=temp(
+            SAMPLES_DIR / "mapping_and_variants" / "{sample}" / "snps.consensus.fa.mmi"
+        ),
     params:
         extra=config["annotation"]["liftoff"]["extra"],
         outpath=INT_SAMPLES_DIR / "annotation" / "{sample}" / "liftoff",

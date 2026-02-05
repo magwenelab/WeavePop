@@ -17,7 +17,10 @@ rule mapping_and_variants:
         tmpdir=TEMPDIR,
         extra=config["mapping_and_variants"]["extra"],
     log:
-        LOGS / "samples" / "mapping_and_variants" / "mapping_and_variants_{unf_sample}.log",
+        LOGS
+        / "samples"
+        / "mapping_and_variants"
+        / "mapping_and_variants_{unf_sample}.log",
     threads: config["mapping_and_variants"]["threads"]
     conda:
         "../envs/snippy.yaml"

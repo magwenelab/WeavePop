@@ -272,9 +272,9 @@ else:
     exit(1)
 
 if CHROM_NAMES_TABLE["accession"].duplicated().any():
-        print("Chromosome names file contains duplicated accession names.", flush=True)
-        print("Exiting...", flush=True)
-        exit(1)
+    print("Chromosome names file contains duplicated accession names.", flush=True)
+    print("Exiting...", flush=True)
+    exit(1)
 
 if all(
     item in CHROM_NAMES_TABLE["ref_genome"].unique()
@@ -475,14 +475,20 @@ REF_GENOME_REFERENCE = pd.DataFrame(data=d).set_index("ref_genome", drop=False)
 #   Input functions for rules
 # =================================================================================================
 
+
 def loci_input(wildcards):
     if LOCI_FILE is None:
-        return {"gff": REFS_DIR / wildcards.ref_genome / (wildcards.ref_genome + ".gff.tsv")}
+        return {
+            "gff": REFS_DIR / wildcards.ref_genome / (wildcards.ref_genome + ".gff.tsv")
+        }
     else:
         return {
-            "gff": REFS_DIR / wildcards.ref_genome / (wildcards.ref_genome + ".gff.tsv"),
+            "gff": REFS_DIR
+            / wildcards.ref_genome
+            / (wildcards.ref_genome + ".gff.tsv"),
             "loci": LOCI_FILE,
         }
+
 
 def mapping_and_variants_input(wildcards):
     s = METADATA_TABLE.loc[wildcards.unf_sample,]
@@ -496,7 +502,10 @@ def mapping_and_variants_input(wildcards):
 def liftoff_input(wildcards):
     s = METADATA_TABLE.loc[wildcards.sample,]
     return {
-        "target": SAMPLES_DIR / "mapping_and_variants" / s["sample"] / "snps.consensus.fa",
+        "target": SAMPLES_DIR
+        / "mapping_and_variants"
+        / s["sample"]
+        / "snps.consensus.fa",
         "refgff": s["refgff"],
         "refgenome": s["refgenome"],
     }
@@ -527,10 +536,7 @@ def ref_add_repeats_input(wildcards):
 def depth_window_distribution_input(wildcards):
     s = METADATA_TABLE.loc[wildcards.sample,]
     return {
-        "depth": SAMPLES_DIR
-        / "cnv"
-        / s["sample"]
-        / "depth_by_windows.tsv",
+        "depth": SAMPLES_DIR / "cnv" / s["sample"] / "depth_by_windows.tsv",
         "chroms": INT_REFS_DIR / s["ref_genome"] / "chromosomes.csv",
     }
 
@@ -538,16 +544,15 @@ def depth_window_distribution_input(wildcards):
 def depth_by_windows_plots_input(wildcards):
     s = METADATA_TABLE.loc[wildcards.sample,]
     d = {
-        "depth": SAMPLES_DIR
-        / "cnv"
-        / s["sample"]
-        / "depth_by_windows.tsv",
+        "depth": SAMPLES_DIR / "cnv" / s["sample"] / "depth_by_windows.tsv",
         "cnv": SAMPLES_DIR / "cnv" / s["sample"] / "cnv_calls.tsv",
         "chroms": INT_REFS_DIR / s["ref_genome"] / "chromosomes.csv",
         "loci": INT_REFS_DIR / s["ref_genome"] / "loci_to_plot.tsv",
     }
     if config["repeats"]["activate"] is True:
-        d["repeats"] = (REFS_DIR / s["ref_genome"] / (s["ref_genome"] + "_repeats.bed"),)
+        d["repeats"] = (
+            REFS_DIR / s["ref_genome"] / (s["ref_genome"] + "_repeats.bed"),
+        )
     return d
 
 
@@ -568,7 +573,9 @@ def mapq_by_windows_plot_input(wildcards):
         "loci": INT_REFS_DIR / s["ref_genome"] / "loci_to_plot.tsv",
     }
     if config["repeats"]["activate"] is True:
-        d["repeats"] = (REFS_DIR / s["ref_genome"] / (s["ref_genome"] + "_repeats.bed"),)
+        d["repeats"] = (
+            REFS_DIR / s["ref_genome"] / (s["ref_genome"] + "_repeats.bed"),
+        )
     return d
 
 
@@ -594,7 +601,9 @@ def cnv_calling_input(wildcards):
         "chrom_length": INT_REFS_DIR / s["ref_genome"] / "chromosomes.csv",
     }
     if config["repeats"]["activate"] is True:
-        d["repeats"] = (REFS_DIR / s["ref_genome"] / (s["ref_genome"] + "_repeats.bed"),)
+        d["repeats"] = (
+            REFS_DIR / s["ref_genome"] / (s["ref_genome"] + "_repeats.bed"),
+        )
 
     return d
 
@@ -605,18 +614,23 @@ def unite_vcfs_input(wildcards):
     l = l.loc[wildcards.ref_genome,]
     return {
         "vcfs": expand(
-            SAMPLES_DIR / "mapping_and_variants" / "{sample}" / "snps.vcf.gz", sample=l["sample"]
+            SAMPLES_DIR / "mapping_and_variants" / "{sample}" / "snps.vcf.gz",
+            sample=l["sample"],
         )
     }
+
 
 def variant_classification_plots_input(wildcards):
     s = METADATA_TABLE.loc[wildcards.sample,]
     return {
         "variants": INT_DATASET_DIR / "snpeff" / (s["ref_genome"] + "_variants.tsv"),
-        "classif": INT_DATASET_DIR / "snpeff" / (s["ref_genome"] + "_variant_classification.tsv"),
+        "classif": INT_DATASET_DIR
+        / "snpeff"
+        / (s["ref_genome"] + "_variant_classification.tsv"),
         "presence": INT_DATASET_DIR / "snpeff" / (s["ref_genome"] + "_presence.tsv"),
         "chromosomes": INT_REFS_DIR / s["ref_genome"] / "chromosomes.csv",
     }
+
 
 # =================================================================================================
 #   Checkpoint functions
@@ -695,7 +709,8 @@ def get_unfiltered_output():
 def get_filtered_output():
 
     final_output = expand(
-        INT_REFS_DIR / "filtered_ref_genomes" / "{ref_genome}.txt", ref_genome=REF_GENOMES
+        INT_REFS_DIR / "filtered_ref_genomes" / "{ref_genome}.txt",
+        ref_genome=REF_GENOMES,
     )
 
     if config["annotation"]["activate"]:
@@ -717,26 +732,40 @@ def get_filtered_output():
                 sample=SAMPLES,
             )
             final_output = final_output, expand(
-                SAMPLES_DIR / "plots" / "{sample}" / "depth_window_distribution.png", sample=SAMPLES
+                SAMPLES_DIR / "plots" / "{sample}" / "depth_window_distribution.png",
+                sample=SAMPLES,
             )
             final_output = final_output, expand(
                 SAMPLES_DIR / "plots" / "{sample}" / "depth_vs_cnvs.png", sample=SAMPLES
             )
             final_output = final_output, expand(
-                SAMPLES_DIR / "plots" / "{sample}" / "mapq_by_windows.png", sample=SAMPLES
+                SAMPLES_DIR / "plots" / "{sample}" / "mapq_by_windows.png",
+                sample=SAMPLES,
             )
         if config["snpeff"]["activate"] or config["database"]["activate"]:
             final_output = final_output, expand(
-                    SAMPLES_DIR / "plots" / "{sample}" / "variants_summary.png", sample=SAMPLES)
+                SAMPLES_DIR / "plots" / "{sample}" / "variants_summary.png",
+                sample=SAMPLES,
+            )
             final_output = final_output, expand(
-                    SAMPLES_DIR / "plots" / "{sample}" / "variants_by_windows_privateness.png", sample=SAMPLES)
+                SAMPLES_DIR
+                / "plots"
+                / "{sample}"
+                / "variants_by_windows_privateness.png",
+                sample=SAMPLES,
+            )
             final_output = final_output, expand(
-                    SAMPLES_DIR / "plots" / "{sample}" / "variants_by_windows_impact.png", sample=SAMPLES)
+                SAMPLES_DIR / "plots" / "{sample}" / "variants_by_windows_impact.png",
+                sample=SAMPLES,
+            )
             final_output = final_output, expand(
-                        DATASET_DIR / "plots" / "{ref_genome}_variant_summary.png", ref_genome = REF_GENOMES)
+                DATASET_DIR / "plots" / "{ref_genome}_variant_summary.png",
+                ref_genome=REF_GENOMES,
+            )
             final_output = final_output, expand(
-                        REFS_DIR / "{ref_genome}" / "{ref_genome}_variants_by_windows.png", ref_genome = REF_GENOMES)     
-
+                REFS_DIR / "{ref_genome}" / "{ref_genome}_variants_by_windows.png",
+                ref_genome=REF_GENOMES,
+            )
 
     return final_output
 
@@ -763,6 +792,7 @@ def get_dataset_output():
         if config["cnv"]["activate"] or config["database"]["activate"]:
             final_output.append(DATASET_DIR / "plots" / "dataset_depth_by_chrom.png")
     return final_output
+
 
 # =================================================================================================
 #   Setup rules

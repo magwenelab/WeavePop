@@ -88,7 +88,10 @@ rule ref_reformat_annotation:
         ref_genome="{ref_genome}",
         version="ref_genome",
     log:
-        LOGS / "references" / "ref_processing" / "ref_reformat_annotation_{ref_genome}.log",
+        LOGS
+        / "references"
+        / "ref_processing"
+        / "ref_reformat_annotation_{ref_genome}.log",
     conda:
         "../envs/pandas.yaml"
     script:

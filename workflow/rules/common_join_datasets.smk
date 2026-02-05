@@ -324,10 +324,14 @@ def input_unite_vcfs(wildcards):
     for dir in LIST_PATHS:
         metadata = os.path.join(dir, DATASET_DIR_NAME, "metadata.csv")
         samps_dir_df = pd.read_csv(metadata, header=0)
-        samps_dir_df = samps_dir_df.loc[samps_dir_df["ref_genome"] == wildcards.ref_genome]
+        samps_dir_df = samps_dir_df.loc[
+            samps_dir_df["ref_genome"] == wildcards.ref_genome
+        ]
         samps = samps_dir_df["sample"]
         for samp in samps:
-            vcf = os.path.join(dir, SAMPLES_DIR_NAME, "mapping_and_variants", samp, "snps.vcf.gz")
+            vcf = os.path.join(
+                dir, SAMPLES_DIR_NAME, "mapping_and_variants", samp, "snps.vcf.gz"
+            )
             paths.append(vcf)
     return {"vcfs": paths}
 

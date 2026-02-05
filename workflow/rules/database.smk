@@ -5,7 +5,9 @@
 
 rule join_ref_annotations:
     input:
-        expand(REFS_DIR / "{ref_genome}" / "{ref_genome}.gff.tsv", ref_genome=REF_GENOMES),
+        expand(
+            REFS_DIR / "{ref_genome}" / "{ref_genome}.gff.tsv", ref_genome=REF_GENOMES
+        ),
     output:
         REFS_DIR / "all_ref_genomes.gff.tsv",
     log:
@@ -20,9 +22,13 @@ rule join_ref_annotations:
 
 rule join_ref_sequences:
     input:
-        cds=expand(INT_REFS_DIR / "{ref_genome}" / "{ref_genome}.cds.csv", ref_genome=REF_GENOMES),
+        cds=expand(
+            INT_REFS_DIR / "{ref_genome}" / "{ref_genome}.cds.csv",
+            ref_genome=REF_GENOMES,
+        ),
         prots=expand(
-            INT_REFS_DIR / "{ref_genome}" / "{ref_genome}.prots.csv", ref_genome=REF_GENOMES
+            INT_REFS_DIR / "{ref_genome}" / "{ref_genome}.prots.csv",
+            ref_genome=REF_GENOMES,
         ),
     output:
         sequences=INT_REFS_DIR / "all_refs_sequences.csv",
@@ -107,18 +113,28 @@ rule join_cnv_chromosomes:
 rule join_variant_annotation:
     input:
         effects=expand(
-            INT_DATASET_DIR / "snpeff" / "{ref_genome}_effects.tsv", ref_genome=REF_GENOMES
+            INT_DATASET_DIR / "snpeff" / "{ref_genome}_effects.tsv",
+            ref_genome=REF_GENOMES,
         ),
         variants=expand(
-            INT_DATASET_DIR / "snpeff" / "{ref_genome}_variants.tsv", ref_genome=REF_GENOMES
+            INT_DATASET_DIR / "snpeff" / "{ref_genome}_variants.tsv",
+            ref_genome=REF_GENOMES,
         ),
         classif=expand(
-            INT_DATASET_DIR / "snpeff" / "{ref_genome}_variant_classification.tsv", ref_genome=REF_GENOMES
+            INT_DATASET_DIR / "snpeff" / "{ref_genome}_variant_classification.tsv",
+            ref_genome=REF_GENOMES,
         ),
-        lofs=expand(INT_DATASET_DIR / "snpeff" / "{ref_genome}_lofs.tsv", ref_genome=REF_GENOMES),
-        nmds=expand(INT_DATASET_DIR / "snpeff" / "{ref_genome}_nmds.tsv", ref_genome=REF_GENOMES),
+        lofs=expand(
+            INT_DATASET_DIR / "snpeff" / "{ref_genome}_lofs.tsv",
+            ref_genome=REF_GENOMES,
+        ),
+        nmds=expand(
+            INT_DATASET_DIR / "snpeff" / "{ref_genome}_nmds.tsv",
+            ref_genome=REF_GENOMES,
+        ),
         presence=expand(
-            INT_DATASET_DIR / "snpeff" / "{ref_genome}_presence.tsv", ref_genome=REF_GENOMES
+            INT_DATASET_DIR / "snpeff" / "{ref_genome}_presence.tsv",
+            ref_genome=REF_GENOMES,
         ),
     output:
         effects=DATASET_DIR / "snpeff" / "effects.tsv",

@@ -12,7 +12,10 @@ rule prepare_refs_db:
         prots=rules.extract_protein_seqs.output.prots,
     output:
         gff=INT_REFS_DIR / "snpeff_data" / "Species_name_{ref_genome}" / "genes.gff",
-        fasta=INT_REFS_DIR / "snpeff_data" / "Species_name_{ref_genome}" / "sequences.fa",
+        fasta=INT_REFS_DIR
+        / "snpeff_data"
+        / "Species_name_{ref_genome}"
+        / "sequences.fa",
         cds=INT_REFS_DIR / "snpeff_data" / "Species_name_{ref_genome}" / "cds.fa",
         prots=INT_REFS_DIR / "snpeff_data" / "Species_name_{ref_genome}" / "protein.fa",
     conda:
@@ -133,5 +136,3 @@ rule extract_vcf_annotation:
         "../envs/variants.yaml"
     script:
         "../scripts/extract_vcf_annotation.py"
-
-

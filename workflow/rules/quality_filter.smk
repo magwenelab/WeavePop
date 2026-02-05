@@ -110,7 +110,10 @@ rule chromosome_lengths:
     output:
         INT_REFS_DIR / "{unf_ref_genome}" / "chromosome_lengths.tsv",
     log:
-        LOGS / "references" / "depth_quality" / "{unf_ref_genome}_chromosome_lengths.log",
+        LOGS
+        / "references"
+        / "depth_quality"
+        / "{unf_ref_genome}_chromosome_lengths.log",
     resources:
         tmpdir=TEMPDIR,
     conda:

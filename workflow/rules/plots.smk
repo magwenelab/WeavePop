@@ -109,14 +109,16 @@ rule mapq_by_windows_plots:
         "../scripts/mapq_by_windows_plots.R"
 
 
-        
 rule variant_classification_plots:
     input:
         unpack(variant_classification_plots_input),
         metadata=METADATA_ORIGINAL_FILE,
     output:
         summary=SAMPLES_DIR / "plots" / "{sample}" / "variants_summary.png",
-        category=SAMPLES_DIR / "plots" / "{sample}" / "variants_by_windows_privateness.png",
+        category=SAMPLES_DIR
+        / "plots"
+        / "{sample}"
+        / "variants_by_windows_privateness.png",
         impact=SAMPLES_DIR / "plots" / "{sample}" / "variants_by_windows_impact.png",
     params:
         window_size=config["depth_quality"]["mosdepth"]["window"],
