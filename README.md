@@ -79,9 +79,9 @@ The environments for the particular software used by the pipeline will be instal
 ## Input files
 
 * FASTQ files: Paired-end short-reads of all samples.  
-* Reference genomes: FASTA and GFF files for each lineage. Or FASTA for each lineage and FASTA and GFF for a main reference to use to annotate the other references.
-* `metadata.csv`: Table with the columns  `sample`, `lineage`, and `strain`. [Example](https://github.com/magwenelab/WeavePop/blob/main/test/config/metadata.csv).  
-* `chromosomes.csv`: Table with the chromosome names per lineage, with the columns `lineage`, `accession`, and `chromosome`. [Example](https://github.com/magwenelab/WeavePop/blob/main/test/config/chromosomes.csv).  
+* Reference genomes: FASTA and GFF files for each reference genome. Or FASTA for each reference genome and FASTA and GFF for a main reference to use to annotate the other references.
+* `metadata.csv`: Table with the columns  `sample`, `ref_genome`, and `strain`. [Example](https://github.com/magwenelab/WeavePop/blob/main/test/config/metadata.csv).  
+* `chromosomes.csv`: Table with the chromosome names per reference genome, with the columns `ref_genome`, `accession`, and `chromosome`. [Example](https://github.com/magwenelab/WeavePop/blob/main/test/config/chromosomes.csv).  
 * `RepBase.fasta`: Database of repetitive sequences. We recommend the [RepBase database](https://www.girinst.org/). You need to download it, extract the files, and concatenate them all in one FASTA file. The database is needed if the CNV or database modules are activated. If you don't provide a database, you can choose to run it with a **fake database, which will generate inaccurate identification of repetitive sequences**.
 * `loci.csv`: Optional table with columns `gene_id` and `feature`. Max 8 features. If you want genetic features to be plotted in the depth and MAPQ plots. [Example](https://github.com/magwenelab/WeavePop/blob/main/test/config/loci.csv).  
 * `exclude.txt`: Optional file with a list of sample IDs to exclude. 
@@ -144,9 +144,9 @@ Here is a list of the most relevant outputs. To see the full list and know which
 | `02.Dataset/plots/mapping_summary.png` | Genome-wide depth, coverage, and mapping quality metrics of the samples that survived the quality filter.|
 | `02.Dataset/depth_quality/mapq_depth_by_feature.tsv` | MAPQ and mean depth of each feature in all the samples. |
 | `02.Dataset/cnv/cnv_calls.tsv` | Table of deleted and duplicated regions in all samples and their overlap with repetitive sequences. Positions are 1-based.|
-| `02.Dataset/snpeff/effects.tsv`|Table with the effects of the possible variants in all lineages.|
-| `02.Dataset/snpeff/presence.tsv`|Table with the variant IDs of all lineages and the samples they are present in.|
-| `02.Dataset/snpeff/variants.tsv`|Table with the description of all variants of all lineages. Positions are 1-based.|
+| `02.Dataset/snpeff/effects.tsv`|Table with the effects of the possible variants in all reference genomes.|
+| `02.Dataset/snpeff/presence.tsv`|Table with the variant IDs of all reference genomes and the samples they are present in.|
+| `02.Dataset/snpeff/variants.tsv`|Table with the description of all variants of all reference genomes. Positions are 1-based.|
 | `02.Dataset/database.db` |  SQL database with the main results. |
 
 </details>
