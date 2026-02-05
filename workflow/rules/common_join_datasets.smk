@@ -260,10 +260,10 @@ def input_join_ref_annotations(wildcards):
     paths = []
     for dir in LIST_PATHS:
         metadata = os.path.join(dir, DATASET_DIR_NAME, "metadata.csv")
-        lineages_dir_df = pd.read_csv(metadata, header=0)
-        lineages = set(lineages_dir_df["lineage"])
-        for lineage in lineages:
-            gff = os.path.join(dir, REFS_DIR_NAME, lineage, f"{lineage}.gff.tsv")
+        ref_genomes_dir_df = pd.read_csv(metadata, header=0)
+        ref_genomes = set(ref_genomes_dir_df["ref_genome"])
+        for ref_genome in ref_genomes:
+            gff = os.path.join(dir, REFS_DIR_NAME, ref_genome, f"{ref_genome}.gff.tsv")
             paths.append(gff)
     return paths
 
@@ -273,14 +273,14 @@ def input_join_ref_sequences(wildcards):
     paths_prots = []
     for dir in LIST_PATHS:
         metadata = os.path.join(dir, DATASET_DIR_NAME, "metadata.csv")
-        lineages_dir_df = pd.read_csv(metadata, header=0)
-        lineages = set(lineages_dir_df["lineage"])
-        for lineage in lineages:
+        ref_genomes_dir_df = pd.read_csv(metadata, header=0)
+        ref_genomes = set(ref_genomes_dir_df["ref_genome"])
+        for ref_genome in ref_genomes:
             cds = os.path.join(
-                dir, INTDIR_NAME, REFS_DIR_NAME, lineage, f"{lineage}.cds.csv"
+                dir, INTDIR_NAME, REFS_DIR_NAME, ref_genome, f"{ref_genome}.cds.csv"
             )
             prots = os.path.join(
-                dir, INTDIR_NAME, REFS_DIR_NAME, lineage, f"{lineage}.prots.csv"
+                dir, INTDIR_NAME, REFS_DIR_NAME, ref_genome, f"{ref_genome}.prots.csv"
             )
             paths_cds.append(cds)
             paths_prots.append(prots)
@@ -303,7 +303,7 @@ def input_copy_speff_data(wildcards):
     for dir in LIST_PATHS:
         metadata = os.path.join(dir, DATASET_DIR_NAME, "metadata.csv")
         lins_dir_df = pd.read_csv(metadata, header=0)
-        lins = lins_dir_df["lineage"]
+        lins = lins_dir_df["ref_genome"]
         for lin in lins:
             data_dict = {
                 lin: os.path.join(
@@ -324,7 +324,7 @@ def input_unite_vcfs(wildcards):
     for dir in LIST_PATHS:
         metadata = os.path.join(dir, DATASET_DIR_NAME, "metadata.csv")
         samps_dir_df = pd.read_csv(metadata, header=0)
-        samps_dir_df = samps_dir_df.loc[samps_dir_df["lineage"] == wildcards.lineage]
+        samps_dir_df = samps_dir_df.loc[samps_dir_df["ref_genome"] == wildcards.ref_genome]
         samps = samps_dir_df["sample"]
         for samp in samps:
             vcf = os.path.join(dir, SAMPLES_DIR_NAME, "mapping_and_variants", samp, "snps.vcf.gz")
@@ -336,18 +336,18 @@ def input_symlink_ref_gff(wildcards):
     paths = {}
     for dir in LIST_PATHS:
         metadata = os.path.join(dir, DATASET_DIR_NAME, "metadata.csv")
-        lineages_dir_df = pd.read_csv(metadata, header=0)
-        lineages = set(lineages_dir_df["lineage"])
-        for lineage in lineages:
+        ref_genomes_dir_df = pd.read_csv(metadata, header=0)
+        ref_genomes = set(ref_genomes_dir_df["ref_genome"])
+        for ref_genome in ref_genomes:
             gff = os.path.join(
                 dir,
                 REFS_DIR_NAME,
-                lineage,
-                f"{lineage}.gff.tsv",
+                ref_genome,
+                f"{ref_genome}.gff.tsv",
             )
-            paths[lineage] = gff
-    lineage_path = paths[wildcards.lineage]
-    return lineage_path
+            paths[ref_genome] = gff
+    ref_genome_path = paths[wildcards.ref_genome]
+    return ref_genome_path
 
 
 # =================================================================================================
@@ -355,14 +355,14 @@ def input_symlink_ref_gff(wildcards):
 # =================================================================================================
 
 
-def listing_lineages(wildcards):
-    checkpoint_output = checkpoints.get_lineages.get(**wildcards).output[0]
+def listing_ref_genomes(wildcards):
+    checkpoint_output = checkpoints.get_ref_genomes.get(**wildcards).output[0]
     return expand(
-        "{i}", i=glob_wildcards(os.path.join(checkpoint_output, "{i}.lineage")).i
+        "{i}", i=glob_wildcards(os.path.join(checkpoint_output, "{i}.ref_genome")).i
     )
 
 
-LINEAGES = listing_lineages
+REF_GENOMES = listing_ref_genomes
 
 # =================================================================================================
 #   Final output definition functions

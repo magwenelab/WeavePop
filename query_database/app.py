@@ -30,9 +30,9 @@ with ui.navset_pill(id="Database"):
         ui.markdown("Please see the Citation tab for information on how to cite this resource, and the Glossary tab for definitions of the terms used in the filters and tables.")
         ui.h1("Available Data",style="padding-top: 20px;padding-bottom: 10px;")
         ui.h4("Metadata",style="padding-top: 10px;padding-bottom: 10px;")
-        "Metadata of the samples included in this database, including the strain, sample ID, lineage, isolation source and other information."
+        "Metadata of the samples included in this database, including the strain, sample ID, ref_genome, isolation source and other information."
         ui.h4("Reference Annotations",style="padding-top: 10px;padding-bottom: 10px;")
-        "Table with the description of the genes in the reference genome of each lineage. Including the nested features of the genes."
+        "Table with the description of the genes in each reference genome. Including the nested features of the genes."
         ui.h4("Reference Coding Sequences",style="padding-top: 10px;padding-bottom: 10px;")
         "DNA and protein sequences of each isoform of each gene in all reference genomes."
         ui.h4("Coding Sequences",style="padding-top: 10px;padding-bottom: 10px;")
@@ -40,8 +40,8 @@ with ui.navset_pill(id="Database"):
         ui.h4("Variants",style="padding-top: 10px;padding-bottom: 10px;")
         ui.markdown("""
                     Variants (SNPs, INDELs, and MNPs) and their predicted effects. Visit [SnpEff](https://pcingola.github.io/SnpEff/snpeff/inputoutput/) to see the description of the effects and impacts.  
-                    Since the variants were called comparing each sample to the reference genome of its lineage, 
-                    the variants have an ID that corresponds to the lineage (e.g. var_VNI_1), and they are associated with the samples 
+                    Since the variants were called comparing each sample to a different reference genome, 
+                    the variants have an ID that corresponds to the ref_genome (e.g. var_VNI_1), and they are associated with the samples 
                     they were found in.    
                     The table contains one row per combination of variant, effect, and samples where the variant it is present in.   
                    
@@ -133,11 +133,11 @@ with ui.navset_pill(id="Database"):
                             width="100%",
                         )
             with ui.card():
-                ui.card_header("Lineage")
+                ui.card_header("Reference genome")
                 ui.input_selectize(
-                        "lineage_g",
-                        "Lineages",
-                        choices=qdb.list_lineages(db = mydb),
+                        "ref_genome_g",
+                        "Reference genomes",
+                        choices=qdb.list_ref_genomes(db = mydb),
                         multiple=True,
                         width="100%",
                     )
@@ -158,7 +158,7 @@ with ui.navset_pill(id="Database"):
                 def show_g():
                     df = qdb.genes(db=mydb, gene_name=input.gene_name_g(), gene_id=input.gene_id_g(),
                                    chromosome=input.chromosomes_g(), start=input.start_g(),end=input.end_g(),
-                                   feature_type=input.feature_type_g(), description=input.description_g(), lineage=input.lineage_g())
+                                   feature_type=input.feature_type_g(), description=input.description_g(), ref_genome=input.ref_genome_g())
                     if df.shape[0] > 500:
                         return df.head(500)
                     else:
@@ -169,7 +169,7 @@ with ui.navset_pill(id="Database"):
                     try:
                         df = qdb.genes(db=mydb, gene_name=input.gene_name_g(), gene_id=input.gene_id_g(),
                                         chromosome=input.chromosomes_g(), start=input.start_g(),end=input.end_g(),
-                                        feature_type=input.feature_type_g(), description=input.description_g(), lineage=input.lineage_g())
+                                        feature_type=input.feature_type_g(), description=input.description_g(), ref_genome=input.ref_genome_g())
                     except Exception as e:
                         return f"Error: {e}"
                 @render.download(
@@ -179,7 +179,7 @@ with ui.navset_pill(id="Database"):
                     df = qdb.genes(db=mydb, gene_name=input.gene_name_g(), gene_id=input.gene_id_g(),
                                         chromosome=input.chromosomes_g(), start=input.start_g(),end=input.end_g(),
                                         feature_type=input.feature_type_g(), description=input.description_g(),
-                                        lineage=input.lineage_g())                         
+                                        ref_genome=input.ref_genome_g())                         
                     with io.BytesIO() as buf:
                         df.to_csv(buf, index=False, sep="\t")
                         yield buf.getvalue()
@@ -188,14 +188,14 @@ with ui.navset_pill(id="Database"):
         ui.h1("Reference Coding Sequences", style="padding-top: 20px;padding-bottom: 20px;")
         with ui.layout_columns(col_widths=(6,6), min_height="200px"):
             with ui.navset_card_pill(): 
-                with ui.nav_panel("Lineage"):
+                with ui.nav_panel("Reference genome"):
                     @render.ui
-                    def show_lineage_sq_ref():
+                    def show_ref_genome_sq_ref():
                         return ui.TagList(
                             ui.input_selectize(
-                                "lineage_sq_ref",
-                                "Lineages",
-                                choices=qdb.list_lineages(db = mydb),
+                                "ref_genome_sq_ref",
+                                "Reference genomes",
+                                choices=qdb.list_ref_genomes(db = mydb),
                                 multiple=True,
                                 width="100%"))
             with ui.navset_card_pill(): 
@@ -222,13 +222,13 @@ with ui.navset_pill(id="Database"):
                 @reactive.event(input.count_seqs_ref)
                 def seq_counts_ref():
                     available_input = input.__dict__.get('_map', {}).keys()
-                    l = input.lineage_sq_ref() if 'lineage_sq_ref' in available_input else None
+                    l = input.ref_genome_sq_ref() if 'ref_genome_sq_ref' in available_input else None
                     
                     seqs_df = qdb.ref_sequences(db = mydb, seq_type = "PROTEIN",
                         gene_id = input.gene_id_sq_ref(), gene_name=input.gene_name_sq_ref(),
-                        lineage= l)
+                        ref_genome= l)
 
-                    df_counts = pd.DataFrame({"Total lineages": [seqs_df["lineage"].nunique()],
+                    df_counts = pd.DataFrame({"Total ref_genomes": [seqs_df["ref_genome"].nunique()],
                                                 "Total genes": [seqs_df["gene_id"].nunique()],
                                                 "Total sequences": [seqs_df.shape[0]]})
                     return df_counts
@@ -241,11 +241,11 @@ with ui.navset_pill(id="Database"):
                     def down_prots_ref():
                         try:
                             available_input = input.__dict__.get('_map', {}).keys()
-                            l = input.lineage_sq_ref() if 'lineage_sq_ref' in available_input else None
+                            l = input.ref_genome_sq_ref() if 'ref_genome_sq_ref' in available_input else None
                             
                             seqs_df = qdb.ref_sequences(db = mydb, seq_type = "PROTEIN",
                                 gene_id = input.gene_id_sq_ref(), gene_name=input.gene_name_sq_ref(),
-                                lineage= l)
+                                ref_genome= l)
 
                             seqs_records = qdb.df_to_seqrecord(seqs_df)
                             seqs_text = qdb.seqrecord_to_text(seqs_records)
@@ -263,11 +263,11 @@ with ui.navset_pill(id="Database"):
                     def down_dna_ref():
                         try:
                             available_input = input.__dict__.get('_map', {}).keys()
-                            l = input.lineage_sq_ref() if 'lineage_sq_ref' in available_input else None
+                            l = input.ref_genome_sq_ref() if 'ref_genome_sq_ref' in available_input else None
                             
                             seqs_df = qdb.ref_sequences(db = mydb, seq_type = "DNA",
                                 gene_id = input.gene_id_sq_ref(), gene_name=input.gene_name_sq_ref(),
-                                lineage= l)
+                                ref_genome= l)
 
                             seqs_records = qdb.df_to_seqrecord(seqs_df)
                             seqs_text = qdb.seqrecord_to_text(seqs_records)
@@ -319,18 +319,18 @@ with ui.navset_pill(id="Database"):
                                 choices=qdb.list_samples(db = mydb, dataset=mydataset),
                                 multiple=True,
                                 width="100%"))
-                with ui.nav_panel("Lineage"):
+                with ui.nav_panel("Reference genome"):
                     @render.ui
-                    def show_lineage_sq():
+                    def show_ref_genome_sq():
                         if len(list_datasets) > 1:
                             mydataset = tuple(input.dataset_sq())
                         else:
                             mydataset = tuple(list_datasets)
                         return ui.TagList(
                             ui.input_selectize(
-                                "lineage_sq",
-                                "Lineages",
-                                choices=qdb.list_lineages(db = mydb, dataset=mydataset),
+                                "ref_genome_sq",
+                                "Reference genomes",
+                                choices=qdb.list_ref_genomes(db = mydb, dataset=mydataset),
                                 multiple=True,
                                 width="100%"))
             with ui.navset_card_pill(): 
@@ -360,11 +360,11 @@ with ui.navset_pill(id="Database"):
                     d = input.dataset_sq() if 'dataset_sq' in available_input else None
                     s = input.sample_sq() if 'sample_sq' in available_input else None
                     st = input.strain_sq() if 'strain_sq' in available_input else None
-                    l = input.lineage_sq() if 'lineage_sq' in available_input else None
+                    l = input.ref_genome_sq() if 'ref_genome_sq' in available_input else None
                     
                     seqs_df = qdb.sequences(db = mydb, dataset = d, seq_type = "PROTEIN",
                         gene_id = input.gene_id_sq(), gene_name=input.gene_name_sq(),
-                        sample = s, strain = st, lineage= l)
+                        sample = s, strain = st, ref_genome= l)
 
                     df_counts = pd.DataFrame({"Total samples": [seqs_df["sample"].nunique()],
                                                 "Total genes": [seqs_df["gene_id"].nunique()],
@@ -382,11 +382,11 @@ with ui.navset_pill(id="Database"):
                             d = input.dataset_sq() if 'dataset_sq' in available_input else None
                             s = input.sample_sq() if 'sample_sq' in available_input else None
                             st = input.strain_sq() if 'strain_sq' in available_input else None
-                            l = input.lineage_sq() if 'lineage_sq' in available_input else None
+                            l = input.ref_genome_sq() if 'ref_genome_sq' in available_input else None
                             
                             seqs_df = qdb.sequences(db = mydb, dataset = d, seq_type = "PROTEIN",
                                 gene_id = input.gene_id_sq(), gene_name=input.gene_name_sq(),
-                                sample = s, strain = st, lineage= l)
+                                sample = s, strain = st, ref_genome= l)
 
                             seqs_records = qdb.df_to_seqrecord(seqs_df)
                             seqs_text = qdb.seqrecord_to_text(seqs_records)
@@ -407,11 +407,11 @@ with ui.navset_pill(id="Database"):
                             d = input.dataset_sq() if 'dataset_sq' in available_input else None
                             s = input.sample_sq() if 'sample_sq' in available_input else None
                             st = input.strain_sq() if 'strain_sq' in available_input else None
-                            l = input.lineage_sq() if 'lineage_sq' in available_input else None
+                            l = input.ref_genome_sq() if 'ref_genome_sq' in available_input else None
                             
                             seqs_df = qdb.sequences(db = mydb, dataset = d, seq_type = "DNA",
                                 gene_id = input.gene_id_sq(), gene_name=input.gene_name_sq(),
-                                sample = s, strain = st, lineage= l)
+                                sample = s, strain = st, ref_genome= l)
 
                             seqs_records = qdb.df_to_seqrecord(seqs_df)
                             seqs_text = qdb.seqrecord_to_text(seqs_records)
@@ -428,8 +428,8 @@ with ui.navset_pill(id="Database"):
         ui.h1("Variants and their predicted effects", style="padding-top: 20px;padding-bottom: 20px;")
         ui.markdown(
             """
-            The variants of each sample were predicted relative to the reference genome 
-            of the corresponding lineage so **the results are biased towards the 
+            The variants of each sample were predicted relative to the corresponding 
+            reference genome so **the results are biased towards the 
             strain that was used as reference!**
             """)
         list_datasets = qdb.list_datasets(db = mydb)
@@ -470,18 +470,18 @@ with ui.navset_pill(id="Database"):
                                 choices=qdb.list_samples(db = mydb, dataset=mydataset),
                                 multiple=True,
                                 width="100%"))
-                with ui.nav_panel("Lineage"):
+                with ui.nav_panel("Reference genome"):
                     @render.ui
-                    def show_lineage():
+                    def show_ref_genome():
                         if len(list_datasets) > 1:
                             mydataset = tuple(input.dataset_v())
                         else:
                             mydataset = tuple(list_datasets)
                         return ui.TagList(
                             ui.input_selectize(
-                                "lineage",
-                                "Lineages",
-                                choices=qdb.list_lineages(db = mydb, dataset=mydataset),
+                                "ref_genome",
+                                "Reference genomes",
+                                choices=qdb.list_ref_genomes(db = mydb, dataset=mydataset),
                                 multiple=True,
                                 width="100%"))
             with ui.navset_card_pill(): 
@@ -550,10 +550,10 @@ with ui.navset_pill(id="Database"):
                     d = input.dataset_v() if 'dataset_v' in available_input else None
                     s = input.sample() if 'sample' in available_input else None
                     st = input.strain() if 'strain' in available_input else None
-                    l = input.lineage() if 'lineage' in available_input else None
+                    l = input.ref_genome() if 'ref_genome' in available_input else None
                     
                     df = qdb.effects(db = mydb, dataset = d, 
-                                    sample = s, strain = st, lineage = l,
+                                    sample = s, strain = st, ref_genome = l,
                                     gene_name = input.gene_name(), gene_id = input.gene_id(),
                                     impact = input.impact(), effect_type=input.effect_type(),
                                     chromosome = input.chromosomes_v(), start = input.start_v(), end = input.end_v())
@@ -571,10 +571,10 @@ with ui.navset_pill(id="Database"):
                         d = input.dataset_v() if 'dataset_v' in available_input else None
                         s = input.sample() if 'sample' in available_input else None
                         st = input.strain() if 'strain' in available_input else None
-                        l = input.lineage() if 'lineage' in available_input else None
+                        l = input.ref_genome() if 'ref_genome' in available_input else None
                         
                         df = qdb.effects(db = mydb, dataset = d, 
-                                        sample = s, strain = st, lineage = l,
+                                        sample = s, strain = st, ref_genome = l,
                                         gene_name = input.gene_name(), gene_id = input.gene_id(),
                                         impact = input.impact(), effect_type=input.effect_type(),
                                         chromosome = input.chromosomes_v(), start = input.start_v(), end = input.end_v())
@@ -626,18 +626,18 @@ with ui.navset_pill(id="Database"):
                                 choices=qdb.list_samples(db = mydb, dataset=mydataset),
                                 multiple=True,
                                 width="100%"))
-                with ui.nav_panel("Lineage"):
+                with ui.nav_panel("Reference genome"):
                     @render.ui
-                    def show_lineage_cnv():
+                    def show_ref_genome_cnv():
                         if len(list_datasets) > 1:
                             mydataset = tuple(input.dataset_cnv())
                         else:
                             mydataset = tuple(list_datasets)
                         return ui.TagList(
                             ui.input_selectize(
-                                "lineage_cnv",
-                                "Lineages",
-                                choices=qdb.list_lineages(db = mydb, dataset=mydataset),
+                                "ref_genome_cnv",
+                                "Reference genomes",
+                                choices=qdb.list_ref_genomes(db = mydb, dataset=mydataset),
                                 multiple=True,
                                 width="100%"))
             with ui.card():
@@ -699,9 +699,9 @@ with ui.navset_pill(id="Database"):
                     d = input.dataset_cnv() if 'dataset_cnv' in available_input else None
                     s = input.sample_cnv() if 'sample_cnv' in available_input else None
                     st = input.strain_cnv() if 'strain_cnv' in available_input else None
-                    l = input.lineage_cnv() if 'lineage_cnv' in available_input else None
+                    l = input.ref_genome_cnv() if 'ref_genome_cnv' in available_input else None
                     df = qdb.get_cnv(db=mydb, dataset= d,
-                                     sample= s, strain= st, lineage= l,
+                                     sample= s, strain= st, ref_genome= l,
                                      chromosome=input.chromosomes_cnv(), start=input.start_cnv(),end=input.end_cnv(), 
                                      min_size=input.size_cnv()[0], max_size=input.size_cnv()[1], 
                                      cnv=input.cnv_cnv(),repeat_fraction=input.repeats_threshold_cnv())
@@ -719,9 +719,9 @@ with ui.navset_pill(id="Database"):
                         d = input.dataset_cnv() if 'dataset_cnv' in available_input else None
                         s = input.sample_cnv() if 'sample_cnv' in available_input else None
                         st = input.strain_cnv() if 'strain_cnv' in available_input else None
-                        l = input.lineage_cnv() if 'lineage_cnv' in available_input else None
+                        l = input.ref_genome_cnv() if 'ref_genome_cnv' in available_input else None
                         df = qdb.get_cnv(db=mydb,dataset= d,
-                            sample= s, strain= st, lineage= l,
+                            sample= s, strain= st, ref_genome= l,
                             chromosome=input.chromosomes_cnv(), start=input.start_cnv(),end=input.end_cnv(), 
                             min_size=input.size_cnv()[0], max_size=input.size_cnv()[1], 
                             cnv=input.cnv_cnv(),repeat_fraction=input.repeats_threshold_cnv())
@@ -773,18 +773,18 @@ with ui.navset_pill(id="Database"):
                                 choices=qdb.list_samples(db = mydb, dataset=mydataset),
                                 multiple=True,
                                 width="100%"))
-                with ui.nav_panel("Lineage"):
+                with ui.nav_panel("Reference genome"):
                     @render.ui
-                    def show_lineage_cnv_chroms():
+                    def show_ref_genome_cnv_chroms():
                         if len(list_datasets) > 1:
                             mydataset = tuple(input.dataset_cnv_chroms())
                         else:
                             mydataset = tuple(list_datasets)
                         return ui.TagList(
                             ui.input_selectize(
-                                "lineage_cnv_chroms",
-                                "Lineages",
-                                choices=qdb.list_lineages(db = mydb, dataset=mydataset),
+                                "ref_genome_cnv_chroms",
+                                "Reference genomes",
+                                choices=qdb.list_ref_genomes(db = mydb, dataset=mydataset),
                                 multiple=True,
                                 width="100%"))             
             with ui.card(): 
@@ -822,9 +822,9 @@ with ui.navset_pill(id="Database"):
                     d = input.dataset_cnv_chroms() if 'dataset_cnv_chroms' in available_input else None
                     s = input.sample_cnv_chroms() if 'sample_cnv_chroms' in available_input else None
                     st = input.strain_cnv_chroms() if 'strain_cnv_chroms' in available_input else None
-                    l = input.lineage_cnv_chroms() if 'lineage_cnv_chroms' in available_input else None
+                    l = input.ref_genome_cnv_chroms() if 'ref_genome_cnv_chroms' in available_input else None
                     df = qdb.get_cnv_chroms(db=mydb, dataset= d,
-                                     sample= s, strain= st, lineage= l,
+                                     sample= s, strain= st, ref_genome= l,
                                      chromosome=input.chromosomes_cnv_chroms(),
                                      cnv=input.cnv_cnv_chroms(), 
                                      min_coverage=input.coverage_cnv_chroms()[0],
@@ -843,9 +843,9 @@ with ui.navset_pill(id="Database"):
                         d = input.dataset_cnv_chroms() if 'dataset_cnv_chroms' in available_input else None
                         s = input.sample_cnv_chroms() if 'sample_cnv_chroms' in available_input else None
                         st = input.strain_cnv_chroms() if 'strain_cnv_chroms' in available_input else None
-                        l = input.lineage_cnv_chroms() if 'lineage_cnv_chroms' in available_input else None
+                        l = input.ref_genome_cnv_chroms() if 'ref_genome_cnv_chroms' in available_input else None
                         df = qdb.get_cnv_chroms(db=mydb,dataset= d,
-                            sample= s, strain= st, lineage= l,
+                            sample= s, strain= st, ref_genome= l,
                             chromosome=input.chromosomes_cnv(),
                             cnv=input.cnv_cnv_chroms(),
                             min_coverage=input.coverage_cnv_chroms()[0],
@@ -866,7 +866,7 @@ with ui.navset_pill(id="Database"):
             """
             **Strain / strain**: The strain name of the samples.  
             **Sample ID / sample**: The unique identifier of the sample. It's the same as the SRA sample accession.  
-            **Lineage/ lineage**: The lineage of the sample.  
+            **Reference genome/ ref_genome**: The reference genome the sample was aligned to.  
             **Gene name / gene_name**: The name of the gene if available, if not, the gene ID is used.  
             **Gene ID / gene_id**: The unique identifier of the gene.  
             **Location**: Coordinates of a feature (gene features, variants or copy-number variants) in a chromosome.  
@@ -884,8 +884,8 @@ with ui.navset_pill(id="Database"):
             **feature_id**: The unique identifier of the feature, it includes the gene ID, the type of feature and number of that feature within the gene.  
             **parent**: The gene ID of the gene that the feature is part of, empty for the feature type gene.  
             **ref_repeat_fraction**: The proportion of the feature that is covered by repetitive sequences in the reference genome.
-            **ref_identical_to_main_ref**: In the mRNA feature type, if the isoform sequence of the lineage specific reference genome is identical to the main reference sequence the value is Yes, otherwise No.  
-            **ref_start_top_mutation**: In the mRNA feature type, if the isoform sequence of the reference genome has a missing stop or start codon or a inframe stop codon, compared to the sequence fo the main reference the value will be one of missing_stop_codon, missing_start_codon or inframe_stop_codon.  
+            **ref_identical_to_main_ref**: In the mRNA feature type, if the isoform sequence of the reference genome is identical to the main reference sequence the value is Yes, otherwise No.  
+            **ref_start_top_mutation**: In the mRNA feature type, if the isoform sequence of the reference genome has a missing stop or start codon or a inframe stop codon, compared to the sequence of the main reference the value will be one of missing_stop_codon, missing_start_codon or inframe_stop_codon.  
             """
         )
         ui.h3("Variants")
@@ -893,7 +893,7 @@ with ui.navset_pill(id="Database"):
             """
             **Impact / impact**: The SnpEff putative impact of a variant, one of HIGH, MODERATE, LOW, MODIFIER. Check [SnpEff](https://pcingola.github.io/SnpEff/snpeff/inputoutput/).  
             **Effect type / effect_type**: The type of effect the variant has, each effect type is associated with an impact. Check [SnpEff](https://pcingola.github.io/SnpEff/snpeff/inputoutput/).  
-            **var_id**: The unique identifier of the variant. It includes the lineage and a number.   
+            **var_id**: The unique identifier of the variant. It includes the ref_genome and a number.   
             **position**: The position of the variant in the chromosome.  
             **reference**: The allele in the reference genome.   
             **alternative**: The alternative allele.  
@@ -915,7 +915,7 @@ with ui.navset_pill(id="Database"):
             **Size range**: The range of sizes of the CNVs to include in the table.  
             **size**: The size of the CNV in base pairs.  
             **Repeats threshold**: Parameter to filter out CNVs with a repeat_fraction larger than this threshold.  
-            **repeat_fraction**: The proportion of the CNV that is covered by repetitive sequences. 
+            **repeat_fraction**: The proportion of the CNV that is covered by repetitive sequences.  
             **repeat_overlap_bp**: The number of base pairs of the CNV that is covered by repetitive sequences.  
             **depth**: The mean depth of the CNV.  
             **norm_depth**: The mean depth of the CNV, normalized by the genome-wide depth.   
@@ -924,7 +924,7 @@ with ui.navset_pill(id="Database"):
         ui.h3("Chromosome CNVs")
         ui.markdown(
             """
-            **cnv**: Type of copy number variant (deletion, duplication or single-copy).
+            **cnv**: Type of copy number variant (deletion, duplication or single-copy).  
             **n_cnvs**: Number of CNVs in the chromosome.  
             **total_size**: Sum of the size in base pairs of the CNVs in the chromosome.  
             **coverage_percent**: Proportion of the chromosome that is covered by CNVs.  

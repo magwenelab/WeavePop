@@ -32,12 +32,12 @@ chrom_depth <- chrom_depth %>%
 
 print("Filtering chromosome names...")
 chrom_names <- chrom_names %>%
-    select(lineage, accession, chromosome)
+    select(ref_genome, accession, chromosome)
 
 print("Joining and arranging data...")
 metadata <- mutate(metadata, name = paste(strain, sample, sep = " "))
 chrom_depth <- left_join(chrom_depth, metadata, by = "sample")
-chrom_depth <- left_join(chrom_depth, chrom_names, by = c("accession", "lineage"))
+chrom_depth <- left_join(chrom_depth, chrom_names, by = c("accession", "ref_genome"))
 
 print("Getting plot parameters...")
 toplim <- ceiling(max(chrom_depth$chrom_norm_depth))
@@ -46,7 +46,7 @@ values <- seq(0, toplim, by = 1)
 print("Plotting...")
 medianplot <- ggplot(chrom_depth, aes(x = reorder(name, -genome_depth, sum), y = chrom_norm_depth)) +
     ylim(0, toplim) +
-    facet_grid(scale = "free_x", space = "free_x", rows = vars(chromosome), cols = vars(lineage)) +
+    facet_grid(scale = "free_x", space = "free_x", rows = vars(chromosome), cols = vars(ref_genome)) +
     theme_bw() +
     theme(panel.background = element_blank(), 
             panel.grid.minor = element_blank(),

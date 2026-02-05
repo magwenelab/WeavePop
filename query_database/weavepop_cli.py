@@ -98,25 +98,25 @@ def list_strains(db, dataset=None):
     con.close()
     return result
 
-def list_lineages(db, dataset=None):
+def list_ref_genomes(db, dataset=None):
     con = duckdb.connect(database=db, read_only=True)
     if dataset:
         dataset = tuple(dataset)
         query = f"""
-            SELECT DISTINCT lineage
+            SELECT DISTINCT ref_genome
             FROM metadata
             WHERE dataset IN {dataset}
-            ORDER BY lineage
+            ORDER BY ref_genome
             """
     else:
         query = f"""
-            SELECT DISTINCT lineage
+            SELECT DISTINCT ref_genome
             FROM metadata
-            ORDER BY lineage
+            ORDER BY ref_genome
             """
     df = con.execute(query).fetchdf()
-    df = df.dropna(subset=['lineage'])
-    result = tuple(df['lineage'])
+    df = df.dropna(subset=['ref_genome'])
+    result = tuple(df['ref_genome'])
     con.close()
     return result
 
@@ -184,7 +184,7 @@ def validate_input(input, valid_values, valid_input):
     return valid_input
 
 # Functions for commands #
-def get_sequences(db, dataset=None, seq_type='DNA', sample=None, strain=None, lineage=None, gene_id=None, gene_name=None):
+def get_sequences(db, dataset=None, seq_type='DNA', sample=None, strain=None, ref_genome=None, gene_id=None, gene_name=None):
     # Test valid combinations of input #
     if db is None:
         print("Database file must be provided. Exiting.", file=sys.stderr)
@@ -192,8 +192,8 @@ def get_sequences(db, dataset=None, seq_type='DNA', sample=None, strain=None, li
     if gene_name and gene_id:
         print("Only one of Gene names or Gene IDs should be provided. Exiting.", file=sys.stderr)
         sys.exit()
-    if sample and strain or sample and lineage or strain and lineage:
-        print("Only one of Sample IDs, Strains or Lineage should be provided. Exiting.", file=sys.stderr)
+    if sample and strain or sample and ref_genome or strain and ref_genome:
+        print("Only one of Sample IDs, Strains or Reference genome should be provided. Exiting.", file=sys.stderr)
         sys.exit()
     
     # Connect to the database #
@@ -237,7 +237,7 @@ def get_sequences(db, dataset=None, seq_type='DNA', sample=None, strain=None, li
         gene_id_input = tuple(gene_id.split(','))
         gene_id = validate_input(gene_id_input, gene_id_tuple, 'gene_id')
     
-    # sample, strain and lineage
+    # sample, strain and ref_genome
     if strain is not None:
         strain_tuple = list_strains(db)
         strain_input = tuple(strain.split(','))
@@ -249,14 +249,14 @@ def get_sequences(db, dataset=None, seq_type='DNA', sample=None, strain=None, li
             """
         sample_df = con.execute(query_sample).fetchdf()
         sample = tuple(sample_df['sample'])
-    elif lineage is not None:
-        lineage_tuple = list_lineages(db)
-        lineage_input = tuple(lineage.split(','))
-        lineage = validate_input(lineage_input, lineage_tuple, 'lineage')
+    elif ref_genome is not None:
+        ref_genome_tuple = list_ref_genomes(db)
+        ref_genome_input = tuple(ref_genome.split(','))
+        ref_genome = validate_input(ref_genome_input, ref_genome_tuple, 'ref_genome')
         query_sample = f"""
             SELECT sample
             FROM metadata
-            WHERE lineage IN {lineage}
+            WHERE ref_genome IN {ref_genome}
             """
         sample_df = con.execute(query_sample).fetchdf()
         sample = tuple(sample_df['sample'])
@@ -267,13 +267,13 @@ def get_sequences(db, dataset=None, seq_type='DNA', sample=None, strain=None, li
    
     # Create the query #
     query = f"""
-            SELECT metadata.dataset, metadata.strain, metadata.lineage, 
+            SELECT metadata.dataset, metadata.strain, metadata.ref_genome, 
                 coding_sequences.sample, coding_sequences.feature_id, coding_sequences.seq, 
                 chromosomes.chromosome, chromosomes.accession,
                 gff.gene_name, gff.gene_id
             FROM coding_sequences
             JOIN metadata ON coding_sequences.sample = metadata.sample
-            JOIN gff ON coding_sequences.feature_id = gff.feature_id AND metadata.lineage = gff.lineage
+            JOIN gff ON coding_sequences.feature_id = gff.feature_id AND metadata.ref_genome = gff.ref_genome
             JOIN chromosomes ON gff.accession = chromosomes.accession
             WHERE metadata.dataset IN {dataset}"""
     if gene_id and not sample:
@@ -304,7 +304,7 @@ def get_sequences(db, dataset=None, seq_type='DNA', sample=None, strain=None, li
     # Close the connection #
     con.close()
     return result
-def get_ref_sequences(db, seq_type='DNA', lineage=None, gene_id=None, gene_name=None):
+def get_ref_sequences(db, seq_type='DNA', ref_genome=None, gene_id=None, gene_name=None):
     # Test valid combinations of input #
     if db is None:
         raise ValueError("Database file must be provided.")
@@ -329,13 +329,13 @@ def get_ref_sequences(db, seq_type='DNA', lineage=None, gene_id=None, gene_name=
         print(f"seq_type must be one of {seq_type_tuple}. Exiting.", file=sys.stderr)
         sys.exit()
     
-    # lineage
-    lineage_tuple = list_lineages(db)
-    if lineage is None:
-        lineage = lineage_tuple
+    # ref_genome
+    ref_genome_tuple = list_ref_genomes(db)
+    if ref_genome is None:
+        ref_genome = ref_genome_tuple
     else:
-        lineage_input = tuple(lineage.split(','))
-        lineage = validate_input(lineage_input, lineage_tuple, 'lineage')
+        ref_genome_input = tuple(ref_genome.split(','))
+        ref_genome = validate_input(ref_genome_input, ref_genome_tuple, 'ref_genome')
     
     # gene_id and gene_name
     if gene_name is not None:
@@ -356,33 +356,33 @@ def get_ref_sequences(db, seq_type='DNA', lineage=None, gene_id=None, gene_name=
         
     # Create the query #
     query = f"""
-        SELECT ref_coding_sequences.lineage, ref_coding_sequences.feature_id, ref_coding_sequences.seq,
+        SELECT ref_coding_sequences.ref_genome, ref_coding_sequences.feature_id, ref_coding_sequences.seq,
                 gff.gene_id, gff.gene_name,
                 chromosomes.chromosome, chromosomes.accession,
         FROM ref_coding_sequences
-        JOIN gff ON ref_coding_sequences.feature_id = gff.feature_id AND gff.lineage = ref_coding_sequences.lineage
+        JOIN gff ON ref_coding_sequences.feature_id = gff.feature_id AND gff.ref_genome = ref_coding_sequences.ref_genome
         JOIN chromosomes ON gff.accession = chromosomes.accession
         WHERE seq_type = '{seq_type}'
             """
-    if gene_id and not lineage:
+    if gene_id and not ref_genome:
         query += f"""
             AND ref_coding_sequences.feature_id IN (
                 SELECT DISTINCT feature_id
                 FROM gff
                 WHERE gene_id IN {gene_id}
             )"""
-    elif gene_id and lineage:
+    elif gene_id and ref_genome:
         query += f"""
             AND ref_coding_sequences.feature_id IN (
                 SELECT DISTINCT feature_id
                 FROM gff
                 WHERE gene_id IN {gene_id}
             )
-            AND ref_coding_sequences.lineage IN {lineage}
+            AND ref_coding_sequences.ref_genome IN {ref_genome}
             """
-    elif lineage:
+    elif ref_genome:
         query += f"""
-            AND ref_coding_sequences.lineage IN {lineage}
+            AND ref_coding_sequences.ref_genome IN {ref_genome}
             """
 
     # Execute the query #
@@ -398,8 +398,8 @@ def df_to_seqrecord(df):
         seq = Seq(row['seq'])
         if 'sample' in df.columns:
             record = SeqRecord(seq, id=f"{row['strain']}|{row['feature_id']}", description=f"sample={row['sample']} gene_id={row['gene_id']} gene_name={row['gene_name']} chromosome={row['chromosome']} accession={row['accession']}")
-        elif 'lineage' in df.columns:
-            record = SeqRecord(seq, id=f"{row['lineage']}|{row['feature_id']}", description=f"lineage={row['lineage']} gene_id={row['gene_id']} gene_name={row['gene_name']} chromosome={row['chromosome']} accession={row['accession']}")
+        elif 'ref_genome' in df.columns:
+            record = SeqRecord(seq, id=f"{row['ref_genome']}|{row['feature_id']}", description=f"ref_genome={row['ref_genome']} gene_id={row['gene_id']} gene_name={row['gene_name']} chromosome={row['chromosome']} accession={row['accession']}")
         records.append(record)
     return records
 
@@ -411,7 +411,7 @@ def seqrecord_to_text(records):
     return fasta_text
 
 def get_variants(db, dataset=None, sample=None, strain=None, gene_name=None, gene_id=None, impact=None, 
-            effect_type=None, lineage=None, chromosome=None, start=None, end=None):
+            effect_type=None, ref_genome=None, chromosome=None, start=None, end=None):
     # Test valid combinations of input #
     if db is None:
         print("Database file must be provided. Exiting.", file=sys.stderr)
@@ -422,8 +422,8 @@ def get_variants(db, dataset=None, sample=None, strain=None, gene_name=None, gen
     if sample and strain:
         print("Only one of Sample IDs or Strains should be provided. Exiting.", file=sys.stderr)
         sys.exit()
-    if (sample and lineage) or (strain and lineage):
-        print("Only one of Sample IDs, Strains or Lineage should be provided. Exiting.", file=sys.stderr)
+    if (sample and ref_genome) or (strain and ref_genome):
+        print("Only one of Sample IDs, Strains or Reference genome should be provided. Exiting.", file=sys.stderr)
         sys.exit()
     if impact and effect_type:
         print("Only one of Impacts or Effect types should be provided. Exiting.", file=sys.stderr)
@@ -460,7 +460,7 @@ def get_variants(db, dataset=None, sample=None, strain=None, gene_name=None, gen
         gene_id_input = tuple(gene_id.split(','))
         gene_id = validate_input(gene_id_input, gene_id_tuple, 'gene_id')
     
-    # sample, strain and lineage
+    # sample, strain and ref_genome
     if strain is not None:
         strain_tuple = list_strains(db)
         strain_input = tuple(strain.split(','))
@@ -472,14 +472,14 @@ def get_variants(db, dataset=None, sample=None, strain=None, gene_name=None, gen
             """
         sample_df = con.execute(query_sample).fetchdf()
         sample = tuple(sample_df['sample'])
-    elif lineage is not None:
-        lineage_tuple = list_lineages(db)
-        lineage_input = tuple(lineage.split(','))
-        lineage = validate_input(lineage_input, lineage_tuple, 'lineage')
+    elif ref_genome is not None:
+        ref_genome_tuple = list_ref_genomes(db)
+        ref_genome_input = tuple(ref_genome.split(','))
+        ref_genome = validate_input(ref_genome_input, ref_genome_tuple, 'ref_genome')
         query_sample = f"""
             SELECT sample
             FROM metadata
-            WHERE lineage IN {lineage}
+            WHERE ref_genome IN {ref_genome}
             """
         sample_df = con.execute(query_sample).fetchdf()
         sample = tuple(sample_df['sample'])
@@ -507,7 +507,7 @@ def get_variants(db, dataset=None, sample=None, strain=None, gene_name=None, gen
     
     # Create query #
     query = f"""
-        SELECT metadata.dataset, metadata.strain, presence.sample, metadata.lineage,
+        SELECT metadata.dataset, metadata.strain, presence.sample, metadata.ref_genome,
             variants.var_id, chromosomes.chromosome,
             variants.pos AS position, variants.ref AS reference, variants.alt AS alternative,
             effects.gene_name, effects.gene_id, effects.feature_id,
@@ -549,13 +549,13 @@ def get_variants(db, dataset=None, sample=None, strain=None, gene_name=None, gen
     con.close()
     return result
 
-def get_cnv(db, dataset = None, lineage=None, sample=None, strain=None, chromosome=None, cnv=None, repeat_fraction=None, start=None, end =None, min_size=None, max_size=None):
+def get_cnv(db, dataset = None, ref_genome=None, sample=None, strain=None, chromosome=None, cnv=None, repeat_fraction=None, start=None, end =None, min_size=None, max_size=None):
     # Test valid combinations of input #
     if db is None:
         print("Database file must be provided. Exiting.", file=sys.stderr)
         sys.exit()
-    if sample and strain or sample and lineage or strain and lineage:
-        print("Only one of Sample IDs, Strains or Lineage should be provided. Exiting.", file=sys.stderr)
+    if sample and strain or sample and ref_genome or strain and ref_genome:
+        print("Only one of Sample IDs, Strains or Reference genome should be provided. Exiting.", file=sys.stderr)
         sys.exit()
     
     # Connect to the database #
@@ -572,7 +572,7 @@ def get_cnv(db, dataset = None, lineage=None, sample=None, strain=None, chromoso
         dataset_input = tuple(dataset.split(','))
         dataset = validate_input(dataset_input, dataset_tuple, 'dataset')
     
-    # sample, strain and lineage
+    # sample, strain and ref_genome
     if strain is not None:
         strain_tuple = list_strains(db)
         strain_input = tuple(strain.split(','))
@@ -584,14 +584,14 @@ def get_cnv(db, dataset = None, lineage=None, sample=None, strain=None, chromoso
             """
         sample_df = con.execute(query_sample).fetchdf()
         sample = tuple(sample_df['sample'])
-    elif lineage is not None:
-        lineage_tuple = list_lineages(db)
-        lineage_input = tuple(lineage.split(','))
-        lineage = validate_input(lineage_input, lineage_tuple, 'lineage')
+    elif ref_genome is not None:
+        ref_genome_tuple = list_ref_genomes(db)
+        ref_genome_input = tuple(ref_genome.split(','))
+        ref_genome = validate_input(ref_genome_input, ref_genome_tuple, 'ref_genome')
         query_sample = f"""
             SELECT sample
             FROM metadata
-            WHERE lineage IN {lineage}
+            WHERE ref_genome IN {ref_genome}
             """
         sample_df = con.execute(query_sample).fetchdf()
         sample = tuple(sample_df['sample'])
@@ -614,7 +614,7 @@ def get_cnv(db, dataset = None, lineage=None, sample=None, strain=None, chromoso
     
     # Create query #
     query = f"""
-        SELECT metadata.strain, metadata.sample, metadata.lineage, 
+        SELECT metadata.strain, metadata.sample, metadata.ref_genome, 
             chromosomes.chromosome, chromosomes.accession,
             cnvs.start, cnvs."end",
             cnvs.size, cnvs.cnv, cnvs.depth, cnvs.norm_depth, cnvs.smooth_depth, cnvs.repeat_fraction, cnvs.repeat_overlap_bp, cnvs.feature_id,
@@ -647,7 +647,7 @@ def get_cnv(db, dataset = None, lineage=None, sample=None, strain=None, chromoso
     con.close()
     return result
 
-def get_annotation(db, lineage=None, gene_name=None, gene_id=None, chromosome=None, start=None, end=None, feature_type=None, description=None):
+def get_annotation(db, ref_genome=None, gene_name=None, gene_id=None, chromosome=None, start=None, end=None, feature_type=None, description=None):
     # Test valid combinations of input #
     if db is None:
         print("Database file must be provided. Exiting.", file=sys.stderr)
@@ -661,13 +661,13 @@ def get_annotation(db, lineage=None, gene_name=None, gene_id=None, chromosome=No
     con = con.execute(f"SET temp_directory = '{cwd}'")
     
     # Check if input values are valid and reformat input to be used in the query #
-    # lineage
-    if lineage is None:
-        lineage = list_lineages(db)
+    # ref_genome
+    if ref_genome is None:
+        ref_genome = list_ref_genomes(db)
     else:
-        lineage_input = tuple(lineage.split(','))
-        lineage_tuple = list_lineages(db)
-        lineage = validate_input(lineage_input, lineage_tuple, 'lineage')
+        ref_genome_input = tuple(ref_genome.split(','))
+        ref_genome_tuple = list_ref_genomes(db)
+        ref_genome = validate_input(ref_genome_input, ref_genome_tuple, 'ref_genome')
     
     # gene_id and gene_name
     if gene_name is not None:
@@ -720,7 +720,7 @@ def get_annotation(db, lineage=None, gene_name=None, gene_id=None, chromosome=No
     
     if 'ref_identical_to_main_ref' and 'ref_start_stop_mutations' in columns:
         query = f"""
-            SELECT gff.lineage, chromosomes.chromosome,
+            SELECT gff.ref_genome, chromosomes.chromosome,
                 gff.start, gff."end", gff.strand, gff.primary_tag,
                 gff.gene_name, gff.gene_id,
                 gff.feature_id, gff.parent,
@@ -728,18 +728,18 @@ def get_annotation(db, lineage=None, gene_name=None, gene_id=None, chromosome=No
                 gff.ref_identical_to_main_ref, gff.ref_start_stop_mutations, 
             FROM gff
             JOIN chromosomes ON gff.accession = chromosomes.accession
-            WHERE gff.lineage IN {lineage}
+            WHERE gff.ref_genome IN {ref_genome}
             """
     else:
         query = f"""
-            SELECT gff.lineage, chromosomes.chromosome,
+            SELECT gff.ref_genome, chromosomes.chromosome,
                 gff.start, gff."end", gff.strand, gff.primary_tag,
                 gff.gene_name, gff.gene_id,
                 gff.feature_id, gff.parent,
                 gff.description, gff.ref_repeat_fraction,
             FROM gff
             JOIN chromosomes ON gff.accession = chromosomes.accession
-            WHERE gff.lineage IN {lineage}
+            WHERE gff.ref_genome IN {ref_genome}
             """
 
     if gene_id:
@@ -761,13 +761,13 @@ def get_annotation(db, lineage=None, gene_name=None, gene_id=None, chromosome=No
     con.close()
     return result
 
-def get_metadata(db, dataset=None, lineage=None, sample=None, strain=None):
+def get_metadata(db, dataset=None, ref_genome=None, sample=None, strain=None):
     # Test valid combinations of input #
     if db is None:
         print("Database file must be provided. Exiting.", file=sys.stderr)
         sys.exit()
-    if sample and strain or sample and lineage or strain and lineage:
-        print("Only one of Sample IDs, Strains or Lineage should be provided. Exiting.", file=sys.stderr)
+    if sample and strain or sample and ref_genome or strain and ref_genome:
+        print("Only one of Sample IDs, Strains or Reference genome should be provided. Exiting.", file=sys.stderr)
         sys.exit()
     
     # Connect to the database #
@@ -784,7 +784,7 @@ def get_metadata(db, dataset=None, lineage=None, sample=None, strain=None):
         dataset_input = tuple(dataset.split(','))
         dataset = validate_input(dataset_input, dataset_tuple, 'dataset')
     
-    # sample, strain and lineage
+    # sample, strain and ref_genome
     if strain is not None:
         strain_tuple = list_strains(db)
         strain_input = tuple(strain.split(','))
@@ -796,14 +796,14 @@ def get_metadata(db, dataset=None, lineage=None, sample=None, strain=None):
             """
         sample_df = con.execute(query_sample).fetchdf()
         sample = tuple(sample_df['sample'])
-    elif lineage is not None:
-        lineage_tuple = list_lineages(db)
-        lineage_input = tuple(lineage.split(','))
-        lineage = validate_input(lineage_input, lineage_tuple, 'lineage')
+    elif ref_genome is not None:
+        ref_genome_tuple = list_ref_genomes(db)
+        ref_genome_input = tuple(ref_genome.split(','))
+        ref_genome = validate_input(ref_genome_input, ref_genome_tuple, 'ref_genome')
         query_sample = f"""
             SELECT sample
             FROM metadata
-            WHERE lineage IN {lineage}
+            WHERE ref_genome IN {ref_genome}
             """
         sample_df = con.execute(query_sample).fetchdf()
         sample = tuple(sample_df['sample'])
@@ -860,7 +860,7 @@ def weavepop():
 
 @weavepop.command()
 @click.option('--db', help='Path to the database file', type=click.Path(exists=True, dir_okay=False))
-@click.option('--lineage', default=None, help='Comma separated list of lineage names', type=str)
+@click.option('--ref_genome', default=None, help='Comma separated list of ref_genome names', type=str)
 @click.option('--gene_id', default=None, help='Comma separated list of gene IDs', type=str)
 @click.option('--gene_name', default=None, help='Comma separated list of gene names', type=str)
 @click.option('--description', default=None, help='Comma separated list of gene descriptions', type=str)
@@ -869,8 +869,8 @@ def weavepop():
 @click.option('--end', default=None, help='Maximum end position in chromosome', type=int)
 @click.option('--feature_type', default=None, help='Comma separated list of feature types.', type=str)
 @click.option('--output', default=None, help='Path to output file. Printed to standard output if not provided.', type=click.File('w'))
-def annotation(db, lineage, gene_id, gene_name, description, chromosome, start, end, feature_type, output):
-    result = get_annotation(db, lineage=lineage, gene_id=gene_id, gene_name=gene_name, description=description,
+def annotation(db, ref_genome, gene_id, gene_name, description, chromosome, start, end, feature_type, output):
+    result = get_annotation(db, ref_genome=ref_genome, gene_id=gene_id, gene_name=gene_name, description=description,
                                 chromosome=chromosome, start=start, end=end, feature_type=feature_type)
     if output is None:
         result.to_csv(sys.stdout, sep='\t',index=False)
@@ -885,12 +885,12 @@ def annotation(db, lineage, gene_id, gene_name, description, chromosome, start, 
 @click.option('--gene_name', default=None, help='Comma separated list of gene names', type=str)
 @click.option('--sample', default=None, help='Comma separated list of sample IDs', type=str)
 @click.option('--strain', default=None, help='Comma separated list of strain names', type=str)
-@click.option('--lineage', default=None, help='Comma separated list of lineage names', type=str)
+@click.option('--ref_genome', default=None, help='Comma separated list of ref_genome names', type=str)
 @click.option('--seq_type', default='DNA', help='Sequence type. Options are DNA and PROTEIN', show_default=True, type=str)
 @click.option('--output', default=None, help='Path to output file. Printed to standard output if not provided.', type=click.File('w'))
-def sequences(db, gene_id, gene_name, dataset, sample, strain, lineage, seq_type, output):
+def sequences(db, gene_id, gene_name, dataset, sample, strain, ref_genome, seq_type, output):
     result = get_sequences(db, gene_id=gene_id, gene_name=gene_name, dataset=dataset, sample=sample, 
-                           strain=strain, lineage=lineage, seq_type=seq_type)
+                           strain=strain, ref_genome=ref_genome, seq_type=seq_type)
     records = df_to_seqrecord(result)
     fasta_text = seqrecord_to_text(records)
     if output is None:
@@ -903,12 +903,12 @@ def sequences(db, gene_id, gene_name, dataset, sample, strain, lineage, seq_type
 @click.option('--db', help='Path to the database file', type=click.Path(exists=True, dir_okay=False))
 @click.option('--gene_id', default=None, help='Comma separated list of gene IDs', type=str)
 @click.option('--gene_name', default=None, help='Comma separated list of gene names', type=str)
-@click.option('--lineage', default=None, help='Comma separated list of lineage names', type=str)
+@click.option('--ref_genome', default=None, help='Comma separated list of ref_genome names', type=str)
 @click.option('--seq_type', default='DNA', help='Sequence type. Options are DNA and PROTEIN', show_default=True, type=str)
 @click.option('--output', default=None, help='Path to output file. Printed to standard output if not provided.', type=click.File('w'))
-def ref_sequences(db, gene_id, gene_name,  lineage, seq_type, output):
+def ref_sequences(db, gene_id, gene_name,  ref_genome, seq_type, output):
     result = get_ref_sequences(db, gene_id=gene_id, gene_name=gene_name, 
-                           lineage=lineage, seq_type=seq_type)
+                           ref_genome=ref_genome, seq_type=seq_type)
     records = df_to_seqrecord(result)
     fasta_text = seqrecord_to_text(records)
     if output is None:
@@ -924,17 +924,17 @@ def ref_sequences(db, gene_id, gene_name,  lineage, seq_type, output):
 @click.option('--gene_name', default=None, help='Comma separated list of gene names', type=str)
 @click.option('--sample', default=None, help='Comma separated list of sample IDs', type=str)
 @click.option('--strain', default=None, help='Comma separated list of strain names', type=str)
-@click.option('--lineage', default=None, help='Comma separated list of lineage names', type=str)
+@click.option('--ref_genome', default=None, help='Comma separated list of ref_genome names', type=str)
 @click.option('--impact', default=None, help='Comma separated list of impacts', type=str)
 @click.option('--effect_type', default=None, help='Comma separated list of effect types', type=str)
 @click.option('--chromosome', default=None, help='Comma separated list of chromosome names', type=str)
 @click.option('--start', default=None, help='Minimum start position in chromosome', type=int)
 @click.option('--end', default=None, help='Maximum end position in chromosome', type=int)
 @click.option('--output', default=None, help='Path to output file. Printed to standard output if not provided.', type=click.File('w'))
-def variants(db, dataset, gene_id, gene_name, sample, strain, lineage, impact, effect_type, chromosome, 
+def variants(db, dataset, gene_id, gene_name, sample, strain, ref_genome, impact, effect_type, chromosome, 
              start, end, output):
     result = get_variants(db, dataset=dataset, gene_id=gene_id, gene_name=gene_name,  sample=sample, strain=strain, 
-                     lineage=lineage, impact=impact, effect_type=effect_type, chromosome=chromosome, 
+                     ref_genome=ref_genome, impact=impact, effect_type=effect_type, chromosome=chromosome, 
                      start=start, end=end)
     if output is None:
         result.to_csv(sys.stdout, sep='\t',index=False)
@@ -946,7 +946,7 @@ def variants(db, dataset, gene_id, gene_name, sample, strain, lineage, impact, e
 @click.option('--dataset', default=None, help='Comma separated list of dataset names', type=str)
 @click.option('--strain', default=None, help='Comma separated list of strain names', type=str)
 @click.option('--sample', default=None, help='Comma separated list of sample IDs', type=str)
-@click.option('--lineage', default=None, help='Comma separated list of lineage names', type=str)
+@click.option('--ref_genome', default=None, help='Comma separated list of ref_genome names', type=str)
 @click.option('--chromosome', default=None, help='Comma separated list of chromosome names', type=str)
 @click.option('--start', default=None, help='Minimum start position in chromosome', type=int)
 @click.option('--end', default=None, help='Maximum end position in chromosome', type=int)
@@ -955,8 +955,8 @@ def variants(db, dataset, gene_id, gene_name, sample, strain, lineage, impact, e
 @click.option('--cnv', default=None, help='Comma separated list of CNV types. Options are duplication and deletion.', type=str)
 @click.option('--repeat_fraction', default=None, help='Max repeat fraction allowed in CNV', type=float)
 @click.option('--output', default=None, help='Path to output file. Printed to standard output if not provided.', type=click.File('w'))
-def cnv(db, dataset, strain, sample, lineage, chromosome, start, end, min_size, max_size, cnv, repeat_fraction, output):
-    result = get_cnv(db, dataset=dataset ,strain=strain, sample=sample, lineage=lineage,
+def cnv(db, dataset, strain, sample, ref_genome, chromosome, start, end, min_size, max_size, cnv, repeat_fraction, output):
+    result = get_cnv(db, dataset=dataset ,strain=strain, sample=sample, ref_genome=ref_genome,
                     chromosome=chromosome, start=start, end =end, min_size=min_size, max_size=max_size,
                     cnv=cnv, repeat_fraction=repeat_fraction)
     if output is None:
@@ -967,12 +967,12 @@ def cnv(db, dataset, strain, sample, lineage, chromosome, start, end, min_size, 
 @weavepop.command()
 @click.option('--db', help='Path to the database file', type=click.Path(exists=True, dir_okay=False))
 @click.option('--dataset', default=None, help='Comma separated list of dataset names', type=str)
-@click.option('--lineage', default=None, help='Comma separated list of lineage names', type=str)
+@click.option('--ref_genome', default=None, help='Comma separated list of ref_genome names', type=str)
 @click.option('--sample', default=None, help='Comma separated list of sample IDs', type=str)
 @click.option('--strain', default=None, help='Comma separated list of strain names', type=str)
 @click.option('--output', default=None, help='Path to output file. Printed to standard output if not provided.', type=click.File('w'))
-def metadata(db, dataset, lineage, sample, strain, output):
-    result = get_metadata(db, dataset=dataset, lineage=lineage, sample=sample, strain=strain)
+def metadata(db, dataset, ref_genome, sample, strain, output):
+    result = get_metadata(db, dataset=dataset, ref_genome=ref_genome, sample=sample, strain=strain)
     if output is None:
         result.to_csv(sys.stdout, sep='\t',index=False)
     else:

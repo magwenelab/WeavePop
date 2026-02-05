@@ -9,8 +9,8 @@ import pandas as pd
 
 genes_path=snakemake.input.genes
 
-lineages_path=str(snakemake.params.refdir)
-lineages = snakemake.params.lins
+ref_genomes_path=str(snakemake.params.refdir)
+ref_genomes = snakemake.params.lins
 
 output_path=snakemake.output.tsv
 
@@ -28,15 +28,15 @@ rename_dict = {
 }
 genes.rename(columns=rename_dict, inplace=True)
 
-print("Reading list of unmapped features of each lineage and joining to annotation table...")
-for lineage in lineages:
-    unmapped_features_path = os.path.join(lineages_path, lineage, "unmapped_features.txt")
+print("Reading list of unmapped features of each ref_genome and joining to annotation table...")
+for ref_genome in ref_genomes:
+    unmapped_features_path = os.path.join(ref_genomes_path, ref_genome, "unmapped_features.txt")
     unmapped_features = pd.read_csv(unmapped_features_path, sep="\t", header =None, names=["gene_id"])
-    unmapped_features[lineage] = "unmapped"
+    unmapped_features[ref_genome] = "unmapped"
     genes = genes.merge(unmapped_features, on="gene_id", how="left")
 
 print("Filtering unmapped features...")
-unmapped = genes.dropna(subset=lineages, how='all')
+unmapped = genes.dropna(subset=ref_genomes, how='all')
 
 print("Saving table...")
 unmapped.to_csv(output_path, sep="\t", index=False)

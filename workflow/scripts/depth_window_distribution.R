@@ -29,18 +29,18 @@ windows <- read.delim(windows_input, sep= "\t", header = TRUE, stringsAsFactors 
 chromosomes <- read.csv(chromosomes_input, sep= ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
 metadata <- read.delim(metadata_input, sep = ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
 
-print("Obtaining lineage of sample...")
+print("Obtaining ref_genome of sample...")
 
-lineage_name <- as.character(metadata$lineage[metadata$sample == sample])
+ref_genome_name <- as.character(metadata$ref_genome[metadata$sample == sample])
 strain_name <- as.character(metadata$strain[metadata$sample == sample])
 
-print("Obtaining lineage of sample...")
+print("Obtaining ref_genome of sample...")
 
-lineage_name <- as.character(metadata$lineage[metadata$sample == sample])
+ref_genome_name <- as.character(metadata$ref_genome[metadata$sample == sample])
 
 print("Filtering and ordering chromosomes...")
 chromosomes <- chromosomes %>%
-                filter(lineage == lineage_name)%>%
+                filter(ref_genome == ref_genome_name)%>%
                 arrange(length)
 
 chromosomes$chromosome <- factor(chromosomes$chromosome, levels = unique(chromosomes$chromosome))
@@ -71,7 +71,7 @@ c <- ggplot(windows, aes(x = chromosome, y = depth))+
         title = "Distribution of all Depth Metrics of Windows per Chromosome and Whole Genome",
         subtitle = paste("Sample:", sample,
                     "Strain:", strain_name,
-                    " Lineage:", lineage_name, 
+                    " Reference genome:", ref_genome_name, 
                     " Window size:", window_size,  
                     " Depth threshold for CNV calling:", depth_threshold,
                     " Smoothing size for CNV calling:", smoothing_size,

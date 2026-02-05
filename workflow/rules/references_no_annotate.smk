@@ -1,16 +1,16 @@
 # =================================================================================================
-#   Per lineage | Standardize GFF format
+#   Per ref_genome | Standardize GFF format
 # =================================================================================================
 
 
 rule ref_fix_ids:
     input:
-        gff=REF_DATA / "{lineage}.gff",
+        gff=REF_DATA / "{ref_genome}.gff",
         config=rules.agat_config.output,
     output:
-        fixed_ID=INT_REFS_DIR / "{lineage}" / "{lineage}.fixed.gff",
+        fixed_ID=INT_REFS_DIR / "{ref_genome}" / "{ref_genome}.fixed.gff",
     log:
-        LOGS / "references" / "no_annotation" / "ref_fix_ids_{lineage}.log",
+        LOGS / "references" / "no_annotation" / "ref_fix_ids_{ref_genome}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -28,9 +28,9 @@ rule ref_add_locus_tag:
         fixed_ID=rules.ref_fix_ids.output.fixed_ID,
         config=rules.agat_config.output,
     output:
-        fixed_locus=INT_REFS_DIR / "{lineage}" / "{lineage}.fixed_locus.gff",
+        fixed_locus=INT_REFS_DIR / "{ref_genome}" / "{ref_genome}.fixed_locus.gff",
     log:
-        LOGS / "references" / "no_annotation" / "ref_add_locus_tag_{lineage}.log",
+        LOGS / "references" / "no_annotation" / "ref_add_locus_tag_{ref_genome}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -49,9 +49,9 @@ rule ref_fix_descriptions:
         fixed_locus=rules.ref_add_locus_tag.output.fixed_locus,
         config=rules.agat_config.output,
     output:
-        fixed_description=INT_REFS_DIR / "{lineage}" / "{lineage}.fixed_description.gff",
+        fixed_description=INT_REFS_DIR / "{ref_genome}" / "{ref_genome}.fixed_description.gff",
     log:
-        LOGS / "references" / "no_annotation" / "ref_fix_descriptions_{lineage}.log",
+        LOGS / "references" / "no_annotation" / "ref_fix_descriptions_{ref_genome}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -70,9 +70,9 @@ rule ref_gff2tsv_1:
         gff=rules.ref_fix_descriptions.output.fixed_description,
         config=rules.agat_config.output,
     output:
-        tsv=INT_REFS_DIR / "{lineage}" / "{lineage}_1.gff.tsv",
+        tsv=INT_REFS_DIR / "{ref_genome}" / "{ref_genome}_1.gff.tsv",
     log:
-        LOGS / "references" / "no_annotation" / "ref_gff2tsv_1_{lineage}.log",
+        LOGS / "references" / "no_annotation" / "ref_gff2tsv_1_{ref_genome}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -89,10 +89,10 @@ rule ref_recreate_ids:
     input:
         tsv=rules.ref_gff2tsv_1.output.tsv,
     output:
-        gff=INT_REFS_DIR / "{lineage}" / "{lineage}_annotated.gff",
-        tsv=INT_REFS_DIR / "{lineage}" / "{lineage}_annotated.gff.tsv",
+        gff=INT_REFS_DIR / "{ref_genome}" / "{ref_genome}_annotated.gff",
+        tsv=INT_REFS_DIR / "{ref_genome}" / "{ref_genome}_annotated.gff.tsv",
     log:
-        LOGS / "references" / "no_annotation" / "ref_recreate_ids_{lineage}.log",
+        LOGS / "references" / "no_annotation" / "ref_recreate_ids_{ref_genome}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:

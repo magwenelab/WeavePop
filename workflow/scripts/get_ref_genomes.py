@@ -13,15 +13,15 @@ output=snakemake.output[0]
 
 print("Reading metadata file...")
 metadata = pd.read_csv(input, sep=",", header=0)
-lineages = list(set(metadata["lineage"]))
-if len(lineages) == 0:
+ref_genomes = list(set(metadata["ref_genome"]))
+if len(ref_genomes) == 0:
     message = (
-        "No lineages found. Exiting. "
+        "No ref_genomes found. Exiting. "
     ) 
     raise ValueError(message)
 else:
-    for lineage in lineages:
-        path = Path(output, f"{lineage}.lineage")
+    for ref_genome in ref_genomes:
+        path = Path(output, f"{ref_genome}.ref_genome")
         print(f"Creating file: {path}..")
         path.parent.mkdir(parents=True, exist_ok=True)
         path.touch()

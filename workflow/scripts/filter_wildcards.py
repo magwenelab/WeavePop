@@ -9,12 +9,12 @@ from pathlib import Path
 
 input=snakemake.input[0]
 output_samples=snakemake.output[0]
-output_lineages=snakemake.output[1]
+output_ref_genomes=snakemake.output[1]
 
 print("Reading file...")
 metadata = pd.read_csv(input, header=0)
 sample_names = list(metadata["sample"])
-lineage_names = set(metadata["lineage"])
+ref_genome_names = set(metadata["ref_genome"])
 if len(sample_names) == 0:
     message = (
         "The quality filter removed all samples! "
@@ -30,9 +30,9 @@ else:
         print(f"Creating file: {path}...")
         path.parent.mkdir(parents=True, exist_ok=True)
         path.touch()
-    print(f"Number of lineages: {len(lineage_names)}")
-    for lineage in lineage_names:
-        path = Path(output_lineages,f"{lineage}.txt")
+    print(f"Number of ref_genomes: {len(ref_genome_names)}")
+    for ref_genome in ref_genome_names:
+        path = Path(output_ref_genomes,f"{ref_genome}.txt")
         print(f"Creating file: {path}...")
         path.parent.mkdir(parents=True, exist_ok=True)
         path.touch()

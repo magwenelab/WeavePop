@@ -14,17 +14,17 @@ vcf_files=snakemake.input.vcfs
 vcf_output=snakemake.output.vcf
 presence_output=snakemake.output.tsv
 
-lineage=snakemake.wildcards.lineage
+ref_genome=snakemake.wildcards.ref_genome
 tempdir=snakemake.params.tmp_dir
 
 print("Creating comments for the top of the VCF file...")
 software_legend="##WeavePop_Script=unite_vcfs.xsh"
 var_id_legend=("##INFO=<ID=var_id,Number=1,Type=String,Description="+
-    "\"Identifier of unique lineage variants.\">")
+    "\"Identifier of unique ref_genome variants.\">")
 
 
 if len(vcf_files) == 1:
-    print("Only one sample in lineage, no need to unite. Copying VCF file...")
+    print("Only one sample in ref_genome, no need to unite. Copying VCF file...")
     vcf = pd.read_csv(
         vcf_files[0], sep='\t', comment='#', header=None,
         names=['#CHROM', 'POS', 'ID', 'REF', 'ALT', 'QUAL', 'FILTER','INFO', 'FORMAT', 'sample'],
@@ -33,7 +33,7 @@ if len(vcf_files) == 1:
     vcf.insert(vcf.columns.get_loc('POS') + 1, 'ID', '.')
     vcf.insert(vcf.columns.get_loc('ALT') + 1, 'QUAL', '.')
     vcf.insert(vcf.columns.get_loc('QUAL') + 1, 'FILTER', '.')
-    vcf['var_id'] = 'var_' + lineage + '_' + (vcf.index + 1).astype(str)
+    vcf['var_id'] = 'var_' + ref_genome + '_' + (vcf.index + 1).astype(str)
     vcf['INFO'] = 'var_id=' + vcf['var_id'].astype(str) + ';' + 'MAT=1' 
 
     print("Obtaining sample name from the VCF file...")
@@ -57,7 +57,7 @@ else:
 
     sites_txt_file = os.path.join(tempdir, "sites.txt")
 
-    print("Running bcftools isec to unite the variants of all the samples in the lineage...")
+    print("Running bcftools isec to unite the variants of all the samples in the ref_genome...")
     $(bcftools isec -p @(tempdir) @(vcf_files) 2>> @(log_file))
 
     print("Converting sites.txt to VCF...")
@@ -65,7 +65,7 @@ else:
         header=None,
         names=['#CHROM', 'POS', 'REF', 'ALT', 'INFO'],
         dtype=str)
-    sites_txt['var_id'] = 'var_' + lineage + '_' + (sites_txt.index + 1).astype(str)
+    sites_txt['var_id'] = 'var_' + ref_genome + '_' + (sites_txt.index + 1).astype(str)
     sites_vcf = sites_txt.copy()
     sites_vcf['INFO'] = (
         'var_id=' + sites_vcf['var_id'].astype(str) +

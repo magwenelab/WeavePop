@@ -44,23 +44,23 @@ rule dataset_depth_by_chrom_plot:
 
 
 # =================================================================================================
-#   Per lineage | Plot classification of variants
+#   Per ref_genome | Plot classification of variants
 # =================================================================================================
 
 rule refs_variant_classification_plots:
     input:
         chromosomes=DATASET_DIR / "chromosomes.csv",
-        classif=INT_DATASET_DIR / "snpeff" / "{lineage}_variant_classification.tsv",
-        variants=INT_DATASET_DIR / "snpeff" / "{lineage}_variants.tsv",
-        presence=INT_DATASET_DIR / "snpeff" / "{lineage}_presence.tsv",
-        loci=INT_REFS_DIR / "{lineage}" / "loci_to_plot.tsv",
+        classif=INT_DATASET_DIR / "snpeff" / "{ref_genome}_variant_classification.tsv",
+        variants=INT_DATASET_DIR / "snpeff" / "{ref_genome}_variants.tsv",
+        presence=INT_DATASET_DIR / "snpeff" / "{ref_genome}_presence.tsv",
+        loci=INT_REFS_DIR / "{ref_genome}" / "loci_to_plot.tsv",
     output:
-        plot=DATASET_DIR / "plots" / "{lineage}_variant_summary.png",
-        plot_density=REFS_DIR / "{lineage}" / "{lineage}_variants_by_windows.png",
+        plot=DATASET_DIR / "plots" / "{ref_genome}_variant_summary.png",
+        plot_density=REFS_DIR / "{ref_genome}" / "{ref_genome}_variants_by_windows.png",
     params:
         window_size=config["depth_quality"]["mosdepth"]["window"],
     log:
-        LOGS / "dataset" / "plots" / "refs_variant_classification_plots_{lineage}.log",
+        LOGS / "dataset" / "plots" / "refs_variant_classification_plots_{ref_genome}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:

@@ -104,10 +104,10 @@ rule main_ref_symlinks:
         fasta=MAIN_FASTA,
         gff=rules.main_ref_recreate_ids.output.gff,
     output:
-        fasta=INT_REFS_DIR / "{lineage}" / "main_ref.fasta",
-        gff=INT_REFS_DIR / "{lineage}" / "main_ref.gff",
+        fasta=INT_REFS_DIR / "{ref_genome}" / "main_ref.fasta",
+        gff=INT_REFS_DIR / "{ref_genome}" / "main_ref.gff",
     log:
-        LOGS / "references" / "annotation" / "main_liks_{lineage}.log",
+        LOGS / "references" / "annotation" / "main_liks_{ref_genome}.log",
     conda:
         "../envs/shell.yaml"
     shell:
@@ -117,27 +117,27 @@ rule main_ref_symlinks:
 
 
 # ==================================================================================================
-#   Per lineage | Annotate reference genomes using main reference
+#   Per ref_genome | Annotate reference genomes using main reference
 # ==================================================================================================
 
 
 rule ref2ref_liftoff:
     input:
-        target_refs=INT_REFS_DIR / "{lineage}" / "{lineage}.fasta",
+        target_refs=INT_REFS_DIR / "{ref_genome}" / "{ref_genome}.fasta",
         fasta=rules.main_ref_symlinks.output.fasta,
         gff=rules.main_ref_symlinks.output.gff,
     output:
-        target_gff=INT_REFS_DIR / "{lineage}" / "liftoff.gff_polished",
-        unmapped=INT_REFS_DIR / "{lineage}" / "unmapped_features.txt",
-        intermediate=directory(INT_REFS_DIR / "{lineage}" / "intermediate_liftoff"),
-        fai_main=INT_REFS_DIR / "{lineage}" / "main_ref.fasta.fai",
-        fai=INT_REFS_DIR / "{lineage}" / "{lineage}.fasta.fai",
-        mmi=INT_REFS_DIR / "{lineage}" / "{lineage}.fasta.mmi",
+        target_gff=INT_REFS_DIR / "{ref_genome}" / "liftoff.gff_polished",
+        unmapped=INT_REFS_DIR / "{ref_genome}" / "unmapped_features.txt",
+        intermediate=directory(INT_REFS_DIR / "{ref_genome}" / "intermediate_liftoff"),
+        fai_main=INT_REFS_DIR / "{ref_genome}" / "main_ref.fasta.fai",
+        fai=INT_REFS_DIR / "{ref_genome}" / "{ref_genome}.fasta.fai",
+        mmi=INT_REFS_DIR / "{ref_genome}" / "{ref_genome}.fasta.mmi",
     params:
         refdir=INT_REFS_DIR,
         extra=config["annotate_references"]["liftoff"]["extra"],
     log:
-        LOGS / "references" / "annotation" / "ref2ref_liftoff_{lineage}.log",
+        LOGS / "references" / "annotation" / "ref2ref_liftoff_{ref_genome}.log",
     threads: config["annotate_references"]["liftoff"]["threads"]
     resources:
         tmpdir=TEMPDIR,
@@ -146,7 +146,7 @@ rule ref2ref_liftoff:
     shell:
         "liftoff "
         "-g {input.gff} "
-        "-o {params.refdir}/{wildcards.lineage}/liftoff.gff "
+        "-o {params.refdir}/{wildcards.ref_genome}/liftoff.gff "
         "-dir {output.intermediate} "
         "-u {output.unmapped} "
         "-p {threads} "
@@ -160,9 +160,9 @@ rule rename_polished:
     input:
         gff=rules.ref2ref_liftoff.output.target_gff,
     output:
-        gff=INT_REFS_DIR / "{lineage}" / "{lineage}_annotated.gff",
+        gff=INT_REFS_DIR / "{ref_genome}" / "{ref_genome}_annotated.gff",
     log:
-        LOGS / "references" / "annotation" / "rename_polished_{lineage}.log",
+        LOGS / "references" / "annotation" / "rename_polished_{ref_genome}.log",
     conda:
         "../envs/shell.yaml"
     shell:
@@ -173,14 +173,14 @@ rule rename_polished:
 rule refs_unmapped_features:
     input:
         genes=rules.main_ref_recreate_ids.output.tsv,
-        unmapped=expand(rules.ref2ref_liftoff.output.unmapped, lineage=LINEAGES),
+        unmapped=expand(rules.ref2ref_liftoff.output.unmapped, ref_genome=REF_GENOMES),
     output:
         tsv=REFS_DIR / "refs_unmapped_features.tsv",
     conda:
         "../envs/pandas.yaml"
     params:
         refdir=INT_REFS_DIR,
-        lins=expand("{lineage}", lineage=LINEAGES),
+        lins=expand("{ref_genome}", ref_genome=REF_GENOMES),
     log:
         LOGS / "references" / "annotation" / "refs_unmapped_features.log",
     script:

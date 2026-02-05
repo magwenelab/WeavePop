@@ -1,14 +1,14 @@
 # ==================================================================================================
-#   Per lineage | Add repetitive sequences, introns, intergenic regions, and convert to TSV
+#   Per ref_genome | Add repetitive sequences, introns, intergenic regions, and convert to TSV
 # ==================================================================================================
 rule ref_add_intergenic:
     input:
-        gff=INT_REFS_DIR / "{lineage}" / "{lineage}_annotated.gff",
+        gff=INT_REFS_DIR / "{ref_genome}" / "{ref_genome}_annotated.gff",
         config=rules.agat_config.output,
     output:
-        INT_REFS_DIR / "{lineage}" / "{lineage}_intergenic.gff",
+        INT_REFS_DIR / "{ref_genome}" / "{ref_genome}_intergenic.gff",
     log:
-        LOGS / "references" / "annotation" / "ref_add_intergenic_{lineage}.log",
+        LOGS / "references" / "annotation" / "ref_add_intergenic_{ref_genome}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -26,9 +26,9 @@ rule ref_add_introns:
         gff=rules.ref_add_intergenic.output,
         config=rules.agat_config.output,
     output:
-        gff=INT_REFS_DIR / "{lineage}" / "{lineage}_interg_introns.gff",
+        gff=INT_REFS_DIR / "{ref_genome}" / "{ref_genome}_interg_introns.gff",
     log:
-        LOGS / "references" / "ref_processing" / "ref_add_introns_{lineage}.log",
+        LOGS / "references" / "ref_processing" / "ref_add_introns_{ref_genome}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -45,11 +45,11 @@ rule ref_add_repeats:
     input:
         unpack(ref_add_repeats_input),
     output:
-        INT_REFS_DIR / "{lineage}" / "{lineage}_repeats.gff",
+        INT_REFS_DIR / "{ref_genome}" / "{ref_genome}_repeats.gff",
     params:
         find_repeats=config["repeats"]["activate"],
     log:
-        LOGS / "references" / "ref_processing" / "ref_add_repeats_{lineage}.log",
+        LOGS / "references" / "ref_processing" / "ref_add_repeats_{ref_genome}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -63,9 +63,9 @@ rule ref_gff2tsv:
         target=rules.ref_add_repeats.output,
         config=rules.agat_config.output,
     output:
-        tsv=INT_REFS_DIR / "{lineage}" / "{lineage}_repeats.gff.tsv",
+        tsv=INT_REFS_DIR / "{ref_genome}" / "{ref_genome}_repeats.gff.tsv",
     log:
-        LOGS / "references" / "ref_processing" / "gff2tsv_{lineage}.log",
+        LOGS / "references" / "ref_processing" / "gff2tsv_{ref_genome}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -82,13 +82,13 @@ rule ref_reformat_annotation:
     input:
         tsv=rules.ref_gff2tsv.output.tsv,
     output:
-        tsv=REFS_DIR / "{lineage}" / "{lineage}.gff.tsv",
-        gff=REFS_DIR / "{lineage}" / "{lineage}.gff",
+        tsv=REFS_DIR / "{ref_genome}" / "{ref_genome}.gff.tsv",
+        gff=REFS_DIR / "{ref_genome}" / "{ref_genome}.gff",
     params:
-        lineage="{lineage}",
-        version="lineage",
+        ref_genome="{ref_genome}",
+        version="ref_genome",
     log:
-        LOGS / "references" / "ref_processing" / "ref_reformat_annotation_{lineage}.log",
+        LOGS / "references" / "ref_processing" / "ref_reformat_annotation_{ref_genome}.log",
     conda:
         "../envs/pandas.yaml"
     script:
@@ -96,19 +96,19 @@ rule ref_reformat_annotation:
 
 
 # =================================================================================================
-#   Per lineage | Extract CDS and protein sequences from reference genomes and convert to CSV
+#   Per ref_genome | Extract CDS and protein sequences from reference genomes and convert to CSV
 # =================================================================================================
 
 
 rule extract_cds_seqs:
     input:
-        gff=REFS_DIR / "{lineage}" / "{lineage}.gff",
-        fasta=INT_REFS_DIR / "{lineage}" / "{lineage}.fasta",
+        gff=REFS_DIR / "{ref_genome}" / "{ref_genome}.gff",
+        fasta=INT_REFS_DIR / "{ref_genome}" / "{ref_genome}.fasta",
         config=rules.agat_config.output,
     output:
-        cds=INT_REFS_DIR / "{lineage}" / "{lineage}.cds.fa",
+        cds=INT_REFS_DIR / "{ref_genome}" / "{ref_genome}.cds.fa",
     log:
-        LOGS / "references" / "snpeff" / "extract_cds_seqs_{lineage}.log",
+        LOGS / "references" / "snpeff" / "extract_cds_seqs_{ref_genome}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -124,14 +124,14 @@ rule extract_cds_seqs:
 
 rule extract_protein_seqs:
     input:
-        gff=REFS_DIR / "{lineage}" / "{lineage}.gff",
-        fasta=INT_REFS_DIR / "{lineage}" / "{lineage}.fasta",
+        gff=REFS_DIR / "{ref_genome}" / "{ref_genome}.gff",
+        fasta=INT_REFS_DIR / "{ref_genome}" / "{ref_genome}.fasta",
         config=rules.agat_config.output,
         cds=rules.extract_cds_seqs.output.cds,
     output:
-        prots=INT_REFS_DIR / "{lineage}" / "{lineage}.prots.fa",
+        prots=INT_REFS_DIR / "{ref_genome}" / "{ref_genome}.prots.fa",
     log:
-        LOGS / "references" / "snpeff" / "extract_protein_seqs_{lineage}.log",
+        LOGS / "references" / "snpeff" / "extract_protein_seqs_{ref_genome}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -148,11 +148,11 @@ rule extract_protein_seqs:
 
 rule ref_cds2csv:
     input:
-        fa=INT_REFS_DIR / "{lineage}" / "{lineage}.cds.fa",
+        fa=INT_REFS_DIR / "{ref_genome}" / "{ref_genome}.cds.fa",
     output:
-        csv=INT_REFS_DIR / "{lineage}" / "{lineage}.cds.csv",
+        csv=INT_REFS_DIR / "{ref_genome}" / "{ref_genome}.cds.csv",
     log:
-        LOGS / "references" / "annotation" / "ref_cds2csv_{lineage}.log",
+        LOGS / "references" / "annotation" / "ref_cds2csv_{ref_genome}.log",
     params:
         seq_type="DNA",
     resources:
@@ -165,11 +165,11 @@ rule ref_cds2csv:
 
 rule ref_prots2csv:
     input:
-        fa=INT_REFS_DIR / "{lineage}" / "{lineage}.prots.fa",
+        fa=INT_REFS_DIR / "{ref_genome}" / "{ref_genome}.prots.fa",
     output:
-        csv=INT_REFS_DIR / "{lineage}" / "{lineage}.prots.csv",
+        csv=INT_REFS_DIR / "{ref_genome}" / "{ref_genome}.prots.csv",
     log:
-        LOGS / "references" / "annotation" / "ref_prots2csv_{lineage}.log",
+        LOGS / "references" / "annotation" / "ref_prots2csv_{ref_genome}.log",
     params:
         seq_type="PROTEIN",
     resources:

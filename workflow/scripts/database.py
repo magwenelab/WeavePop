@@ -167,7 +167,7 @@ create_table_with_constraints(con, df_coding_sequences, 'coding_sequences', [
     "FOREIGN KEY (sample) REFERENCES metadata(sample)"
 ])
 create_table_with_constraints(con, df_ref_coding_sequences, 'ref_coding_sequences', [
-    "PRIMARY KEY (lineage,feature_id,seq_type)"
+    "PRIMARY KEY (ref_genome,feature_id,seq_type)"
 ])
 create_table_with_constraints(con, df_variants, 'variants', [
     "PRIMARY KEY (var_id)",

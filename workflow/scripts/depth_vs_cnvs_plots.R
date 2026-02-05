@@ -25,9 +25,9 @@ cnv_chromosomes <- read.delim(cnv_chromosomes_input, sep= "\t", header = TRUE, s
 chrom_names <- read.csv(chrom_names_input,sep= ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
 metadata <- read.delim(metadata_input, sep = ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
 
-print("Obtaining lineage of sample...")
+print("Obtaining ref_genome of sample...")
 
-lineage_name <- as.character(metadata$lineage[metadata$sample == sample])
+ref_genome_name <- as.character(metadata$ref_genome[metadata$sample == sample])
 strain_name <- as.character(metadata$strain[metadata$sample == sample])
 
 chrom_metrics <- cnv_chromosomes %>%
@@ -48,7 +48,7 @@ p <- ggplot(chrom_metrics, aes(x = coverage_percent, y = chrom_norm_depth, color
         theme_bw() +
         theme(legend.position = "right") +
         labs(title = "Normalized Depth vs.\nPercent of CNV Coverage per Chromosome",
-            subtitle = paste("Sample:", sample, "Strain:", strain_name," Lineage:", lineage_name,  sep = " "),
+            subtitle = paste("Sample:", sample, "Strain:", strain_name," Reference genome:", ref_genome_name,  sep = " "),
              y = "Normalized Median Depth of Chromosome",
              x = "Percent of Chromosome Covered by CNVs",
              color = "Chromosome",

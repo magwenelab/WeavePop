@@ -50,14 +50,14 @@ if (!is.null(snakemake@input$repeats)) {
   repeats_table$repeat_type <- "."
 }
 
-print("Obtaining lineage of sample...")
+print("Obtaining ref_genome of sample...")
 
-lineage_name <- as.character(metadata$lineage[metadata$sample == sample])
+ref_genome_name <- as.character(metadata$ref_genome[metadata$sample == sample])
 strain_name <- as.character(metadata$strain[metadata$sample == sample])
 
 print("Filtering chromosome names...")
 chrom_names <- chrom_names %>%
-  filter(lineage == lineage_name)
+  filter(ref_genome == ref_genome_name)
 
 print("Ordering chromosome names...")
 chrom_names['accession_chromosome'] <- paste(chrom_names$chromosome, chrom_names$accession, sep = "xxx")
@@ -114,7 +114,7 @@ plot <- ggplot()+
   facet_wrap(~accession_chromosome, strip.position = "right", ncol = 2, labeller = as_labeller(my_labeller)) +
   scale_x_continuous(name = "Position (bp) ", labels = comma)+
   labs(title = "Mapping Quality of Windows Along Chromosomes",
-      subtitle = paste("Sample:", sample, "Strain:", strain_name, " Lineage:", lineage_name, " Window size:", window_size, sep = " "),
+      subtitle = paste("Sample:", sample, "Strain:", strain_name, " Reference genome:", ref_genome_name, " Window size:", window_size, sep = " "),
       y = "Mapping Quality (Phred score)")+
   theme_classic()+
   theme(panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 1))+
@@ -131,7 +131,7 @@ print("Adding loci to plot if available...")
 if (nrow(loci_table) != 0){
   print("Rearrange loci data")
   loci_sample <- loci_table %>% 
-    filter(lineage == lineage_name) %>%
+    filter(ref_genome == ref_genome_name) %>%
     select(accession, start, loci) %>%
     droplevels()
 

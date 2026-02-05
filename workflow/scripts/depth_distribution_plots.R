@@ -28,9 +28,9 @@ depth <- read.table(depth_input, header = TRUE, stringsAsFactors = TRUE, sep = "
 chrom_names <- read.csv(chrom_names_input, header = TRUE , sep = ",")
 metadata <- read.delim(metadata_input, sep = ",", header = TRUE, stringsAsFactors = TRUE, na = c("", "N/A"))
 
-print("Obtaining lineage of sample...")
+print("Obtaining ref_genome of sample...")
 
-lineage_name <- as.character(metadata$lineage[metadata$sample == sample])
+ref_genome_name <- as.character(metadata$ref_genome[metadata$sample == sample])
 strain_name <- as.character(metadata$strain[metadata$sample == sample])
 
 print("Adding 0 to null depth values...")
@@ -91,7 +91,7 @@ plot_truncated <- ggplot()+
 combined <- plot_global / plot_truncated_log / plot_truncated 
 combined <- combined +
   plot_annotation(title = "Depth Distribution of Whole Genome by Quality of Read Mappings",
-                  subtitle = paste("Sample:", sample,"Strain:", strain_name, " Lineage:", lineage_name,  sep = " "))
+                  subtitle = paste("Sample:", sample,"Strain:", strain_name, " Reference genome:", ref_genome_name,  sep = " "))
 
 print("Plotting depth distribution by chromosome...")
 by_chrom <- ggplot(depth)+
@@ -125,7 +125,7 @@ by_chrom_truncated <- ggplot(depth)+
 plot_chrom <- by_chrom / by_chrom_log / by_chrom_truncated
 plot_chrom <- plot_chrom +
   plot_annotation(title = "Depth Distribution of Good Quality Mappings of each Chromosome",
-                  subtitle = paste("Sample:", sample,"Strain:", strain_name, " Lineage:", lineage_name,  sep = " "))
+                  subtitle = paste("Sample:", sample,"Strain:", strain_name, " Reference genome:", ref_genome_name,  sep = " "))
 
 print("Saving plots...")
 ggsave(output_chrom, plot = plot_chrom, units = "in", height = gheight, width = gwidth, dpi = gdpi, scale = gscale)

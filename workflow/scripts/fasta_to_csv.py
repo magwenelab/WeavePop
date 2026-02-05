@@ -14,10 +14,10 @@ if snakemake.wildcards.get('sample') is not None:
     sample = snakemake.wildcards.sample
 else:
     sample = None
-if snakemake.wildcards.get('lineage') is not None:
-    lineage = snakemake.wildcards.lineage
+if snakemake.wildcards.get('ref_genome') is not None:
+    ref_genome = snakemake.wildcards.ref_genome
 else:
-    lineage = None
+    ref_genome = None
 
 output=snakemake.output.csv
 
@@ -35,9 +35,9 @@ for record in SeqIO.parse(fasta, "fasta"):
     if sample is not None:
         new_description = sample + "|" + feature_id + " " + gene_id + " " + accession
         df = pd.DataFrame({"sample":sample, "feature_id":feature_id, "seq_type":seq_type, "seq":seq, "seq_description":new_description}, index=[0])
-    elif lineage is not None:
-        new_description = lineage + "|" + feature_id + " " + gene_id + " " + accession
-        df = pd.DataFrame({"lineage":lineage, "feature_id":feature_id, "seq_type":seq_type, "seq":seq, "seq_description":new_description}, index=[0])
+    elif ref_genome is not None:
+        new_description = ref_genome + "|" + feature_id + " " + gene_id + " " + accession
+        df = pd.DataFrame({"ref_genome":ref_genome, "feature_id":feature_id, "seq_type":seq_type, "seq":seq, "seq_description":new_description}, index=[0])
     if df.isnull().values.any() or (df == '').any().any():
         raise ValueError("Empty or NaN value found in data for sample " + sample + " and transcript " + feature_id + ". Check fasta file.")
     print("Adding record to the dataframe with all records...")

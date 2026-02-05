@@ -22,7 +22,7 @@ if filter:
     print("Filtering samples...")
     stats_filtered = stats[stats["quality_warning"].isna()]
     metadata_filtered = metadata.loc[metadata["sample"].isin(stats_filtered["sample"]),]
-    chromosomes_filtered = chromosomes.loc[chromosomes["lineage"].isin(metadata_filtered["lineage"]),]
+    chromosomes_filtered = chromosomes.loc[chromosomes["ref_genome"].isin(metadata_filtered["ref_genome"]),]
     print("Successfully filtered samples from tables.\n")
 else:
     print("No filtering requested, copying tables...")

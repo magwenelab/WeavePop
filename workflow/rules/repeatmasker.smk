@@ -1,5 +1,5 @@
 # =================================================================================================
-#   Per lineage | Run RepeatModeler and RepeatMasker
+#   Per ref_genome | Run RepeatModeler and RepeatMasker
 # =================================================================================================
 
 
@@ -7,16 +7,16 @@ rule repeat_modeler_build:
     input:
         rules.ref_fasta_symlinks.output,
     output:
-        INT_REFS_DIR / "{lineage}" / "repeats" / "db_rmodeler" / "{lineage}.nsq",
+        INT_REFS_DIR / "{ref_genome}" / "repeats" / "db_rmodeler" / "{ref_genome}.nsq",
     params:
-        repdir=lambda wildcards: INT_REFS_DIR / wildcards.lineage / "repeats",
+        repdir=lambda wildcards: INT_REFS_DIR / wildcards.ref_genome / "repeats",
         name=lambda wildcards: INT_REFS_DIR
-        / wildcards.lineage
+        / wildcards.ref_genome
         / "repeats"
         / "db_rmodeler"
-        / wildcards.lineage,
+        / wildcards.ref_genome,
     log:
-        LOGS / "references" / "repeats" / "repeatmodeler_build_{lineage}.log",
+        LOGS / "references" / "repeats" / "repeatmodeler_build_{ref_genome}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -34,11 +34,11 @@ rule repeat_modeler:
         database=rules.repeat_modeler_build.output,
         fasta=rules.ref_fasta_symlinks.output,
     output:
-        INT_REFS_DIR / "{lineage}" / "repeats" / "db_rmodeler" / "{lineage}-families.fa",
+        INT_REFS_DIR / "{ref_genome}" / "repeats" / "db_rmodeler" / "{ref_genome}-families.fa",
     params:
-        dir=lambda wildcards: INT_REFS_DIR / wildcards.lineage / "repeats",
+        dir=lambda wildcards: INT_REFS_DIR / wildcards.ref_genome / "repeats",
     log:
-        LOGS / "references" / "repeats" / "repeatmodeler_{lineage}.log",
+        LOGS / "references" / "repeats" / "repeatmodeler_{ref_genome}.log",
     threads: config["repeats"]["threads"]
     resources:
         tmpdir=TEMPDIR,
@@ -49,7 +49,7 @@ rule repeat_modeler:
         "cd $wd/{params.dir} && "
         "export HOME={params.dir} && "
         "RepeatModeler "
-        "-database db_rmodeler/{wildcards.lineage} "
+        "-database db_rmodeler/{wildcards.ref_genome} "
         "-engine ncbi "
         "-pa {threads} "
         "&> $wd/{log}"
@@ -59,10 +59,10 @@ rule repeat_modeler_separate:
     input:
         fasta=rules.repeat_modeler.output,
     output:
-        known=INT_REFS_DIR / "{lineage}" / "repeats" / "known.fasta",
-        unknown=INT_REFS_DIR / "{lineage}" / "repeats" / "unknown.fasta",
+        known=INT_REFS_DIR / "{ref_genome}" / "repeats" / "known.fasta",
+        unknown=INT_REFS_DIR / "{ref_genome}" / "repeats" / "unknown.fasta",
     log:
-        LOGS / "references" / "repeats" / "repeatmodeler_separate_{lineage}.log",
+        LOGS / "references" / "repeats" / "repeatmodeler_separate_{ref_genome}.log",
     conda:
         "../envs/agat.yaml"
     shell:
@@ -78,12 +78,12 @@ rule repeat_masker_1:
         fasta=rules.ref_fasta_symlinks.output,
         rule_order=rules.repeat_modeler_separate.output.known,
     output:
-        INT_REFS_DIR / "{lineage}" / "repeats" / "01_simple" / "{lineage}.fasta.out",
+        INT_REFS_DIR / "{ref_genome}" / "repeats" / "01_simple" / "{ref_genome}.fasta.out",
     params:
-        dir=lambda wildcards: INT_REFS_DIR / wildcards.lineage / "repeats" / "01_simple",
-        tmp=lambda wildcards: INT_REFS_DIR / wildcards.lineage / "repeats",
+        dir=lambda wildcards: INT_REFS_DIR / wildcards.ref_genome / "repeats" / "01_simple",
+        tmp=lambda wildcards: INT_REFS_DIR / wildcards.ref_genome / "repeats",
     log:
-        LOGS / "references" / "repeats" / "repeatmasker1_{lineage}.log",
+        LOGS / "references" / "repeats" / "repeatmasker1_{ref_genome}.log",
     threads: config["repeats"]["threads"]
     resources:
         tmpdir=TEMPDIR,
@@ -111,15 +111,15 @@ rule repeat_masker_2:
         fasta=rules.ref_fasta_symlinks.output,
         rule_order=rules.repeat_masker_1.output,
     output:
-        INT_REFS_DIR / "{lineage}" / "repeats" / "02_complex" / "{lineage}.fasta.out",
+        INT_REFS_DIR / "{ref_genome}" / "repeats" / "02_complex" / "{ref_genome}.fasta.out",
     params:
         dir=lambda wildcards: INT_REFS_DIR
-        / wildcards.lineage
+        / wildcards.ref_genome
         / "repeats"
         / "02_complex",
-        tmp=lambda wildcards: INT_REFS_DIR / wildcards.lineage / "repeats",
+        tmp=lambda wildcards: INT_REFS_DIR / wildcards.ref_genome / "repeats",
     log:
-        LOGS / "references" / "repeats" / "repeatmasker2_{lineage}.log",
+        LOGS / "references" / "repeats" / "repeatmasker2_{ref_genome}.log",
     threads: config["repeats"]["threads"]
     resources:
         tmpdir=TEMPDIR,
@@ -146,12 +146,12 @@ rule repeat_masker_3:
         fasta=rules.ref_fasta_symlinks.output,
         rule_order=rules.repeat_masker_2.output,
     output:
-        INT_REFS_DIR / "{lineage}" / "repeats" / "03_known" / "{lineage}.fasta.out",
+        INT_REFS_DIR / "{ref_genome}" / "repeats" / "03_known" / "{ref_genome}.fasta.out",
     params:
-        dir=lambda wildcards: INT_REFS_DIR / wildcards.lineage / "repeats" / "03_known",
-        tmp=lambda wildcards: INT_REFS_DIR / wildcards.lineage / "repeats",
+        dir=lambda wildcards: INT_REFS_DIR / wildcards.ref_genome / "repeats" / "03_known",
+        tmp=lambda wildcards: INT_REFS_DIR / wildcards.ref_genome / "repeats",
     log:
-        LOGS / "references" / "repeats" / "repeatmasker3_{lineage}.log",
+        LOGS / "references" / "repeats" / "repeatmasker3_{ref_genome}.log",
     threads: config["repeats"]["threads"]
     resources:
         tmpdir=TEMPDIR,
@@ -184,15 +184,15 @@ rule repeat_masker_4:
         fasta=rules.ref_fasta_symlinks.output,
         rule_order=rules.repeat_masker_3.output,
     output:
-        INT_REFS_DIR / "{lineage}" / "repeats" / "04_unknown" / "{lineage}.fasta.out",
+        INT_REFS_DIR / "{ref_genome}" / "repeats" / "04_unknown" / "{ref_genome}.fasta.out",
     params:
         dir=lambda wildcards: INT_REFS_DIR
-        / wildcards.lineage
+        / wildcards.ref_genome
         / "repeats"
         / "04_unknown",
-        tmp=lambda wildcards: INT_REFS_DIR / wildcards.lineage / "repeats",
+        tmp=lambda wildcards: INT_REFS_DIR / wildcards.ref_genome / "repeats",
     log:
-        LOGS / "references" / "repeats" / "repeatmasker4_{lineage}.log",
+        LOGS / "references" / "repeats" / "repeatmasker4_{ref_genome}.log",
     threads: config["repeats"]["threads"]
     resources:
         tmpdir=TEMPDIR,
@@ -227,12 +227,12 @@ rule repeat_masker_bed:
         known=rules.repeat_masker_3.output,
         unknown=rules.repeat_masker_4.output,
     output:
-        simple=INT_REFS_DIR / "{lineage}" / "repeats" / "01_simple" / "{lineage}.bed",
-        complx=INT_REFS_DIR / "{lineage}" / "repeats" / "02_complex" / "{lineage}.bed",
-        known=INT_REFS_DIR / "{lineage}" / "repeats" / "03_known" / "{lineage}.bed",
-        unknown=INT_REFS_DIR / "{lineage}" / "repeats" / "04_unknown" / "{lineage}.bed",
+        simple=INT_REFS_DIR / "{ref_genome}" / "repeats" / "01_simple" / "{ref_genome}.bed",
+        complx=INT_REFS_DIR / "{ref_genome}" / "repeats" / "02_complex" / "{ref_genome}.bed",
+        known=INT_REFS_DIR / "{ref_genome}" / "repeats" / "03_known" / "{ref_genome}.bed",
+        unknown=INT_REFS_DIR / "{ref_genome}" / "repeats" / "04_unknown" / "{ref_genome}.bed",
     log:
-        LOGS / "references" / "repeats" / "repeatmasker_combine_{lineage}.log",
+        LOGS / "references" / "repeats" / "repeatmasker_combine_{ref_genome}.log",
     conda:
         "../envs/shell.yaml"
     shell:
@@ -255,9 +255,9 @@ rule repeat_masker_combine:
         known=rules.repeat_masker_bed.output.known,
         unknown=rules.repeat_masker_bed.output.unknown,
     output:
-        bed=REFS_DIR / "{lineage}" / "{lineage}_repeats.bed",
+        bed=REFS_DIR / "{ref_genome}" / "{ref_genome}_repeats.bed",
     log:
-        LOGS / "references" / "repeats" / "repeatmasker_combine_{lineage}.log",
+        LOGS / "references" / "repeats" / "repeatmasker_combine_{ref_genome}.log",
     conda:
         "../envs/samtools.yaml"
     shell:

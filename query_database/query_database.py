@@ -118,25 +118,25 @@ def list_strains(db, dataset=None):
     con.close()
     return result
 
-def list_lineages(db, dataset=None):
+def list_ref_genomes(db, dataset=None):
     con = duckdb.connect(database=db, read_only=True)
     if dataset:
         dataset = tuple(dataset)
         query = f"""
-            SELECT DISTINCT lineage
+            SELECT DISTINCT ref_genome
             FROM metadata
             WHERE dataset IN {dataset}
-            ORDER BY lineage
+            ORDER BY ref_genome
             """
     else:
         query = f"""
-            SELECT DISTINCT lineage
+            SELECT DISTINCT ref_genome
             FROM metadata
-            ORDER BY lineage
+            ORDER BY ref_genome
             """
     df = con.execute(query).fetchdf()
-    df = df.dropna(subset=['lineage'])
-    result = tuple(df['lineage'])
+    df = df.dropna(subset=['ref_genome'])
+    result = tuple(df['ref_genome'])
     con.close()
     return result
 
@@ -221,15 +221,15 @@ def get_cnv_max_length(db):
     con.close()
     return result
 
-def effects(db, dataset = None, sample=None, strain=None, gene_name=None, gene_id=None, impact=None, effect_type=None, lineage=None, chromosome=None, start=None, end =None):
+def effects(db, dataset = None, sample=None, strain=None, gene_name=None, gene_id=None, impact=None, effect_type=None, ref_genome=None, chromosome=None, start=None, end =None):
     if gene_name and gene_id or gene_name and chromosome or gene_id and chromosome:
         raise ValueError("Only one of Gene names, Gene IDs or Location in chromosome should be provided.")
     elif sample and strain:
         raise ValueError("Only one of Sample IDs or Strains should be provided.")
-    elif (sample and lineage) or (strain and lineage):
-        raise ValueError("Only one of Sample IDs, Strains or Lineage should be provided.")
-    elif not (gene_name or gene_id or chromosome or start or end or sample or strain or lineage):
-        raise ValueError("At least one of Gene names, Gene IDs, Location, Sample IDs, Strains or Lineage should be provided.")
+    elif (sample and ref_genome) or (strain and ref_genome):
+        raise ValueError("Only one of Sample IDs, Strains or Reference genome should be provided.")
+    elif not (gene_name or gene_id or chromosome or start or end or sample or strain or ref_genome):
+        raise ValueError("At least one of Gene names, Gene IDs, Location, Sample IDs, Strains or Reference genome should be provided.")
     else:
         pass
     if impact and effect_type:
@@ -265,7 +265,7 @@ def effects(db, dataset = None, sample=None, strain=None, gene_name=None, gene_i
         pass
     
     query = f"""
-        SELECT metadata.dataset, metadata.strain, presence.sample, metadata.lineage,
+        SELECT metadata.dataset, metadata.strain, presence.sample, metadata.ref_genome,
             variants.var_id, chromosomes.chromosome, chromosomes.accession,
             variants.pos AS position, variants.ref AS reference, variants.alt AS alternative,
             effects.gene_name, effects.gene_id, effects.feature_id,
@@ -292,9 +292,9 @@ def effects(db, dataset = None, sample=None, strain=None, gene_name=None, gene_i
         query += f"AND regexp_matches(effects.gene_id, '{regex_pattern}') "
     if sample:
         query += f"AND presence.sample IN {sample} "
-    if lineage:
-        lineage = tuple(lineage)
-        query += f"AND metadata.lineage IN {lineage}"
+    if ref_genome:
+        ref_genome = tuple(ref_genome)
+        query += f"AND metadata.ref_genome IN {ref_genome}"
 
     if chromosome :
         chromosome = tuple(chromosome)
@@ -317,17 +317,17 @@ def effects(db, dataset = None, sample=None, strain=None, gene_name=None, gene_i
     con.close()
     return result
 
-def sequences(db, dataset=None, seq_type='DNA', sample=None, strain=None, lineage=None, gene_id=None, gene_name=None):
+def sequences(db, dataset=None, seq_type='DNA', sample=None, strain=None, ref_genome=None, gene_id=None, gene_name=None):
     if gene_name and gene_id:
         raise ValueError("Only one of Gene names or Gene IDs should be provided.")
     else:
         pass
-    if sample and strain or sample and lineage or strain and lineage:
-        raise ValueError("Only one of Sample IDs, Strains or Lineage should be provided.")
+    if sample and strain or sample and ref_genome or strain and ref_genome:
+        raise ValueError("Only one of Sample IDs, Strains or Reference genome should be provided.")
     else:
         pass
-    if not (gene_name or gene_id or sample or strain or lineage):
-        raise ValueError("At least one of Gene names, Gene IDs, Sample IDs, Strains or Lineage should be provided.")
+    if not (gene_name or gene_id or sample or strain or ref_genome):
+        raise ValueError("At least one of Gene names, Gene IDs, Sample IDs, Strains or Reference genome should be provided.")
     else:
         pass
     
@@ -369,13 +369,13 @@ def sequences(db, dataset=None, seq_type='DNA', sample=None, strain=None, lineag
         sample_df = con.execute(query_sample).fetchdf()
         sample = tuple(sample_df['sample'].tolist())
         print(sample)
-    elif lineage:
-        print(lineage)
-        lineage = tuple(lineage)
+    elif ref_genome:
+        print(ref_genome)
+        ref_genome = tuple(ref_genome)
         query_sample = f"""
             SELECT sample
             FROM metadata
-            WHERE lineage IN {lineage}
+            WHERE ref_genome IN {ref_genome}
             """
         sample_df = con.execute(query_sample).fetchdf()
         sample = tuple(sample_df['sample'].tolist())
@@ -385,13 +385,13 @@ def sequences(db, dataset=None, seq_type='DNA', sample=None, strain=None, lineag
         print(sample)
 
     query = f"""
-            SELECT metadata.dataset, metadata.strain, metadata.lineage, 
+            SELECT metadata.dataset, metadata.strain, metadata.ref_genome, 
                 coding_sequences.sample, coding_sequences.feature_id, coding_sequences.seq, 
                 chromosomes.chromosome, chromosomes.accession,
                 gff.gene_name, gff.gene_id
             FROM coding_sequences
             JOIN metadata ON coding_sequences.sample = metadata.sample
-            JOIN gff ON coding_sequences.feature_id = gff.feature_id AND metadata.lineage = gff.lineage
+            JOIN gff ON coding_sequences.feature_id = gff.feature_id AND metadata.ref_genome = gff.ref_genome
             JOIN chromosomes ON gff.accession = chromosomes.accession
             WHERE metadata.dataset IN {dataset}"""
     if gene_id and not sample:
@@ -420,13 +420,13 @@ def sequences(db, dataset=None, seq_type='DNA', sample=None, strain=None, lineag
     con.close()
     return result
 
-def ref_sequences(db, seq_type='DNA', lineage=None, gene_id=None, gene_name=None):
+def ref_sequences(db, seq_type='DNA', ref_genome=None, gene_id=None, gene_name=None):
     if gene_name and gene_id:
         raise ValueError("Only one of Gene names or Gene IDs should be provided.")
     else:
         pass
-    if not (gene_name or gene_id or lineage):
-        raise ValueError("At least one of Gene names, Gene IDs, or Lineage should be provided.")
+    if not (gene_name or gene_id or ref_genome):
+        raise ValueError("At least one of Gene names, Gene IDs, or Reference genome should be provided.")
     else:
         pass
     
@@ -447,37 +447,37 @@ def ref_sequences(db, seq_type='DNA', lineage=None, gene_id=None, gene_name=None
         gene_id = tuple(gene_id)
         print(gene_id)
 
-    if lineage:
-        lineage = tuple(lineage)
+    if ref_genome:
+        ref_genome = tuple(ref_genome)
 
     query = f"""
-        SELECT ref_coding_sequences.lineage, ref_coding_sequences.feature_id, ref_coding_sequences.seq,
+        SELECT ref_coding_sequences.ref_genome, ref_coding_sequences.feature_id, ref_coding_sequences.seq,
                 gff.gene_id, gff.gene_name,
                 chromosomes.chromosome, chromosomes.accession,
         FROM ref_coding_sequences
-        JOIN gff ON ref_coding_sequences.feature_id = gff.feature_id AND gff.lineage = ref_coding_sequences.lineage
+        JOIN gff ON ref_coding_sequences.feature_id = gff.feature_id AND gff.ref_genome = ref_coding_sequences.ref_genome
         JOIN chromosomes ON gff.accession = chromosomes.accession
         WHERE seq_type = '{seq_type}'
             """
-    if gene_id and not lineage:
+    if gene_id and not ref_genome:
         query += f"""
             AND ref_coding_sequences.feature_id IN (
                 SELECT DISTINCT feature_id
                 FROM gff
                 WHERE gene_id IN {gene_id}
             )"""
-    elif gene_id and lineage:
+    elif gene_id and ref_genome:
         query += f"""
             AND ref_coding_sequences.feature_id IN (
                 SELECT DISTINCT feature_id
                 FROM gff
                 WHERE gene_id IN {gene_id}
             )
-            AND ref_coding_sequences.lineage IN {lineage}
+            AND ref_coding_sequences.ref_genome IN {ref_genome}
             """
-    elif lineage:
+    elif ref_genome:
         query += f"""
-            AND ref_coding_sequences.lineage IN {lineage}
+            AND ref_coding_sequences.ref_genome IN {ref_genome}
             """
     print(query)
     result = con.execute(query).fetchdf()
@@ -490,8 +490,8 @@ def df_to_seqrecord(df):
         seq = Seq(row['seq'])
         if 'sample' in df.columns:
             record = SeqRecord(seq, id=f"{row['strain']}|{row['feature_id']}", description=f"sample={row['sample']} gene_id={row['gene_id']} gene_name={row['gene_name']} chromosome={row['chromosome']} accession={row['accession']}")
-        elif 'lineage' in df.columns:
-            record = SeqRecord(seq, id=f"{row['lineage']}|{row['feature_id']}", description=f"lineage={row['lineage']} gene_id={row['gene_id']} gene_name={row['gene_name']} chromosome={row['chromosome']} accession={row['accession']}")
+        elif 'ref_genome' in df.columns:
+            record = SeqRecord(seq, id=f"{row['ref_genome']}|{row['feature_id']}", description=f"ref_genome={row['ref_genome']} gene_id={row['gene_id']} gene_name={row['gene_name']} chromosome={row['chromosome']} accession={row['accession']}")
         records.append(record)
     return records
 
@@ -502,9 +502,9 @@ def seqrecord_to_text(records):
     output.close()
     return fasta_text
 
-def get_cnv(db, dataset = None, lineage=None, sample=None, strain=None, chromosome=None, cnv=None, repeat_fraction=None, start=None, end=None, min_size=None, max_size=None):
-    if (sample and strain) or (sample and lineage) or (strain and lineage):
-        raise ValueError("Only one of Sample IDs, Strains or Lineage should be provided.")
+def get_cnv(db, dataset = None, ref_genome=None, sample=None, strain=None, chromosome=None, cnv=None, repeat_fraction=None, start=None, end=None, min_size=None, max_size=None):
+    if (sample and strain) or (sample and ref_genome) or (strain and ref_genome):
+        raise ValueError("Only one of Sample IDs, Strains or Reference genome should be provided.")
     
     con = duckdb.connect(database=db, read_only=True)
     con = con.execute(f"SET temp_directory = '{cwd}'")
@@ -521,7 +521,7 @@ def get_cnv(db, dataset = None, lineage=None, sample=None, strain=None, chromoso
         dataset = tuple(dataset)
         
     query = f"""
-        SELECT metadata.strain, metadata.sample, metadata.lineage, 
+        SELECT metadata.strain, metadata.sample, metadata.ref_genome, 
             chromosomes.chromosome, chromosomes.accession,
             cnvs.start, cnvs."end",
             cnvs.size, cnvs.cnv, cnvs.depth, cnvs.norm_depth, cnvs.smooth_depth, cnvs.repeat_fraction, cnvs.repeat_overlap_bp, cnvs.feature_id,
@@ -531,8 +531,8 @@ def get_cnv(db, dataset = None, lineage=None, sample=None, strain=None, chromoso
         JOIN chromosomes ON cnvs.accession = chromosomes.accession
         WHERE metadata.dataset IN {dataset}
         """
-    if lineage:
-        query += f"AND metadata.lineage IN {lineage}"
+    if ref_genome:
+        query += f"AND metadata.ref_genome IN {ref_genome}"
     if sample:
         query += f"AND metadata.sample IN {sample}"
     if strain:
@@ -575,29 +575,29 @@ def get_metadata(db):
     con.close()
     return df
 
-def genes(db, gene_name=None, gene_id=None, chromosome=None, start=None, end=None, feature_type=None, description=None, lineage=None):
+def genes(db, gene_name=None, gene_id=None, chromosome=None, start=None, end=None, feature_type=None, description=None, ref_genome=None):
     if gene_name and gene_id or gene_name and chromosome or gene_id and chromosome or gene_name and description or gene_id and description or chromosome and description or gene_name and start or gene_id and start or gene_name and end or gene_id and end:
         raise ValueError("Only one of Gene names, Gene IDs, Description or Location should be provided.")
     elif start and not end or end and not start:
         raise ValueError("Both start and end should be provided.")
     con = duckdb.connect(database=db, read_only=True)
     
-    if not lineage:
-        query_lineage = f"""
-            SELECT DISTINCT lineage
+    if not ref_genome:
+        query_ref_genome = f"""
+            SELECT DISTINCT ref_genome
             FROM metadata
             """
-        lineage_df = con.execute(query_lineage).fetchdf()
-        lineage = lineage_df['lineage'].tolist()
-        lineage = tuple(lineage)
+        ref_genome_df = con.execute(query_ref_genome).fetchdf()
+        ref_genome = ref_genome_df['ref_genome'].tolist()
+        ref_genome = tuple(ref_genome)
     else:
-        lineage = tuple(lineage)
+        ref_genome = tuple(ref_genome)
     
     columns = con.execute("SELECT column_name FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = 'gff'").fetchdf()['column_name'].tolist()
     
     if 'ref_identical_to_main_ref' and 'ref_start_stop_mutations' in columns:
         query = f"""
-            SELECT gff.lineage, chromosomes.chromosome,
+            SELECT gff.ref_genome, chromosomes.chromosome,
                 chromosomes.accession,
                 gff.start, gff."end", gff.strand, gff.primary_tag,
                 gff.gene_name, gff.gene_id,
@@ -606,11 +606,11 @@ def genes(db, gene_name=None, gene_id=None, chromosome=None, start=None, end=Non
                 gff.ref_identical_to_main_ref, gff.ref_start_stop_mutations, 
             FROM gff
             JOIN chromosomes ON gff.accession = chromosomes.accession
-            WHERE gff.lineage IN {lineage}
+            WHERE gff.ref_genome IN {ref_genome}
             """
     else:
         query = f"""
-            SELECT gff.lineage, chromosomes.chromosome,
+            SELECT gff.ref_genome, chromosomes.chromosome,
                 chromosomes.accession,
                 gff.start, gff."end", gff.strand, gff.primary_tag,
                 gff.gene_name, gff.gene_id,
@@ -618,7 +618,7 @@ def genes(db, gene_name=None, gene_id=None, chromosome=None, start=None, end=Non
                 gff.description, gff.ref_repeat_fraction,
             FROM gff
             JOIN chromosomes ON gff.accession = chromosomes.accession
-            WHERE gff.lineage IN {lineage}
+            WHERE gff.ref_genome IN {ref_genome}
             """
 
     if gene_name:
@@ -642,9 +642,9 @@ def genes(db, gene_name=None, gene_id=None, chromosome=None, start=None, end=Non
     con.close()
     return result
 
-def get_cnv_chroms(db, dataset = None, lineage=None, sample=None, strain=None, chromosome=None, cnv=None, min_coverage=None, max_coverage=None):
-    if (sample and strain) or (sample and lineage) or (strain and lineage):
-        raise ValueError("Only one of Sample IDs, Strains or Lineage should be provided.")
+def get_cnv_chroms(db, dataset = None, ref_genome=None, sample=None, strain=None, chromosome=None, cnv=None, min_coverage=None, max_coverage=None):
+    if (sample and strain) or (sample and ref_genome) or (strain and ref_genome):
+        raise ValueError("Only one of Sample IDs, Strains or Reference genome should be provided.")
     
     con = duckdb.connect(database=db, read_only=True)
     con = con.execute(f"SET temp_directory = '{cwd}'")
@@ -661,7 +661,7 @@ def get_cnv_chroms(db, dataset = None, lineage=None, sample=None, strain=None, c
         dataset = tuple(dataset)
         
     query = f"""
-        SELECT metadata.strain, metadata.sample, metadata.lineage, 
+        SELECT metadata.strain, metadata.sample, metadata.ref_genome, 
             chromosomes.chromosome, chromosomes.accession, chromosomes.length,
             cnv_chroms.cnv, cnv_chroms.n_cnvs,
             cnv_chroms.total_size, cnv_chroms.coverage_percent,
@@ -676,8 +676,8 @@ def get_cnv_chroms(db, dataset = None, lineage=None, sample=None, strain=None, c
         JOIN metadata ON cnv_chroms.sample = metadata.sample
         WHERE metadata.dataset IN {dataset}
         """
-    if lineage:
-        query += f"AND metadata.lineage IN {lineage}"
+    if ref_genome:
+        query += f"AND metadata.ref_genome IN {ref_genome}"
     if sample:
         query += f"AND metadata.sample IN {sample}"
     if strain:

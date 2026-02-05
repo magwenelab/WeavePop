@@ -11,20 +11,20 @@ input_cds = snakemake.input.cds
 input_prots = snakemake.input.prots
 output = snakemake.output.sequences
 
-print("Create dictionary with lineage and paths for cds files...")
+print("Create dictionary with ref_genome and paths for cds files...")
 paths_cds = {}
 for path in input_cds:
-    lineage = Path(Path(path).stem).stem
-    paths_cds[lineage] = path
-    print("Available lineages and paths:")
+    ref_genome = Path(Path(path).stem).stem
+    paths_cds[ref_genome] = path
+    print("Available ref_genomes and paths:")
     print(paths_cds)
     
-print("Create dictionary with lineage and paths for protein files...")
+print("Create dictionary with ref_genome and paths for protein files...")
 paths_prots = {}
 for path in input_prots:
-    lineage = Path(Path(path).stem).stem
-    paths_prots[lineage] = path
-    print("Available lineages and paths:")
+    ref_genome = Path(Path(path).stem).stem
+    paths_prots[ref_genome] = path
+    print("Available ref_genomes and paths:")
     print(paths_prots)
     
 print("Cds files to concatenate:")

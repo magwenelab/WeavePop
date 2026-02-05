@@ -1,13 +1,13 @@
 # =================================================================================================
-#   Join lineages | Create a single table with the annotation of all lineages
+#   Join ref_genomes | Create a single table with the annotation of all ref_genomes
 # =================================================================================================
 
 
 rule join_ref_annotations:
     input:
-        expand(REFS_DIR / "{lineage}" / "{lineage}.gff.tsv", lineage=LINEAGES),
+        expand(REFS_DIR / "{ref_genome}" / "{ref_genome}.gff.tsv", ref_genome=REF_GENOMES),
     output:
-        REFS_DIR / "all_lineages.gff.tsv",
+        REFS_DIR / "all_ref_genomes.gff.tsv",
     log:
         LOGS / "references" / "annotation" / "join_ref_annotations.log",
     resources:
@@ -20,9 +20,9 @@ rule join_ref_annotations:
 
 rule join_ref_sequences:
     input:
-        cds=expand(INT_REFS_DIR / "{lineage}" / "{lineage}.cds.csv", lineage=LINEAGES),
+        cds=expand(INT_REFS_DIR / "{ref_genome}" / "{ref_genome}.cds.csv", ref_genome=REF_GENOMES),
         prots=expand(
-            INT_REFS_DIR / "{lineage}" / "{lineage}.prots.csv", lineage=LINEAGES
+            INT_REFS_DIR / "{ref_genome}" / "{ref_genome}.prots.csv", ref_genome=REF_GENOMES
         ),
     output:
         sequences=INT_REFS_DIR / "all_refs_sequences.csv",
@@ -107,18 +107,18 @@ rule join_cnv_chromosomes:
 rule join_variant_annotation:
     input:
         effects=expand(
-            INT_DATASET_DIR / "snpeff" / "{lineage}_effects.tsv", lineage=LINEAGES
+            INT_DATASET_DIR / "snpeff" / "{ref_genome}_effects.tsv", ref_genome=REF_GENOMES
         ),
         variants=expand(
-            INT_DATASET_DIR / "snpeff" / "{lineage}_variants.tsv", lineage=LINEAGES
+            INT_DATASET_DIR / "snpeff" / "{ref_genome}_variants.tsv", ref_genome=REF_GENOMES
         ),
         classif=expand(
-            INT_DATASET_DIR / "snpeff" / "{lineage}_variant_classification.tsv", lineage=LINEAGES
+            INT_DATASET_DIR / "snpeff" / "{ref_genome}_variant_classification.tsv", ref_genome=REF_GENOMES
         ),
-        lofs=expand(INT_DATASET_DIR / "snpeff" / "{lineage}_lofs.tsv", lineage=LINEAGES),
-        nmds=expand(INT_DATASET_DIR / "snpeff" / "{lineage}_nmds.tsv", lineage=LINEAGES),
+        lofs=expand(INT_DATASET_DIR / "snpeff" / "{ref_genome}_lofs.tsv", ref_genome=REF_GENOMES),
+        nmds=expand(INT_DATASET_DIR / "snpeff" / "{ref_genome}_nmds.tsv", ref_genome=REF_GENOMES),
         presence=expand(
-            INT_DATASET_DIR / "snpeff" / "{lineage}_presence.tsv", lineage=LINEAGES
+            INT_DATASET_DIR / "snpeff" / "{ref_genome}_presence.tsv", ref_genome=REF_GENOMES
         ),
     output:
         effects=DATASET_DIR / "snpeff" / "effects.tsv",

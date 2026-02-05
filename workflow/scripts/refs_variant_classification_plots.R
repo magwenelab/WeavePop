@@ -18,10 +18,10 @@ variants_path <- snakemake@input$variants
 presence_path <- snakemake@input$presence
 loci_path <- snakemake@input$loci
 
-lin<-snakemake@wildcards$lineage
+lin<-snakemake@wildcards$ref_genome
 window_size <-snakemake@params$window_size
 
-lineage_vars_path <- snakemake@output$plot
+ref_genome_vars_path <- snakemake@output$plot
 ref_private_path <- snakemake@output$plot_density
    
 
@@ -39,7 +39,7 @@ vars_classification <- left_join(variants, vars_classification, by = "var_id")
 
 print("Ordering chromosome names...")
 chromosomes <- chromosomes %>%
-    filter(lineage == lin)
+    filter(ref_genome == lin)
 
 unique_levels <- unique(chromosomes$chromosome)
 new_order <- c(rbind(matrix(unique_levels, nrow = 2, byrow = TRUE)))
@@ -56,13 +56,13 @@ names(i_colors) <- levels(vars_classification$impact)
 
 print("Creating summary plot...")
 vars_type <- vars_classification%>%
-    left_join(chromosomes, by = c("accession", "lineage"))%>% 
-    select(var_id, lineage, chromosome, impact, category )
+    left_join(chromosomes, by = c("accession", "ref_genome"))%>% 
+    select(var_id, ref_genome, chromosome, impact, category )
 
 total_vars = nrow(vars_type)
 
 vars_type_sample <- left_join(presence, vars_type, by = "var_id")%>%
-    group_by(sample, lineage, category, impact)%>%
+    group_by(sample, ref_genome, category, impact)%>%
     summarize(n_variants = n())%>%
     ungroup()
 
@@ -83,13 +83,13 @@ g <- ggplot(vars_type_sample, aes(x = impact, y = n_variants))+
     facet_wrap(~category, nrow = 1, scales = "free")+
     scale_y_continuous(name = "Number of variants per sample", labels = comma)+
     scale_color_manual(values = i_colors, name = "Impact")+
-    labs(title = paste("Number of Variants per Impact and Privateness Category in each Sample of Lineage ", lin),
+    labs(title = paste("Number of Variants per Impact and Privateness Category in each Sample of Reference genome ", lin),
          subtitle = paste("Total variants:", scales::comma(total_vars)),
          x = "", 
          color = "Impact")+
     theme_classic()
 print("Saving plot...")
-ggsave(lineage_vars_path, g, width = 16, height = 9)
+ggsave(ref_genome_vars_path, g, width = 16, height = 9)
 
 print("Making density plot of reference private variants")
 
@@ -104,7 +104,7 @@ if (filter(vars_classification, category == "Reference private") %>% nrow() == 0
 }
 
 vars_windows <- vars_classification %>%
-    left_join(chromosomes, by = c("accession", "lineage"))%>%
+    left_join(chromosomes, by = c("accession", "ref_genome"))%>%
     group_by(chromosome) %>%
     mutate(window = floor(pos / window_size) + 1)%>%
     ungroup()%>%
@@ -140,7 +140,7 @@ p <- ggplot()+
                        },
                        labels = comma)+
     labs(title = "Number of Variants in Windows Along Chromosomes Private to the Reference Genome",
-         subtitle= paste("Lineage: ", lin, " Window size: ", window_size, " Total variants: ", scales::comma(n_vars)))+
+         subtitle= paste("Reference genome: ", lin, " Window size: ", window_size, " Total variants: ", scales::comma(n_vars)))+
     theme_classic()
 
 max_vars <- max(category_density$n)
@@ -148,7 +148,7 @@ max_vars <- max(category_density$n)
 print("Adding loci data if available...")
 if (nrow(loci_table)!= 0){
   loci_sample <- loci_table %>% 
-    filter(lineage == lin) %>%
+    filter(ref_genome == lin) %>%
     select(accession, start , end , loci)%>%
     droplevels()
   loci <- left_join(loci_sample, chromosomes, by = c("accession"))%>%

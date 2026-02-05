@@ -3,9 +3,9 @@ $schema: "https://json-schema.org/draft/2020-12/schema"
 description: an entry in the chromosome names table (chromosome_names.csv)
 type: object
 properties:
-  lineage:
+  ref_genome:
     type: string
-    description: lineage name
+    description: ref_genome name
   accession:
     type: string
     description: accession number of sequences in the reference genomes FASTA
@@ -13,6 +13,6 @@ properties:
     type: string
     description: chromosome name of sequences in the reference genomes FASTA
 required:
-  - lineage
+  - ref_genome
   - accession
   - chromosome

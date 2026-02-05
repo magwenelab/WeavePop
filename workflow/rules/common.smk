@@ -277,26 +277,26 @@ if CHROM_NAMES_TABLE["accession"].duplicated().any():
         exit(1)
 
 if all(
-    item in CHROM_NAMES_TABLE["lineage"].unique()
-    for item in METADATA_UNFILTERED["lineage"].unique()
+    item in CHROM_NAMES_TABLE["ref_genome"].unique()
+    for item in METADATA_UNFILTERED["ref_genome"].unique()
 ):
-    print("    All lineages are in the chromosome names file.", flush=True)
+    print("    All ref_genomes are in the chromosome names file.", flush=True)
 else:
     print(
-        "Not all lineages from the metadata table are present in the chromosomes file.",
+        "Not all ref_genomes from the metadata table are present in the chromosomes file.",
         flush=True,
     )
     print("Exiting...", flush=True)
     exit(1)
 
-UNF_LINEAGES = METADATA_UNFILTERED["lineage"].unique()
+UNF_REF_GENOMES = METADATA_UNFILTERED["ref_genome"].unique()
 
-for lineage in UNF_LINEAGES:
-    print(f"Checking the chromosome names of lineage {lineage}...", flush=True)
-    accessions = CHROM_NAMES_TABLE[CHROM_NAMES_TABLE["lineage"] == lineage][
+for ref_genome in UNF_REF_GENOMES:
+    print(f"Checking the chromosome names of ref_genome {ref_genome}...", flush=True)
+    accessions = CHROM_NAMES_TABLE[CHROM_NAMES_TABLE["ref_genome"] == ref_genome][
         "accession"
     ].tolist()
-    ref_file = REF_DATA / f"{lineage}.fasta"
+    ref_file = REF_DATA / f"{ref_genome}.fasta"
     if ref_file.exists():
         with open(ref_file) as f:
             seq_ids = [
@@ -459,17 +459,17 @@ if config["annotate_references"]["activate"]:
 
 d = {
     "sample": METADATA_UNFILTERED["sample"],
-    "lineage": METADATA_UNFILTERED["lineage"],
+    "ref_genome": METADATA_UNFILTERED["ref_genome"],
     "refgenome": INT_REFS_DIR
-    / METADATA_UNFILTERED["lineage"]
-    / (METADATA_UNFILTERED["lineage"] + ".fasta"),
+    / METADATA_UNFILTERED["ref_genome"]
+    / (METADATA_UNFILTERED["ref_genome"] + ".fasta"),
     "refgff": REFS_DIR
-    / METADATA_UNFILTERED["lineage"]
-    / (METADATA_UNFILTERED["lineage"] + ".gff"),
+    / METADATA_UNFILTERED["ref_genome"]
+    / (METADATA_UNFILTERED["ref_genome"] + ".gff"),
 }
 
 METADATA_TABLE = pd.DataFrame(data=d).set_index("sample", drop=False)
-LINEAGE_REFERENCE = pd.DataFrame(data=d).set_index("lineage", drop=False)
+REF_GENOME_REFERENCE = pd.DataFrame(data=d).set_index("ref_genome", drop=False)
 
 # =================================================================================================
 #   Input functions for rules
@@ -477,10 +477,10 @@ LINEAGE_REFERENCE = pd.DataFrame(data=d).set_index("lineage", drop=False)
 
 def loci_input(wildcards):
     if LOCI_FILE is None:
-        return {"gff": REFS_DIR / wildcards.lineage / (wildcards.lineage + ".gff.tsv")}
+        return {"gff": REFS_DIR / wildcards.ref_genome / (wildcards.ref_genome + ".gff.tsv")}
     else:
         return {
-            "gff": REFS_DIR / wildcards.lineage / (wildcards.lineage + ".gff.tsv"),
+            "gff": REFS_DIR / wildcards.ref_genome / (wildcards.ref_genome + ".gff.tsv"),
             "loci": LOCI_FILE,
         }
 
@@ -520,7 +520,7 @@ def ref_add_repeats_input(wildcards):
         "gff": rules.ref_add_introns.output.gff,
     }
     if config["repeats"]["activate"] is True:
-        d["repeats"] = (REFS_DIR / "{lineage}" / "{lineage}_repeats.bed",)
+        d["repeats"] = (REFS_DIR / "{ref_genome}" / "{ref_genome}_repeats.bed",)
     return d
 
 
@@ -531,7 +531,7 @@ def depth_window_distribution_input(wildcards):
         / "cnv"
         / s["sample"]
         / "depth_by_windows.tsv",
-        "chroms": INT_REFS_DIR / s["lineage"] / "chromosomes.csv",
+        "chroms": INT_REFS_DIR / s["ref_genome"] / "chromosomes.csv",
     }
 
 
@@ -543,11 +543,11 @@ def depth_by_windows_plots_input(wildcards):
         / s["sample"]
         / "depth_by_windows.tsv",
         "cnv": SAMPLES_DIR / "cnv" / s["sample"] / "cnv_calls.tsv",
-        "chroms": INT_REFS_DIR / s["lineage"] / "chromosomes.csv",
-        "loci": INT_REFS_DIR / s["lineage"] / "loci_to_plot.tsv",
+        "chroms": INT_REFS_DIR / s["ref_genome"] / "chromosomes.csv",
+        "loci": INT_REFS_DIR / s["ref_genome"] / "loci_to_plot.tsv",
     }
     if config["repeats"]["activate"] is True:
-        d["repeats"] = (REFS_DIR / s["lineage"] / (s["lineage"] + "_repeats.bed"),)
+        d["repeats"] = (REFS_DIR / s["ref_genome"] / (s["ref_genome"] + "_repeats.bed"),)
     return d
 
 
@@ -555,7 +555,7 @@ def depth_vs_cnvs_plots_input(wildcards):
     s = METADATA_TABLE.loc[wildcards.sample,]
     return {
         "cnv": SAMPLES_DIR / "cnv" / s["sample"] / "cnv_chromosomes.tsv",
-        "chroms": INT_REFS_DIR / s["lineage"] / "chromosomes.csv",
+        "chroms": INT_REFS_DIR / s["ref_genome"] / "chromosomes.csv",
     }
 
 
@@ -564,11 +564,11 @@ def mapq_by_windows_plot_input(wildcards):
     d = {
         "mapq": INT_SAMPLES_DIR / "depth_quality" / s["sample"] / "mapq_by_window.bed",
         "cnv": SAMPLES_DIR / "cnv" / s["sample"] / "cnv_calls.tsv",
-        "chroms": INT_REFS_DIR / s["lineage"] / "chromosomes.csv",
-        "loci": INT_REFS_DIR / s["lineage"] / "loci_to_plot.tsv",
+        "chroms": INT_REFS_DIR / s["ref_genome"] / "chromosomes.csv",
+        "loci": INT_REFS_DIR / s["ref_genome"] / "loci_to_plot.tsv",
     }
     if config["repeats"]["activate"] is True:
-        d["repeats"] = (REFS_DIR / s["lineage"] / (s["lineage"] + "_repeats.bed"),)
+        d["repeats"] = (REFS_DIR / s["ref_genome"] / (s["ref_genome"] + "_repeats.bed"),)
     return d
 
 
@@ -579,7 +579,7 @@ def depth_distribution_plot_input(wildcards):
         / "depth_quality"
         / "{sample}"
         / "depth_distribution.tsv",
-        "chroms": INT_REFS_DIR / s["lineage"] / "chromosomes.csv",
+        "chroms": INT_REFS_DIR / s["ref_genome"] / "chromosomes.csv",
     }
 
 
@@ -591,18 +591,18 @@ def cnv_calling_input(wildcards):
         / s["sample"]
         / "coverage_good.regions.bed.gz",
         "annotation": SAMPLES_DIR / "annotation" / s["sample"] / "annotation.gff.tsv",
-        "chrom_length": INT_REFS_DIR / s["lineage"] / "chromosomes.csv",
+        "chrom_length": INT_REFS_DIR / s["ref_genome"] / "chromosomes.csv",
     }
     if config["repeats"]["activate"] is True:
-        d["repeats"] = (REFS_DIR / s["lineage"] / (s["lineage"] + "_repeats.bed"),)
+        d["repeats"] = (REFS_DIR / s["ref_genome"] / (s["ref_genome"] + "_repeats.bed"),)
 
     return d
 
 
 def unite_vcfs_input(wildcards):
     sample_wildcards = listing_samples(wildcards)
-    l = LINEAGE_REFERENCE[LINEAGE_REFERENCE["sample"].isin(sample_wildcards)]
-    l = l.loc[wildcards.lineage,]
+    l = REF_GENOME_REFERENCE[REF_GENOME_REFERENCE["sample"].isin(sample_wildcards)]
+    l = l.loc[wildcards.ref_genome,]
     return {
         "vcfs": expand(
             SAMPLES_DIR / "mapping_and_variants" / "{sample}" / "snps.vcf.gz", sample=l["sample"]
@@ -612,23 +612,11 @@ def unite_vcfs_input(wildcards):
 def variant_classification_plots_input(wildcards):
     s = METADATA_TABLE.loc[wildcards.sample,]
     return {
-        "variants": INT_DATASET_DIR / "snpeff" / (s["lineage"] + "_variants.tsv"),
-        "classif": INT_DATASET_DIR / "snpeff" / (s["lineage"] + "_variant_classification.tsv"),
-        "presence": INT_DATASET_DIR / "snpeff" / (s["lineage"] + "_presence.tsv"),
-        "chromosomes": INT_REFS_DIR / s["lineage"] / "chromosomes.csv",
+        "variants": INT_DATASET_DIR / "snpeff" / (s["ref_genome"] + "_variants.tsv"),
+        "classif": INT_DATASET_DIR / "snpeff" / (s["ref_genome"] + "_variant_classification.tsv"),
+        "presence": INT_DATASET_DIR / "snpeff" / (s["ref_genome"] + "_presence.tsv"),
+        "chromosomes": INT_REFS_DIR / s["ref_genome"] / "chromosomes.csv",
     }
-
-
-# def refs_unmapped_plots_input(wildcards):
-#     d = {
-#         "tsv": REFS_DIR / "refs_unmapped_features.tsv",
-#         "chroms": DATASET_DIR / "chromosomes.csv",
-#     }
-#     if config["repeats"]["activate"] is True:
-#         main_ref=config["annotate_references"]["fasta"].split(".")[0]
-#         d["repeats"] =  (REFS_DIR / main_ref / (main_ref + "_repeats.bed"),)
-#     return d
-
 
 # =================================================================================================
 #   Checkpoint functions
@@ -646,17 +634,17 @@ def listing_samples(wildcards):
 SAMPLES = listing_samples
 
 
-def listing_lineages(wildcards):
+def listing_ref_genomes(wildcards):
     checkpoint_output = checkpoints.filter_wildcards.get(**wildcards).output[1]
     return expand(
-        "{lineage}",
-        lineage=glob_wildcards(
-            os.path.join(checkpoint_output, "{lineage}.txt")
-        ).lineage,
+        "{ref_genome}",
+        ref_genome=glob_wildcards(
+            os.path.join(checkpoint_output, "{ref_genome}.txt")
+        ).ref_genome,
     )
 
 
-LINEAGES = listing_lineages
+REF_GENOMES = listing_ref_genomes
 
 # =================================================================================================
 #   Final output definition functions
@@ -707,7 +695,7 @@ def get_unfiltered_output():
 def get_filtered_output():
 
     final_output = expand(
-        INT_REFS_DIR / "filtered_lineages" / "{lineage}.txt", lineage=LINEAGES
+        INT_REFS_DIR / "filtered_ref_genomes" / "{ref_genome}.txt", ref_genome=REF_GENOMES
     )
 
     if config["annotation"]["activate"]:
@@ -745,9 +733,9 @@ def get_filtered_output():
             final_output = final_output, expand(
                     SAMPLES_DIR / "plots" / "{sample}" / "variants_by_windows_impact.png", sample=SAMPLES)
             final_output = final_output, expand(
-                        DATASET_DIR / "plots" / "{lineage}_variant_summary.png", lineage = LINEAGES)
+                        DATASET_DIR / "plots" / "{ref_genome}_variant_summary.png", ref_genome = REF_GENOMES)
             final_output = final_output, expand(
-                        REFS_DIR / "{lineage}" / "{lineage}_variants_by_windows.png", lineage = LINEAGES)     
+                        REFS_DIR / "{ref_genome}" / "{ref_genome}_variants_by_windows.png", ref_genome = REF_GENOMES)     
 
 
     return final_output
@@ -783,11 +771,11 @@ def get_dataset_output():
 
 rule ref_fasta_symlinks:
     input:
-        REF_DATA / "{lineage}.fasta",
+        REF_DATA / "{ref_genome}.fasta",
     output:
-        INT_REFS_DIR / "{lineage}" / "{lineage}.fasta",
+        INT_REFS_DIR / "{ref_genome}" / "{ref_genome}.fasta",
     log:
-        LOGS / "references" / "ref_fasta_symlinks_{lineage}.log",
+        LOGS / "references" / "ref_fasta_symlinks_{ref_genome}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:

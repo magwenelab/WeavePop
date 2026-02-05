@@ -38,23 +38,23 @@ rule join_chromosomes:
 
 
 # =================================================================================================
-#   Get names of lineages in combined datasets
+#   Get names of ref_genomes in combined datasets
 # =================================================================================================
 
 
-checkpoint get_lineages:
+checkpoint get_ref_genomes:
     input:
         rules.join_metadata.output,
     output:
-        directory(INT_REFS_DIR / "lineage_names"),
+        directory(INT_REFS_DIR / "ref_genome_names"),
     log:
-        LOGS / "join_datasets" / "get_lineages.log",
+        LOGS / "join_datasets" / "get_ref_genomes.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
         "../envs/pandas.yaml"
     script:
-        "../scripts/get_lineages.py"
+        "../scripts/get_ref_genomes.py"
 
 
 # =================================================================================================
@@ -125,7 +125,7 @@ rule join_ref_annotations:
     input:
         input_join_ref_annotations,
     output:
-        INT_REFS_DIR / "all_lineages_gff.tsv",
+        INT_REFS_DIR / "all_ref_genomes_gff.tsv",
     log:
         LOGS / "join_datasets" / "join_ref_annotations.log",
     resources:
@@ -202,12 +202,12 @@ rule unite_vcfs:
     input:
         unpack(input_unite_vcfs),
     output:
-        vcf=INT_DATASET_DIR / "snpeff" / "{lineage}_union.vcf",
-        tsv=INT_DATASET_DIR / "snpeff" / "{lineage}_presence.tsv",
+        vcf=INT_DATASET_DIR / "snpeff" / "{ref_genome}_union.vcf",
+        tsv=INT_DATASET_DIR / "snpeff" / "{ref_genome}_presence.tsv",
     params:
-        tmp_dir=os.path.join(TEMPDIR, "tmp_{lineage}"),
+        tmp_dir=os.path.join(TEMPDIR, "tmp_{ref_genome}"),
     log:
-        LOGS / "join_datasets" / "unite_vcfs_{lineage}.log",
+        LOGS / "join_datasets" / "unite_vcfs_{ref_genome}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -221,13 +221,13 @@ rule snpeff:
         vcf=rules.unite_vcfs.output.vcf,
         config=rules.copy_snpeff_config.output,
     output:
-        vcf=INT_DATASET_DIR / "snpeff" / "{lineage}_snpeff.vcf",
-        html=INT_DATASET_DIR / "snpeff" / "{lineage}_snpeff.html",
+        vcf=INT_DATASET_DIR / "snpeff" / "{ref_genome}_snpeff.vcf",
+        html=INT_DATASET_DIR / "snpeff" / "{ref_genome}_snpeff.html",
     params:
         dir=os.getcwd() / INT_REFS_DIR / "snpeff_data",
-        name="Species_name_{lineage}",
+        name="Species_name_{ref_genome}",
     log:
-        LOGS / "join_datasets" / "snpeff_{lineage}.log",
+        LOGS / "join_datasets" / "snpeff_{ref_genome}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -249,9 +249,9 @@ rule symlink_ref_gff:
     input:
         input_symlink_ref_gff,
     output:
-        tsv=INT_REFS_DIR / "{lineage}.gff.tsv",
+        tsv=INT_REFS_DIR / "{ref_genome}.gff.tsv",
     log:
-        LOGS / "join_datasets" / "symlink_ref_gff_{lineage}.log",
+        LOGS / "join_datasets" / "symlink_ref_gff_{ref_genome}.log",
     conda:
         "../envs/shell.yaml"
     shell:
@@ -265,13 +265,13 @@ rule extract_vcf_annotation:
         metadata=DATASET_DIR / "metadata.csv",
         presence=rules.unite_vcfs.output.tsv,
     output:
-        effects=INT_DATASET_DIR / "snpeff" / "{lineage}_effects.tsv",
-        variants=INT_DATASET_DIR / "snpeff" / "{lineage}_variants.tsv",
-        lofs=INT_DATASET_DIR / "snpeff" / "{lineage}_lofs.tsv",
-        nmds=INT_DATASET_DIR / "snpeff" / "{lineage}_nmds.tsv",
-        classif=INT_DATASET_DIR / "snpeff" / "{lineage}_variant_classification.tsv",
+        effects=INT_DATASET_DIR / "snpeff" / "{ref_genome}_effects.tsv",
+        variants=INT_DATASET_DIR / "snpeff" / "{ref_genome}_variants.tsv",
+        lofs=INT_DATASET_DIR / "snpeff" / "{ref_genome}_lofs.tsv",
+        nmds=INT_DATASET_DIR / "snpeff" / "{ref_genome}_nmds.tsv",
+        classif=INT_DATASET_DIR / "snpeff" / "{ref_genome}_variant_classification.tsv",
     log:
-        LOGS / "join_datasets" / "extract_vcf_annotation_{lineage}.log",
+        LOGS / "join_datasets" / "extract_vcf_annotation_{ref_genome}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -283,18 +283,18 @@ rule extract_vcf_annotation:
 rule join_variant_annotation:
     input:
         effects=expand(
-            INT_DATASET_DIR / "snpeff" / "{lineage}_effects.tsv", lineage=LINEAGES
+            INT_DATASET_DIR / "snpeff" / "{ref_genome}_effects.tsv", ref_genome=REF_GENOMES
         ),
         variants=expand(
-            INT_DATASET_DIR / "snpeff" / "{lineage}_variants.tsv", lineage=LINEAGES
+            INT_DATASET_DIR / "snpeff" / "{ref_genome}_variants.tsv", ref_genome=REF_GENOMES
         ),
         classif=expand(
-            INT_DATASET_DIR / "snpeff" / "{lineage}_variant_classification.tsv", lineage=LINEAGES
+            INT_DATASET_DIR / "snpeff" / "{ref_genome}_variant_classification.tsv", ref_genome=REF_GENOMES
         ),
-        lofs=expand(INT_DATASET_DIR / "snpeff" / "{lineage}_lofs.tsv", lineage=LINEAGES),
-        nmds=expand(INT_DATASET_DIR / "snpeff" / "{lineage}_nmds.tsv", lineage=LINEAGES),
+        lofs=expand(INT_DATASET_DIR / "snpeff" / "{ref_genome}_lofs.tsv", ref_genome=REF_GENOMES),
+        nmds=expand(INT_DATASET_DIR / "snpeff" / "{ref_genome}_nmds.tsv", ref_genome=REF_GENOMES),
         presence=expand(
-            INT_DATASET_DIR / "snpeff" / "{lineage}_presence.tsv", lineage=LINEAGES
+            INT_DATASET_DIR / "snpeff" / "{ref_genome}_presence.tsv", ref_genome=REF_GENOMES
         ),
     output:
         effects=DATASET_DIR / "snpeff" / "effects.tsv",

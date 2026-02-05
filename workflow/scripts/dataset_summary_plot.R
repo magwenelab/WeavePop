@@ -26,30 +26,30 @@ map_stats <- read.table(map_stats_input, header = TRUE, stringsAsFactors = TRUE,
 
 print("Joining and arranging data...")
 metadata <- metadata %>%
-    select(sample, strain, lineage) %>%
+    select(sample, strain, ref_genome) %>%
     mutate(name = paste(strain, sample, sep = " "))
 
-chrom_names <- select(chrom_names, lineage, accession, chromosome)
+chrom_names <- select(chrom_names, ref_genome, accession, chromosome)
 
 map_stats <- left_join(metadata, map_stats, by = "sample")
 map_stats$name <- reorder(map_stats$name, -map_stats$genome_mean_depth_good, sum)
 
 depth_good <- map_stats %>%
-    select(sample, name, lineage, Mean = genome_mean_depth_good, Median = genome_median_depth_good) %>%
+    select(sample, name, ref_genome, Mean = genome_mean_depth_good, Median = genome_median_depth_good) %>%
     pivot_longer(cols = c(Mean, Median), names_to = "measurement", values_to = "value") %>%
     mutate(quality = "Good quality mappings")
 depth_raw <- map_stats %>%
-    select(sample, name, lineage, Mean = genome_mean_depth_raw, Median = genome_median_depth_raw) %>%
+    select(sample, name, ref_genome, Mean = genome_mean_depth_raw, Median = genome_median_depth_raw) %>%
     pivot_longer(cols = c(Mean, Median), names_to = "measurement", values_to = "value") %>%
     mutate(quality = "All mappings")
 depth <- rbind(depth_good, depth_raw)
 
 coverage_good <- map_stats %>%
-    select(sample, name, lineage, Coverage = coverage_good) %>%
+    select(sample, name, ref_genome, Coverage = coverage_good) %>%
     pivot_longer(cols = Coverage, names_to = "measurement", values_to = "value") %>%
     mutate(quality = "Good quality mappings")
 coverage_raw <- map_stats %>%
-    select(sample, name, lineage, Coverage = coverage_raw) %>%
+    select(sample, name, ref_genome, Coverage = coverage_raw) %>%
     pivot_longer(cols = Coverage, names_to = "measurement", values_to = "value") %>%
     mutate(quality = "All mappings")
 coverage <- rbind(coverage_good, coverage_raw)
@@ -67,7 +67,7 @@ print("Plotting genome-wide read depth...")
 g <- ggplot(depth) +
     geom_point(aes(x = name, y = value, shape = measurement, color = quality)) +
     ylim(0, topylim) +
-    facet_grid(~lineage, scale = "free_x", space = "free_x") +
+    facet_grid(~ref_genome, scale = "free_x", space = "free_x") +
     scale_color_manual(name= "", values= color_quality)+
     scale_shape_manual(values = c(16,15, 17), name = NULL)+
     theme_bw() +
@@ -84,7 +84,7 @@ g <- ggplot(depth) +
 print("Plotting coverage...")
 c <- ggplot(coverage) +
     geom_point(aes(x = name, y = value, color = quality)) +
-    facet_grid(~lineage, scale = "free_x", space = "free_x") +
+    facet_grid(~ref_genome, scale = "free_x", space = "free_x") +
     scale_color_manual(name= "", values= color_quality)+
     scale_shape_manual(values = c(16,15, 17), name = NULL)+
     theme_bw() +
@@ -102,10 +102,10 @@ c <- ggplot(coverage) +
 print("Joining and arranging data...")
 
 stats_metad <- map_stats %>%
-    select(sample, name, lineage, strain, percent_only_mapped, percent_unmapped, percent_properly_paired, percent_low_mapq, percent_inter_mapq, percent_high_mapq)
+    select(sample, name, ref_genome, strain, percent_only_mapped, percent_unmapped, percent_properly_paired, percent_low_mapq, percent_inter_mapq, percent_high_mapq)
 
 stats_long <- stats_metad %>%
-    pivot_longer(cols = -c(sample, name, lineage, strain), names_to = "metric", values_to = "value")
+    pivot_longer(cols = -c(sample, name, ref_genome, strain), names_to = "metric", values_to = "value")
 
 stats_reads <- stats_long %>%
     filter(metric %in% c("percent_only_mapped", "percent_unmapped", "percent_properly_paired"))
@@ -124,7 +124,7 @@ palette_qualit <- brewer.pal(n = length(unique(stats_qualit$metric)), name = "Bu
 print("Plotting percentage of reads by mapping status...")
 reads <- ggplot()+
     geom_bar(data = stats_reads, aes(x = name, y = value, fill = metric), stat = "identity")+
-    facet_grid(~ lineage, scales = "free", space = "free_x")+
+    facet_grid(~ ref_genome, scales = "free", space = "free_x")+
     theme(panel.background = element_blank(), 
           panel.grid.major = element_blank(),
           panel.grid.minor = element_blank(),
@@ -139,7 +139,7 @@ reads <- ggplot()+
 print("Plotting percentage of reads by mapping quality...")
 mapq <- ggplot() +
     geom_bar(data = stats_qualit, aes(x = name, y = value, fill = metric), stat = "identity") +
-    facet_grid(~ lineage, scales = "free", space = "free_x") +
+    facet_grid(~ ref_genome, scales = "free", space = "free_x") +
     theme(panel.background = element_blank(), 
           panel.grid.major = element_blank(),
           panel.grid.minor = element_blank(),

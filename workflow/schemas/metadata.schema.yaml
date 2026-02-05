@@ -6,13 +6,13 @@ properties:
   sample:
     type: string
     description: sample name
-  lineage:
+  ref_genome:
     type: string
-    description: lineage name
+    description: ref_genome name
   strain:
     type: string
     description: strain name
 required:
   - sample
-  - lineage
+  - ref_genome
   - strain

@@ -1,27 +1,27 @@
 # =================================================================================================
-#   Per lineage | Create snpeff database
+#   Per ref_genome | Create snpeff database
 # =================================================================================================
 
 
 # Make symbolic links in the snpeff_data directory and create config file
 rule prepare_refs_db:
     input:
-        gff=REFS_DIR / "{lineage}" / "{lineage}.gff",
+        gff=REFS_DIR / "{ref_genome}" / "{ref_genome}.gff",
         fasta=rules.extract_cds_seqs.input.fasta,
         cds=rules.extract_cds_seqs.output.cds,
         prots=rules.extract_protein_seqs.output.prots,
     output:
-        gff=INT_REFS_DIR / "snpeff_data" / "Species_name_{lineage}" / "genes.gff",
-        fasta=INT_REFS_DIR / "snpeff_data" / "Species_name_{lineage}" / "sequences.fa",
-        cds=INT_REFS_DIR / "snpeff_data" / "Species_name_{lineage}" / "cds.fa",
-        prots=INT_REFS_DIR / "snpeff_data" / "Species_name_{lineage}" / "protein.fa",
+        gff=INT_REFS_DIR / "snpeff_data" / "Species_name_{ref_genome}" / "genes.gff",
+        fasta=INT_REFS_DIR / "snpeff_data" / "Species_name_{ref_genome}" / "sequences.fa",
+        cds=INT_REFS_DIR / "snpeff_data" / "Species_name_{ref_genome}" / "cds.fa",
+        prots=INT_REFS_DIR / "snpeff_data" / "Species_name_{ref_genome}" / "protein.fa",
     conda:
         "../envs/variants.yaml"
     params:
-        name="Species_name_{lineage}",
+        name="Species_name_{ref_genome}",
         config=INT_REFS_DIR / "snpeff_data" / "snpEff.config",
     log:
-        LOGS / "references" / "snpeff" / "prepare_dbs_{lineage}.log",
+        LOGS / "references" / "snpeff" / "prepare_dbs_{ref_genome}.log",
     shell:
         """
         echo "{params.name}.genome : {params.name}" >> {params.config} 2> {log} && 
@@ -40,13 +40,13 @@ rule build_refs_db:
         cds=rules.prepare_refs_db.output.cds,
         prots=rules.prepare_refs_db.output.prots,
     output:
-        touch(INT_REFS_DIR / "snpeff_data" / "{lineage}.done"),
+        touch(INT_REFS_DIR / "snpeff_data" / "{ref_genome}.done"),
     params:
         config=INT_REFS_DIR / "snpeff_data" / "snpEff.config",
         dir=os.getcwd() / INT_REFS_DIR / "snpeff_data",
-        name="Species_name_{lineage}",
+        name="Species_name_{ref_genome}",
     log:
-        LOGS / "references" / "snpeff" / "build_dbs_{lineage}.log",
+        LOGS / "references" / "snpeff" / "build_dbs_{ref_genome}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -62,7 +62,7 @@ rule build_refs_db:
 
 
 # =================================================================================================
-#   Join samples per lineage | unite VCF files of all samples from each lineage and annotate
+#   Join samples per ref_genome | unite VCF files of all samples from each ref_genome and annotate
 # =================================================================================================
 
 
@@ -70,12 +70,12 @@ rule unite_vcfs:
     input:
         unpack(unite_vcfs_input),
     output:
-        vcf=INT_DATASET_DIR / "snpeff" / "{lineage}_union.vcf",
-        tsv=INT_DATASET_DIR / "snpeff" / "{lineage}_presence.tsv",
+        vcf=INT_DATASET_DIR / "snpeff" / "{ref_genome}_union.vcf",
+        tsv=INT_DATASET_DIR / "snpeff" / "{ref_genome}_presence.tsv",
     params:
-        tmp_dir=os.path.join(TEMPDIR, "tmp_{lineage}"),
+        tmp_dir=os.path.join(TEMPDIR, "tmp_{ref_genome}"),
     log:
-        LOGS / "dataset" / "snpeff" / "unite_vcfs_{lineage}.log",
+        LOGS / "dataset" / "snpeff" / "unite_vcfs_{ref_genome}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -89,15 +89,15 @@ rule snpeff:
         vcf=rules.unite_vcfs.output.vcf,
         db_done=rules.build_refs_db.output,
     output:
-        vcf=INT_DATASET_DIR / "snpeff" / "{lineage}_snpeff.vcf",
-        html=INT_DATASET_DIR / "snpeff" / "{lineage}_snpeff.html",
+        vcf=INT_DATASET_DIR / "snpeff" / "{ref_genome}_snpeff.vcf",
+        html=INT_DATASET_DIR / "snpeff" / "{ref_genome}_snpeff.html",
     params:
         dir=os.getcwd() / INT_REFS_DIR / "snpeff_data",
         config=INT_REFS_DIR / "snpeff_data" / "snpEff.config",
-        name="Species_name_{lineage}",
+        name="Species_name_{ref_genome}",
         extra=config["snpeff"]["extra"],
     log:
-        LOGS / "dataset" / "snpeff" / "snpeff_{lineage}.log",
+        LOGS / "dataset" / "snpeff" / "snpeff_{ref_genome}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -120,13 +120,13 @@ rule extract_vcf_annotation:
         metadata=rules.quality_filter.output.metadata,
         presence=rules.unite_vcfs.output.tsv,
     output:
-        effects=INT_DATASET_DIR / "snpeff" / "{lineage}_effects.tsv",
-        variants=INT_DATASET_DIR / "snpeff" / "{lineage}_variants.tsv",
-        lofs=INT_DATASET_DIR / "snpeff" / "{lineage}_lofs.tsv",
-        nmds=INT_DATASET_DIR / "snpeff" / "{lineage}_nmds.tsv",
-        classif=INT_DATASET_DIR / "snpeff" / "{lineage}_variant_classification.tsv",
+        effects=INT_DATASET_DIR / "snpeff" / "{ref_genome}_effects.tsv",
+        variants=INT_DATASET_DIR / "snpeff" / "{ref_genome}_variants.tsv",
+        lofs=INT_DATASET_DIR / "snpeff" / "{ref_genome}_lofs.tsv",
+        nmds=INT_DATASET_DIR / "snpeff" / "{ref_genome}_nmds.tsv",
+        classif=INT_DATASET_DIR / "snpeff" / "{ref_genome}_variant_classification.tsv",
     log:
-        LOGS / "dataset" / "snpeff" / "extract_vcf_annotation_{lineage}.log",
+        LOGS / "dataset" / "snpeff" / "extract_vcf_annotation_{ref_genome}.log",
     resources:
         tmpdir=TEMPDIR,
     conda:

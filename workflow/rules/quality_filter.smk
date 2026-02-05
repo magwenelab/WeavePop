@@ -106,11 +106,11 @@ rule join_mapping_stats:
 
 rule chromosome_lengths:
     input:
-        INT_REFS_DIR / "{unf_lineage}" / "{unf_lineage}.fasta",
+        INT_REFS_DIR / "{unf_ref_genome}" / "{unf_ref_genome}.fasta",
     output:
-        INT_REFS_DIR / "{unf_lineage}" / "chromosome_lengths.tsv",
+        INT_REFS_DIR / "{unf_ref_genome}" / "chromosome_lengths.tsv",
     log:
-        LOGS / "references" / "depth_quality" / "{unf_lineage}_chromosome_lengths.log",
+        LOGS / "references" / "depth_quality" / "{unf_ref_genome}_chromosome_lengths.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -118,7 +118,7 @@ rule chromosome_lengths:
     shell:
         """
         seqkit fx2tab -l -i -n {input} |\
-        awk -v lin={wildcards.unf_lineage} '{{print $0, lin}}' OFS='\t' \
+        awk -v lin={wildcards.unf_ref_genome} '{{print $0, lin}}' OFS='\t' \
         1> {output} 2> {log}
         """
 
@@ -128,12 +128,12 @@ rule chromosome_lengths_names:
         chrom_names=CHROM_NAMES_FILE,
         chrom_lengths=rules.chromosome_lengths.output,
     output:
-        INT_REFS_DIR / "{unf_lineage}" / "chromosomes.csv",
+        INT_REFS_DIR / "{unf_ref_genome}" / "chromosomes.csv",
     log:
         LOGS
         / "references"
         / "depth_quality"
-        / "{unf_lineage}_chromosome_lengths_names.log",
+        / "{unf_ref_genome}_chromosome_lengths_names.log",
     resources:
         tmpdir=TEMPDIR,
     conda:
@@ -145,8 +145,8 @@ rule chromosome_lengths_names:
 rule join_chromosomes:
     input:
         chroms=expand(
-            INT_REFS_DIR / "{unf_lineage}" / "chromosomes.csv",
-            unf_lineage=UNF_LINEAGES,
+            INT_REFS_DIR / "{unf_ref_genome}" / "chromosomes.csv",
+            unf_ref_genome=UNF_REF_GENOMES,
         ),
     output:
         INT_REFS_DIR / "chromosomes.csv",
@@ -188,7 +188,7 @@ checkpoint filter_wildcards:
         rules.quality_filter.output.metadata,
     output:
         directory(INT_SAMPLES_DIR / "filtered_samples"),
-        directory(INT_REFS_DIR / "filtered_lineages"),
+        directory(INT_REFS_DIR / "filtered_ref_genomes"),
     log:
         LOGS / "samples" / "depth_quality" / "filter_wildcards.log",
     conda:

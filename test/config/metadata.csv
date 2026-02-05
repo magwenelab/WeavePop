@@ -1,3 +1,5 @@
-sample,lineage,strain,source
+sample,ref_genome,strain,source
 sample1,VNBI,strainA,environmental
-sample2,VNI,strainB,clinical
+sample2,VNBI,strainB,clinical
+sample1_a,VNI,strainC,environmental
+sample2_a,VNI,strainD,clinical

@@ -33,9 +33,9 @@ metadata <- read.delim(metadata_input, sep = ",", header = TRUE, stringsAsFactor
 classif$category <- factor(classif$category, levels = c("Reference private","Private", "Non-private"))
 chromosomes$chromosome  <- factor(chromosomes$chromosome, levels = unique(chromosomes$chromosome))
 
-print("Obtaining lineage of sample...")
+print("Obtaining ref_genome of sample...")
 
-lineage_name <- as.character(metadata$lineage[metadata$sample == samp])
+ref_genome_name <- as.character(metadata$ref_genome[metadata$sample == samp])
 strain_name <- as.character(metadata$strain[metadata$sample == samp])
 
 print("Merge variant description and classification...")
@@ -43,7 +43,7 @@ variants <- left_join(variants, classif, by = "var_id")
 
 print("Adding chromosome name and creating windows..")
 vars_windows <- variants %>%
-    left_join(chromosomes, by = c("accession", "lineage"))%>%
+    left_join(chromosomes, by = c("accession", "ref_genome"))%>%
     group_by(chromosome) %>%
     mutate(window = floor(pos / window_size) + 1)%>%
     ungroup()%>%
@@ -67,7 +67,7 @@ if (length(unique(vars$category)) > 1){
         filter(category != "Reference private")%>%
         droplevels()
 } else {
-    print("Only one sample in lineage, plotting all variants")
+    print("Only one sample in ref_genome, plotting all variants")
 }
 
 vars$impact <- factor(vars$impact, levels = c("High", "Moderate", "Low", "Modifier"))
@@ -102,7 +102,7 @@ p <- ggplot(category_density)+
     scale_x_continuous(name = "Position (bp) ", labels = comma)+
     scale_color_manual(values = c_colors, name = "Category")+
     labs(title = "Number of Variants in Windows Along Chromosomes by Privateness Category",
-        subtitle= paste("Sample:", samp, "Strain:", strain_name, " Lineage:", lineage_name, " Window size:", window_size, " Total variants: ", scales::comma(n_vars)),
+        subtitle= paste("Sample:", samp, "Strain:", strain_name, " Reference genome:", ref_genome_name, " Window size:", window_size, " Total variants: ", scales::comma(n_vars)),
             y = "Number of variants")+
     theme_classic()+
     theme(legend.position = "none")
@@ -115,7 +115,7 @@ e <- ggplot(effs_density)+
     scale_x_continuous(name = "Position (bp) ", labels = comma)+
     scale_color_manual(values = i_colors, name = "Impact")+
     labs(title="Number of Variants in Windows Along Chromosomes by Impact",
-        subtitle= paste("Sample:", samp, "Strain:", strain_name, " Lineage:", lineage_name, " Window size:", window_size," Total variants: ", scales::comma(n_vars)),
+        subtitle= paste("Sample:", samp, "Strain:", strain_name, " Reference genome:", ref_genome_name, " Window size:", window_size," Total variants: ", scales::comma(n_vars)),
             y = "Number of variants")+
     theme_classic()+
     theme(legend.position = "none")
@@ -131,7 +131,7 @@ b <- ggplot(vars, aes(x = category, fill = impact))+
     scale_y_continuous(name = "Number of variants", labels = comma)+
     scale_fill_manual(values = i_colors, name = "Impact")+
     labs(title = "Number of Variants per Impact and Privateness Category",
-        subtitle= paste("Sample:", samp, "Strain:", strain_name, " Lineage:", lineage_name, " Total variants:", scales::comma(total_vars)),
+        subtitle= paste("Sample:", samp, "Strain:", strain_name, " Reference genome:", ref_genome_name, " Total variants:", scales::comma(total_vars)),
         x = "", 
         fill = "Impact")+
     theme_classic()

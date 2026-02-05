@@ -48,14 +48,14 @@ if (!is.null(snakemake@input$repeats)) {
   repeats_table$repeat_type <- "."
 }
 
-print("Obtaining lineage of sample...")
+print("Obtaining ref_genome of sample...")
 
-lineage_name <- as.character(metadata$lineage[metadata$sample == sample])
+ref_genome_name <- as.character(metadata$ref_genome[metadata$sample == sample])
 strain_name <- as.character(metadata$strain[metadata$sample == sample])
 
 print("Filtering chromosome names...")
 chrom_names <- chrom_names %>%
-  filter(lineage == lineage_name)
+  filter(ref_genome == ref_genome_name)
 
 print("Ordering chromosome names...")
 chrom_names['accession_chromosome'] <- paste(chrom_names$chromosome, chrom_names$accession, sep = "xxx")
@@ -123,7 +123,7 @@ c <- ggplot()+
   facet_wrap(~accession_chromosome, strip.position = "right", ncol = 2, labeller = as_labeller(my_labeller)) +
   labs(y = "Normalized Depth",
       title = "Normalized Depth of Windows Along Chromosomes", 
-      subtitle = paste("Sample:", sample, "Strain:", strain_name, " Lineage:", lineage_name, " Window size:", window_size, sep = " "))+
+      subtitle = paste("Sample:", sample, "Strain:", strain_name, " Reference genome:", ref_genome_name, " Window size:", window_size, sep = " "))+
   scale_y_continuous(breaks = c(1, 2)) +
   theme_classic()+
   theme(panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 1))
@@ -139,7 +139,7 @@ c <- ggplot()+
 print("Adding loci data if available...")
 if (nrow(loci_table)!= 0){
   loci_sample <- loci_table %>% 
-    filter(lineage == lineage_name) %>%
+    filter(ref_genome == ref_genome_name) %>%
     select(accession, start , end , loci)%>%
     droplevels()
   loci <- left_join(loci_sample, chrom_names, by = c("accession"))%>%

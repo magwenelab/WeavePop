@@ -1,5 +1,5 @@
 # =================================================================================================
-#   Per lineage | Create table with loci to add to plots
+#   Per ref_genome | Create table with loci to add to plots
 # =================================================================================================
 
 
@@ -7,9 +7,9 @@ rule loci:
     input:
         unpack(loci_input),
     output:
-        locitable=INT_REFS_DIR / "{lineage}" / "loci_to_plot.tsv",
+        locitable=INT_REFS_DIR / "{ref_genome}" / "loci_to_plot.tsv",
     log:
-        LOGS / "references" / "plots" / "loci_{lineage}.log",
+        LOGS / "references" / "plots" / "loci_{ref_genome}.log",
     conda:
         "../envs/samtools.yaml"
     script:

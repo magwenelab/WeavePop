@@ -180,9 +180,9 @@ summary['sample'] = sample_name
 print("Reading chromosome lengths...")
 chromosomes = pd.read_csv(chromosome_input, sep=',', header=0)
 
-lineage = Path(chromosome_input).parent.name
+ref_genome = Path(chromosome_input).parent.name
 
-chromosomes = chromosomes[chromosomes['lineage'] == lineage]
+chromosomes = chromosomes[chromosomes['ref_genome'] == ref_genome]
 
 
 print("Making sure that all types of CNV are present in all chromosomes...")

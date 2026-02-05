@@ -111,8 +111,8 @@ database:
 #   Parameters for the join_datasets workflow
 # =============================================================================
 # This workflow joins the results of running the analysis workflow on different datasets. 
-# It assumes that if the same lineage is present in the different datasets, 
-# the same reference genome was used.
+# It assumes that if the same ref_genome name is present in the different datasets, 
+# the same reference genome files were used.
 
 datasets_paths: "" # Comma-separated list of paths to the directories with the results of the analysis workflow.
 datasets_names: "" # Comma-separated list of names for the datasets, in the same order as the paths.

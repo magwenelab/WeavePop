@@ -10,8 +10,8 @@ input_tsv=snakemake.input.tsv
 output_tsv=snakemake.output.tsv
 output_gff=snakemake.output.gff
 version=snakemake.params.version
-if version == "lineage":
-    lineage=snakemake.params.lineage
+if version == "ref_genome":
+    ref_genome=snakemake.params.ref_genome
 
 
 print("Reading GFF table...")
@@ -57,7 +57,7 @@ liftoff_cols = ['repeat_fraction',
                 'valid_ORF',
                 'valid_ORFs']
 
-if version == "lineage":
+if version == "ref_genome":
         
     print("Adding ref_ suffix to liftoff columns...")
     new_liftoff_cols = []
@@ -147,15 +147,15 @@ if version == "sample":
     existing_ref_liftoff_cols = [column for column in ref_liftoff_cols if column in df.columns]
     other_columns = [column for column in existing_columns if column not in existing_priority_columns and column not in existing_ref_liftoff_cols and column not in new_liftoff_cols]
     other_columns = existing_ref_liftoff_cols + other_columns
-elif version == "lineage":
+elif version == "ref_genome":
     other_columns = [column for column in existing_columns if column not in existing_priority_columns and column not in new_liftoff_cols]
     
     
 df = df[existing_priority_columns + new_liftoff_cols + other_columns]
 
-if version == "lineage":
-    print("Add new column with lineage name...")
-    df['lineage'] = lineage
+if version == "ref_genome":
+    print("Add new column with ref_genome name...")
+    df['ref_genome'] = ref_genome
 
 print("Final column names:")
 print(df.columns.tolist())

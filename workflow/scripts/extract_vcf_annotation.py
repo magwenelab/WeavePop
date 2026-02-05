@@ -16,7 +16,7 @@ effects_out = snakemake.output.effects
 lofs_out = snakemake.output.lofs
 nmds_out = snakemake.output.nmds
 classif_out = snakemake.output.classif
-lineage = snakemake.wildcards.lineage
+ref_genome = snakemake.wildcards.ref_genome
 
 print("Getting tables from SnpEff result...")
 data_effects = []
@@ -79,8 +79,8 @@ print("Variants dataframe")
 df_variants = pd.DataFrame(data_variants, columns=['var_id', 'accession', 'pos', 'ref', 'alt'])
 df_variants['alt'] = df_variants['alt'].astype(str)
 df_variants['alt'] = df_variants['alt'].str.replace('[', '').str.replace(']', '')
-df_variants['lineage'] = lineage
-df_variants = df_variants[['var_id', 'accession', 'pos', 'ref', 'alt', 'lineage']]
+df_variants['ref_genome'] = ref_genome
+df_variants = df_variants[['var_id', 'accession', 'pos', 'ref', 'alt', 'ref_genome']]
 
 print("LOFs dataframe")
 df_lofs = pd.DataFrame(data_lofs, columns=['var_id', 'gene_name', 'num_transcripts', 'percent_affected'])
@@ -148,11 +148,11 @@ df_presence = pd.read_csv(presence, sep='\t', header = 0, low_memory=False)
 df_private = df_presence.groupby(['var_id']).size().reset_index(name = "n_samples")
 
 df_metadata = pd.read_csv(metadata, header = 0)
-df_samples_in_lineage= df_metadata.groupby(['lineage']).size().reset_index(name='samples_in_lineage')
-df_private['samples_in_lineage'] = df_samples_in_lineage.loc[df_samples_in_lineage['lineage'] == lineage, ['samples_in_lineage']]['samples_in_lineage'].iloc[0]
+df_samples_in_ref_genome= df_metadata.groupby(['ref_genome']).size().reset_index(name='samples_in_ref_genome')
+df_private['samples_in_ref_genome'] = df_samples_in_ref_genome.loc[df_samples_in_ref_genome['ref_genome'] == ref_genome, ['samples_in_ref_genome']]['samples_in_ref_genome'].iloc[0]
   
 df_private['category'] = df_private.apply(lambda row: "Private" if row['n_samples'] == 1 
-                                                        else "Reference private" if row['n_samples'] == row['samples_in_lineage']
+                                                        else "Reference private" if row['n_samples'] == row['samples_in_ref_genome']
                                                         else "Non-private", axis = 1)
 df_private = df_private[['var_id', 'category']]
 
