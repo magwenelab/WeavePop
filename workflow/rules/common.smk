@@ -14,25 +14,7 @@ import subprocess
 # =================================================================================================
 
 print(weavepop_logo, flush=True)
-
-# =================================================================================================
-#   Print commit hash of current version
-# =================================================================================================
-
-try:
-    result = subprocess.run(
-        ["sh", "-c", "cat workflow/.head_hash"],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True,
-        check=True,
-    )
-    head_hash = result.stdout.strip()
-    print("Commmit hash of current version:")
-    print(f"{head_hash}")
-    print("", flush=True)
-except subprocess.CalledProcessError as e:
-    print(f"Error occurred while getting the latest commit hash: {e.stderr}")
+print("WeavePop v0.0.0", flush=True)
 
 # =================================================================================================
 #  Define variables of global paths
