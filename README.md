@@ -46,7 +46,7 @@ conda config --set channel_priority strict
 
 Download or clone this GitHub repository.
 
-To download, use the green button `<> Code` and click `Download ZIP`, then extract the `.zip` file to a directory called `WeavePop/`.  
+To download, go to [Releases](https://github.com/magwenelab/WeavePop/releases) and download the latest one.
 
 ### 3. Install the Snakemake Conda environment
 
