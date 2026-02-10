@@ -24,7 +24,7 @@ print(
     flush=True,
 )
 
-print("WeavePop v0.0.1", flush=True)
+print("WeavePop v1.0.0", flush=True)
 
 # =================================================================================================
 #  Print configuration
