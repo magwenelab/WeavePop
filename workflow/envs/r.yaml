@@ -13,3 +13,4 @@ dependencies:
   - r-patchwork=1.2.0
   - r-ggbeeswarm=0.7.2
   - r-ggrepel=0.9.6
+  - r-ggtext
