@@ -15,19 +15,21 @@ map_stats_input <- snakemake@input$stats
 
 output <- snakemake@output$plot
 
-gscale <- snakemake@params$scale
-gheight <- 9
-gwidth <- 16
-
 print("Reading files...")
 metadata <- read.csv(metadata_input, header = TRUE, stringsAsFactors = TRUE)
 chrom_names <- read.csv(chrom_names_input, header = TRUE, colClasses = "factor")
 map_stats <- read.table(map_stats_input, header = TRUE, stringsAsFactors = TRUE, sep = "\t")
 
 print("Joining and arranging data...")
-metadata <- metadata %>%
-    select(sample, strain, ref_genome) %>%
-    mutate(name = paste(strain, sample, sep = " "))
+
+if ("strain" %in% colnames(metadata)){
+    metadata <- metadata %>%
+        select(sample, strain, ref_genome) %>%
+        mutate(name = paste(strain, sample, sep = " ")) 
+    } else {
+    metadata <- metadata %>%
+        select(sample, ref_genome) %>%
+        mutate(name = sample)}
 
 chrom_names <- select(chrom_names, ref_genome, accession, chromosome)
 
@@ -98,14 +100,15 @@ c <- ggplot(coverage) +
          y = "Percentage of Coverage",
          x = "")
 
-
 print("Joining and arranging data...")
 
 stats_metad <- map_stats %>%
-    select(sample, name, ref_genome, strain, percent_only_mapped, percent_unmapped, percent_properly_paired, percent_low_mapq, percent_inter_mapq, percent_high_mapq)
+    select(sample, name, ref_genome, strain, quality_warning,
+        percent_only_mapped, percent_unmapped,percent_properly_paired,
+        percent_low_mapq, percent_inter_mapq, percent_high_mapq)
 
 stats_long <- stats_metad %>%
-    pivot_longer(cols = -c(sample, name, ref_genome, strain), names_to = "metric", values_to = "value")
+    pivot_longer(cols = -c(sample, name, ref_genome, strain, quality_warning), names_to = "metric", values_to = "value")
 
 stats_reads <- stats_long %>%
     filter(metric %in% c("percent_only_mapped", "percent_unmapped", "percent_properly_paired"))
@@ -120,6 +123,11 @@ stats_qualit$metric <- factor(stats_qualit$metric, levels = c("percent_low_mapq"
 print("Getting plot parameters...")
 palette_reads <- brewer.pal(n = length(unique(stats_reads$metric)), name = "BuPu")
 palette_qualit <- brewer.pal(n = length(unique(stats_qualit$metric)), name = "BuGn")
+stats_qualit <- stats_qualit %>%
+    mutate(color = ifelse(quality_warning == "", "black", "red"),
+            colored_label = paste0("<span style='color:", color, "'>", name, "</span>"))%>%
+    arrange(factor(name, levels = levels(stats_qualit$name)))
+stats_qualit$colored_label <- factor(stats_qualit$colored_label, levels = unique(stats_qualit$colored_label))
 
 print("Plotting percentage of reads by mapping status...")
 reads <- ggplot()+
@@ -138,7 +146,7 @@ reads <- ggplot()+
 
 print("Plotting percentage of reads by mapping quality...")
 mapq <- ggplot() +
-    geom_bar(data = stats_qualit, aes(x = name, y = value, fill = metric), stat = "identity") +
+    geom_bar(data = stats_qualit, aes(x = colored_label, y = value, fill = metric), stat = "identity") +
     facet_grid(~ ref_genome, scales = "free", space = "free_x") +
     theme(panel.background = element_blank(), 
           panel.grid.major = element_blank(),
@@ -146,7 +154,7 @@ mapq <- ggplot() +
           strip.background = element_blank(),
           strip.text = element_blank(),
           panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 1),
-          axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5, size = 5)) +
+          axis.text.x = ggtext::element_markdown(angle = 90, hjust = 1, vjust = 0.5, size = 5)) +
     labs(x = "", y = "Percentage of Reads", fill = "Metric", title = "Percentage of Mapped Reads by Mapping Quality") +
     scale_fill_manual(values = palette_qualit, name = "")
 
@@ -154,5 +162,24 @@ print("Joining plots...")
 plot <- g/c/reads/mapq
 
 print("Saving plot...")
-ggsave(output, plot = plot, units = "in", height = gheight, width = gwidth, scale = gscale)
+n_samples <- nrow(metadata)
+
+if (n_samples <= 200) {
+    gscale <- 1
+    gwidth <- 6 + n_samples * 0.03
+} else if (n_samples > 200 & n_samples <= 400) {
+    gwidth <- 16
+    gscale <- 2
+} else if ( n_samples > 400 & n_samples <= 1000) {
+    gwidth <- 18
+    gscale <- 2.5
+} else {
+    gwidth <- 20
+    gscale <- 3
+}
+
+gheight <- 9
+
+ggsave(output, plot = plot, units = "in", height = gheight, width = gwidth, scale = gscale, limitsize = FALSE)
+
 print("Done!")

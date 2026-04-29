@@ -10,8 +10,6 @@ rule dataset_summary_plot:
         stats=rules.join_mapping_stats.output,
     output:
         plot=DATASET_DIR / "plots" / "mapping_summary.png",
-    params:
-        scale=config["plotting"]["scale"],
     log:
         LOGS / "dataset" / "plots" / "dataset_summary.log",
     conda:
