@@ -771,6 +771,7 @@ def get_dataset_output():
         final_output.append(DATASET_DIR / "database.db")
     if config["plotting"]["activate"]:
         final_output.append(DATASET_DIR / "plots" / "mapping_summary.png")
+        final_output.append(DATASET_DIR / "plots" / "variant_summary.png")
         if config["cnv"]["activate"] or config["database"]["activate"]:
             final_output.append(DATASET_DIR / "plots" / "dataset_depth_by_chrom.png")
     return final_output

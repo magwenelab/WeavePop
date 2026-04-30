@@ -69,3 +69,24 @@ rule refs_variant_classification_plots:
         "../envs/r.yaml"
     script:
         "../scripts/refs_variant_classification_plots.R"
+
+
+rule dataset_variants_plot:
+    input:
+        metadata=rules.quality_filter.output.metadata,
+        classif=DATASET_DIR / "snpeff" / "variant_classification.tsv",
+        variants=DATASET_DIR / "snpeff" / "variants.tsv",
+        presence=DATASET_DIR / "snpeff" / "presence.tsv",
+    output:
+        plot=DATASET_DIR / "plots" / "variant_summary.png",
+    log:
+        LOGS
+        / "dataset"
+        / "plots"
+        / "dataset_variants_plot.log",
+    resources:
+        tmpdir=TEMPDIR,
+    conda:
+        "../envs/r.yaml"
+    script:
+        "../scripts/dataset_variants_plot.R"

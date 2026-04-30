@@ -15,10 +15,19 @@ map_stats_input <- snakemake@input$stats
 
 output <- snakemake@output$plot
 
+
+# metadata_input <- "/FastData/czirion/WeavePop/test/results/02.Dataset/metadata.csv"
+# chrom_names_input <- "/FastData/czirion/WeavePop/test/results/02.Dataset/chromosomes.csv"
+# map_stats_input <- "/FastData/czirion/WeavePop/test/results/02.Dataset/depth_quality/mapping_stats.tsv"
+
+# output <- "plot.png"
+
 print("Reading files...")
 metadata <- read.csv(metadata_input, header = TRUE, stringsAsFactors = TRUE)
 chrom_names <- read.csv(chrom_names_input, header = TRUE, colClasses = "factor")
 map_stats <- read.table(map_stats_input, header = TRUE, stringsAsFactors = TRUE, sep = "\t")
+
+map_stats$quality_warning <- ifelse(map_stats$quality_warning == "", NA, map_stats$quality_warning)
 
 print("Joining and arranging data...")
 
@@ -79,8 +88,8 @@ g <- ggplot(depth) +
           panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 1),
           axis.text.x = element_blank(), 
           axis.ticks.x = element_blank())+
-    labs(title = "Genome-Wide Read Depth",
-         y = "Read Depth (X)",
+    labs(title = "Read Depth",
+         y = "Depth (X)",
          x = "")
 
 print("Plotting coverage...")
@@ -93,11 +102,12 @@ c <- ggplot(coverage) +
     theme(panel.background = element_blank(), 
           panel.grid.minor = element_blank(),
           strip.background = element_blank(),
+          strip.text = element_blank(),
           panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 1),
           axis.text.x = element_blank(), 
           axis.ticks.x = element_blank())+
     labs(title = "Coverage",
-         y = "% Coverage",
+         y = "Coverage",
          x = "")
 
 print("Joining and arranging data...")
@@ -106,7 +116,8 @@ stats_metad <- map_stats %>%
     select(sample, name, ref_genome, strain, quality_warning,
         percent_only_mapped, percent_unmapped,percent_properly_paired,
         percent_low_mapq, percent_inter_mapq, percent_high_mapq,
-        percent_filtered_vars, percent_removed_vars)
+        percent_filtered_vars, percent_removed_vars,
+        n_raw_vars)
 
 stats_long <- stats_metad %>%
     pivot_longer(cols = -c(sample, name, ref_genome, strain, quality_warning), names_to = "metric", values_to = "value")
@@ -125,6 +136,11 @@ stats_vars <- stats_long %>%
     filter(metric %in% c("percent_filtered_vars", "percent_removed_vars"))
 stats_vars$metric <- factor(stats_vars$metric, levels = c("percent_removed_vars","percent_filtered_vars"),
                               labels = c("Removed variants","Filtered variants"))
+
+stats_total_vars <- stats_long %>%
+    filter(metric %in% c("n_raw_vars"))
+stats_total_vars$metric <- factor(stats_total_vars$metric, levels = c("n_raw_vars"),
+                              labels = c("Total variants"))
 
 print("Getting plot parameters...")
 palette_reads <- brewer.pal(n = length(unique(stats_reads$metric)), name = "BuPu")
@@ -167,6 +183,21 @@ mapq <- ggplot() +
     labs(x = "", y = "% Reads", fill = "Metric", title = "Percentage of Mapped Reads by Mapping Quality") +
     scale_fill_manual(values = palette_qualit, name = "")
 
+print("Plotting absolute of removed and filtered variants...")
+vars_total <- ggplot() +
+    geom_point(data = stats_total_vars, aes(x = name, y = value, fill = metric), stat = "identity") +
+    facet_grid(~ ref_genome, scales = "free", space = "free_x") +
+    theme_bw() +
+    theme(panel.background = element_blank(), 
+          panel.grid.minor = element_blank(),
+          strip.background = element_blank(),
+          strip.text = element_blank(),
+          panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 1),
+          axis.text.x = element_blank(), 
+          axis.ticks.x = element_blank())+
+    labs(x = "", y = "# Variants", fill = "", title = "Number of Variants")+
+    scale_y_continuous(labels = scales::comma)
+
 print("Plotting percentage of removed and filtered variants...")
 vars <- ggplot() +
     geom_bar(data = stats_vars, aes(x = colored_label, y = value, fill = metric), stat = "identity") +
@@ -184,7 +215,7 @@ vars <- ggplot() +
 
 
 print("Joining plots...")
-plot <- g/c/reads/mapq/vars
+plot <- g/c/reads/mapq/vars_total/vars
 
 print("Saving plot...")
 n_samples <- nrow(metadata)
@@ -203,7 +234,7 @@ if (n_samples <= 200) {
     gscale <- 3
 }
 
-gheight <- 11
+gheight <- 13
 
 ggsave(output, plot = plot, units = "in", height = gheight, width = gwidth, scale = gscale, limitsize = FALSE)
 

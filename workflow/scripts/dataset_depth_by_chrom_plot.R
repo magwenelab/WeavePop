@@ -17,8 +17,6 @@ output <- snakemake@output$plot
 
 color_by <- snakemake@params$column
 gscale <- snakemake@params$scale
-gheight <- 9
-gwidth <- 16
 
 
 print("Reading files...")
@@ -59,13 +57,31 @@ medianplot <- ggplot(chrom_depth, aes(x = reorder(name, -genome_depth, sum), y =
 
 if (color_by %in% colnames(metadata)){
     medianplot <- medianplot +
-        geom_point(aes(color = get(color_by))) +
-        scale_color_brewer(palette = "Set2", name = str_to_title(color_by))
+        geom_col(aes(fill = get(color_by))) +
+        scale_fill_brewer(palette = "Set2", name = str_to_title(color_by))
 } else {
     medianplot <- medianplot +
-        geom_point(color = "black") 
+        geom_col(fill = "black") 
 }
 
+n_samples <- length(unique(chrom_depth$sample))
+n_chroms <- length(unique(chrom_depth$chromosome))
+
+if (n_samples <= 200) {
+    gscale <- 1
+    gwidth <- 5 + n_samples * 0.03
+} else if (n_samples > 200 & n_samples <= 400) {
+    gwidth <- 16
+    gscale <- 2
+} else if ( n_samples > 400 & n_samples <= 1000) {
+    gwidth <- 18
+    gscale <- 2.5
+} else {
+    gwidth <- 20
+    gscale <- 3
+}
+
+gheight <- 4 + n_chroms * 0.5
 
 print("Saving plot...")
 ggsave(output, plot = medianplot, units = "in", height = gheight, width = gwidth, scale = gscale)
