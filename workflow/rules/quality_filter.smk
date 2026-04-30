@@ -54,6 +54,8 @@ rule mapping_stats:
     input:
         bam=SAMPLES_DIR / "mapping_and_variants" / "{unf_sample}" / "snps.bam",
         bai=SAMPLES_DIR / "mapping_and_variants" / "{unf_sample}" / "snps.bam.bai",
+        raw=SAMPLES_DIR / "mapping_and_variants" / "{unf_sample}" / "snps.raw.vcf",
+        filt=SAMPLES_DIR / "mapping_and_variants" / "{unf_sample}" / "snps.filt.vcf",
         depth=rules.depth_distribution.output.summary,
     output:
         SAMPLES_DIR / "depth_quality" / "{unf_sample}" / "mapping_stats.tsv",

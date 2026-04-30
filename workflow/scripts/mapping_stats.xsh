@@ -11,6 +11,8 @@ import pandas as pd
 sample=snakemake.wildcards.unf_sample
 bamfile=snakemake.input.bam
 depth=snakemake.input.depth
+raw=snakemake.input.raw
+filt=snakemake.input.filt
 low_mapq=snakemake.params.low_mapq
 high_mapq=snakemake.params.high_mapq
 min_mapq=snakemake.params.min_mapq
@@ -21,6 +23,8 @@ print("Input parameters:")
 print(f"Sample: {sample}")
 print(f"BAM file: {bamfile}")
 print(f"Depth file: {depth}")
+print(f"Raw VCF file: {raw}")
+print(f"Filtered VCF file: {filt}")
 print(f"Low MAPQ threshold: {low_mapq}")
 print(f"High MAPQ threshold: {high_mapq}")
 print(f"Minimum MAPQ: {min_mapq}")
@@ -105,6 +109,20 @@ coverage_raw = [x.split('\t') for x in coverage_raw if x]
 coverage_raw = pd.DataFrame(coverage_raw[1:], columns=coverage_raw[0])
 coverage_raw = (coverage_raw['covbases'].astype(int).sum() / coverage_raw['endpos'].astype(int).sum()) * 100
 stats['coverage_raw'] = round(coverage_raw, 2)
+
+print("Obtaining number of raw and filtered variants...")
+
+n_raw = int($(grep -v "#" @(raw) | wc -l))
+n_filtered = int($(grep -v "#" @(filt) | wc -l))
+n_removed = n_raw - n_filtered
+percent_filtered = n_filtered / n_raw * 100
+percent_removed = n_removed / n_raw * 100
+
+stats['n_raw_vars'] = n_raw
+stats['n_filtered_vars'] = n_filtered
+stats['n_removed_vars'] = n_removed
+stats['percent_filtered_vars'] = round(percent_filtered,2)
+stats['percent_removed_vars'] = round(percent_removed,2)
 
 print("Saving mapping stats table...")
 stats.to_csv(output, index=False, sep = "\t")

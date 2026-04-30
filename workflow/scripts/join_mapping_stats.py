@@ -22,13 +22,14 @@ print(f"Minimum mapped percentage: {min_pm}")
 print(f"Minimum coverage percentage: {min_coverage}")
 
 print("Adding quality warning flag...")
-stats['mapq_warning'] = stats.apply(lambda row: "MAPQ-Low" if row['percent_high_mapq'] < min_high_mapq else None, axis=1)
-stats['pm_warning'] = stats.apply(lambda row: "Mapped-Low" if row['percent_mapped'] < min_pm else None, axis=1)
-stats['depth_warning'] = stats.apply(lambda row: "Depth-Low" if row['genome_median_depth_good'] < min_depth else None, axis=1)
-stats['coverage_warning'] = stats.apply(lambda row: "Coverage-Low" if row['coverage_good'] < min_coverage else None, axis=1)
+stats['mapq_warning'] = stats.apply(lambda row: "MAPQ-Low" if row['percent_high_mapq'] < min_high_mapq else pd.NA, axis=1)
+stats['pm_warning'] = stats.apply(lambda row: "Mapped-Low" if row['percent_mapped'] < min_pm else pd.NA, axis=1)
+stats['depth_warning'] = stats.apply(lambda row: "Depth-Low" if row['genome_median_depth_good'] < min_depth else pd.NA, axis=1)
+stats['coverage_warning'] = stats.apply(lambda row: "Coverage-Low" if row['coverage_good'] < min_coverage else pd.NA, axis=1)
 
 print("Joining warnings...")
 stats['quality_warning'] = stats[['mapq_warning', 'pm_warning', 'depth_warning','coverage_warning']].apply(lambda x: '_'.join(x.dropna()), axis=1)
+stats['quality_warning'] = stats['quality_warning'].replace("", pd.NA)
 stats = stats.drop(columns = ['mapq_warning', 'pm_warning', 'depth_warning','coverage_warning'])
 
 print("Quality warnings added:")
