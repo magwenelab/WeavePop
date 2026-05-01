@@ -172,6 +172,17 @@ print(
 )
 print("", flush=True)
 
+if config["plotting"]["activate"]:
+    print("", flush=True)
+    if not config["plotting"]["metadata2color"]:
+        print(
+            "The parameter metadata2color is not provided. Ignoring...",
+            flush=True,
+        )
+        COLOR_BY = ""
+    else:
+        COLOR_BY = config["plotting"]["metadata2color"]
+
 # =================================================================================================
 #   Input functions for rules
 # =================================================================================================
@@ -357,5 +368,10 @@ REF_GENOMES = listing_ref_genomes
 
 
 def get_final_output():
-    final_output = DATASET_DIR / "database.db"
+    final_output = []
+    final_output.append(DATASET_DIR / "database.db")
+    final_output.append(DATASET_DIR / "plots" / "mapping_summary.png")
+    final_output.append(DATASET_DIR / "plots" / "depth_summary.png")
+    final_output.append(DATASET_DIR / "plots" / "cnv_summary.png")
+    final_output.append(DATASET_DIR / "plots" / "variant_summary.png")
     return final_output

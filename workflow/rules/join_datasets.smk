@@ -1,5 +1,5 @@
 # =================================================================================================
-#   Join the metadata and chromosomes files from the different datasets
+#   Join the metadata, chromosomes and mapping stats files from the different datasets
 # =================================================================================================
 
 
@@ -35,6 +35,23 @@ rule join_chromosomes:
         "../envs/pandas.yaml"
     script:
         "../scripts/join_chromosomes.py"
+
+
+rule join_mapping_stats:
+    input:
+        expand(
+            os.path.join("{dir}", DATASET_DIR_NAME, "depth_quality" , "mapping_stats.tsv"), dir=LIST_PATHS
+        ),
+    output:
+        DATASET_DIR / "depth_quality" / "mapping_stats.tsv",
+    log:
+        LOGS / "join_datasets" / "join_mapping_stats.log",
+    resources:
+        tmpdir=TEMPDIR,
+    conda:
+        "../envs/pandas.yaml"
+    script:
+        "../scripts/join_tables.py"
 
 
 # =================================================================================================
@@ -354,3 +371,78 @@ rule database:
         "../envs/variants.yaml"
     script:
         "../scripts/database.py"
+
+
+# =================================================================================================
+#   Create plots
+# =================================================================================================
+
+rule dataset_summary_plot:
+    input:
+        metadata=rules.join_metadata.output,
+        chroms=rules.join_chromosomes.output,
+        stats=rules.join_mapping_stats.output,
+    output:
+        plot=DATASET_DIR / "plots" / "mapping_summary.png",
+    log:
+        LOGS / "dataset" / "plots" / "dataset_summary.log",
+    conda:
+        "../envs/r.yaml"
+    script:
+        "../scripts/dataset_summary_plot.R"
+
+rule dataset_depth_plot:
+    input:
+        metadata=rules.join_metadata.output,
+        chroms=rules.join_chromosomes.output,
+        cnv=rules.join_cnv_chromosomes.output,
+    output:
+        plot=DATASET_DIR / "plots" / "depth_summary.png",
+    params:
+        column=COLOR_BY,
+    log:
+        LOGS / "dataset" / "plots" / "dataset_depth_plot.log",
+    conda:
+        "../envs/r.yaml"
+    script:
+        "../scripts/dataset_depth_plot.R"
+
+
+rule dataset_variants_plot:
+    input:
+        metadata=rules.join_metadata.output,
+        classif=DATASET_DIR / "snpeff" / "variant_classification.tsv",
+        variants=DATASET_DIR / "snpeff" / "variants.tsv",
+        presence=DATASET_DIR / "snpeff" / "presence.tsv",
+    output:
+        plot=DATASET_DIR / "plots" / "variant_summary.png",
+    log:
+        LOGS
+        / "dataset"
+        / "plots"
+        / "dataset_variants_plot.log",
+    resources:
+        tmpdir=TEMPDIR,
+    conda:
+        "../envs/r.yaml"
+    script:
+        "../scripts/dataset_variants_plot.R"
+
+rule dataset_cnv_plot:
+    input:
+        metadata=rules.join_metadata.output,
+        chromosomes=rules.join_chromosomes.output,
+        cnv=DATASET_DIR / "cnv" / "cnv_chromosomes.tsv",
+    output:
+        plot=DATASET_DIR / "plots" / "cnv_summary.png",
+    log:
+        LOGS
+        / "dataset"
+        / "plots"
+        / "dataset_cnv_plot.log",
+    resources:
+        tmpdir=TEMPDIR,
+    conda:
+        "../envs/r.yaml"
+    script:
+        "../scripts/dataset_cnv_plot.R"

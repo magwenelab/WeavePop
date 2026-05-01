@@ -40,7 +40,7 @@ toplim <- ceiling(max(chrom_depth$chrom_norm_depth))
 values <- seq(0, toplim, by = 1)
 
 print("Plotting...")
-medianplot <- ggplot(chrom_depth, aes(x = reorder(name, -genome_depth, sum), y = chrom_norm_depth)) +
+medianplot <- ggplot(chrom_depth, aes(x = name, y = chrom_norm_depth)) +
     ylim(0, toplim) +
     facet_grid(scale = "free_x", space = "free_x", rows = vars(chromosome), cols = vars(ref_genome)) +
     theme_bw() +
