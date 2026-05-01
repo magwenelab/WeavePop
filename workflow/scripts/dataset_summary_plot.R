@@ -7,6 +7,7 @@ suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(RColorBrewer))
 suppressPackageStartupMessages(library(scales))
 suppressPackageStartupMessages(library(patchwork))
+suppressPackageStartupMessages(library(ggnewscale))
 
 print("Reading input parameters...")
 metadata_input <- snakemake@input$metadata
@@ -27,6 +28,13 @@ metadata <- read.csv(metadata_input, header = TRUE, stringsAsFactors = TRUE)
 chrom_names <- read.csv(chrom_names_input, header = TRUE, colClasses = "factor")
 map_stats <- read.table(map_stats_input, header = TRUE, stringsAsFactors = TRUE, sep = "\t")
 
+# Add column to show red ticks in variables with warning
+map_stats <- map_stats %>%
+    mutate(depth_ticks = ifelse(grepl('Depth',quality_warning), "w", NA),
+            mapq_ticks = ifelse(grepl('MAPQ',quality_warning), "w", NA),
+            mapped_ticks = ifelse(grepl('Mapped',quality_warning), "w", NA),
+            cov_ticks = ifelse(grepl('Coverage',quality_warning), "w", NA))
+
 map_stats$quality_warning <- ifelse(map_stats$quality_warning == "", NA, map_stats$quality_warning)
 
 print("Joining and arranging data...")
@@ -43,24 +51,24 @@ if ("strain" %in% colnames(metadata)){
 chrom_names <- select(chrom_names, ref_genome, accession, chromosome)
 
 map_stats <- left_join(metadata, map_stats, by = "sample")
-map_stats$name <- reorder(map_stats$name, -map_stats$genome_mean_depth_good, sum)
+# map_stats$name <- reorder(ap_stats$name, -map_stats$genome_mean_depth_good, sum)
 
 depth_good <- map_stats %>%
-    select(sample, name, ref_genome, Mean = genome_mean_depth_good, Median = genome_median_depth_good) %>%
+    select(sample, name, ref_genome, depth_ticks, Mean = genome_mean_depth_good, Median = genome_median_depth_good) %>%
     pivot_longer(cols = c(Mean, Median), names_to = "measurement", values_to = "value") %>%
     mutate(quality = "Good quality reads")
 depth_raw <- map_stats %>%
-    select(sample, name, ref_genome, Mean = genome_mean_depth_raw, Median = genome_median_depth_raw) %>%
+    select(sample, name, ref_genome, depth_ticks, Mean = genome_mean_depth_raw, Median = genome_median_depth_raw) %>%
     pivot_longer(cols = c(Mean, Median), names_to = "measurement", values_to = "value") %>%
     mutate(quality = "All reads")
 depth <- rbind(depth_good, depth_raw)
 
 coverage_good <- map_stats %>%
-    select(sample, name, ref_genome, Coverage = coverage_good) %>%
+    select(sample, name, ref_genome,cov_ticks, Coverage = coverage_good) %>%
     pivot_longer(cols = Coverage, names_to = "measurement", values_to = "value") %>%
     mutate(quality = "Good quality reads")
 coverage_raw <- map_stats %>%
-    select(sample, name, ref_genome, Coverage = coverage_raw) %>%
+    select(sample, name, ref_genome, cov_ticks, Coverage = coverage_raw) %>%
     pivot_longer(cols = Coverage, names_to = "measurement", values_to = "value") %>%
     mutate(quality = "All reads")
 coverage <- rbind(coverage_good, coverage_raw)
@@ -80,7 +88,12 @@ g <- ggplot(depth) +
     ylim(0, topylim) +
     facet_grid(~ref_genome, scale = "free_x", space = "free_x") +
     scale_color_manual(name= "", values= color_quality)+
-    scale_shape_manual(values = c(16,15, 17), name = NULL)+
+    scale_shape_manual(values = c(16,15,17), name = NULL)+
+    new_scale_color()+
+    new_scale("shape") +
+    geom_point(aes(x = name, y = 0, shape = depth_ticks), color = "red") +
+    scale_shape_manual(values = c(8), name = NULL)+
+    guides(shape = "none") +
     theme_bw() +
     theme(panel.background = element_blank(), 
           panel.grid.minor = element_blank(),
@@ -93,11 +106,18 @@ g <- ggplot(depth) +
          x = "")
 
 print("Plotting coverage...")
+min_cov <- as.integer(round(min(coverage$value, na.rm = TRUE),0) - 2)
 c <- ggplot(coverage) +
     geom_point(aes(x = name, y = value, color = quality)) +
     facet_grid(~ref_genome, scale = "free_x", space = "free_x") +
     scale_color_manual(name= "", values= color_quality)+
     scale_shape_manual(values = c(16,15, 17), name = NULL)+
+    new_scale_color()+
+    new_scale("shape") +
+    geom_point(aes(x = name, y = min_cov, shape = cov_ticks), color = "red") +
+    scale_shape_manual(values = c(8), name = NULL)+
+    scale_y_continuous(breaks = pretty_breaks())+
+    guides(shape = "none") +
     theme_bw() +
     theme(panel.background = element_blank(), 
           panel.grid.minor = element_blank(),
@@ -114,13 +134,14 @@ print("Joining and arranging data...")
 
 stats_metad <- map_stats %>%
     select(sample, name, ref_genome, strain, quality_warning,
+        mapped_ticks, mapq_ticks,
         percent_only_mapped, percent_unmapped,percent_properly_paired,
         percent_low_mapq, percent_inter_mapq, percent_high_mapq,
         percent_filtered_vars, percent_removed_vars,
         n_raw_vars)
 
 stats_long <- stats_metad %>%
-    pivot_longer(cols = -c(sample, name, ref_genome, strain, quality_warning), names_to = "metric", values_to = "value")
+    pivot_longer(cols = -c(sample, name, ref_genome, strain, quality_warning, mapped_ticks, mapq_ticks), names_to = "metric", values_to = "value")
 
 stats_reads <- stats_long %>%
     filter(metric %in% c("percent_only_mapped", "percent_unmapped", "percent_properly_paired"))
@@ -154,9 +175,13 @@ stats_vars <- stats_vars %>%
 stats_vars$colored_label <- factor(stats_vars$colored_label, levels = unique(stats_vars$colored_label))
 
 print("Plotting percentage of reads by mapping status...")
-reads <- ggplot()+
-    geom_bar(data = stats_reads, aes(x = name, y = value, fill = metric), stat = "identity")+
+reads <- ggplot(data = stats_reads)+
+    geom_bar(aes(x = name, y = value, fill = metric), stat = "identity")+
     facet_grid(~ ref_genome, scales = "free", space = "free_x")+
+    new_scale_color()+
+    geom_point(aes(x = name, y = 0, shape = mapped_ticks), color = "red") +
+    scale_shape_manual(values = c(8), name = NULL)+
+    guides(shape = "none") +
     theme(panel.background = element_blank(), 
           panel.grid.major = element_blank(),
           panel.grid.minor = element_blank(),
@@ -169,9 +194,13 @@ reads <- ggplot()+
     scale_fill_manual(values = palette_reads, name = "")
 
 print("Plotting percentage of reads by mapping quality...")
-mapq <- ggplot() +
-    geom_bar(data = stats_qualit, aes(x = name, y = value, fill = metric), stat = "identity") +
+mapq <- ggplot(data = stats_qualit) +
+    geom_bar(aes(x = name, y = value, fill = metric), stat = "identity") +
     facet_grid(~ ref_genome, scales = "free", space = "free_x") +
+    new_scale_color()+
+    geom_point(aes(x = name, y = 0, shape = mapq_ticks), color = "red") +
+    scale_shape_manual(values = c(8), name = NULL)+
+    guides(shape = "none") +
     theme(panel.background = element_blank(), 
           panel.grid.major = element_blank(),
           panel.grid.minor = element_blank(),

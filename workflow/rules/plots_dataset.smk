@@ -1,5 +1,5 @@
 # =================================================================================================
-#   Per dataset | Plot dataset mapping quality and depth summary
+#   Per dataset | Summary of mapping stats and variant calling 
 # =================================================================================================
 
 
@@ -19,30 +19,69 @@ rule dataset_summary_plot:
 
 
 # =================================================================================================
-#   Per dataset | Plot normalized chromosome depth of all samples
+#   Per dataset | Summary plots of depth, cnv and variants
 # =================================================================================================
 
 
-rule dataset_depth_by_chrom_plot:
+rule dataset_depth_plot:
     input:
         metadata=rules.quality_filter.output.metadata,
         chroms=rules.quality_filter.output.chromosomes,
         cnv=rules.join_cnv_chromosomes.output,
     output:
-        plot=DATASET_DIR / "plots" / "dataset_depth_by_chrom.png",
+        plot=DATASET_DIR / "plots" / "depth_summary.png",
     params:
         column=COLOR_BY,
-        scale=config["plotting"]["scale"],
     log:
-        LOGS / "dataset" / "plots" / "dataset_depth_by_chrom.log",
+        LOGS / "dataset" / "plots" / "dataset_depth_plot.log",
     conda:
         "../envs/r.yaml"
     script:
-        "../scripts/dataset_depth_by_chrom_plot.R"
+        "../scripts/dataset_depth_plot.R"
 
+
+rule dataset_variants_plot:
+    input:
+        metadata=rules.quality_filter.output.metadata,
+        classif=DATASET_DIR / "snpeff" / "variant_classification.tsv",
+        variants=DATASET_DIR / "snpeff" / "variants.tsv",
+        presence=DATASET_DIR / "snpeff" / "presence.tsv",
+    output:
+        plot=DATASET_DIR / "plots" / "variant_summary.png",
+    log:
+        LOGS
+        / "dataset"
+        / "plots"
+        / "dataset_variants_plot.log",
+    resources:
+        tmpdir=TEMPDIR,
+    conda:
+        "../envs/r.yaml"
+    script:
+        "../scripts/dataset_variants_plot.R"
+
+
+rule dataset_cnv_plot:
+    input:
+        metadata=rules.quality_filter.output.metadata,
+        chromosomes=DATASET_DIR / "chromosomes.csv",
+        cnv=DATASET_DIR / "cnv" / "cnv_chromosomes.tsv",
+    output:
+        plot=DATASET_DIR / "plots" / "cnv_summary.png",
+    log:
+        LOGS
+        / "dataset"
+        / "plots"
+        / "dataset_cnv_plot.log",
+    resources:
+        tmpdir=TEMPDIR,
+    conda:
+        "../envs/r.yaml"
+    script:
+        "../scripts/dataset_cnv_plot.R"
 
 # =================================================================================================
-#   Per ref_genome | Plot classification of variants
+#   Per ref_genome | Plot of classification of variants
 # =================================================================================================
 
 
@@ -69,24 +108,3 @@ rule refs_variant_classification_plots:
         "../envs/r.yaml"
     script:
         "../scripts/refs_variant_classification_plots.R"
-
-
-rule dataset_variants_plot:
-    input:
-        metadata=rules.quality_filter.output.metadata,
-        classif=DATASET_DIR / "snpeff" / "variant_classification.tsv",
-        variants=DATASET_DIR / "snpeff" / "variants.tsv",
-        presence=DATASET_DIR / "snpeff" / "presence.tsv",
-    output:
-        plot=DATASET_DIR / "plots" / "variant_summary.png",
-    log:
-        LOGS
-        / "dataset"
-        / "plots"
-        / "dataset_variants_plot.log",
-    resources:
-        tmpdir=TEMPDIR,
-    conda:
-        "../envs/r.yaml"
-    script:
-        "../scripts/dataset_variants_plot.R"
