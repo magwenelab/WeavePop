@@ -278,43 +278,79 @@ for ref_genome in UNF_REF_GENOMES:
     accessions = CHROM_NAMES_TABLE[CHROM_NAMES_TABLE["ref_genome"] == ref_genome][
         "accession"
     ].tolist()
-    ref_file = REF_DATA / f"{ref_genome}.fasta"
-    if ref_file.exists():
-        with open(ref_file) as f:
+    ref_fasta = REF_DATA / f"{ref_genome}.fasta"
+    if ref_fasta.exists():
+        with open(ref_fasta) as f:
             seq_ids = [
                 line.strip().split()[0][1:] for line in f if line.startswith(">")
             ]
 
             if not all([acc in seq_ids for acc in accessions]):
                 print(
-                    f"Not all chromosomes in provided file are present in {ref_file}.",
+                    f"Not all chromosomes in provided file are present in {ref_fasta}.",
                     flush=True,
                 )
                 print("Exiting...", flush=True)
                 exit(1)
             else:
                 print(
-                    f"    All chromosomes in provided file are present in {ref_file}.",
+                    f"    All chromosomes in provided file are present in {ref_fasta}.",
                     flush=True,
                 )
 
             if not all([seq_id in accessions for seq_id in seq_ids]):
                 print(
-                    f"Not all chromosomes in {ref_file} are present in the provided file.",
+                    f"Not all chromosomes in {ref_fasta} are present in the provided file.",
                     flush=True,
                 )
                 print("Exiting...", flush=True)
                 exit(1)
             else:
                 print(
-                    f"    All chromosomes in {ref_file} are present in the provided file.",
+                    f"    All chromosomes in {ref_fasta} are present in the provided file.",
                     flush=True,
                 )
-
     else:
-        print(f"Reference {ref_file} not found.", flush=True)
+        print(f"Reference {ref_fasta} not found.", flush=True)
         print("Exiting...", flush=True)
         exit(1)
+    
+
+    ref_gff = REF_DATA / f"{ref_genome}.gff"
+    if ref_gff.exists():
+        print(f"Checking the presence of chromosome accessions in {ref_gff}...", flush=True)
+        with open(ref_gff) as f:
+            seq_ids = set(
+                line.strip().split()[0]
+                for line in f
+                if line.strip() and not line.startswith("#")
+                )
+
+        if not all([acc in seq_ids for acc in accessions]):
+            print(
+                f"Not all chromosomes in provided file are present in {ref_gff}.",
+                flush=True,
+            )
+            print("Exiting...", flush=True)
+            exit(1)
+        else:
+            print(
+                f"    All chromosomes in provided file are present in {ref_gff}.",
+                flush=True,
+            )
+
+        if not all([seq_id in accessions for seq_id in seq_ids]):
+            print(
+                f"Not all chromosomes in {ref_gff} are present in the provided file.",
+                flush=True,
+            )
+            print("Exiting...", flush=True)
+            exit(1)
+        else:
+            print(
+                f"    All chromosomes in {ref_gff} are present in the provided file.",
+                flush=True,
+            )
 
 
 # --Validate loci file----------------------------------------------------------------------------
