@@ -4,7 +4,7 @@
 # snakemake --profile test/config/default
 
 # Config you should not change unless you know what you are doing
-configfile: test/config/config.yaml
+configfile: test/config/config2.yaml
 use-conda: True
 
 # Config you can change
