@@ -51,7 +51,10 @@ if (!is.null(snakemake@input$repeats)) {
 print("Obtaining ref_genome of sample...")
 
 ref_genome_name <- as.character(metadata$ref_genome[metadata$sample == sample])
-strain_name <- as.character(metadata$strain[metadata$sample == sample])
+
+if ("strain" %in% colnames(metadata)){
+  strain_name <- as.character(metadata$strain[metadata$sample == sample])
+}
 
 print("Filtering chromosome names...")
 chrom_names <- chrom_names %>%
@@ -104,6 +107,14 @@ my_labeller <- function(value){
   return(new_value)
 }
 
+if ("strain" %in% colnames(metadata)){
+  print("Strain name provided")
+  sub = paste("Sample:", sample, "Strain:", strain_name, " Reference genome:", ref_genome_name, " Window size:", window_size, sep = " ")
+} else {
+  print("Strain name not provided")
+  sub = paste("Sample:", sample, " Reference genome:", ref_genome_name, " Window size:", window_size, sep = " ")
+}
+
 print("Plotting depth by windows...")
 c <- ggplot()+
   coord_cartesian(ylim= c(0,r_lim +1), xlim = c(0, max(depth$end)))+
@@ -123,7 +134,7 @@ c <- ggplot()+
   facet_wrap(~accession_chromosome, strip.position = "right", ncol = 2, labeller = as_labeller(my_labeller)) +
   labs(y = "Normalized Depth",
       title = "Normalized Depth of Windows Along Chromosomes", 
-      subtitle = paste("Sample:", sample, "Strain:", strain_name, " Reference genome:", ref_genome_name, " Window size:", window_size, sep = " "))+
+      subtitle = sub)+
   scale_y_continuous(breaks = c(1, 2)) +
   theme_classic()+
   theme(panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 1))

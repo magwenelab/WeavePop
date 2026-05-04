@@ -31,7 +31,16 @@ chrom_names <- chrom_names %>%
     select(ref_genome, accession, chromosome)
 
 print("Joining and arranging data...")
-metadata <- mutate(metadata, name = paste(strain, sample, sep = " "))
+
+if ("strain" %in% colnames(metadata)){
+    metadata <- metadata %>%
+        select(sample, strain, ref_genome) %>%
+        mutate(name = paste(strain, sample, sep = " ")) 
+    } else {
+    metadata <- metadata %>%
+        select(sample, ref_genome) %>%
+        mutate(name = sample)}
+
 chrom_depth <- left_join(chrom_depth, metadata, by = "sample")
 chrom_depth <- left_join(chrom_depth, chrom_names, by = c("accession", "ref_genome"))
 

@@ -53,7 +53,10 @@ if (!is.null(snakemake@input$repeats)) {
 print("Obtaining ref_genome of sample...")
 
 ref_genome_name <- as.character(metadata$ref_genome[metadata$sample == sample])
-strain_name <- as.character(metadata$strain[metadata$sample == sample])
+
+if ("strain" %in% colnames(metadata)){
+  strain_name <- as.character(metadata$strain[metadata$sample == sample])
+}
 
 print("Filtering chromosome names...")
 chrom_names <- chrom_names %>%
@@ -99,6 +102,16 @@ my_labeller <- function(value){
   new_value <- sapply(strsplit(as.character(value), "xxx"), head, 1)
   return(new_value)
 }
+
+
+if ("strain" %in% colnames(metadata)){
+  print("Strain name provided")
+  sub = paste("Sample:", sample, "Strain:", strain_name, " Reference genome:", ref_genome_name, " Window size:", window_size,  sep = " ")
+} else {
+  print("Strain name not provided")
+  sub = paste("Sample:", sample, " Reference genome:", ref_genome_name, " Window size:", window_size,  sep = " ")
+}
+
 print("Plotting chromosome MAPQ...")
 plot <- ggplot()+
   coord_cartesian(ylim=c(0,r_lim + 20), xlim= c(0,max(mapq$end)))+
@@ -114,7 +127,7 @@ plot <- ggplot()+
   facet_wrap(~accession_chromosome, strip.position = "right", ncol = 2, labeller = as_labeller(my_labeller)) +
   scale_x_continuous(name = "Position (bp) ", labels = comma)+
   labs(title = "Mapping Quality of Windows Along Chromosomes",
-      subtitle = paste("Sample:", sample, "Strain:", strain_name, " Reference genome:", ref_genome_name, " Window size:", window_size, sep = " "),
+      subtitle = sub,
       y = "Mapping Quality (Phred score)")+
   theme_classic()+
   theme(panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 1))+

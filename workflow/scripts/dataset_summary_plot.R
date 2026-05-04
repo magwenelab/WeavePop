@@ -131,7 +131,7 @@ c <- ggplot(coverage) +
 print("Joining and arranging data...")
 
 stats_metad <- map_stats %>%
-    select(sample, name, ref_genome, strain, quality_warning,
+    select(sample, name, ref_genome, quality_warning,
         mapped_ticks, mapq_ticks,
         percent_only_mapped, percent_unmapped,percent_properly_paired,
         percent_low_mapq, percent_inter_mapq, percent_high_mapq,
@@ -139,7 +139,7 @@ stats_metad <- map_stats %>%
         n_raw_vars)
 
 stats_long <- stats_metad %>%
-    pivot_longer(cols = -c(sample, name, ref_genome, strain, quality_warning, mapped_ticks, mapq_ticks), names_to = "metric", values_to = "value")
+    pivot_longer(cols = -c(sample, name, ref_genome, quality_warning, mapped_ticks, mapq_ticks), names_to = "metric", values_to = "value")
 
 stats_reads <- stats_long %>%
     filter(metric %in% c("percent_only_mapped", "percent_unmapped", "percent_properly_paired"))

@@ -28,7 +28,10 @@ metadata <- read.delim(metadata_input, sep = ",", header = TRUE, stringsAsFactor
 print("Obtaining ref_genome of sample...")
 
 ref_genome_name <- as.character(metadata$ref_genome[metadata$sample == sample])
-strain_name <- as.character(metadata$strain[metadata$sample == sample])
+
+if ("strain" %in% colnames(metadata)){
+  strain_name <- as.character(metadata$strain[metadata$sample == sample])
+}
 
 chrom_metrics <- cnv_chromosomes %>%
     filter(cnv != "single_copy")
@@ -38,7 +41,14 @@ chrom_metrics <- chrom_metrics %>%
 
 chrom_metrics$chromosome <- factor(chrom_metrics$chromosome)
 
-   
+if ("strain" %in% colnames(metadata)){
+  print("Strain name provided")
+  sub = paste("Sample:", sample, "Strain:", strain_name, " Reference genome:", ref_genome_name, sep = " ")
+} else {
+  print("Strain name not provided")
+  sub = paste("Sample:", sample, " Reference genome:", ref_genome_name, sep = " ")
+}
+
 print("Plotting...")
 p <- ggplot(chrom_metrics, aes(x = coverage_percent, y = chrom_norm_depth, color = chromosome, shape = cnv)) +
         geom_hline(yintercept = c(0, 1, 2), color = "black", linetype = "solid") +
@@ -48,7 +58,7 @@ p <- ggplot(chrom_metrics, aes(x = coverage_percent, y = chrom_norm_depth, color
         theme_bw() +
         theme(legend.position = "right") +
         labs(title = "Normalized Depth vs.\nPercent of CNV Coverage per Chromosome",
-            subtitle = paste("Sample:", sample, "Strain:", strain_name," Reference genome:", ref_genome_name,  sep = " "),
+            subtitle = sub,
              y = "Normalized Median Depth of Chromosome",
              x = "Percent of Chromosome Covered by CNVs",
              color = "Chromosome",

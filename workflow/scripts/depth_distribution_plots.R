@@ -31,7 +31,10 @@ metadata <- read.delim(metadata_input, sep = ",", header = TRUE, stringsAsFactor
 print("Obtaining ref_genome of sample...")
 
 ref_genome_name <- as.character(metadata$ref_genome[metadata$sample == sample])
-strain_name <- as.character(metadata$strain[metadata$sample == sample])
+
+if ("strain" %in% colnames(metadata)){
+  strain_name <- as.character(metadata$strain[metadata$sample == sample])
+}
 
 print("Adding 0 to null depth values...")
 depth[is.na(depth)] <- 0
@@ -57,6 +60,16 @@ max_depth <- depth_global %>%
   pull(depth)
 
 print("Plotting genome-wide depth distribution...")
+
+if ("strain" %in% colnames(metadata)){
+  print("Strain name provided")
+  sub = paste("Sample:", sample, "Strain:", strain_name, " Reference genome:", ref_genome_name, sep = " ")
+} else {
+  print("Strain name not provided")
+  sub = paste("Sample:", sample, " Reference genome:", ref_genome_name, sep = " ")
+}
+
+
 plot_global <- ggplot()+
   geom_line(data = depth_global, aes(x=depth,y = count_raw_global, color = "All mappings"))+
   geom_line(data = depth_global, aes(x=depth,y = count_good_global, color = "Good quality mappings"))+ 
@@ -91,7 +104,7 @@ plot_truncated <- ggplot()+
 combined <- plot_global / plot_truncated_log / plot_truncated 
 combined <- combined +
   plot_annotation(title = "Depth Distribution of Whole Genome by Quality of Read Mappings",
-                  subtitle = paste("Sample:", sample,"Strain:", strain_name, " Reference genome:", ref_genome_name,  sep = " "))
+                  subtitle = sub)
 
 print("Plotting depth distribution by chromosome...")
 by_chrom <- ggplot(depth)+
@@ -121,11 +134,10 @@ by_chrom_truncated <- ggplot(depth)+
   theme(legend.position = "bottom", legend.direction= "horizontal") +
   guides(color = guide_legend(nrow = 1, title = "Chromosome"))
 
-
 plot_chrom <- by_chrom / by_chrom_log / by_chrom_truncated
 plot_chrom <- plot_chrom +
   plot_annotation(title = "Depth Distribution of Good Quality Mappings of each Chromosome",
-                  subtitle = paste("Sample:", sample,"Strain:", strain_name, " Reference genome:", ref_genome_name,  sep = " "))
+                  subtitle = sub)
 
 print("Saving plots...")
 ggsave(output_chrom, plot = plot_chrom, units = "in", height = gheight, width = gwidth, dpi = gdpi, scale = gscale)

@@ -32,7 +32,10 @@ metadata <- read.delim(metadata_input, sep = ",", header = TRUE, stringsAsFactor
 print("Obtaining ref_genome of sample...")
 
 ref_genome_name <- as.character(metadata$ref_genome[metadata$sample == sample])
-strain_name <- as.character(metadata$strain[metadata$sample == sample])
+
+if ("strain" %in% colnames(metadata)){
+  strain_name <- as.character(metadata$strain[metadata$sample == sample])
+}
 
 print("Obtaining ref_genome of sample...")
 
@@ -59,6 +62,25 @@ median_depth <- windows %>%
   summarise(median = median(depth)) %>%
   pull(median)
 
+if ("strain" %in% colnames(metadata)){
+  print("Strain name provided")
+  sub = paste("Sample:", sample,
+                    "Strain:", strain_name,
+                    " Reference genome:", ref_genome_name, 
+                    " Window size:", window_size,  
+                    " Depth threshold for CNV calling:", depth_threshold,
+                    " Smoothing size for CNV calling:", smoothing_size,
+                     sep = " ")
+} else {
+  print("Strain name not provided")
+  sub = paste("Sample:", sample,
+                    " Reference genome:", ref_genome_name, 
+                    " Window size:", window_size,  
+                    " Depth threshold for CNV calling:", depth_threshold,
+                    " Smoothing size for CNV calling:", smoothing_size,
+                     sep = " ")
+}
+
 c <- ggplot(windows, aes(x = chromosome, y = depth))+
     geom_quasirandom(aes(color = cnv), alpha = 0.5)+
     scale_color_manual(values = s_colors, name = "Impact")+
@@ -69,13 +91,7 @@ c <- ggplot(windows, aes(x = chromosome, y = depth))+
         axis.title.x = element_blank())+
     labs(y="Depth\n(truncated)",
         title = "Distribution of all Depth Metrics of Windows per Chromosome and Whole Genome",
-        subtitle = paste("Sample:", sample,
-                    "Strain:", strain_name,
-                    " Reference genome:", ref_genome_name, 
-                    " Window size:", window_size,  
-                    " Depth threshold for CNV calling:", depth_threshold,
-                    " Smoothing size for CNV calling:", smoothing_size,
-                     sep = " "))
+        subtitle = sub)
 
 g <- ggplot(windows, aes(y = depth, x = 1))+
     geom_quasirandom(aes(color = cnv), alpha = 0.5)+

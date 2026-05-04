@@ -9,10 +9,6 @@ properties:
   ref_genome:
     type: string
     description: ref_genome name
-  strain:
-    type: string
-    description: strain name
 required:
   - sample
   - ref_genome
-  - strain
