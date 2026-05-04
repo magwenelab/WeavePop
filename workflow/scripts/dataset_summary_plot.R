@@ -17,9 +17,9 @@ map_stats_input <- snakemake@input$stats
 output <- snakemake@output$plot
 
 
-# metadata_input <- "/FastData/czirion/WeavePop/test/results/02.Dataset/metadata.csv"
-# chrom_names_input <- "/FastData/czirion/WeavePop/test/results/02.Dataset/chromosomes.csv"
-# map_stats_input <- "/FastData/czirion/WeavePop/test/results/02.Dataset/depth_quality/mapping_stats.tsv"
+# metadata_input <- "/PhastData/czirion/WeavePop_workdir/Cdeneoformans_global/NC/results/02.Dataset/metadata.csv"
+# chrom_names_input <- "/PhastData/czirion/WeavePop_workdir/Cdeneoformans_global/NC/results/02.Dataset/chromosomes.csv"
+# map_stats_input <- "/PhastData/czirion/WeavePop_workdir/Cdeneoformans_global/NC/results/02.Dataset/depth_quality/mapping_stats.tsv"
 
 # output <- "plot.png"
 
@@ -81,7 +81,6 @@ good_color = "black"
 color_quality = c("Good quality reads" = good_color, "All reads" = raw_color)
 shape_stat <- c("Mean" = 16, "Median" = 15)
 
-
 print("Plotting genome-wide read depth...")
 g <- ggplot(depth) +
     geom_point(aes(x = name, y = value, shape = measurement, color = quality)) +
@@ -104,7 +103,6 @@ g <- ggplot(depth) +
     labs(title = "Read Depth",
          y = "Depth (X)",
          x = "")
-
 print("Plotting coverage...")
 min_cov <- as.integer(round(min(coverage$value, na.rm = TRUE),0) - 2)
 c <- ggplot(coverage) +
@@ -170,9 +168,7 @@ palette_vars <- brewer.pal(n = 11, name = "BrBG")[c(5,3)]
 
 stats_vars <- stats_vars %>%
     mutate(color = ifelse(is.na(quality_warning), "black", "red"),
-            colored_label = paste0("<span style='color:", color, "'>", name, "</span>"))%>%
-    arrange(factor(name, levels = levels(stats_vars$name)))
-stats_vars$colored_label <- factor(stats_vars$colored_label, levels = unique(stats_vars$colored_label))
+            colored_label = paste0("<span style='color:", color, "'>", name, "</span>"))
 
 print("Plotting percentage of reads by mapping status...")
 reads <- ggplot(data = stats_reads)+
