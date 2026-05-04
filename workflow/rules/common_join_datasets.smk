@@ -113,7 +113,7 @@ INT_DATASET_DIR = INTDIR / DATASET_DIR_NAME
 INT_REFS_DIR = INTDIR / REFS_DIR_NAME
 TEMPDIR = str(INTDIR / TEMPDIR_NAME)
 
-INPUT_PATHS = config["datasets_paths"].split(",")
+INPUT_PATHS = config["datasets"]["paths"].split(",")
 LIST_PATHS = [Path(dir) for dir in INPUT_PATHS]
 
 # =================================================================================================
@@ -172,16 +172,16 @@ print(
 )
 print("", flush=True)
 
-if config["plotting"]["activate"]:
+if config["datasets"]["plotting"]["activate"]:
     print("", flush=True)
-    if not config["plotting"]["metadata2color"]:
+    if not config["datasets"]["plotting"]["metadata2color"]:
         print(
             "The parameter metadata2color is not provided. Ignoring...",
             flush=True,
         )
         COLOR_BY = ""
     else:
-        COLOR_BY = config["plotting"]["metadata2color"]
+        COLOR_BY = config["datasets"]["plotting"]["metadata2color"]
 
 # =================================================================================================
 #   Input functions for rules

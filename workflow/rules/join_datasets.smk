@@ -9,7 +9,7 @@ rule join_metadata:
     output:
         DATASET_DIR / "metadata.csv",
     params:
-        config["datasets_names"].split(","),
+        config["datasets"]["names"].split(","),
     log:
         LOGS / "join_datasets" / "join_metadata.log",
     resources:
