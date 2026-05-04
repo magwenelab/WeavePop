@@ -34,11 +34,9 @@ print("Joining and arranging data...")
 
 if ("strain" %in% colnames(metadata)){
     metadata <- metadata %>%
-        select(sample, strain, ref_genome) %>%
         mutate(name = paste(strain, sample, sep = " ")) 
     } else {
     metadata <- metadata %>%
-        select(sample, ref_genome) %>%
         mutate(name = sample)}
 
 chrom_depth <- left_join(chrom_depth, metadata, by = "sample")
