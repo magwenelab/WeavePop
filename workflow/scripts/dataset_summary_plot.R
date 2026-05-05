@@ -50,8 +50,13 @@ if ("strain" %in% colnames(metadata)){
 
 chrom_names <- select(chrom_names, ref_genome, accession, chromosome)
 
-map_stats <- left_join(metadata, map_stats, by = "sample")
-# map_stats$name <- reorder(ap_stats$name, -map_stats$genome_mean_depth_good, sum)
+map_stats <- left_join(metadata, map_stats, by = "sample")%>%
+    arrange(name)%>%
+    mutate(name = factor(name, levels = unique(name)),
+            color = ifelse(is.na(quality_warning), "black", "red"),
+            colored_label = paste0("<span style='color:", color, "'>", name, "</span>"))%>%
+    mutate(colored_label = factor(colored_label, levels = unique(colored_label)))
+# map_stats$name <- reorder(map_stats$name, -map_stats$genome_mean_depth_good, sum)
 
 depth_good <- map_stats %>%
     select(sample, name, ref_genome, depth_ticks, Mean = genome_mean_depth_good, Median = genome_median_depth_good) %>%
@@ -98,7 +103,8 @@ g <- ggplot(depth) +
           panel.grid.minor = element_blank(),
           strip.background = element_blank(),
           panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 1),
-          axis.text.x = element_blank(), 
+          axis.text.x = element_blank(),
+          #axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5, size = 5), 
           axis.ticks.x = element_blank())+
     labs(title = "Read Depth",
          y = "Depth (X)",
@@ -122,7 +128,8 @@ c <- ggplot(coverage) +
           strip.background = element_blank(),
           strip.text = element_blank(),
           panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 1),
-          axis.text.x = element_blank(), 
+          axis.text.x = element_blank(),
+          #axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5, size = 5), 
           axis.ticks.x = element_blank())+
     labs(title = "Coverage",
          y = "Coverage",
@@ -131,7 +138,7 @@ c <- ggplot(coverage) +
 print("Joining and arranging data...")
 
 stats_metad <- map_stats %>%
-    select(sample, name, ref_genome, quality_warning,
+    select(sample, name,colored_label, ref_genome, quality_warning,
         mapped_ticks, mapq_ticks,
         percent_only_mapped, percent_unmapped,percent_properly_paired,
         percent_low_mapq, percent_inter_mapq, percent_high_mapq,
@@ -139,7 +146,7 @@ stats_metad <- map_stats %>%
         n_raw_vars)
 
 stats_long <- stats_metad %>%
-    pivot_longer(cols = -c(sample, name, ref_genome, quality_warning, mapped_ticks, mapq_ticks), names_to = "metric", values_to = "value")
+    pivot_longer(cols = -c(sample, name, colored_label, ref_genome, quality_warning, mapped_ticks, mapq_ticks), names_to = "metric", values_to = "value")
 
 stats_reads <- stats_long %>%
     filter(metric %in% c("percent_only_mapped", "percent_unmapped", "percent_properly_paired"))
@@ -166,10 +173,6 @@ palette_reads <- brewer.pal(n = length(unique(stats_reads$metric)), name = "BuPu
 palette_qualit <- brewer.pal(n = length(unique(stats_qualit$metric)), name = "BuGn")
 palette_vars <- brewer.pal(n = 11, name = "BrBG")[c(5,3)]
 
-stats_vars <- stats_vars %>%
-    mutate(color = ifelse(is.na(quality_warning), "black", "red"),
-            colored_label = paste0("<span style='color:", color, "'>", name, "</span>"))
-
 print("Plotting percentage of reads by mapping status...")
 reads <- ggplot(data = stats_reads)+
     geom_bar(aes(x = name, y = value, fill = metric), stat = "identity")+
@@ -185,6 +188,7 @@ reads <- ggplot(data = stats_reads)+
           strip.text = element_blank(),
           panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 1),
           axis.text.x = element_blank(),
+          #axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5, size = 5), 
           axis.ticks.x = element_blank())+
     labs(x = "", y = "% Reads", fill = "Metric", title = "Percentage of Reads by Mapping Status")+
     scale_fill_manual(values = palette_reads, name = "")
@@ -203,6 +207,7 @@ mapq <- ggplot(data = stats_qualit) +
           strip.background = element_blank(),
           strip.text = element_blank(),
           panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 1),
+          #axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5, size = 5), 
           axis.text.x = element_blank(),
           axis.ticks.x = element_blank())+
     labs(x = "", y = "% Reads", fill = "Metric", title = "Percentage of Mapped Reads by Mapping Quality") +
@@ -218,7 +223,8 @@ vars_total <- ggplot() +
           strip.background = element_blank(),
           strip.text = element_blank(),
           panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 1),
-          axis.text.x = element_blank(), 
+          #axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5, size = 5), 
+          axis.text.x = element_blank(),
           axis.ticks.x = element_blank())+
     labs(x = "", y = "# Variants", fill = "", title = "Number of Variants")+
     scale_y_continuous(labels = scales::comma)

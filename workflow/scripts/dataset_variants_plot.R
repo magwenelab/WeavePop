@@ -39,6 +39,10 @@ if ("strain" %in% colnames(metadata)){
     metadata <- metadata %>%
         select(sample, ref_genome) %>%
         mutate(name = sample)}
+        
+metadata <- metadata %>%
+    arrange(name)%>%
+    mutate(name = factor(name, levels = unique(name)))
 
 vars_classification$category <- factor(vars_classification$category, levels = c("Reference private","Private", "Non-private"))
 vars_classification$impact<- factor(vars_classification$impact, levels = c("High","Moderate","Low", "Modifier"))

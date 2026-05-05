@@ -35,6 +35,10 @@ if ("strain" %in% colnames(metadata)){
     metadata <- metadata %>%
         select(sample, ref_genome) %>%
         mutate(name = sample)}
+    
+metadata <- metadata %>%
+    arrange(name)%>%
+    mutate(name = factor(name, levels = unique(name)))
 
 chromosomes <- read.delim(chromosomes_path, sep = ",", header = TRUE, stringsAsFactors = TRUE)
 cnv <- read.delim(cnv_path, sep = "\t", header = TRUE, stringsAsFactors = TRUE)

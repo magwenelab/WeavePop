@@ -38,6 +38,10 @@ if ("strain" %in% colnames(metadata)){
     } else {
     metadata <- metadata %>%
         mutate(name = sample)}
+        
+metadata <- metadata %>%
+    arrange(name)%>%
+    mutate(name = factor(name, levels = unique(name)))
 
 chrom_depth <- left_join(chrom_depth, metadata, by = "sample")
 chrom_depth <- left_join(chrom_depth, chrom_names, by = c("accession", "ref_genome"))
