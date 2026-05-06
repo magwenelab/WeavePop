@@ -12,6 +12,8 @@ rule mapping_and_variants:
         ref=SAMPLES_DIR / "mapping_and_variants" / "{unf_sample}" / "ref.fa",
         bai=SAMPLES_DIR / "mapping_and_variants" / "{unf_sample}" / "snps.bam.bai",
         vcf=SAMPLES_DIR / "mapping_and_variants" / "{unf_sample}" / "snps.vcf.gz",
+        raw=SAMPLES_DIR / "mapping_and_variants" / "{unf_sample}" / "snps.raw.vcf",
+        filt=SAMPLES_DIR / "mapping_and_variants" / "{unf_sample}" / "snps.filt.vcf",
     params:
         outpath=SAMPLES_DIR / "mapping_and_variants",
         tmpdir=TEMPDIR,
