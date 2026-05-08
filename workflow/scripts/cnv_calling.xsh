@@ -10,6 +10,7 @@ import numpy as np
 from pathlib import Path
 from itertools import product
 from scipy import ndimage
+from scipy import stats
 
 depth_input=snakemake.input.depth
 annotation_input=snakemake.input.annotation
@@ -27,9 +28,19 @@ find_repeats=snakemake.params.find_repeats
 
 temp_dir=snakemake.resources.tmpdir
 
+# depth_input="test/results/04.Intermediate_files/01.Samples/mosdepth/sample1/coverage_good.regions.bed.gz"
+# annotation_input="test/results/01.Samples/annotation/sample1/annotation.gff.tsv"
+# chromosome_input="test/results/04.Intermediate_files/03.References/VNBI/chromosomes.csv"
+# sample_name="sample1"
+# smoothing_size=15
+# window_size=500
+# depth_threshold=0.6
+# find_repeats=False
+# temp_dir="temp"
+
+
 if find_repeats is True:
     repeats_input=snakemake.input.repeats
-        
     print("Merging overlapping repeats and intersect with windows...")
     intersect = $(bedtools intersect -a @(depth_input) -b @(repeats_input) -wao 2>> @(log_file))
 
@@ -144,11 +155,17 @@ print("Calculating depth of chromosomes...")
 chromosome_depth = cnv_windows.groupby('accession')['depth'].median().round(2).reset_index()
 chromosome_depth.columns = ['accession', 'chrom_depth']
 
+print("Calculating standard deviation of normalized depth of windows in chromosomes...")
+chromosome_std_depth = cnv_windows.loc[cnv_windows["norm_depth"] <= 2]
+chromosome_std_depth = chromosome_std_depth.groupby('accession')['norm_depth'].std().round(4).reset_index()
+chromosome_std_depth.columns = ['accession', 'chrom_std_norm_depth']
+
 print("Normalizing chromosome depth...")
 genome_depth = cnv_windows['depth'].median().round(4)
 
 chromosome_depth['chrom_norm_depth'] = chromosome_depth['chrom_depth'] / genome_depth
 chromosome_depth['chrom_norm_depth'] = chromosome_depth['chrom_norm_depth'].round(2)
+chromosome_depth = pd.merge(chromosome_depth, chromosome_std_depth, how = "left", on = "accession")
 chromosome_depth['genome_depth'] = genome_depth
 
 print("Summarizing information for each chromosome and type of region...")
@@ -180,12 +197,41 @@ summary['sample'] = sample_name
 print("Reading chromosome lengths...")
 chromosomes = pd.read_csv(chromosome_input, sep=',', header=0)
 
-ref_genome = Path(chromosome_input).parent.name
+print("Calculate 'smiley-face' pattern metric...")
+windows_rel_dist= pd.merge(cnv_windows, chromosomes, on = "accession", how = "left")[["accession", "start", "norm_depth", "length"]]
+windows_rel_dist["center"] = windows_rel_dist["length"] / 2 
+windows_rel_dist["dist_center"] = abs(windows_rel_dist["start"] - windows_rel_dist["center"])
+windows_rel_dist["rel_dist_center"] = windows_rel_dist["dist_center"] / windows_rel_dist["length"]
 
-chromosomes = chromosomes[chromosomes['ref_genome'] == ref_genome]
+lm = []
+for chrom, chrom_wm in windows_rel_dist.groupby("accession"):
+    df = chrom_wm[["rel_dist_center", "norm_depth"]].dropna()
+    if df.shape[0] < 2:
+        lm.append({"accession": chrom, "slope": np.nan, "r2": np.nan})
+        continue
 
+    res = stats.linregress(df["rel_dist_center"].astype(float), df["norm_depth"].astype(float))
+    slope = res.slope
+    r2 = res.rvalue ** 2
+    pvalue = res.pvalue
+    intercept = res.intercept
+
+    lm.append({
+        "accession": chrom,
+        "slope": float(slope),
+        "r2": float(r2),
+        "pvalue": float(pvalue),
+        "intercept": float(intercept)
+    })
+
+lm = pd.DataFrame(lm)
+
+chromosome_depth = pd.merge(chromosome_depth, lm, how = "left", on = "accession")
 
 print("Making sure that all types of CNV are present in all chromosomes...")
+ref_genome = Path(chromosome_input).parent.name
+chromosomes = chromosomes[chromosomes['ref_genome'] == ref_genome]
+
 all_combinations = pd.DataFrame(product([sample_name], 
                                         chromosomes['accession'].unique(), 
                                         ['duplication', 'deletion', 'single_copy']), 

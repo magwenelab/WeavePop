@@ -68,6 +68,7 @@ rule dataset_cnv_plot:
         cnv=DATASET_DIR / "cnv" / "cnv_chromosomes.tsv",
     output:
         plot=DATASET_DIR / "plots" / "cnv_summary.png",
+        plot2=DATASET_DIR / "plots" / "depth_uniformity_summary.png",
     log:
         LOGS
         / "dataset"
