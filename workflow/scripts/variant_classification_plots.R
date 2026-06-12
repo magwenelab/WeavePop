@@ -60,7 +60,6 @@ vars_sample <- presence %>%
     filter(sample == samp)%>%
     droplevels()
 
-n_vars <- length(unique(vars_sample$var_id))
 vars <- vars_windows %>%
     filter(var_id %in% vars_sample$var_id)
 
@@ -72,6 +71,9 @@ if (length(unique(vars$category)) > 1){
 } else {
     print("Only one sample in ref_genome, plotting all variants")
 }
+
+n_vars <- length(unique(vars$var_id))
+
 
 vars$impact <- factor(vars$impact, levels = c("High", "Moderate", "Low", "Modifier"))
 

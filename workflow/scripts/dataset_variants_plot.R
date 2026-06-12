@@ -96,7 +96,7 @@ t <-ggplot() +
             panel.border = element_rect(colour = "lightgray", fill=NA, linewidth = 1),
             axis.text.x = element_blank(),
             axis.ticks.x = element_blank())+
-        labs(x = "", y = "# Variants",  title = "Total Number of Variants")+
+        labs(x = "", y = "# Variants",  title = "Number of Filtered Variants")+
         scale_y_continuous(labels = scales::comma)
 
 c <-ggplot() +
