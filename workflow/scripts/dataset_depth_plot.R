@@ -93,5 +93,7 @@ if (n_samples <= 200) {
 gheight <- 4 + n_chroms * 0.5
 
 print("Saving plot...")
-ggsave(output, plot = medianplot, units = "in", height = gheight, width = gwidth, scale = gscale)
+ggsave(output, plot = medianplot, units = "in", 
+        height = gheight, width = gwidth, 
+        scale = gscale,limitsize = FALSE)
 print("Done!")
