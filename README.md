@@ -180,3 +180,14 @@ These steps assume that you are using a local machine. If WeavePop and your resu
 </div>
 
 
+## Tracking Changes
+
+Changes not yet included in a new release:
+* Update `mapping_summary.png`: Add total (raw) number of variants identified by Snippy, and percentage of those variants removed and filtered (kept) by the Snippy filter. Color in red the name of the samples with a quality warining flag. Automatic size of plot.  
+* Update and rename `dataset_depth_by_chrom.png` to `depth_summary.png`: Make it a barplot and use automatic size of plot.  
+* Create `variant_summary.png`: Plot with number of filtered variants and the percentage of them in each privateness and impact categories.
+* Remove the `scale` config parameter.
+* Add the option to do the dataset plots in the `join_datasets` workflow.
+* Add calculation of std dev of normalized depth per chromosome and slope of lm of normalized depth per chromosome to cnv_chromosomes.tsv and use it for flags in cnv_summary.png and new depth_uniformity_summary.png
+* Fix number of variants in plots
+* Rename directory of shiny app to `weavepop_shiny`.
