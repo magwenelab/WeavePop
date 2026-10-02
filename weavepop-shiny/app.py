@@ -1,12 +1,27 @@
 from shiny import reactive
 from shiny.express import input, render, ui
-import query_database as qdb
 import io
 import datetime
+import sys
+from pathlib import Path
 from Bio import SeqIO
 import pandas as pd
 
-mydb='database.db'
+APP_DIR = Path(__file__).resolve().parent
+if str(APP_DIR) not in sys.path:
+    sys.path.insert(0, str(APP_DIR))
+
+import query_database as qdb
+
+
+def _input_value(name):
+    value = getattr(input, name, None)
+    if value is None:
+        return None
+    return value()
+
+
+mydb='/FastData/czirion/WeavePop/test/results/02.Dataset/database.db'
 with ui.navset_pill(id="Database"):
     with ui.nav_panel("Home"):
         ui.h1(ui.markdown("WeavePop Database"), style="padding-top: 20px;padding-bottom: 20px;")
@@ -30,13 +45,13 @@ with ui.navset_pill(id="Database"):
         ui.markdown("Please see the Citation tab for information on how to cite this resource, and the Glossary tab for definitions of the terms used in the filters and tables.")
         ui.h1("Available Data",style="padding-top: 20px;padding-bottom: 10px;")
         ui.h4("Metadata",style="padding-top: 10px;padding-bottom: 10px;")
-        "Metadata of the samples included in this database, including the strain, sample ID, ref_genome, isolation source and other information."
+        ui.markdown("Metadata of the samples included in this database, including the strain, sample ID, ref_genome, isolation source and other information.")
         ui.h4("Reference Annotations",style="padding-top: 10px;padding-bottom: 10px;")
-        "Table with the description of the genes in each reference genome. Including the nested features of the genes."
+        ui.markdown("Table with the description of the genes in each reference genome. Including the nested features of the genes.")
         ui.h4("Reference Coding Sequences",style="padding-top: 10px;padding-bottom: 10px;")
-        "DNA and protein sequences of each isoform of each gene in all reference genomes."
+        ui.markdown("DNA and protein sequences of each isoform of each gene in all reference genomes.")
         ui.h4("Coding Sequences",style="padding-top: 10px;padding-bottom: 10px;")
-        "DNA and protein sequences of each isoform of each gene in all samples."
+        ui.markdown("DNA and protein sequences of each isoform of each gene in all samples.")
         ui.h4("Variants",style="padding-top: 10px;padding-bottom: 10px;")
         ui.markdown("""
                     Variants (SNPs, INDELs, and MNPs) and their predicted effects. Visit [SnpEff](https://pcingola.github.io/SnpEff/snpeff/inputoutput/) to see the description of the effects and impacts.  
@@ -48,11 +63,11 @@ with ui.navset_pill(id="Database"):
                     """)
 
         ui.h4("Copy Number Variants",style="padding-top: 10px;padding-bottom: 10px;")
-        "Table with predicted duplicated and deleted regions in the samples."
+        ui.markdown("Table with predicted duplicated and deleted regions in the samples.")
         ui.h4("Chromosome CNVs",style="padding-top: 10px;padding-bottom: 10px;")
-        "Table with summary metrics of CNVs per chromosome."
+        ui.markdown("Table with summary metrics of CNVs per chromosome.")
         ui.h4("Glossary",style="padding-top: 10px;padding-bottom: 10px;")
-        "Definitions of the terms used in the tables."
+        ui.markdown("Definitions of the terms used in the tables.")
         ui.h1("",style="padding-top: 20px;padding-bottom: 10px;")
         
     with ui.nav_panel("Metadata"):
@@ -63,7 +78,6 @@ with ui.navset_pill(id="Database"):
         with ui.card():
             ui.card_header("Download metadata table") 
             @render.download(
-                label="Download",
                 filename=lambda: f"metadata-{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.tsv")
             def down_metadata():
                 df = qdb.get_metadata(db=mydb)
@@ -173,7 +187,6 @@ with ui.navset_pill(id="Database"):
                     except Exception as e:
                         return f"Error: {e}"
                 @render.download(
-                    label="Download",
                     filename=lambda: f"genes-{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.tsv")
                 def down_genes():
                     df = qdb.genes(db=mydb, gene_name=input.gene_name_g(), gene_id=input.gene_id_g(),
@@ -221,8 +234,7 @@ with ui.navset_pill(id="Database"):
                 @render.data_frame
                 @reactive.event(input.count_seqs_ref)
                 def seq_counts_ref():
-                    available_input = input.__dict__.get('_map', {}).keys()
-                    l = input.ref_genome_sq_ref() if 'ref_genome_sq_ref' in available_input else None
+                    l = _input_value("ref_genome_sq_ref")
                     
                     seqs_df = qdb.ref_sequences(db = mydb, seq_type = "PROTEIN",
                         gene_id = input.gene_id_sq_ref(), gene_name=input.gene_name_sq_ref(),
@@ -236,13 +248,10 @@ with ui.navset_pill(id="Database"):
             with ui.nav_panel("Download FASTA files"):
                 with ui.layout_columns(col_widths=(6,6)):
                     @render.download(
-                        label="Download protein sequences",
-                        filename=lambda: f"sequences-{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.faa")
+                    filename=lambda: f"sequences-{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.faa")
                     def down_prots_ref():
                         try:
-                            available_input = input.__dict__.get('_map', {}).keys()
-                            l = input.ref_genome_sq_ref() if 'ref_genome_sq_ref' in available_input else None
-                            
+                            l = _input_value("ref_genome_sq_ref")
                             seqs_df = qdb.ref_sequences(db = mydb, seq_type = "PROTEIN",
                                 gene_id = input.gene_id_sq_ref(), gene_name=input.gene_name_sq_ref(),
                                 ref_genome= l)
@@ -258,12 +267,10 @@ with ui.navset_pill(id="Database"):
                             buf.write(seqs_text.encode())
                             yield buf.getvalue()  
                     @render.download(
-                        label="Download DNA sequences",
                         filename=lambda: f"sequences-{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.fna")
                     def down_dna_ref():
                         try:
-                            available_input = input.__dict__.get('_map', {}).keys()
-                            l = input.ref_genome_sq_ref() if 'ref_genome_sq_ref' in available_input else None
+                            l = _input_value("ref_genome_sq_ref")
                             
                             seqs_df = qdb.ref_sequences(db = mydb, seq_type = "DNA",
                                 gene_id = input.gene_id_sq_ref(), gene_name=input.gene_name_sq_ref(),
@@ -356,11 +363,10 @@ with ui.navset_pill(id="Database"):
                 @render.data_frame
                 @reactive.event(input.count_seqs)
                 def seq_counts():
-                    available_input = input.__dict__.get('_map', {}).keys()
-                    d = input.dataset_sq() if 'dataset_sq' in available_input else None
-                    s = input.sample_sq() if 'sample_sq' in available_input else None
-                    st = input.strain_sq() if 'strain_sq' in available_input else None
-                    l = input.ref_genome_sq() if 'ref_genome_sq' in available_input else None
+                    d = _input_value("dataset_sq")
+                    s = _input_value("sample_sq")
+                    st = _input_value("strain_sq")
+                    l = _input_value("ref_genome_sq")
                     
                     seqs_df = qdb.sequences(db = mydb, dataset = d, seq_type = "PROTEIN",
                         gene_id = input.gene_id_sq(), gene_name=input.gene_name_sq(),
@@ -374,15 +380,13 @@ with ui.navset_pill(id="Database"):
             with ui.nav_panel("Download FASTA files"):
                 with ui.layout_columns(col_widths=(6,6)):
                     @render.download(
-                        label="Download protein sequences",
                         filename=lambda: f"sequences-{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.faa")
                     def down_prots():
                         try:
-                            available_input = input.__dict__.get('_map', {}).keys()
-                            d = input.dataset_sq() if 'dataset_sq' in available_input else None
-                            s = input.sample_sq() if 'sample_sq' in available_input else None
-                            st = input.strain_sq() if 'strain_sq' in available_input else None
-                            l = input.ref_genome_sq() if 'ref_genome_sq' in available_input else None
+                            d = _input_value("dataset_sq")
+                            s = _input_value("sample_sq")
+                            st = _input_value("strain_sq")
+                            l = _input_value("ref_genome_sq")
                             
                             seqs_df = qdb.sequences(db = mydb, dataset = d, seq_type = "PROTEIN",
                                 gene_id = input.gene_id_sq(), gene_name=input.gene_name_sq(),
@@ -399,15 +403,13 @@ with ui.navset_pill(id="Database"):
                             buf.write(seqs_text.encode())
                             yield buf.getvalue()  
                     @render.download(
-                        label="Download DNA sequences",
                         filename=lambda: f"sequences-{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.fna")
                     def down_dna():
                         try:
-                            available_input = input.__dict__.get('_map', {}).keys()
-                            d = input.dataset_sq() if 'dataset_sq' in available_input else None
-                            s = input.sample_sq() if 'sample_sq' in available_input else None
-                            st = input.strain_sq() if 'strain_sq' in available_input else None
-                            l = input.ref_genome_sq() if 'ref_genome_sq' in available_input else None
+                            d = _input_value("dataset_sq")
+                            s = _input_value("sample_sq")
+                            st = _input_value("strain_sq")
+                            l = _input_value("ref_genome_sq")
                             
                             seqs_df = qdb.sequences(db = mydb, dataset = d, seq_type = "DNA",
                                 gene_id = input.gene_id_sq(), gene_name=input.gene_name_sq(),
@@ -542,15 +544,14 @@ with ui.navset_pill(id="Database"):
         with ui.navset_card_pill(): 
             with ui.nav_panel("Preview table"):
                 ui.input_action_button("show_effects_g", "Preview")
-                "For large tables only the first 500 rows will be shown."
+                ui.markdown("For large tables only the first 500 rows will be shown.")
                 @render.data_frame
                 @reactive.event(input.show_effects_g)
                 def show_input():
-                    available_input = input.__dict__.get('_map', {}).keys()
-                    d = input.dataset_v() if 'dataset_v' in available_input else None
-                    s = input.sample() if 'sample' in available_input else None
-                    st = input.strain() if 'strain' in available_input else None
-                    l = input.ref_genome() if 'ref_genome' in available_input else None
+                    d = _input_value("dataset_v")
+                    s = _input_value("sample")
+                    st = _input_value("strain")
+                    l = _input_value("ref_genome")
                     
                     df = qdb.effects(db = mydb, dataset = d, 
                                     sample = s, strain = st, ref_genome = l,
@@ -563,15 +564,13 @@ with ui.navset_pill(id="Database"):
                         return df
             with ui.nav_panel("Download table"):
                 @render.download(
-                    label="Download",
                     filename=lambda: f"variants-{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.tsv")
                 def down_df():
                     try:
-                        available_input = input.__dict__.get('_map', {}).keys()
-                        d = input.dataset_v() if 'dataset_v' in available_input else None
-                        s = input.sample() if 'sample' in available_input else None
-                        st = input.strain() if 'strain' in available_input else None
-                        l = input.ref_genome() if 'ref_genome' in available_input else None
+                        d = _input_value("dataset_v")
+                        s = _input_value("sample")
+                        st = _input_value("strain")
+                        l = _input_value("ref_genome")
                         
                         df = qdb.effects(db = mydb, dataset = d, 
                                         sample = s, strain = st, ref_genome = l,
@@ -687,19 +686,18 @@ with ui.navset_pill(id="Database"):
                         value = 0.5,
                         width="100%",
                 )
-                "The repeats threshold is the proportion of the feature that is allowed to be covered by repetitive sequences."
+                ui.markdown("The repeats threshold is the proportion of the feature that is allowed to be covered by repetitive sequences.")
         with ui.navset_card_pill(): 
             with ui.nav_panel("Preview table"):
                 ui.input_action_button("preview_cnv", "Preview")
-                "For large tables only the first 500 rows will be shown."
+                ui.markdown("For large tables only the first 500 rows will be shown.")
                 @render.data_frame
                 @reactive.event(input.preview_cnv)
                 def show_cnv():
-                    available_input = input.__dict__.get('_map', {}).keys()
-                    d = input.dataset_cnv() if 'dataset_cnv' in available_input else None
-                    s = input.sample_cnv() if 'sample_cnv' in available_input else None
-                    st = input.strain_cnv() if 'strain_cnv' in available_input else None
-                    l = input.ref_genome_cnv() if 'ref_genome_cnv' in available_input else None
+                    d = _input_value("dataset_cnv")
+                    s = _input_value("sample_cnv")
+                    st = _input_value("strain_cnv")
+                    l = _input_value("ref_genome_cnv")
                     df = qdb.get_cnv(db=mydb, dataset= d,
                                      sample= s, strain= st, ref_genome= l,
                                      chromosome=input.chromosomes_cnv(), start=input.start_cnv(),end=input.end_cnv(), 
@@ -711,15 +709,13 @@ with ui.navset_pill(id="Database"):
                         return df
             with ui.nav_panel("Download table"):
                 @render.download(
-                    label="Download",
                     filename=lambda: f"cnv-{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.tsv")
                 def down_cnv():
                     try:
-                        available_input = input.__dict__.get('_map', {}).keys()
-                        d = input.dataset_cnv() if 'dataset_cnv' in available_input else None
-                        s = input.sample_cnv() if 'sample_cnv' in available_input else None
-                        st = input.strain_cnv() if 'strain_cnv' in available_input else None
-                        l = input.ref_genome_cnv() if 'ref_genome_cnv' in available_input else None
+                        d = _input_value("dataset_cnv")
+                        s = _input_value("sample_cnv")
+                        st = _input_value("strain_cnv")
+                        l = _input_value("ref_genome_cnv")
                         df = qdb.get_cnv(db=mydb,dataset= d,
                             sample= s, strain= st, ref_genome= l,
                             chromosome=input.chromosomes_cnv(), start=input.start_cnv(),end=input.end_cnv(), 
@@ -814,15 +810,14 @@ with ui.navset_pill(id="Database"):
         with ui.navset_card_pill(): 
             with ui.nav_panel("Preview table"):
                 ui.input_action_button("preview_cnv_chroms", "Preview")
-                "For large tables only the first 500 rows will be shown."
+                ui.markdown("For large tables only the first 500 rows will be shown.")
                 @render.data_frame
                 @reactive.event(input.preview_cnv_chroms)
                 def show_cnv_chroms():
-                    available_input = input.__dict__.get('_map', {}).keys()
-                    d = input.dataset_cnv_chroms() if 'dataset_cnv_chroms' in available_input else None
-                    s = input.sample_cnv_chroms() if 'sample_cnv_chroms' in available_input else None
-                    st = input.strain_cnv_chroms() if 'strain_cnv_chroms' in available_input else None
-                    l = input.ref_genome_cnv_chroms() if 'ref_genome_cnv_chroms' in available_input else None
+                    d = _input_value("dataset_cnv_chroms")
+                    s = _input_value("sample_cnv_chroms")
+                    st = _input_value("strain_cnv_chroms")
+                    l = _input_value("ref_genome_cnv_chroms")
                     df = qdb.get_cnv_chroms(db=mydb, dataset= d,
                                      sample= s, strain= st, ref_genome= l,
                                      chromosome=input.chromosomes_cnv_chroms(),
@@ -835,15 +830,13 @@ with ui.navset_pill(id="Database"):
                         return df
             with ui.nav_panel("Download table"):
                 @render.download(
-                    label="Download",
                     filename=lambda: f"cnv_chroms-{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}.tsv")
                 def down_cnv_chroms():
                     try:
-                        available_input = input.__dict__.get('_map', {}).keys()
-                        d = input.dataset_cnv_chroms() if 'dataset_cnv_chroms' in available_input else None
-                        s = input.sample_cnv_chroms() if 'sample_cnv_chroms' in available_input else None
-                        st = input.strain_cnv_chroms() if 'strain_cnv_chroms' in available_input else None
-                        l = input.ref_genome_cnv_chroms() if 'ref_genome_cnv_chroms' in available_input else None
+                        d = _input_value("dataset_cnv_chroms")
+                        s = _input_value("sample_cnv_chroms")
+                        st = _input_value("strain_cnv_chroms")
+                        l = _input_value("ref_genome_cnv_chroms")
                         df = qdb.get_cnv_chroms(db=mydb,dataset= d,
                             sample= s, strain= st, ref_genome= l,
                             chromosome=input.chromosomes_cnv(),

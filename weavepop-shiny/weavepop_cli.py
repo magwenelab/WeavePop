@@ -128,7 +128,7 @@ def list_chromosomes(db):
         """
     df = con.execute(query).fetchdf()
     result_list = df['chromosome'].tolist()
-    result_list.sort(key=lambda x: (float(x) if x is not None else float('inf')))
+    #result_list.sort(key=lambda x: (float(x) if x is not None else float('inf')))
     result = tuple(result_list)
     con.close()
     return result
